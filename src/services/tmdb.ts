@@ -4,7 +4,7 @@
  * Tous les appels acceptent un paramètre langue ISO (fr-FR, ar-SA, en-US, es-ES).
  */
 
-const API_KEY = "b4324b67a08420e0a1d85a6c90314211";
+const API_KEY = import.meta.env.VITE_TMDB_API_KEY || "b4324b67a08420e0a1d85a6c90314211";
 const BASE = "https://api.themoviedb.org/3";
 
 export const IMG = {
