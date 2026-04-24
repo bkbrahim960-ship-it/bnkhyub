@@ -18,10 +18,8 @@ import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
 
-const App = () => {
-  console.log("App Initializing...");
-  return (
-    <QueryClientProvider client={queryClient}>
+const App = () => (
+  <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <LanguageProvider>
           <AuthProvider>
@@ -47,7 +45,6 @@ const App = () => {
         </LanguageProvider>
       </ThemeProvider>
     </QueryClientProvider>
-  );
-};
+);
 
 export default App;
