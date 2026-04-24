@@ -43,19 +43,19 @@ export const Header = () => {
     >
       <div className="container flex items-center justify-between h-16 md:h-20">
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-2 group">
-          <div className="w-10 h-10 rounded-xl bg-black overflow-hidden flex items-center justify-center shadow-accent group-hover:shadow-glow transition-shadow border border-white/5 relative">
+        <Link to="/" className="flex items-center gap-3 group">
+          <div className="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-black overflow-hidden flex items-center justify-center shadow-accent group-hover:shadow-glow transition-all duration-500 border border-white/10 relative group-hover:scale-105">
             <img
               src="/icon.png"
               alt="BNKhub Logo"
-              className="absolute inset-0 w-full h-full object-cover mix-blend-screen theme-icon scale-[1.3]"
+              className="absolute inset-0 w-full h-full object-cover mix-blend-screen theme-icon scale-[1.3] group-hover:scale-[1.5] transition-transform duration-700"
             />
           </div>
           <div className="flex flex-col leading-none">
-            <span className="font-display font-bold text-lg tracking-tight">
-              BNK<span className="text-accent">hub</span>
+            <span className="font-display font-bold text-xl md:text-3xl tracking-tighter transition-colors group-hover:text-accent">
+              BNK<span className="text-accent group-hover:text-foreground transition-colors">hub</span>
             </span>
-            <span className="hidden sm:block font-decorative text-[10px] text-muted-foreground tracking-wider uppercase">
+            <span className="hidden sm:block font-decorative text-[11px] text-muted-foreground tracking-[0.2em] uppercase opacity-80">
               {t("tagline")}
             </span>
           </div>
