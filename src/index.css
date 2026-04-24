@@ -126,10 +126,11 @@
   }
 
   .theme-icon {
-    filter: hue-rotate(calc((var(--accent-h) - 43) * 1deg)) saturate(1.2);
+    /* Conversion intelligente de la couleur d'icône vers le accent color */
+    filter: brightness(0.8) sepia(1) saturate(10) hue-rotate(calc((var(--accent-h) - 43) * 1deg)) brightness(1.1);
   }
   [data-theme="silver"] .theme-icon {
-    filter: grayscale(100%) brightness(1.4);
+    filter: grayscale(100%) brightness(1.5);
   }
 
   * {

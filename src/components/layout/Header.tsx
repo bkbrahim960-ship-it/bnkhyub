@@ -43,19 +43,19 @@ export const Header = () => {
     >
       <div className="container flex items-center justify-between h-16 md:h-20">
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-2 md:gap-3 group shrink-0">
-          <div className="w-11 h-11 md:w-14 md:h-14 rounded-2xl bg-black overflow-hidden flex items-center justify-center shadow-accent group-hover:shadow-glow transition-all duration-500 relative group-hover:scale-105">
+        <Link to="/" className="flex items-center group shrink-0">
+          <div className="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-black/40 backdrop-blur-md overflow-hidden flex items-center justify-center shadow-accent group-hover:shadow-glow transition-all duration-500 relative group-hover:scale-105">
             <img
               src="/icon.png"
               alt="BNKhub Logo"
-              className="absolute inset-0 w-full h-full object-cover mix-blend-screen theme-icon scale-[1.3] group-hover:scale-[1.5] transition-transform duration-700"
+              className="absolute inset-0 w-full h-full object-cover theme-icon scale-[1.2] group-hover:scale-[1.4] transition-transform duration-700"
             />
           </div>
-          <div className="flex flex-col leading-none">
-            <span className="font-display font-bold text-lg md:text-3xl tracking-tighter transition-colors group-hover:text-accent whitespace-nowrap">
+          <div className="flex flex-col leading-none ms-2 md:ms-3">
+            <span className="font-display font-bold text-2xl md:text-4xl tracking-tighter transition-colors group-hover:text-accent">
               BNK<span className="text-accent group-hover:text-foreground transition-colors">hub</span>
             </span>
-            <span className="hidden xs:block font-decorative text-[9px] md:text-[11px] text-muted-foreground tracking-[0.2em] uppercase opacity-70">
+            <span className="hidden xs:block font-decorative text-[10px] md:text-[12px] text-muted-foreground tracking-[0.2em] uppercase opacity-60">
               {t("tagline")}
             </span>
           </div>
