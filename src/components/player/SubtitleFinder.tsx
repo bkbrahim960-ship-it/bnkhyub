@@ -3,6 +3,7 @@
  * Provides direct links and search options for subtitles based on ID.
  */
 import { Languages, Download, ExternalLink, MessageSquare } from "lucide-react";
+import { useLanguage } from "@/context/LanguageContext";
 
 interface Props {
   imdbId: string;
@@ -14,6 +15,7 @@ interface Props {
 }
 
 export const SubtitleFinder = ({ imdbId, title, type, season, episode }: Props) => {
+  const { t } = useLanguage();
   const query = encodeURIComponent(title);
   const isTV = type === "tv";
   const tvSuffix = isTV ? ` S${String(season).padStart(2, "0")}E${String(episode).padStart(2, "0")}` : "";
@@ -33,7 +35,7 @@ export const SubtitleFinder = ({ imdbId, title, type, season, episode }: Props) 
       color: "hover:bg-blue-500/20 hover:text-blue-400"
     },
     {
-      name: "SubDL (Multi)",
+      name: "SubDL",
       url: `https://subdl.com/search?q=${imdbId || query}`,
       icon: <Download className="w-4 h-4" />,
       color: "hover:bg-green-500/20 hover:text-green-400"
@@ -58,8 +60,8 @@ export const SubtitleFinder = ({ imdbId, title, type, season, episode }: Props) 
             <Languages className="w-6 h-6" />
           </div>
           <div>
-            <h2 className="text-2xl font-display font-bold text-gradient-accent">الترجمات الذكية</h2>
-            <p className="text-sm text-muted-foreground">اعثر على الترجمة المناسبة بضغطة زر واحدة</p>
+            <h2 className="text-2xl font-display font-bold text-gradient-accent">{t("sub_title")}</h2>
+            <p className="text-sm text-muted-foreground">{t("sub_desc")}</p>
           </div>
         </div>
         
@@ -71,7 +73,7 @@ export const SubtitleFinder = ({ imdbId, title, type, season, episode }: Props) 
       <div className="relative grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Quick Language Search */}
         <div className="space-y-4">
-          <h3 className="text-[11px] uppercase tracking-[0.2em] text-accent font-bold opacity-70">البحث السريع حسب اللغة</h3>
+          <h3 className="text-[11px] uppercase tracking-[0.2em] text-accent font-bold opacity-70">{t("sub_search_lang")}</h3>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {languages.map((lang) => (
               <a
@@ -90,7 +92,7 @@ export const SubtitleFinder = ({ imdbId, title, type, season, episode }: Props) 
 
         {/* Global Providers */}
         <div className="space-y-4">
-          <h3 className="text-[11px] uppercase tracking-[0.2em] text-accent font-bold opacity-70">محركات البحث العالمية</h3>
+          <h3 className="text-[11px] uppercase tracking-[0.2em] text-accent font-bold opacity-70">{t("sub_search_global")}</h3>
           <div className="grid grid-cols-3 gap-3">
             {providers.map((p) => (
               <a
@@ -113,7 +115,7 @@ export const SubtitleFinder = ({ imdbId, title, type, season, episode }: Props) 
       <div className="relative mt-8 pt-6 border-t border-border/40 flex flex-col sm:flex-row items-center justify-center gap-4">
         <div className="flex items-center gap-2 text-[11px] text-muted-foreground bg-accent/5 px-4 py-2 rounded-full border border-accent/20">
           <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
-          💡 تلميح: يفضل دائماً تحميل ملفات بصيغة <span className="text-accent font-bold">SRT</span>
+          {t("sub_hint")}
         </div>
       </div>
     </div>

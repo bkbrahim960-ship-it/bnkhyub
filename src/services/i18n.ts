@@ -67,6 +67,11 @@ const dict = {
 
     search_placeholder: "Rechercher un film, une série…",
     loading: "Chargement…",
+    sub_title: "Sous-titres intelligents",
+    sub_desc: "Trouvez le bon sous-titre en un clic",
+    sub_search_lang: "Recherche rapide par langue",
+    sub_search_global: "Moteurs de recherche mondiaux",
+    sub_hint: "Astuce : Préférer les fichiers .SRT",
   },
   en: {
     tagline: "World Cinema, Without Limits",
@@ -130,6 +135,11 @@ const dict = {
 
     search_placeholder: "Search for a movie or show…",
     loading: "Loading…",
+    sub_title: "Smart Subtitles",
+    sub_desc: "Find the right subtitle with one click",
+    sub_search_lang: "Quick search by language",
+    sub_search_global: "Global search engines",
+    sub_hint: "Hint: Better to download .SRT files",
   },
   ar: {
     tagline: "سينما العالم، بلا حدود",
@@ -193,6 +203,11 @@ const dict = {
 
     search_placeholder: "ابحث عن فيلم أو مسلسل…",
     loading: "جاري التحميل…",
+    sub_title: "الترجمات الذكية",
+    sub_desc: "اعثر على الترجمة المناسبة بضغطة زر واحدة",
+    sub_search_lang: "البحث السريع حسب اللغة",
+    sub_search_global: "محركات البحث العالمية",
+    sub_hint: "تلميح: يفضل دائماً تحميل ملفات بصيغة SRT",
   },
   es: {
     tagline: "El Cine del Mundo, Sin Límites",
@@ -256,6 +271,11 @@ const dict = {
 
     search_placeholder: "Buscar una película o serie…",
     loading: "Cargando…",
+    sub_title: "Subtítulos Inteligentes",
+    sub_desc: "Encuentra el subtítulo correcto con un clic",
+    sub_search_lang: "Búsqueda rápida por idioma",
+    sub_search_global: "Motores de búsqueda globales",
+    sub_hint: "Sugerencia: Mejor descargar archivos .SRT",
   },
 } as const;
 
