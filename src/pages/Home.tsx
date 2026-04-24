@@ -1,0 +1,74 @@
+/**
+ * BNKhub — Page d'accueil.
+ * Hero rotatif + rows TMDB + nouveautés vidsrc-embed.
+ */
+import { useEffect, useState } from "react";
+import { Layout } from "@/components/layout/Layout";
+import { MovieHero } from "@/components/movie/MovieHero";
+import { MovieRow } from "@/components/movie/MovieRow";
+import { ContinueWatchingRow } from "@/components/movie/ContinueWatchingRow";
+import { useLanguage } from "@/context/LanguageContext";
+import { tmdbLang } from "@/services/i18n";
+import {
+  getPopularMovies,
+  getTopRatedMovies,
+  getPopularSeries,
+  getTrendingMovies,
+  getNowPlaying,
+  TMDBMovie,
+  TMDBSeries,
+} from "@/services/tmdb";
+
+const Home = () => {
+  const { lang, t } = useLanguage();
+  const tl = tmdbLang(lang);
+
+  const [hero, setHero] = useState<TMDBMovie[]>([]);
+  const [popular, setPopular] = useState<TMDBMovie[]>([]);
+  const [trending, setTrending] = useState<TMDBMovie[]>([]);
+  const [topRated, setTopRated] = useState<TMDBMovie[]>([]);
+  const [popularTV, setPopularTV] = useState<TMDBSeries[]>([]);
+  const [nowPlaying, setNowPlaying] = useState<TMDBMovie[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let canceled = false;
+    setLoading(true);
+    Promise.all([
+      getTrendingMovies(tl).catch(() => ({ results: [] })),
+      getPopularMovies(tl).catch(() => ({ results: [] })),
+      getTopRatedMovies(tl).catch(() => ({ results: [] })),
+      getPopularSeries(tl).catch(() => ({ results: [] })),
+      getNowPlaying(tl).catch(() => ({ results: [] })),
+    ]).then(([tr, pop, top, tv, np]) => {
+      if (canceled) return;
+      setTrending(tr.results);
+      setHero(tr.results.filter((m) => m.backdrop_path));
+      setPopular(pop.results);
+      setTopRated(top.results);
+      setPopularTV(tv.results);
+      setNowPlaying(np.results);
+      setLoading(false);
+    });
+    return () => {
+      canceled = true;
+    };
+  }, [tl]);
+
+  return (
+    <Layout>
+      <MovieHero items={hero} />
+
+      <div className="relative -mt-20 z-10">
+        <ContinueWatchingRow />
+        <MovieRow title={t("section_latest")} items={nowPlaying} loading={loading} />
+        <MovieRow title={t("section_trending")} items={trending} loading={loading} />
+        <MovieRow title={t("section_popular")} items={popular} loading={loading} />
+        <MovieRow title={t("section_popular_tv")} items={popularTV} type="tv" loading={loading} />
+        <MovieRow title={t("section_top_rated")} items={topRated} loading={loading} />
+      </div>
+    </Layout>
+  );
+};
+
+export default Home;
