@@ -43,8 +43,8 @@ export const Header = () => {
     >
       <div className="container flex items-center justify-between h-16 md:h-20">
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-3 group">
-          <div className="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-black overflow-hidden flex items-center justify-center shadow-accent group-hover:shadow-glow transition-all duration-500 border border-white/10 relative group-hover:scale-105">
+        <Link to="/" className="flex items-center gap-2 md:gap-3 group shrink-0">
+          <div className="w-11 h-11 md:w-14 md:h-14 rounded-2xl bg-black overflow-hidden flex items-center justify-center shadow-accent group-hover:shadow-glow transition-all duration-500 relative group-hover:scale-105">
             <img
               src="/icon.png"
               alt="BNKhub Logo"
@@ -52,10 +52,10 @@ export const Header = () => {
             />
           </div>
           <div className="flex flex-col leading-none">
-            <span className="font-display font-bold text-xl md:text-3xl tracking-tighter transition-colors group-hover:text-accent">
+            <span className="font-display font-bold text-lg md:text-3xl tracking-tighter transition-colors group-hover:text-accent whitespace-nowrap">
               BNK<span className="text-accent group-hover:text-foreground transition-colors">hub</span>
             </span>
-            <span className="hidden sm:block font-decorative text-[11px] text-muted-foreground tracking-[0.2em] uppercase opacity-80">
+            <span className="hidden xs:block font-decorative text-[9px] md:text-[11px] text-muted-foreground tracking-[0.2em] uppercase opacity-70">
               {t("tagline")}
             </span>
           </div>
