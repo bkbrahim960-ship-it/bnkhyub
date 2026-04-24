@@ -1,18 +1,16 @@
 import { NavLink } from "react-router-dom";
-import { Home, Film, Tv, Search, User } from "lucide-react";
+import { Home, Film, Tv, Search, Heart } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
-import { useAuth } from "@/context/AuthContext";
 
 export const BottomNav = () => {
   const { t } = useLanguage();
-  const { user } = useAuth();
 
   const navItems = [
     { to: "/", icon: Home, label: t("nav_home") },
     { to: "/movies", icon: Film, label: t("nav_movies") },
     { to: "/series", icon: Tv, label: t("nav_series") },
     { to: "/search", icon: Search, label: t("nav_search") },
-    { to: user ? "/profile" : "/auth", icon: User, label: t("nav_profile") || "Profil" },
+    { to: "/my-list", icon: Heart, label: "Ma liste" },
   ];
 
   return (

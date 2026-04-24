@@ -6,7 +6,10 @@ import { useEffect, useMemo, useState } from "react";
 import { useParams, Link, useSearchParams } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { VideoPlayer } from "@/components/player/VideoPlayer";
-import { IMG, getSeriesDetails, getSeasonDetails, TMDBSeries, TMDBSeason } from "@/services/tmdb";
+import { IMG, getSeriesDetails, getSeasonDetails, getSeriesRecommendations, TMDBSeries, TMDBSeason } from "@/services/tmdb";
+import { FavoriteButton } from "@/components/movie/FavoriteButton";
+import { ShareButtons } from "@/components/movie/ShareButtons";
+import { MovieRow } from "@/components/movie/MovieRow";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
 import { tmdbLang } from "@/services/i18n";
@@ -32,6 +35,7 @@ const Series = () => {
   const [playing, setPlaying] = useState(false);
   const [seasonData, setSeasonData] = useState<TMDBSeason | null>(null);
   const [seasonLoading, setSeasonLoading] = useState(false);
+  const [recommendations, setRecommendations] = useState<any[]>([]);
 
   const resumeRequested = params.get("resume") === "1";
   const resumeSeason = Number(params.get("s")) || null;
@@ -57,6 +61,13 @@ const Series = () => {
       })
       .finally(() => setLoading(false));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id, lang]);
+
+  useEffect(() => {
+    if (!id) return;
+    getSeriesRecommendations(id, tmdbLang(lang))
+      .then((r) => setRecommendations(r.results.filter((s: any) => s.poster_path)))
+      .catch(() => {});
   }, [id, lang]);
 
   useEffect(() => {
@@ -135,7 +146,17 @@ const Series = () => {
               {year && <span className="inline-flex items-center gap-1.5"><Calendar className="w-4 h-4" /> {year}</span>}
               {series.number_of_seasons && <span>{series.number_of_seasons} saisons</span>}
             </div>
-            <p className="text-foreground/85 max-w-3xl leading-relaxed">{series.overview}</p>
+            <p className="text-foreground/85 max-w-3xl leading-relaxed mb-6">{series.overview}</p>
+            <div className="flex flex-wrap items-center gap-3">
+              <FavoriteButton
+                tmdbId={series.id}
+                mediaType="tv"
+                title={series.name}
+                posterPath={series.poster_path}
+                backdropPath={series.backdrop_path}
+              />
+              <ShareButtons title={series.name} />
+            </div>
           </div>
         </div>
       </section>
@@ -236,6 +257,10 @@ const Series = () => {
           )}
         </div>
       </section>
+
+      {recommendations.length > 0 && (
+        <MovieRow title="Séries recommandées" items={recommendations} type="tv" />
+      )}
     </Layout>
   );
 };

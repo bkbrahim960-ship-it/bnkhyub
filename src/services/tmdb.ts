@@ -127,3 +127,21 @@ export const getSeasonDetails = (series_id: number | string, season_number: numb
 // ───── GENRES ─────
 export const getMovieGenres = (lang = "fr-FR") =>
   fetchTMDB<{ genres: { id: number; name: string }[] }>("/genre/movie/list", { language: lang });
+
+export const getTvGenres = (lang = "fr-FR") =>
+  fetchTMDB<{ genres: { id: number; name: string }[] }>("/genre/tv/list", { language: lang });
+
+// ───── RECOMMENDATIONS ─────
+export const getMovieRecommendations = (id: number | string, lang = "fr-FR") =>
+  fetchTMDB<{ results: TMDBMovie[] }>(`/movie/${id}/recommendations`, { language: lang });
+
+export const getSeriesRecommendations = (id: number | string, lang = "fr-FR") =>
+  fetchTMDB<{ results: TMDBSeries[] }>(`/tv/${id}/recommendations`, { language: lang });
+
+// ───── DISCOVER (Advanced Search) ─────
+export const discoverMovies = (lang = "fr-FR", params: Record<string, string> = {}) =>
+  fetchTMDB<{ results: TMDBMovie[]; total_pages: number }>("/discover/movie", { language: lang, ...params });
+
+export const discoverSeries = (lang = "fr-FR", params: Record<string, string> = {}) =>
+  fetchTMDB<{ results: TMDBSeries[]; total_pages: number }>("/discover/tv", { language: lang, ...params });
+

@@ -8,7 +8,9 @@ import { useParams, Link, useSearchParams } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { VideoPlayer } from "@/components/player/VideoPlayer";
 import { MovieRow } from "@/components/movie/MovieRow";
-import { IMG, getMovieDetails, TMDBMovie } from "@/services/tmdb";
+import { FavoriteButton } from "@/components/movie/FavoriteButton";
+import { ShareButtons } from "@/components/movie/ShareButtons";
+import { IMG, getMovieDetails, getMovieRecommendations, TMDBMovie } from "@/services/tmdb";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
 import { tmdbLang } from "@/services/i18n";
@@ -30,6 +32,7 @@ const Movie = () => {
   const [movie, setMovie] = useState<TMDBMovie | null>(null);
   const [loading, setLoading] = useState(true);
   const [playing, setPlaying] = useState(false);
+  const [recommendations, setRecommendations] = useState<TMDBMovie[]>([]);
 
   const resumeRequested = params.get("resume") === "1";
   const initialSourceIndex = useMemo(() => sourceIdToIndex(params.get("src")), [params]);
@@ -44,6 +47,9 @@ const Movie = () => {
         if (resumeRequested) setPlaying(true);
       })
       .finally(() => setLoading(false));
+    getMovieRecommendations(id, tmdbLang(lang))
+      .then((r) => setRecommendations(r.results.filter((m) => m.poster_path)))
+      .catch(() => {});
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, lang]);
 
@@ -129,15 +135,25 @@ const Movie = () => {
 
             <p className="text-foreground/85 max-w-3xl leading-relaxed mb-8">{movie.overview}</p>
 
-            {!playing && (
-              <button
-                onClick={() => setPlaying(true)}
-                className="inline-flex items-center gap-2.5 bg-gradient-accent text-accent-foreground font-semibold px-8 py-4 rounded-full shadow-accent hover:scale-[1.04] active:scale-[0.98] transition-transform duration-300 ease-luxe animate-pulse-glow"
-              >
-                <Play className="w-5 h-5 fill-accent-foreground" />
-                {t("hero_watch")}
-              </button>
-            )}
+            <div className="flex flex-wrap items-center gap-3">
+              {!playing && (
+                <button
+                  onClick={() => setPlaying(true)}
+                  className="inline-flex items-center gap-2.5 bg-gradient-accent text-accent-foreground font-semibold px-8 py-4 rounded-full shadow-accent hover:scale-[1.04] active:scale-[0.98] transition-transform duration-300 ease-luxe animate-pulse-glow"
+                >
+                  <Play className="w-5 h-5 fill-accent-foreground" />
+                  {t("hero_watch")}
+                </button>
+              )}
+              <FavoriteButton
+                tmdbId={movie.id}
+                mediaType="movie"
+                title={movie.title}
+                posterPath={movie.poster_path}
+                backdropPath={movie.backdrop_path}
+              />
+              <ShareButtons title={movie.title} />
+            </div>
           </div>
         </div>
       </section>
@@ -162,8 +178,11 @@ const Movie = () => {
         </section>
       )}
 
+      {recommendations.length > 0 && (
+        <MovieRow title="Recommandé pour vous" items={recommendations} />
+      )}
       {movie.similar?.results && movie.similar.results.length > 0 && (
-        <MovieRow title={t("section_popular")} items={movie.similar.results} />
+        <MovieRow title="Films similaires" items={movie.similar.results} />
       )}
     </Layout>
   );

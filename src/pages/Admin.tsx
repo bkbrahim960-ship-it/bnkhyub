@@ -112,6 +112,33 @@ WITH CHECK (auth.email() = 'bkbrahim960@gmail.com');
 CREATE POLICY "Seul l'admin peut modifier/supprimer des serveurs" 
 ON custom_servers FOR ALL 
 USING (auth.email() = 'bkbrahim960@gmail.com');
+
+-- ═══════════════════════════════════════
+-- TABLE FAVORIS (Ma Liste)
+-- ═══════════════════════════════════════
+
+CREATE TABLE favorites (
+  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
+  tmdb_id INTEGER NOT NULL,
+  media_type TEXT NOT NULL,
+  title TEXT NOT NULL,
+  poster_path TEXT,
+  backdrop_path TEXT,
+  added_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL,
+  UNIQUE(user_id, tmdb_id, media_type)
+);
+
+ALTER TABLE favorites ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Users can view their own favorites"
+ON favorites FOR SELECT USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can add their own favorites"
+ON favorites FOR INSERT WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can delete their own favorites"
+ON favorites FOR DELETE USING (auth.uid() = user_id);
   `.trim();
 
   if (authLoading || user?.email !== "bkbrahim960@gmail.com") {
