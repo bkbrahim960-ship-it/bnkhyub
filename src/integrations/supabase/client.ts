@@ -5,34 +5,24 @@ import type { Database } from './types';
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || "";
 const SUPABASE_PUBLISHABLE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || "";
 
-console.log("Checking Supabase Config...");
+console.log("BNKhub: Initializing Supabase...");
 
-if (!SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY) {
-  console.error("CRITICAL ERROR: Supabase credentials missing from Environment Variables.");
-  if (typeof window !== "undefined") {
-    setTimeout(() => {
-      const root = document.getElementById("root");
-      if (root) {
-        root.innerHTML = `<div style="color: white; background: #000; height: 100vh; display: flex; align-items: center; justify-content: center; text-align: center; font-family: sans-serif; padding: 20px;">
-          <div>
-            <h1 style="color: #D4A843;">خطأ في الاتصال بالخادم</h1>
-            <p>متغيرات البيئة (VITE_SUPABASE_URL أو Key) مفقودة في موقع النشر.</p>
-            <p style="font-size: 12px; color: #888;">يرجى إضافتها في Vercel ثم عمل Redeploy.</p>
-          </div>
-        </div>`;
+let supabaseClient;
+
+try {
+  if (SUPABASE_URL && SUPABASE_PUBLISHABLE_KEY) {
+    supabaseClient = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+      auth: {
+        storage: localStorage,
+        persistSession: true,
+        autoRefreshToken: true,
       }
-    }, 500);
+    });
+  } else {
+    console.warn("BNKhub: Supabase URL or Key is missing. App may not function correctly.");
   }
+} catch (err) {
+  console.error("BNKhub: Failed to initialize Supabase client", err);
 }
 
-export const supabase = createClient<Database>(
-  SUPABASE_URL || "https://placeholder.supabase.co", 
-  SUPABASE_PUBLISHABLE_KEY || "placeholder", 
-  {
-    auth: {
-      storage: localStorage,
-      persistSession: true,
-      autoRefreshToken: true,
-    }
-  }
-);
+export const supabase = supabaseClient!;

@@ -21,7 +21,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // IMPORTANT : listener AVANT getSession (voir docs Supabase)
+    if (!supabase || !supabase.auth) {
+      console.warn("AuthContext: Supabase client not found.");
+      setLoading(false);
+      return;
+    }
+
     const { data: sub } = supabase.auth.onAuthStateChange((_event, sess) => {
       setSession(sess);
       setUser(sess?.user ?? null);
