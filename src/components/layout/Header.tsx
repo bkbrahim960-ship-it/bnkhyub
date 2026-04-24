@@ -104,11 +104,18 @@ export const Header = () => {
 
           <Link
             to={user ? "/profile" : "/auth"}
-            className="p-2 rounded-full hover:bg-surface-card transition-colors"
+            className="flex items-center gap-2 p-1.5 pe-3 rounded-full hover:bg-surface-card transition-colors border border-transparent hover:border-border"
             aria-label={t("nav_profile")}
             title={t("nav_profile")}
           >
-            <UserIcon className={`w-5 h-5 ${user ? "text-accent" : ""}`} />
+            <div className={`p-1.5 rounded-full ${user ? "bg-accent/20 text-accent" : "bg-surface-card"}`}>
+              <UserIcon className="w-4 h-4" />
+            </div>
+            {user && (
+              <span className="hidden sm:block text-xs font-medium max-w-[100px] truncate">
+                {user.user_metadata?.username || user.email?.split('@')[0]}
+              </span>
+            )}
           </Link>
 
           <button

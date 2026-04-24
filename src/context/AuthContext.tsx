@@ -27,16 +27,22 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       return;
     }
 
-    const { data: sub } = supabase.auth.onAuthStateChange((_event, sess) => {
+    const { data: sub } = supabase.auth.onAuthStateChange((event, sess) => {
+      console.log("Auth Event:", event, sess?.user?.email);
       setSession(sess);
       setUser(sess?.user ?? null);
+      setLoading(false);
     });
 
-    supabase.auth.getSession().then(({ data }) => {
+    // Forcer la lecture de la session (utile après retour OAuth)
+    const checkSession = async () => {
+      const { data } = await supabase.auth.getSession();
       setSession(data.session);
       setUser(data.session?.user ?? null);
       setLoading(false);
-    });
+    };
+    
+    checkSession();
 
     return () => sub.subscription.unsubscribe();
   }, []);
