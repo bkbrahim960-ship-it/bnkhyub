@@ -10,6 +10,7 @@ import { VideoPlayer } from "@/components/player/VideoPlayer";
 import { MovieRow } from "@/components/movie/MovieRow";
 import { FavoriteButton } from "@/components/movie/FavoriteButton";
 import { ShareButtons } from "@/components/movie/ShareButtons";
+import { SubtitleFinder } from "@/components/player/SubtitleFinder";
 import { IMG, getMovieDetails, getMovieRecommendations, TMDBMovie } from "@/services/tmdb";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
@@ -177,6 +178,16 @@ const Movie = () => {
           <p className="text-center text-muted-foreground">IMDb ID non disponible pour ce titre.</p>
         </section>
       )}
+
+      {/* Subtitle Finder Section */}
+      <section className="container pb-12">
+        <SubtitleFinder 
+          imdbId={imdb} 
+          tmdbId={movie.id} 
+          type="movie" 
+          title={movie.title} 
+        />
+      </section>
 
       {recommendations.length > 0 && (
         <MovieRow title="Recommandé pour vous" items={recommendations} />

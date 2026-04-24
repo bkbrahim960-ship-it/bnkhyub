@@ -10,6 +10,7 @@ import { IMG, getSeriesDetails, getSeasonDetails, getSeriesRecommendations, TMDB
 import { FavoriteButton } from "@/components/movie/FavoriteButton";
 import { ShareButtons } from "@/components/movie/ShareButtons";
 import { MovieRow } from "@/components/movie/MovieRow";
+import { SubtitleFinder } from "@/components/player/SubtitleFinder";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
 import { tmdbLang } from "@/services/i18n";
@@ -256,6 +257,18 @@ const Series = () => {
             <p className="text-muted-foreground">Aucun épisode trouvé pour cette saison.</p>
           )}
         </div>
+      </section>
+      
+      {/* Subtitle Finder Section */}
+      <section className="container pb-12">
+        <SubtitleFinder 
+          imdbId={imdb} 
+          tmdbId={series.id} 
+          type="tv" 
+          title={series.name}
+          season={season}
+          episode={episode}
+        />
       </section>
 
       {recommendations.length > 0 && (
