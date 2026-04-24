@@ -179,15 +179,16 @@ const Movie = () => {
         </section>
       )}
 
-      {/* Subtitle Finder Section */}
-      <section className="container pb-12">
-        <SubtitleFinder 
-          imdbId={imdb} 
-          tmdbId={movie.id} 
-          type="movie" 
-          title={movie.title} 
-        />
-      </section>
+      {playing && (
+        <section className="container pb-12">
+          <SubtitleFinder 
+            imdbId={imdb} 
+            tmdbId={movie.id} 
+            type="movie" 
+            title={movie.title} 
+          />
+        </section>
+      )}
 
       {recommendations.length > 0 && (
         <MovieRow title="Recommandé pour vous" items={recommendations} />

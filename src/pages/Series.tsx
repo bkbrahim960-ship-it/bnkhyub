@@ -259,17 +259,18 @@ const Series = () => {
         </div>
       </section>
       
-      {/* Subtitle Finder Section */}
-      <section className="container pb-12">
-        <SubtitleFinder 
-          imdbId={imdb} 
-          tmdbId={series.id} 
-          type="tv" 
-          title={series.name}
-          season={season}
-          episode={episode}
-        />
-      </section>
+      {playing && (
+        <section className="container pb-12">
+          <SubtitleFinder 
+            imdbId={imdb} 
+            tmdbId={series.id} 
+            type="tv" 
+            title={series.name}
+            season={season}
+            episode={episode}
+          />
+        </section>
+      )}
 
       {recommendations.length > 0 && (
         <MovieRow title="Séries recommandées" items={recommendations} type="tv" />

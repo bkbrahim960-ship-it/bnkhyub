@@ -48,63 +48,72 @@ export const SubtitleFinder = ({ imdbId, title, type, season, episode }: Props) 
   ];
 
   return (
-    <div className="bg-surface-card border border-border rounded-2xl p-6 mt-8 animate-fade-in shadow-card-luxe">
-      <div className="flex items-center gap-3 mb-6">
-        <div className="p-2 rounded-lg bg-accent/20 text-accent">
-          <Languages className="w-6 h-6" />
+    <div className="bg-surface-card/40 backdrop-blur-md border border-border/50 rounded-3xl p-6 md:p-8 mt-8 animate-fade-slide-up shadow-card-luxe overflow-hidden relative group">
+      {/* Background Glow */}
+      <div className="absolute -top-24 -end-24 w-48 h-48 bg-accent/10 blur-[80px] rounded-full" />
+      
+      <div className="relative flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
+        <div className="flex items-center gap-4">
+          <div className="p-3 rounded-2xl bg-gradient-accent text-accent-foreground shadow-accent">
+            <Languages className="w-6 h-6" />
+          </div>
+          <div>
+            <h2 className="text-2xl font-display font-bold text-gradient-accent">الترجمات الذكية</h2>
+            <p className="text-sm text-muted-foreground">اعثر على الترجمة المناسبة بضغطة زر واحدة</p>
+          </div>
         </div>
-        <div>
-          <h2 className="text-xl font-display font-semibold">نظام البحث عن ترجمة</h2>
-          <p className="text-sm text-muted-foreground">قم بتحميل ملف الترجمة المناسب لفيلمك المفضل</p>
+        
+        <div className="flex items-center gap-2 text-[10px] font-mono text-muted-foreground bg-surface-primary/50 px-3 py-1.5 rounded-full border border-border/40">
+           ID: <span className="text-accent">{imdbId || "N/A"}</span> {tvSuffix}
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div className="relative grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Quick Language Search */}
-        <div>
-          <h3 className="text-xs uppercase tracking-widest text-muted-foreground mb-4 font-bold">بحث سريع حسب اللغة</h3>
-          <div className="flex flex-wrap gap-2">
+        <div className="space-y-4">
+          <h3 className="text-[11px] uppercase tracking-[0.2em] text-accent font-bold opacity-70">البحث السريع حسب اللغة</h3>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {languages.map((lang) => (
               <a
                 key={lang.code}
                 href={`https://www.opensubtitles.org/en/search2/sublanguageid-${lang.code}/moviename-${imdbId || query}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-surface-primary border border-border hover:border-accent-subtle hover:bg-accent/5 transition-all duration-300 group"
+                className="flex flex-col items-center gap-2 p-4 rounded-2xl bg-surface-primary/30 border border-border/40 hover:border-accent hover:bg-accent/5 transition-all duration-500 group/item"
               >
-                <span className="text-lg">{lang.flag}</span>
-                <span className="text-sm font-medium">{lang.label}</span>
+                <span className="text-2xl group-hover/item:scale-125 transition-transform duration-500">{lang.flag}</span>
+                <span className="text-[10px] font-bold uppercase tracking-wider">{lang.label}</span>
               </a>
             ))}
           </div>
         </div>
 
         {/* Global Providers */}
-        <div>
-          <h3 className="text-xs uppercase tracking-widest text-muted-foreground mb-4 font-bold">محركات الترجمة العالمية</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div className="space-y-4">
+          <h3 className="text-[11px] uppercase tracking-[0.2em] text-accent font-bold opacity-70">محركات البحث العالمية</h3>
+          <div className="grid grid-cols-3 gap-3">
             {providers.map((p) => (
               <a
                 key={p.name}
                 href={p.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`flex flex-col items-center gap-2 p-4 rounded-xl bg-surface-primary border border-border transition-all duration-300 ${p.color} text-center`}
+                className={`flex flex-col items-center justify-center gap-3 p-4 rounded-2xl bg-surface-primary/30 border border-border/40 transition-all duration-500 ${p.color} text-center group/p`}
               >
-                {p.icon}
-                <span className="text-xs font-semibold">{p.name}</span>
+                <div className="p-2 rounded-lg bg-surface-card border border-border/40 group-hover/p:border-current transition-colors">
+                  {p.icon}
+                </div>
+                <span className="text-[10px] font-bold uppercase tracking-tight">{p.name}</span>
               </a>
             ))}
           </div>
         </div>
       </div>
 
-      <div className="mt-8 pt-6 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div className="text-xs text-muted-foreground bg-accent/5 px-3 py-1.5 rounded-full border border-accent-subtle italic">
-          💡 تلميح: معظم هذه المواقع توفر ملفات بترنسيق <span className="text-accent font-bold">.SRT</span> تعمل على جميع المشغلات.
-        </div>
-        <div className="text-xs text-muted-foreground">
-           ID: <span className="font-mono text-accent">{imdbId || "N/A"}</span> {tvSuffix}
+      <div className="relative mt-8 pt-6 border-t border-border/40 flex flex-col sm:flex-row items-center justify-center gap-4">
+        <div className="flex items-center gap-2 text-[11px] text-muted-foreground bg-accent/5 px-4 py-2 rounded-full border border-accent/20">
+          <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
+          💡 تلميح: يفضل دائماً تحميل ملفات بصيغة <span className="text-accent font-bold">SRT</span>
         </div>
       </div>
     </div>
