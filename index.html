@@ -32,6 +32,20 @@
   </head>
   <body>
     <div id="root"></div>
+    <div id="js-check" style="color: #888; text-align: center; font-family: sans-serif; margin-top: 100px;">
+      جاري تحميل المنصة... إذا طالت الشاشة السوداء، يرجى التأكد من اتصالك بالإنترنت أو مراجعة إعدادات السيرفر.
+    </div>
     <script type="module" src="/src/main.tsx"></script>
+    <script>
+      // إذا اشتغل الكود، سيقوم بحذف رسالة التنبيه
+      window.addEventListener('DOMContentLoaded', () => {
+        setTimeout(() => {
+          const check = document.getElementById('js-check');
+          if (window.ReactQuill || window.React || document.querySelector('#root > div')) {
+             if (check) check.style.display = 'none';
+          }
+        }, 2000);
+      });
+    </script>
   </body>
 </html>
