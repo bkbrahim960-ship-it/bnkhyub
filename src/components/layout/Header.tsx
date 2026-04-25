@@ -55,19 +55,13 @@ export const Header = () => {
           }
         }}>
           <div id="main-logo-container" className="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-black/40 backdrop-blur-md overflow-hidden flex items-center justify-center shadow-accent group-hover:shadow-glow transition-all duration-500 relative group-hover:scale-105">
-            <div 
+            <img 
+              src="/icon.png" 
+              alt="Logo"
               style={{ 
-                backgroundColor: 'hsl(var(--accent))',
-                maskImage: 'url(/icon.png)',
-                WebkitMaskImage: 'url(/icon.png)',
-                maskSize: 'contain',
-                WebkitMaskSize: 'contain',
-                maskRepeat: 'no-repeat',
-                WebkitMaskRepeat: 'no-repeat',
-                maskPosition: 'center',
-                WebkitMaskPosition: 'center'
+                filter: `drop-shadow(0 0 8px hsl(var(--accent) / 0.5))`,
               }}
-              className="w-full h-full transition-transform duration-700 scale-[0.8] group-hover:scale-[1.0]"
+              className="w-full h-full object-cover theme-icon-colored transition-transform duration-700 scale-[1.1] group-hover:scale-[1.3]"
             />
           </div>
           <div className="flex flex-col leading-none ms-2 md:ms-3">
@@ -162,7 +156,14 @@ export const Header = () => {
                   }`
                 }
               >
-                {l.label}
+                <img 
+              src="/icon.png" 
+              alt="Logo"
+              style={{ 
+                filter: `drop-shadow(0 0 12px hsl(var(--accent) / 0.6))`,
+              }}
+              className="w-full h-full object-cover animate-pulse-glow"
+            />
               </NavLink>
             ))}
             <div className="mt-3 pt-3 border-t border-border">
