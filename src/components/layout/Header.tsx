@@ -47,9 +47,9 @@ export const Header = () => {
           : "bg-gradient-to-b from-black/80 to-transparent"
         }`}
     >
-      <div className="w-full px-6 md:px-12 lg:px-16 flex items-center h-16 md:h-20 lg:h-24">
-        {/* Logo - Left */}
-        <div className="flex items-center group shrink-0 cursor-pointer me-12" onClick={() => {
+      <div className="container-fluid px-4 md:px-8 lg:px-12 flex items-center justify-between h-16 md:h-20 lg:h-24">
+        {/* Logo */}
+        <div className="flex items-center group shrink-0 cursor-pointer" onClick={() => {
           const el = document.getElementById("main-logo-container");
           if (el) {
             el.classList.add("animate-logo-jump");
@@ -73,18 +73,21 @@ export const Header = () => {
             <span className="font-display font-bold text-xl xs:text-2xl md:text-3xl lg:text-4xl tracking-tighter transition-colors group-hover:text-accent">
               BNK<span className="text-accent group-hover:text-foreground transition-colors">hub</span>
             </span>
+            <span className="hidden sm:block font-decorative text-[8px] md:text-[10px] lg:text-[12px] text-muted-foreground tracking-[0.2em] uppercase opacity-60">
+              {t("tagline")}
+            </span>
           </div>
         </div>
 
-        {/* Nav desktop & TV - Middle (Centered) */}
-        <nav className="hidden md:flex flex-1 items-center justify-center gap-6 lg:gap-10 xl:gap-14">
+        {/* Nav desktop & TV */}
+        <nav className="hidden md:flex items-center gap-4 lg:gap-8">
           {navLinks.map((l) => (
             <NavLink
               key={l.to}
               to={l.to}
               end={l.to === "/"}
               className={({ isActive }) =>
-                `px-2 py-2 text-sm lg:text-base xl:text-lg font-bold uppercase tracking-widest transition-all duration-300 relative focus:text-accent focus:outline-none hover:scale-110 active:scale-95 ${isActive ? "text-accent" : "text-foreground/70 hover:text-foreground"
+                `px-3 py-2 text-sm lg:text-base font-medium transition-all duration-300 relative focus:text-accent focus:outline-none hover:scale-110 active:scale-95 ${isActive ? "text-accent" : "text-foreground/80 hover:text-foreground"
                 }`
               }
             >
@@ -101,8 +104,8 @@ export const Header = () => {
           ))}
         </nav>
 
-        {/* Actions - Right */}
-        <div className="flex items-center justify-end gap-2 md:gap-4 lg:gap-6 shrink-0 ms-12">
+        {/* Actions */}
+        <div className="flex items-center gap-1 xs:gap-2 md:gap-4 lg:gap-6">
           <Link
             to="/search"
             className="p-2 md:p-3 rounded-full hover:bg-surface-card transition-all hover:scale-110 focus:outline-none focus:ring-2 focus:ring-accent"
