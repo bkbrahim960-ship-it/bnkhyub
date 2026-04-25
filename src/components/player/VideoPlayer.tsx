@@ -181,6 +181,7 @@ export const VideoPlayer = ({
             onLoad={handleLoad}
             className="absolute inset-0 w-full h-full"
           />
+        )}
 
         {playerActive && loading && (
           <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/60 pointer-events-none">
