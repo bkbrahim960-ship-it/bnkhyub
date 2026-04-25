@@ -3,7 +3,12 @@
  */
 import { Link, NavLink } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { Search, Menu, X, User as UserIcon } from "lucide-react";
+import { Search, Menu, X, User as UserIcon, Bell } from "lucide-react";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
 import { ColorSwitcher } from "@/components/ui/ColorSwitcher";
@@ -108,6 +113,31 @@ export const Header = () => {
           >
             <Search className="w-5 h-5 md:w-6 md:h-6" />
           </Link>
+
+          <Popover>
+            <PopoverTrigger asChild>
+              <button className="relative p-2 md:p-3 rounded-full hover:bg-surface-card transition-all focus:outline-none focus:ring-2 focus:ring-accent">
+                <Bell className="w-5 h-5 md:w-6 md:h-6" />
+                <span className="absolute top-2.5 right-2.5 w-2.5 h-2.5 bg-accent border-2 border-surface-primary rounded-full" />
+              </button>
+            </PopoverTrigger>
+            <PopoverContent className="w-72 md:w-80 bg-surface-card border-border p-4 shadow-luxe animate-in fade-in slide-in-from-top-2">
+              <h4 className="text-sm font-bold uppercase tracking-widest text-accent mb-4">{t("profile_notifications")}</h4>
+              <div className="flex flex-col gap-3">
+                <div className="p-3 rounded-xl bg-surface-primary border border-border/40 hover:border-accent/40 transition-colors cursor-pointer group">
+                  <p className="text-xs font-bold group-hover:text-accent transition-colors">Avatar: The Way of Water</p>
+                  <p className="text-[10px] text-muted-foreground">Maintenant disponible en 4K Ultra HD.</p>
+                  <p className="text-[9px] text-accent/60 mt-1 uppercase font-bold">2h ago</p>
+                </div>
+                <div className="p-3 rounded-xl bg-surface-primary border border-border/40 hover:border-accent/40 transition-colors cursor-pointer group">
+                  <p className="text-xs font-bold group-hover:text-accent transition-colors">Remote Control Active</p>
+                  <p className="text-[10px] text-muted-foreground">Contrôlez votre TV depuis votre smartphone.</p>
+                  <p className="text-[9px] text-accent/60 mt-1 uppercase font-bold">New</p>
+                </div>
+              </div>
+            </PopoverContent>
+          </Popover>
+
           <div className="hidden lg:block">
             <ColorSwitcher compact />
           </div>

@@ -18,48 +18,62 @@ import Profile from "./pages/Profile";
 import Admin from "./pages/Admin";
 import MyList from "./pages/MyList";
 import Landing from "./pages/Landing";
+import Remote from "./pages/Remote";
 import NotFound from "./pages/NotFound.tsx";
 
+import { AmbientProvider } from "@/context/AmbientContext";
 import { useTVNavigation } from "@/hooks/useTVNavigation";
 
 const queryClient = new QueryClient();
 
 const TVNavigationActivator = () => {
+  const [tvSessionId] = useState(() => Math.random().toString(36).substring(7));
   useTVNavigation();
+  useRemoteControl(tvSessionId);
+  
+  useEffect(() => {
+    console.log("TV Session ID:", tvSessionId);
+    // Store in window for accessibility by other components
+    (window as any).tvSessionId = tvSessionId;
+  }, [tvSessionId]);
+
   return null;
 };
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-      <ThemeProvider>
+    <ThemeProvider>
+      <AmbientProvider>
         <SettingsProvider>
           <LanguageProvider>
-          <AuthProvider>
-            <TooltipProvider>
-              <Toaster />
-              <Sonner />
-              <BrowserRouter>
-                <TVNavigationActivator />
-                <Routes>
-                  <Route path="/" element={<Home />} />
-                  <Route path="/movies" element={<Catalog mode="movies" />} />
-                  <Route path="/series" element={<Catalog mode="series" />} />
-                  <Route path="/movie/:id" element={<Movie />} />
-                  <Route path="/series/:id" element={<Series />} />
-                  <Route path="/channels" element={<Channels />} />
-                  <Route path="/search" element={<Search />} />
-                  <Route path="/auth" element={<Auth />} />
-                  <Route path="/profile" element={<Profile />} />
-                  <Route path="/my-list" element={<MyList />} />
-                  <Route path="/admin" element={<Admin />} />
-                  <Route path="/welcome" element={<Landing />} />
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
-              </BrowserRouter>
-            </TooltipProvider>
-          </AuthProvider>
-        </LanguageProvider>
-      </SettingsProvider>
+            <AuthProvider>
+              <TooltipProvider>
+                <Toaster />
+                <Sonner />
+                <BrowserRouter>
+                  <TVNavigationActivator />
+                  <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/movies" element={<Catalog mode="movies" />} />
+                    <Route path="/series" element={<Catalog mode="series" />} />
+                    <Route path="/movie/:id" element={<Movie />} />
+                    <Route path="/series/:id" element={<Series />} />
+                    <Route path="/channels" element={<Channels />} />
+                    <Route path="/search" element={<Search />} />
+                    <Route path="/auth" element={<Auth />} />
+                    <Route path="/profile" element={<Profile />} />
+                    <Route path="/my-list" element={<MyList />} />
+                    <Route path="/admin" element={<Admin />} />
+                    <Route path="/welcome" element={<Landing />} />
+                    <Route path="/remote" element={<Remote />} />
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
+                </BrowserRouter>
+              </TooltipProvider>
+            </AuthProvider>
+          </LanguageProvider>
+        </SettingsProvider>
+      </AmbientProvider>
     </ThemeProvider>
   </QueryClientProvider>
 );

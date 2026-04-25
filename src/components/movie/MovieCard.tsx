@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { Star } from "lucide-react";
 import { IMG } from "@/services/tmdb";
 import { useState } from "react";
+import { useAmbient } from "@/context/AmbientContext";
 
 interface Props {
   id: number;
@@ -18,11 +19,19 @@ interface Props {
 
 export const MovieCard = ({ id, title, posterPath, year, rating, type = "movie", className = "" }: Props) => {
   const [loaded, setLoaded] = useState(false);
+  const { setAmbientColor } = useAmbient();
   const poster = IMG.poster(posterPath);
+
+  const handleActive = () => setAmbientColor(`hsl(var(--accent) / 0.4)`);
+  const handleLeave = () => setAmbientColor("transparent");
 
   return (
     <Link
       to={`/${type === "tv" ? "series" : "movie"}/${id}`}
+      onMouseEnter={handleActive}
+      onMouseLeave={handleLeave}
+      onFocus={handleActive}
+      onBlur={handleLeave}
       className={`group relative block shrink-0 w-[150px] sm:w-[170px] md:w-[190px] transition-all duration-500 ease-luxe hover:-translate-y-2 focus:z-50 ${className}`}
     >
       <div className="relative aspect-[2/3] rounded-xl overflow-hidden bg-surface-card border border-border group-hover:border-accent-subtle group-hover:shadow-glow transition-all duration-500 ease-luxe">

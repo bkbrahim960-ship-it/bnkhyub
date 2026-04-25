@@ -244,8 +244,36 @@
 }
 @keyframes pulseGlow {
   0%, 100% { box-shadow: 0 0 0 0 hsl(var(--accent) / 0.5); }
-  50%      { box-shadow: 0 0 0 12px hsl(var(--accent) / 0); }
+  50% { box-shadow: 0 0 12px 2px hsl(var(--accent) / 0.3); }
 }
+  /* ─────── ATMOSPHERIC LIGHTING ─────── */
+  .dynamic-bg-container {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    background: hsl(var(--bg-primary));
+    transition: background 1s ease;
+  }
+
+  .ambient-glow {
+    position: absolute;
+    width: 150vmax;
+    height: 150vmax;
+    top: -25vmax;
+    left: -25vmax;
+    background: radial-gradient(circle at center, var(--ambient-color, transparent) 0%, transparent 70%);
+    opacity: 0.4;
+    filter: blur(120px);
+    transition: all 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    will-change: transform, background;
+    transform: translateZ(0);
+  }
+
+  .content-overlay {
+    position: relative;
+    z-index: 1;
+  }
 @keyframes float {
   0%, 100% { transform: translateY(0); }
   50%      { transform: translateY(-8px); }

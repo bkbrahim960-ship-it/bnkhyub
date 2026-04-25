@@ -14,7 +14,9 @@ import { useSettings } from "@/context/SettingsContext";
 import { Switch } from "@/components/ui/switch";
 import type { Lang } from "@/services/i18n";
 import { toast } from "sonner";
-import { Loader2, LogOut, Upload, User as UserIcon, Bell } from "lucide-react";
+import { Loader2, LogOut, Upload, User as UserIcon, Bell, Tablet } from "lucide-react";
+import { QRCodeSVG } from "qrcode.react";
+import { WatchAnalytics } from "@/components/profile/WatchAnalytics";
 
 const ProfilePage = () => {
   const navigate = useNavigate();
@@ -291,6 +293,16 @@ const ProfilePage = () => {
             </div>
           </div>
 
+          {/* Analytics (Solo si logueado) */}
+          {user && (
+            <div className="mb-8">
+              <p className="text-xs uppercase tracking-widest text-muted-foreground mb-4">
+                {lang === "ar" ? "إحصائيات المشاهدة" : "Your Activity"}
+              </p>
+              <WatchAnalytics userId={user.id} />
+            </div>
+          )}
+
           {/* Pseudo */}
           <label className="block mb-5">
             <span className="text-xs uppercase tracking-widest text-muted-foreground">
@@ -395,6 +407,30 @@ const ProfilePage = () => {
               className="data-[state=checked]:bg-accent"
             />
           </div>
+          {/* Remote Control Pairing */}
+          <div className="mb-8 p-6 rounded-2xl bg-surface-primary border border-border flex flex-col md:flex-row items-center gap-6 animate-fade-in">
+            <div className="bg-white p-3 rounded-xl shadow-glow">
+              <QRCodeSVG 
+                value={`${window.location.origin}/remote?session=${(window as any).tvSessionId || 'default'}`} 
+                size={120}
+              />
+            </div>
+            <div className="flex-1 text-center md:text-left">
+              <h3 className="text-lg font-bold flex items-center justify-center md:justify-start gap-2 mb-2">
+                <Tablet className="w-5 h-5 text-accent" />
+                {lang === "ar" ? "تحويل الهاتف إلى ريموت" : "Phone as Remote"}
+              </h3>
+              <p className="text-xs text-muted-foreground mb-4">
+                {lang === "ar" 
+                  ? "امسح الكود بهاتفك للتحكم في التلفاز والكتابة بسهولة." 
+                  : "Scan this code with your phone to control the TV and type easily."}
+              </p>
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-accent/10 border border-accent/20 text-[10px] font-bold text-accent">
+                SESSION ID: {(window as any).tvSessionId || '...'}
+              </div>
+            </div>
+          </div>
+
           {/* Download App */}
           <div className="mb-8 p-6 rounded-2xl bg-gradient-to-br from-accent/10 to-accent/5 border border-accent/20 flex flex-col items-center text-center">
             <div className="w-16 h-16 rounded-full bg-accent/20 flex items-center justify-center mb-4 shadow-glow">

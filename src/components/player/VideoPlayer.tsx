@@ -8,8 +8,11 @@ import { useEffect, useRef, useState } from "react";
 import { getMovieSources, getTVSources, SOURCE_LABELS } from "@/services/player";
 import { AdsNoticeModal, hasSeenAdsNotice } from "./AdsNoticeModal";
 import { useLanguage } from "@/context/LanguageContext";
-import { Loader2, AlertCircle, RotateCw } from "lucide-react";
+import { Loader2, AlertCircle, RotateCw, Users, Share2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { useWatchParty } from "@/hooks/useWatchParty";
+import { useSearchParams } from "react-router-dom";
+import { toast } from "sonner";
 
 interface Props {
   imdb_id: string;
@@ -41,6 +44,9 @@ export const VideoPlayer = ({
   customUrl,
 }: Props) => {
   const { t } = useLanguage();
+  const [searchParams] = useSearchParams();
+  const partyId = searchParams.get("party");
+  const { participants } = useWatchParty(partyId || undefined);
   const [sourceIndex, setSourceIndex] = useState(initialSourceIndex);
   const [loading, setLoading] = useState(true);
   const [slow, setSlow] = useState<boolean[]>(Array(50).fill(false));
@@ -228,6 +234,34 @@ export const VideoPlayer = ({
             );
           })}
         </div>
+      </div>
+
+      {/* Watch Party & Info */}
+      <div className="mt-6 p-4 rounded-xl bg-surface-card border border-border flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
+            <Users className="w-5 h-5 text-accent" />
+            <div>
+              <p className="text-xs font-bold uppercase tracking-widest">{partyId ? "Party Active" : "Watch Party"}</p>
+              <p className="text-[10px] text-muted-foreground">{partyId ? `${participants} watching together` : "Watch with friends"}</p>
+            </div>
+          </div>
+        </div>
+        
+        <button
+          onClick={() => {
+            const id = partyId || Math.random().toString(36).substring(7);
+            const url = new URL(window.location.href);
+            url.searchParams.set("party", id);
+            navigator.clipboard.writeText(url.toString());
+            toast.success("Watch Party Link copied!");
+            if (!partyId) window.location.search = url.search;
+          }}
+          className="flex items-center gap-2 bg-accent/10 hover:bg-accent/20 text-accent text-xs font-bold px-4 py-2 rounded-full transition-all"
+        >
+          <Share2 className="w-3.5 h-3.5" />
+          {partyId ? "Invite Friends" : "Create Party"}
+        </button>
       </div>
     </div>
   );
