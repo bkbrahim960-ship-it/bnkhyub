@@ -13,6 +13,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useWatchParty } from "@/hooks/useWatchParty";
 import { useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
+import Hls from "hls.js";
 
 interface Props {
   imdb_id: string;
@@ -54,6 +55,8 @@ export const VideoPlayer = ({
   const [playerActive, setPlayerActive] = useState(hasSeenAdsNotice());
   const timeoutRef = useRef<number | null>(null);
   const startedRef = useRef(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const hlsRef = useRef<Hls | null>(null);
 
   const baseSources =
     type === "movie"
@@ -110,6 +113,36 @@ export const VideoPlayer = ({
       if (timeoutRef.current) window.clearTimeout(timeoutRef.current);
     };
   }, [sourceIndex, playerActive, imdb_id, tmdb_id, season, episode]);
+
+  useEffect(() => {
+    const currentSource = sources[sourceIndex];
+    if (playerActive && currentSource?.includes(".m3u8") && videoRef.current) {
+      const video = videoRef.current;
+      if (Hls.isSupported()) {
+        if (hlsRef.current) hlsRef.current.destroy();
+        const hls = new Hls();
+        hls.loadSource(currentSource);
+        hls.attachMedia(video);
+        hlsRef.current = hls;
+        hls.on(Hls.Events.MANIFEST_PARSED, () => {
+          video.play().catch(() => {});
+          setLoading(false);
+        });
+      } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
+        video.src = currentSource;
+        video.addEventListener("loadedmetadata", () => {
+          video.play().catch(() => {});
+          setLoading(false);
+        });
+      }
+    }
+    return () => {
+      if (hlsRef.current) {
+        hlsRef.current.destroy();
+        hlsRef.current = null;
+      }
+    };
+  }, [sourceIndex, playerActive, sources]);
 
   useEffect(() => {
     if (playerActive && !startedRef.current) {
@@ -191,16 +224,26 @@ export const VideoPlayer = ({
         )}
 
         {playerActive && (
-          <iframe
-            key={sourceIndex}
-            src={sources[sourceIndex]}
-            title="BNKhub player"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
-            allowFullScreen
-            referrerPolicy="no-referrer"
-            onLoad={handleLoad}
-            className="absolute inset-0 w-full h-full"
-          />
+          sources[sourceIndex]?.includes(".m3u8") ? (
+            <video
+              ref={videoRef}
+              className="absolute inset-0 w-full h-full object-contain bg-black"
+              controls
+              autoPlay
+              playsInline
+            />
+          ) : (
+            <iframe
+              key={sourceIndex}
+              src={sources[sourceIndex]}
+              title="BNKhub player"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
+              allowFullScreen
+              referrerPolicy="no-referrer"
+              onLoad={handleLoad}
+              className="absolute inset-0 w-full h-full"
+            />
+          )
         )}
 
         {playerActive && loading && (

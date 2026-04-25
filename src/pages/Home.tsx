@@ -22,6 +22,54 @@ import {
   TMDBSeries,
 } from "@/services/tmdb";
 
+interface CustomHLS {
+  id: string;
+  title: string;
+  url: string;
+  poster: string;
+  category: string;
+  type?: "movie" | "tv" | "live";
+}
+
+const customHLSData = [
+  {
+    id: "hls-becoming-you",
+    title: "Becoming You",
+    url: "https://devstreaming-cdn.apple.com/videos/streaming/examples/adv_dv_atmos/main.m3u8",
+    poster: "https://m.media-amazon.com/images/M/MV5BMTE0MGM4ODctMzRiZS00ZmM5LTg3YTMtYzg5YzY3YjM2MDllXkEyXkFqcGdeQXVyMTI1NDEyNTM5._V1_.jpg",
+    category: "Premium 4K",
+  },
+  {
+    id: "hls-skate",
+    title: "Skate Phantom Flex",
+    url: "https://sample.vodobox.net/skate_phantom_flex_4k/skate_phantom_flex_4k.m3u8",
+    poster: "https://i.ytimg.com/vi/6zFv8IOn0io/maxresdefault.jpg",
+    category: "Premium 4K",
+  },
+  {
+    id: "hls-bbb",
+    title: "Big Buck Bunny",
+    url: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+    poster: "https://peach.blender.org/wp-content/uploads/bbb-splash.png",
+    category: "Animation",
+  },
+  {
+    id: "hls-sky-news",
+    title: "Sky News",
+    url: "https://skynewsau-live.akamaized.net/hls/live/2002689/skynewsau-extra1/master.m3u8",
+    poster: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Sky_News_2015_logo.svg/1200px-Sky_News_2015_logo.svg.png",
+    category: "Live TV",
+    type: "live"
+  }
+];
+
+const portraitHLSData = [
+  { id: "p1", url: "https://flipfit-cdn.akamaized.net/flip_hls/661f570aab9d840019942b80-473e0b/video_h1.m3u8", title: "Portrait 1" },
+  { id: "p2", url: "https://flipfit-cdn.akamaized.net/flip_hls/662aae7a42cd740019b91dec-3e114f/video_h1.m3u8", title: "Portrait 2" },
+  { id: "p3", url: "https://flipfit-cdn.akamaized.net/flip_hls/663e5a1542cd740019b97dfa-ccf0e6/video_h1.m3u8", title: "Portrait 3" },
+  { id: "p4", url: "https://flipfit-cdn.akamaized.net/flip_hls/663d1244f22a010019f3ec12-f3c958/video_h1.m3u8", title: "Portrait 4" },
+];
+
 const Home = () => {
   const navigate = useNavigate();
   const { lang, t } = useLanguage();
@@ -86,11 +134,38 @@ const Home = () => {
       <div className="relative -mt-20 z-10">
         <BrandRow />
         <ContinueWatchingRow />
+        
+        {/* Custom Premium HLS Row */}
+        <MovieRow 
+          title={lang === "ar" ? "محتوى خارق الدقة (4K)" : "Ultra HD Premium Content"} 
+          items={customHLSData.map(d => ({
+            id: d.id as any,
+            title: d.title,
+            poster_path: d.poster,
+            vote_average: 10,
+            release_date: "2024",
+            video_url: d.url // Custom prop
+          }))} 
+        />
+
         <MovieRow title={t("section_latest")} items={nowPlaying} loading={loading} />
         <MovieRow title={t("section_trending")} items={trending} loading={loading} />
         <MovieRow title={t("section_popular")} items={popular} loading={loading} />
         <MovieRow title={t("section_popular_tv")} items={popularTV} type="tv" loading={loading} />
         <MovieRow title={t("section_top_rated")} items={topRated} loading={loading} />
+
+        {/* Portrait Shorts Row */}
+        <MovieRow 
+          title={lang === "ar" ? "فيديوهات قصيرة (طولية)" : "Portrait Shorts"} 
+          items={portraitHLSData.map(d => ({
+            id: d.id as any,
+            title: d.title,
+            poster_path: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?q=80&w=1000&auto=format&fit=crop",
+            vote_average: 9,
+            release_date: "2024",
+            video_url: d.url
+          }))} 
+        />
       </div>
     </Layout>
   );

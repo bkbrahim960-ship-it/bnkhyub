@@ -8,16 +8,17 @@ import { useState, useEffect } from "react";
 import { useAmbient } from "@/context/AmbientContext";
 
 interface Props {
-  id: number;
+  id: string | number;
   title: string;
   posterPath: string | null;
   year?: string;
   rating?: number;
   type?: "movie" | "tv";
   className?: string;
+  customUrl?: string;
 }
 
-export const MovieCard = ({ id, title, posterPath, year, rating, type = "movie", className = "" }: Props) => {
+export const MovieCard = ({ id, title, posterPath, year, rating, type = "movie", className = "", customUrl }: Props) => {
   const [loaded, setLoaded] = useState(false);
   const { setAmbientColor } = useAmbient();
   const poster = IMG.poster(posterPath);
@@ -33,9 +34,12 @@ export const MovieCard = ({ id, title, posterPath, year, rating, type = "movie",
     } catch (e) {}
   };
 
+  const playPath = `/${type === "tv" ? "series" : "movie"}/${id}`;
+  const finalPath = customUrl ? `${playPath}?video_url=${encodeURIComponent(customUrl)}` : playPath;
+
   return (
     <Link
-      to={`/${type === "tv" ? "series" : "movie"}/${id}`}
+      to={finalPath}
       onMouseEnter={handleActive}
       onMouseLeave={handleLeave}
       onFocus={handleActive}

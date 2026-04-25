@@ -76,6 +76,7 @@ export const MovieRow = ({ title, items, type = "movie", loading }: Props) => {
                   year={(m.release_date ?? m.first_air_date ?? "").slice(0, 4)}
                   rating={m.vote_average}
                   type={type}
+                  customUrl={m.video_url}
                 />
               </div>
             ))}

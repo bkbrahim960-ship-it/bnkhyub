@@ -27,21 +27,51 @@ const Channels = () => {
   const fetchChannels = async () => {
     setLoading(true);
     try {
-      const { data, error } = await supabase
+      // 1. Fetch from Supabase
+      const { data: dbData, error } = await supabase
         .from("live_channels")
         .select("*")
         .order("name", { ascending: true });
       
-      if (error) {
-        if (error.code === "42P01") {
-          // Table doesn't exist yet, we'll show mock data or a message
-          setChannels([]);
-        } else {
-          throw error;
-        }
-      } else {
-        setChannels(data as Channel[]);
+      let mergedChannels: Channel[] = [];
+      if (!error && dbData) {
+        mergedChannels = dbData as Channel[];
       }
+
+      // 2. Fetch from External M3U (iptv-org) - Just a sample to avoid overload
+      try {
+        const response = await fetch("https://iptv-org.github.io/iptv/index.m3u");
+        const text = await response.text();
+        const lines = text.split("\n");
+        const externalChannels: Channel[] = [];
+        
+        let currentChannel: Partial<Channel> = {};
+        // We only take first 200 channels for performance
+        for (let i = 0; i < lines.length && externalChannels.length < 200; i++) {
+          const line = lines[i].trim();
+          if (line.startsWith("#EXTINF:")) {
+            const nameMatch = line.match(/,(.*)$/);
+            const logoMatch = line.match(/tvg-logo="([^"]*)"/);
+            const groupMatch = line.match(/group-title="([^"]*)"/);
+            currentChannel = {
+              id: `ext-${externalChannels.length}`,
+              name: nameMatch ? nameMatch[1].trim() : "Unknown",
+              logo_url: logoMatch ? logoMatch[1] : null,
+              category: groupMatch ? groupMatch[1] : "Global TV"
+            };
+          } else if (line.startsWith("http")) {
+            if (currentChannel.name) {
+              externalChannels.push({ ...currentChannel, url: line } as Channel);
+              currentChannel = {};
+            }
+          }
+        }
+        mergedChannels = [...mergedChannels, ...externalChannels];
+      } catch (err) {
+        console.warn("Failed to fetch external M3U", err);
+      }
+
+      setChannels(mergedChannels);
     } catch (err: any) {
       toast.error("Erreur lors du chargement des chaînes: " + err.message);
     } finally {

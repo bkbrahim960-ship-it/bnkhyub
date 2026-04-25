@@ -47,6 +47,25 @@ const Movie = () => {
     setPlaying(false);
     
     const custom = KABYLE_CONTENT.find(c => c.id === id);
+    const videoUrl = params.get("video_url");
+
+    if (videoUrl) {
+      setMovie({
+        id: id as any,
+        title: movie?.title || "HLS Stream",
+        overview: "Brahim Direct HLS Stream Content.",
+        poster_path: movie?.poster_path || null,
+        backdrop_path: movie?.backdrop_path || null,
+        vote_average: 10,
+        release_date: "2024",
+        genres: [{ id: 1, name: "Premium" }],
+        video_url: videoUrl
+      } as any);
+      setLoading(false);
+      if (resumeRequested) setPlaying(true);
+      return;
+    }
+
     if (custom) {
       setMovie(custom as any);
       setLoading(false);
