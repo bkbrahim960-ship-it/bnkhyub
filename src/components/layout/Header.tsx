@@ -13,6 +13,7 @@ import { useLanguage } from "@/context/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
 import { ColorSwitcher } from "@/components/ui/ColorSwitcher";
 import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
+import { InstallButton } from "@/components/pwa/InstallButton";
 
 export const Header = () => {
   const { t } = useLanguage();
@@ -123,6 +124,9 @@ export const Header = () => {
           </div>
           <div className="hidden sm:block">
             {/* Moved to Bottom Bar */}
+          </div>
+          <div className="hidden md:block">
+            <InstallButton />
           </div>
 
           <button

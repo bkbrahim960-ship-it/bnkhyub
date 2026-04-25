@@ -28,10 +28,12 @@ const Home = () => {
   const { kidsMode } = useSettings();
   const tl = tmdbLang(lang);
 
-  // Skip landing page redirect to go direct
   useEffect(() => {
-    localStorage.setItem("hasSeenLanding", "true");
-  }, []);
+    const hasSeen = localStorage.getItem("hasSeenLanding");
+    if (!hasSeen) {
+      navigate("/welcome");
+    }
+  }, [navigate]);
 
   const [hero, setHero] = useState<TMDBMovie[]>([]);
   const [popular, setPopular] = useState<TMDBMovie[]>([]);
