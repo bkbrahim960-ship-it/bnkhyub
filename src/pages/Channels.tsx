@@ -66,6 +66,11 @@ const Channels = () => {
             }
           }
         }
+        mergedChannels = [...mergedChannels, ...externalChannels];
+      } catch (err) {
+        console.warn("Failed to fetch external M3U", err);
+      }
+
       // 3. User's Custom HLS Streams
       const customStaticChannels: Channel[] = [
         { id: "c-1", name: "Becoming You (4K)", url: "https://devstreaming-cdn.apple.com/videos/streaming/examples/adv_dv_atmos/main.m3u8", category: "Premium 4K", logo_url: "https://m.media-amazon.com/images/M/MV5BMTE0MGM4ODctMzRiZS00ZmM5LTg3YTMtYzg5YzY3YjM2MDllXkEyXkFqcGdeQXVyMTI1NDEyNTM5._V1_.jpg" },
