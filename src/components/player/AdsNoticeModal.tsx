@@ -15,6 +15,17 @@ export const hasSeenAdsNotice = () => {
 export const AdsNoticeModal = ({ open, onAccept, onClose }: Props) => {
   const { t } = useLanguage();
 
+  useEffect(() => {
+    if (!open) return;
+    const handleRemote = (e: KeyboardEvent) => {
+      if (e.key === "Enter" || e.key === "OK") {
+        handleAccept();
+      }
+    };
+    window.addEventListener("keydown", handleRemote);
+    return () => window.removeEventListener("keydown", handleRemote);
+  }, [open]);
+
   if (!open) return null;
 
   const handleAccept = () => {

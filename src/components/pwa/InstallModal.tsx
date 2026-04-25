@@ -18,7 +18,18 @@ export const InstallModal = () => {
     if (installed) return;
     if (localStorage.getItem(KEY)) return;
     const timer = setTimeout(() => setOpen(true), 1400);
-    return () => clearTimeout(timer);
+    
+    const handleRemote = (e: KeyboardEvent) => {
+      if (e.key === "Enter" || e.key === "OK") {
+        close();
+      }
+    };
+    window.addEventListener("keydown", handleRemote);
+    
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener("keydown", handleRemote);
+    };
   }, [installed]);
 
   const close = () => {
