@@ -40,7 +40,7 @@ export const MovieCard = ({ id, title, posterPath, year, rating, type = "movie",
       onMouseLeave={handleLeave}
       onFocus={handleActive}
       onBlur={handleLeave}
-      className={`group relative block shrink-0 w-[150px] sm:w-[170px] md:w-[190px] transition-all duration-500 ease-luxe hover:-translate-y-2 focus:z-[100] ${className}`}
+      className={`group relative block shrink-0 w-[150px] sm:w-[170px] md:w-[190px] transition-all duration-500 var(--transition-luxe) hover:-translate-y-2 focus:z-[100] ${className}`}
     >
       <div className="relative aspect-[2/3] rounded-xl overflow-hidden bg-surface-card border border-border group-hover:border-accent-subtle group-hover:shadow-glow transition-all duration-500 ease-luxe">
         {!loaded && <div className="absolute inset-0 shimmer-gold" />}
