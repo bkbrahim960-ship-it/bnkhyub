@@ -17,6 +17,7 @@ import { KABYLE_CONTENT } from "@/services/customContent";
 import { SOURCE_LABELS } from "@/services/player";
 import { Play, Star, Clock, Calendar, Globe2, ArrowLeft, Youtube, Info } from "lucide-react";
 import { useAmbient } from "@/context/AmbientContext";
+import { RemotePairingButton } from "@/components/movie/RemotePairingButton";
 
 const sourceIdToIndex = (srcId?: string | null): number => {
   if (!srcId) return 0;
@@ -176,6 +177,7 @@ const Movie = () => {
                 </button>
               )}
               <FavoriteButton tmdbId={movie.id} mediaType="movie" title={movie.title} posterPath={movie.poster_path} />
+              <RemotePairingButton />
               <ShareButtons title={movie.title} />
             </div>
           </div>

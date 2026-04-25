@@ -17,6 +17,7 @@ import { KABYLE_CONTENT } from "@/services/customContent";
 import { SOURCE_LABELS } from "@/services/player";
 import { Play, Star, Calendar, ArrowLeft, Youtube, ChevronRight, Clock, Info } from "lucide-react";
 import { useAmbient } from "@/context/AmbientContext";
+import { RemotePairingButton } from "@/components/movie/RemotePairingButton";
 
 const sourceIdToIndex = (srcId?: string | null): number => {
   if (!srcId) return 0;
@@ -229,6 +230,8 @@ const Series = () => {
                 </button>
               )}
               <FavoriteButton tmdbId={series.id} mediaType="tv" title={series.name} posterPath={series.poster_path} />
+              <RemotePairingButton />
+              <ShareButtons title={series.name} />
             </div>
           </div>
         </div>

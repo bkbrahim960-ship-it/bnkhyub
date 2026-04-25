@@ -43,7 +43,7 @@ export const Header = () => {
   return (
     <header
       className={`fixed top-0 inset-x-0 z-[100] transition-all duration-500 ease-luxe ${scrolled
-          ? "bg-surface-primary/80 backdrop-blur-xl border-b border-border/60"
+          ? "bg-black/20 backdrop-blur-3xl border-b border-white/5"
           : "bg-gradient-to-b from-black/80 to-transparent"
         }`}
     >

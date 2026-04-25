@@ -22,7 +22,7 @@ export const BottomNav = () => {
     <div className="fixed bottom-4 inset-x-4 md:inset-x-8 lg:inset-x-12 z-50 pointer-events-none">
       <div className="max-w-7xl mx-auto flex items-center justify-between pointer-events-auto">
         {/* Navigation - Main (Left on PC, Center on Mobile) */}
-        <nav className="flex items-center gap-1 p-2 rounded-2xl bg-surface-primary/80 backdrop-blur-xl border border-border/50 shadow-luxe overflow-hidden">
+        <nav className="flex items-center gap-1 p-2 rounded-2xl bg-black/20 backdrop-blur-3xl border border-white/10 shadow-luxe overflow-hidden">
           {navItems.map((item) => {
             const Icon = item.icon;
             return (
@@ -46,7 +46,7 @@ export const BottomNav = () => {
         </nav>
 
         {/* Settings & Profile - Right (Hidden on mobile if needed, but keeping for user request) */}
-        <div className="hidden md:flex items-center gap-3 p-2 rounded-2xl bg-surface-primary/80 backdrop-blur-xl border border-border/50 shadow-luxe">
+        <div className="hidden md:flex items-center gap-3 p-2 rounded-2xl bg-black/20 backdrop-blur-3xl border border-white/10 shadow-luxe">
           <div className="px-2 border-r border-border/50">
             <ColorSwitcher compact />
           </div>
