@@ -12,18 +12,27 @@ export const AmbientProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   const updateColor = useCallback((color: string) => {
     setAmbientColor(color);
-    document.documentElement.style.setProperty("--ambient-color", color);
+    if (typeof document !== "undefined") {
+      document.documentElement.style.setProperty("--ambient-color", color);
+    }
   }, []);
 
   return (
     <AmbientContext.Provider value={{ ambientColor, setAmbientColor: updateColor }}>
-      <div className="dynamic-bg-container">
-        <div className="ambient-glow" />
-      </div>
-      <div className="content-overlay">
-        {children}
-      </div>
+      {children}
     </AmbientContext.Provider>
+  );
+};
+
+export const AmbientBackground: React.FC = () => {
+  const { ambientColor } = useAmbient();
+  return (
+    <div className="dynamic-bg-container" aria-hidden="true">
+      <div 
+        className="ambient-glow" 
+        style={{ background: `radial-gradient(circle at center, ${ambientColor} 0%, transparent 70%)` }} 
+      />
+    </div>
   );
 };
 
