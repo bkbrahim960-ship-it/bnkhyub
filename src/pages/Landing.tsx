@@ -74,13 +74,13 @@ export const Landing = () => {
       {/* Content */}
       <main className="relative z-10 flex-1 flex flex-col container max-w-6xl mx-auto px-6 py-12">
         {/* Header Logo */}
-        <div className={`flex items-center gap-3 mb-16 transition-all duration-1000 transform ${isVisible ? "translate-y-0 opacity-100" : "-translate-y-10 opacity-0"}`}>
-          <div className="w-14 h-14 rounded-2xl bg-white/5 backdrop-blur-xl border border-white/10 p-2 shadow-glow">
-            <img src="/icon.png" alt="Logo" className="w-full h-full object-contain" />
+        <div className={`flex items-center gap-4 mb-16 transition-all duration-1000 transform ${isVisible ? "translate-y-0 opacity-100" : "-translate-y-10 opacity-0"}`}>
+          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-accent/20 to-accent/5 backdrop-blur-2xl border border-accent/30 flex items-center justify-center shadow-glow">
+            <Zap className="w-10 h-10 text-accent fill-accent/20" />
           </div>
           <div>
-            <h1 className="text-3xl font-bold tracking-tighter">BNK<span className="text-accent">hub</span></h1>
-            <p className="text-[10px] uppercase tracking-[0.3em] opacity-50">{t("tagline")}</p>
+            <h1 className="text-4xl font-bold tracking-tighter">BNK<span className="text-accent">hub</span></h1>
+            <p className="text-[11px] uppercase tracking-[0.4em] text-accent/60 font-semibold">{t("tagline")}</p>
           </div>
         </div>
 
@@ -101,10 +101,11 @@ export const Landing = () => {
             </p>
             <button 
               onClick={handleStart}
-              className="group relative inline-flex items-center gap-3 bg-white text-black font-bold px-10 py-5 rounded-full text-lg hover:scale-105 active:scale-95 transition-all shadow-xl hover:shadow-accent/40"
+              className="group relative inline-flex items-center gap-4 bg-accent text-accent-foreground font-bold px-12 py-5 rounded-full text-xl hover:scale-105 active:scale-95 transition-all shadow-accent/40 shadow-2xl overflow-hidden"
             >
+              <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity" />
               {lang === "ar" ? "ابدأ الاستكشاف الآن" : "Commencer l'exploration"}
-              <ChevronRight className={`w-6 h-6 group-hover:translate-x-2 transition-transform ${isRTL ? "rotate-180 group-hover:-translate-x-2" : ""}`} />
+              <ChevronRight className={`w-7 h-7 group-hover:translate-x-2 transition-transform ${isRTL ? "rotate-180 group-hover:-translate-x-2" : ""}`} />
             </button>
           </div>
 

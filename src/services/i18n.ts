@@ -15,6 +15,7 @@ const dict = {
     nav_profile: "Profil",
     nav_mylist: "Ma liste",
     nav_admin: "Administration",
+    brands_title: "Plateformes mondiales",
 
     hero_watch: "Regarder",
     hero_trailer: "Bande-annonce",
@@ -105,6 +106,7 @@ const dict = {
     nav_profile: "Profile",
     nav_mylist: "My List",
     nav_admin: "Admin Panel",
+    brands_title: "Global Platforms",
 
     hero_watch: "Watch",
     hero_info: "More info",
@@ -194,6 +196,7 @@ const dict = {
     nav_profile: "الملف",
     nav_mylist: "قائمتي",
     nav_admin: "لوحة الإدارة",
+    brands_title: "المنصات العالمية",
 
     hero_watch: "مشاهدة",
     hero_trailer: "الإعلان الرسمي",
@@ -283,6 +286,7 @@ const dict = {
     nav_profile: "Perfil",
     nav_mylist: "Mi lista",
     nav_admin: "Administración",
+    brands_title: "Plataformas Globales",
 
     hero_watch: "Ver",
     hero_info: "Más información",
