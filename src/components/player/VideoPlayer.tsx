@@ -6,11 +6,9 @@
  */
 import { useEffect, useRef, useState } from "react";
 import { getMovieSources, getTVSources, SOURCE_LABELS } from "@/services/player";
-import { AdsNoticeModal, hasSeenAdsNotice } from "./AdsNoticeModal";
 import { useLanguage } from "@/context/LanguageContext";
-import { Loader2, AlertCircle, RotateCw, Users, Share2, ShieldCheck } from "lucide-react";
+import { Loader2, AlertCircle, RotateCw } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { useWatchParty } from "@/hooks/useWatchParty";
 import { useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 
@@ -50,8 +48,7 @@ export const VideoPlayer = ({
   const [sourceIndex, setSourceIndex] = useState(initialSourceIndex);
   const [loading, setLoading] = useState(true);
   const [slow, setSlow] = useState<boolean[]>(Array(50).fill(false));
-  const [adsOpen, setAdsOpen] = useState(!hasSeenAdsNotice());
-  const [playerActive, setPlayerActive] = useState(hasSeenAdsNotice());
+  const [playerActive, setPlayerActive] = useState(true);
   const timeoutRef = useRef<number | null>(null);
   const startedRef = useRef(false);
 
@@ -162,15 +159,6 @@ export const VideoPlayer = ({
 
   return (
     <div className="w-full">
-      <AdsNoticeModal
-        open={adsOpen}
-        onAccept={() => {
-          setAdsOpen(false);
-          setPlayerActive(true);
-        }}
-        onClose={() => setAdsOpen(false)}
-      />
-
       {title && (
         <h2 className="font-display text-xl md:text-2xl text-accent mb-3 px-1">{title}</h2>
       )}
@@ -180,7 +168,6 @@ export const VideoPlayer = ({
           <div className="absolute inset-0 flex items-center justify-center bg-surface-elevated">
             <button
               onClick={() => {
-                setAdsOpen(false);
                 setPlayerActive(true);
               }}
               className="bg-gradient-accent text-accent-foreground font-semibold px-8 py-4 rounded-full shadow-accent animate-pulse-glow"
@@ -254,34 +241,6 @@ export const VideoPlayer = ({
             );
           })}
         </div>
-      </div>
-
-      {/* Watch Party & Info */}
-      <div className="mt-6 p-4 rounded-xl bg-surface-card border border-border flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2">
-            <Users className="w-5 h-5 text-accent" />
-            <div>
-              <p className="text-xs font-bold uppercase tracking-widest">{partyId ? "Party Active" : "Watch Party"}</p>
-              <p className="text-[10px] text-muted-foreground">{partyId ? `${participants} watching together` : "Watch with friends"}</p>
-            </div>
-          </div>
-        </div>
-        
-        <button
-          onClick={() => {
-            const id = partyId || Math.random().toString(36).substring(7);
-            const url = new URL(window.location.href);
-            url.searchParams.set("party", id);
-            navigator.clipboard.writeText(url.toString());
-            toast.success("Watch Party Link copied!");
-            if (!partyId) window.location.search = url.search;
-          }}
-          className="flex items-center gap-2 bg-accent/10 hover:bg-accent/20 text-accent text-xs font-bold px-4 py-2 rounded-full transition-all"
-        >
-          <Share2 className="w-3.5 h-3.5" />
-          {partyId ? "Invite Friends" : "Create Party"}
-        </button>
       </div>
     </div>
   );
