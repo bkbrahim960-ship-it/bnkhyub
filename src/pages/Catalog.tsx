@@ -37,7 +37,8 @@ const Catalog = ({ mode }: Props) => {
           const params = { 
             page: String(page), 
             with_watch_providers: providerId, 
-            watch_region: "US" 
+            watch_region: "DZ", // Changé en Algérie pour plus de pertinence
+            sort_by: "popularity.desc"
           };
           r = isMovies ? await discoverMovies(tl, params) : await discoverSeries(tl, params);
         } else {
