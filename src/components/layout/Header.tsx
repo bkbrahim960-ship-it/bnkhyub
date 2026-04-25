@@ -47,7 +47,7 @@ export const Header = () => {
           : "bg-gradient-to-b from-black/80 to-transparent"
         }`}
     >
-      <div className="container-fluid px-4 md:px-8 lg:px-12 flex items-center justify-between h-16 md:h-20 lg:h-24">
+      <div className="w-full px-4 md:px-10 lg:px-16 flex items-center justify-between h-16 md:h-20 lg:h-24">
         {/* Logo */}
         <div className="flex items-center group shrink-0 cursor-pointer" onClick={() => {
           const el = document.getElementById("main-logo-container");
