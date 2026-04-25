@@ -15,6 +15,8 @@ const dict = {
     nav_profile: "Profil",
     nav_mylist: "Ma liste",
     nav_admin: "Administration",
+    profile_download_app: "Télécharger l'application Android",
+    profile_download_desc: "Profitez de l'expérience BNKhub complète sur votre mobile ou tablette.",
     brands_title: "Plateformes mondiales",
 
     hero_watch: "Regarder",
@@ -106,6 +108,8 @@ const dict = {
     nav_profile: "Profile",
     nav_mylist: "My List",
     nav_admin: "Admin Panel",
+    profile_download_app: "Download Android App",
+    profile_download_desc: "Enjoy the full BNKhub experience on your mobile or tablet.",
     brands_title: "Global Platforms",
 
     hero_watch: "Watch",
@@ -196,6 +200,8 @@ const dict = {
     nav_profile: "الملف",
     nav_mylist: "قائمتي",
     nav_admin: "لوحة الإدارة",
+    profile_download_app: "تحميل تطبيق الأندرويد",
+    profile_download_desc: "استمتع بتجربة BNKhub الكاملة على هاتفك أو جهازك اللوحي.",
     brands_title: "المنصات العالمية",
 
     hero_watch: "مشاهدة",
