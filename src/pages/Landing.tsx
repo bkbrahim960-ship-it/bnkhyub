@@ -14,6 +14,7 @@ import {
   Download
 } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
+import { Capacitor } from "@capacitor/core";
 
 export const Landing = () => {
   const navigate = useNavigate();
@@ -117,14 +118,16 @@ export const Landing = () => {
                 <ChevronRight className={`w-7 h-7 group-hover:translate-x-2 transition-transform ${isRTL ? "rotate-180 group-hover:-translate-x-2" : ""}`} />
               </button>
 
-              <a
-                href="/bnkhub.apk"
-                download="BNKhub.apk"
-                className="inline-flex items-center justify-center gap-3 bg-white/10 hover:bg-white/20 backdrop-blur-md text-white font-semibold px-8 py-5 rounded-full text-lg border border-white/10 transition-all hover:scale-105"
-              >
-                <Download className="w-6 h-6 text-accent" />
-                {lang === "ar" ? "تحميل للأندرويد" : "Télécharger pour Android"}
-              </a>
+              {!Capacitor.isNativePlatform() && (
+                <a
+                  href="/bnkhub.apk"
+                  download="BNKhub.apk"
+                  className="inline-flex items-center justify-center gap-3 bg-white/10 hover:bg-white/20 backdrop-blur-md text-white font-semibold px-8 py-5 rounded-full text-lg border border-white/10 transition-all hover:scale-105"
+                >
+                  <Download className="w-6 h-6 text-accent" />
+                  {lang === "ar" ? "تحميل للأندرويد" : "Télécharger pour Android"}
+                </a>
+              )}
             </div>
           </div>
 

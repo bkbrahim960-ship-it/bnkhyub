@@ -17,6 +17,7 @@ import { toast } from "sonner";
 import { Loader2, LogOut, Upload, User as UserIcon, Bell, Tablet } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import { WatchAnalytics } from "@/components/profile/WatchAnalytics";
+import { Capacitor } from "@capacitor/core";
 
 const ProfilePage = () => {
   const navigate = useNavigate();
@@ -201,28 +202,30 @@ const ProfilePage = () => {
             </div>
 
             {/* Download App */}
-            <div className="mb-4 p-6 rounded-2xl bg-gradient-to-br from-accent/10 to-accent/5 border border-accent/20 flex flex-col items-center text-center">
-              <div className="w-16 h-16 rounded-full bg-accent/20 flex items-center justify-center mb-4 shadow-glow">
-                <svg className="w-8 h-8 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <rect x="5" y="2" width="14" height="20" rx="2" ry="2" />
-                  <line x1="12" y1="18" x2="12.01" y2="18" />
-                </svg>
+            {!Capacitor.isNativePlatform() && (
+              <div className="mb-4 p-6 rounded-2xl bg-gradient-to-br from-accent/10 to-accent/5 border border-accent/20 flex flex-col items-center text-center">
+                <div className="w-16 h-16 rounded-full bg-accent/20 flex items-center justify-center mb-4 shadow-glow">
+                  <svg className="w-8 h-8 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="5" y="2" width="14" height="20" rx="2" ry="2" />
+                    <line x1="12" y1="18" x2="12.01" y2="18" />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-bold mb-1">{t("profile_download_app")}</h3>
+                <p className="text-xs text-muted-foreground mb-5 max-w-sm">{t("profile_download_desc")}</p>
+                <a
+                  href="/bnkhub.apk"
+                  download
+                  className="inline-flex items-center gap-3 bg-accent text-accent-foreground font-bold px-8 py-3 rounded-full hover:scale-105 transition-transform"
+                >
+                  <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                    <polyline points="7 10 12 15 17 10" />
+                    <line x1="12" y1="15" x2="12" y2="3" />
+                  </svg>
+                  {lang === "ar" ? "تحميل الآن" : "Télécharger"}
+                </a>
               </div>
-              <h3 className="text-xl font-bold mb-1">{t("profile_download_app")}</h3>
-              <p className="text-xs text-muted-foreground mb-5 max-w-sm">{t("profile_download_desc")}</p>
-              <a
-                href="/bnkhub.apk"
-                download
-                className="inline-flex items-center gap-3 bg-accent text-accent-foreground font-bold px-8 py-3 rounded-full hover:scale-105 transition-transform"
-              >
-                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                  <polyline points="7 10 12 15 17 10" />
-                  <line x1="12" y1="15" x2="12" y2="3" />
-                </svg>
-                {lang === "ar" ? "تحميل الآن" : "Télécharger"}
-              </a>
-            </div>
+            )}
 
           </div>
         </div>
@@ -438,27 +441,29 @@ const ProfilePage = () => {
           </div>
 
           {/* Download App */}
-          <div className="mb-8 p-6 rounded-2xl bg-gradient-to-br from-accent/10 to-accent/5 border border-accent/20 flex flex-col items-center text-center">
-            <div className="w-16 h-16 rounded-full bg-accent/20 flex items-center justify-center mb-4 shadow-glow">
-              <svg className="w-8 h-8 text-accent" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M17.523 15.3414L20.355 20.2474C20.551 20.5884 20.435 21.0254 20.094 21.2214C19.753 21.4174 19.317 21.3014 19.121 20.9604L16.262 16.0004H7.738L4.879 20.9604C4.683 21.3014 4.247 21.4174 3.906 21.2214C3.565 21.0254 3.449 20.5884 3.645 20.2474L6.477 15.3414C3.896 13.9164 2.154 11.2334 2.012 8.11142L2 8.00042C2 7.44842 2.448 7.00042 3 7.00042C3.552 7.00042 4 7.44842 4 8.00042C4 11.3144 6.686 14.0004 10 14.0004H14C17.314 14.0004 20 11.3144 20 8.00042C20 7.44842 20.448 7.00042 21 7.00042C21.552 7.00042 22 7.44842 22 8.00042C22 11.2334 20.104 13.9164 17.523 15.3414ZM7 11.0004C6.448 11.0004 6 10.5524 6 10.0004C6 9.44842 6.448 9.00042 7 9.00042C7.552 9.00042 8 9.44842 8 10.0004C8 10.5524 7.552 11.0004 7 11.0004ZM17 11.0004C16.448 11.0004 16 10.5524 16 10.0004C16 9.44842 16.448 9.00042 17 9.00042C17.552 9.00042 18 9.44842 18 10.0004C18 10.5524 17.552 11.0004 17 11.0004ZM15.5 3.00042L16.5 1.50042C16.638 1.29342 16.579 1.01142 16.372 0.873425C16.165 0.735425 15.883 0.794425 15.745 1.00142L14.65 2.64342C13.805 2.22842 12.923 2.00042 12 2.00042C11.077 2.00042 10.195 2.22842 9.35 2.64342L8.255 1.00142C8.117 0.794425 7.835 0.735425 7.628 0.873425C7.421 1.01142 7.362 1.39342 7.5 1.50042L8.5 3.00042C6.182 4.41242 4.542 6.84542 4.108 9.71442L4.053 10.2224C4.12 11.0454 4.316 11.8344 4.628 12.5704L4.664 12.6534C5.008 13.4354 5.485 14.1504 6.074 14.7784L6.152 14.8594C6.885 15.6174 7.747 16.2304 8.694 16.6664L8.796 16.7114C9.803 17.1474 10.89 17.3884 12 17.3884C13.11 17.3884 14.197 17.1474 15.204 16.7114L15.306 16.6664C16.253 16.2304 17.115 15.6174 17.848 14.8594L17.926 14.8594C18.515 14.1504 18.992 13.4354 19.336 12.6534L19.372 12.5704C19.684 11.8344 19.88 11.0454 19.947 10.2224L19.892 9.71442C19.458 6.84542 17.818 4.41242 15.5 3.00042Z" />
-              </svg>
+          {!Capacitor.isNativePlatform() && (
+            <div className="mb-8 p-6 rounded-2xl bg-gradient-to-br from-accent/10 to-accent/5 border border-accent/20 flex flex-col items-center text-center">
+              <div className="w-16 h-16 rounded-full bg-accent/20 flex items-center justify-center mb-4 shadow-glow">
+                <svg className="w-8 h-8 text-accent" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M17.523 15.3414L20.355 20.2474C20.551 20.5884 20.435 21.0254 20.094 21.2214C19.753 21.4174 19.317 21.3014 19.121 20.9604L16.262 16.0004H7.738L4.879 20.9604C4.683 21.3014 4.247 21.4174 3.906 21.2214C3.565 21.0254 3.449 20.5884 3.645 20.2474L6.477 15.3414C3.896 13.9164 2.154 11.2334 2.012 8.11142L2 8.00042C2 7.44842 2.448 7.00042 3 7.00042C3.552 7.00042 4 7.44842 4 8.00042C4 11.3144 6.686 14.0004 10 14.0004H14C17.314 14.0004 20 11.3144 20 8.00042C20 7.44842 20.448 7.00042 21 7.00042C21.552 7.00042 22 7.44842 22 8.00042C22 11.2334 20.104 13.9164 17.523 15.3414ZM7 11.0004C6.448 11.0004 6 10.5524 6 10.0004C6 9.44842 6.448 9.00042 7 9.00042C7.552 9.00042 8 9.44842 8 10.0004C8 10.5524 7.552 11.0004 7 11.0004ZM17 11.0004C16.448 11.0004 16 10.5524 16 10.0004C16 9.44842 16.448 9.00042 17 9.00042C17.552 9.00042 18 9.44842 18 10.0004C18 10.5524 17.552 11.0004 17 11.0004ZM15.5 3.00042L16.5 1.50042C16.638 1.29342 16.579 1.01142 16.372 0.873425C16.165 0.735425 15.883 0.794425 15.745 1.00142L14.65 2.64342C13.805 2.22842 12.923 2.00042 12 2.00042C11.077 2.00042 10.195 2.22842 9.35 2.64342L8.255 1.00142C8.117 0.794425 7.835 0.735425 7.628 0.873425C7.421 1.01142 7.362 1.39342 7.5 1.50042L8.5 3.00042C6.182 4.41242 4.542 6.84542 4.108 9.71442L4.053 10.2224C4.12 11.0454 4.316 11.8344 4.628 12.5704L4.664 12.6534C5.008 13.4354 5.485 14.1504 6.074 14.7784L6.152 14.8594C6.885 15.6174 7.747 16.2304 8.694 16.6664L8.796 16.7114C9.803 17.1474 10.89 17.3884 12 17.3884C13.11 17.3884 14.197 17.1474 15.204 16.7114L15.306 16.6664C16.253 16.2304 17.115 15.6174 17.848 14.8594L17.926 14.8594C18.515 14.1504 18.992 13.4354 19.336 12.6534L19.372 12.5704C19.684 11.8344 19.88 11.0454 19.947 10.2224L19.892 9.71442C19.458 6.84542 17.818 4.41242 15.5 3.00042Z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold mb-1">{t("profile_download_app")}</h3>
+              <p className="text-xs text-muted-foreground mb-5 max-w-sm">{t("profile_download_desc")}</p>
+              <a
+                href="/bnkhub.apk"
+                download
+                className="inline-flex items-center gap-3 bg-accent text-accent-foreground font-bold px-8 py-3 rounded-full hover:scale-105 transition-transform shadow-glow-sm"
+              >
+                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v4" />
+                  <polyline points="7 10 12 15 17 10" />
+                  <line x1="12" y1="15" x2="12" y2="3" />
+                </svg>
+                {lang === "ar" ? "تحميل الآن" : "Télécharger"}
+              </a>
             </div>
-            <h3 className="text-xl font-bold mb-1">{t("profile_download_app")}</h3>
-            <p className="text-xs text-muted-foreground mb-5 max-w-sm">{t("profile_download_desc")}</p>
-            <a
-              href="/bnkhub.apk"
-              download
-              className="inline-flex items-center gap-3 bg-accent text-accent-foreground font-bold px-8 py-3 rounded-full hover:scale-105 transition-transform shadow-glow-sm"
-            >
-              <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v4" />
-                <polyline points="7 10 12 15 17 10" />
-                <line x1="12" y1="15" x2="12" y2="3" />
-              </svg>
-              {lang === "ar" ? "تحميل الآن" : "Télécharger"}
-            </a>
-          </div>
+          )}
 
           <button
             onClick={save}
