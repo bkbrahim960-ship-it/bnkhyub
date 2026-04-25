@@ -109,17 +109,24 @@ export const Landing = () => {
           </div>
 
           <div className={`relative transition-all duration-1000 delay-500 transform ${isVisible ? "scale-100 opacity-100" : "scale-90 opacity-0"}`}>
-            <div className="relative z-10 rounded-3xl overflow-hidden border border-white/10 shadow-2xl aspect-video bg-gray-900">
+            <div className="relative z-10 rounded-3xl overflow-hidden border border-white/10 shadow-2xl aspect-video bg-gray-900 group">
                <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent z-10" />
-               <img 
-                 src="https://images.unsplash.com/photo-1574267432553-4b4628081c31?q=80&w=2062&auto=format&fit=crop" 
-                 alt="Preview" 
-                 className="w-full h-full object-cover opacity-60 animate-float"
+               <video 
+                 src="https://cdn.pixabay.com/vimeo/328515712/clouds-23232.mp4?width=1280&hash=85049386d3b3c3b3b3b3b3b3b3b3b3b3b3b3b3b3" 
+                 autoPlay 
+                 loop 
+                 muted 
+                 playsInline 
+                 className="w-full h-full object-cover opacity-60 group-hover:opacity-80 transition-opacity duration-700"
                />
                <div className="absolute inset-0 flex items-center justify-center z-20">
                   <div className="w-20 h-20 rounded-full bg-accent/90 flex items-center justify-center animate-pulse-glow cursor-pointer hover:scale-110 transition-transform">
                     <Play className="w-10 h-10 text-white fill-current" />
                   </div>
+               </div>
+               {/* Label indicating it's a preview */}
+               <div className="absolute top-4 right-4 z-20 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-[10px] uppercase tracking-widest text-white/80">
+                 {lang === "ar" ? "عرض حي" : "Aperçu Live"}
                </div>
             </div>
             {/* Float Floating Elements */}
