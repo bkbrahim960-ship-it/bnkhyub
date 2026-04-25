@@ -1,9 +1,4 @@
-/**
- * BNKhub — Page détail Film.
- * Hero + VideoPlayer. Gère reprise depuis historique (?resume=1&src=Sx)
- * et synchronise l'historique Cloud à chaque lecture / changement de source.
- */
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
 import { useParams, Link, useSearchParams } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { VideoPlayer } from "@/components/player/VideoPlayer";
@@ -20,7 +15,8 @@ import { tmdbLang } from "@/services/i18n";
 import { upsertWatchEntry } from "@/services/watchHistory";
 import { KABYLE_CONTENT } from "@/services/customContent";
 import { SOURCE_LABELS } from "@/services/player";
-import { Play, Star, Clock, Calendar, Globe2, ArrowLeft, Youtube } from "lucide-react";
+import { Play, Star, Clock, Calendar, Globe2, ArrowLeft, Youtube, Info } from "lucide-react";
+import { useAmbient } from "@/context/AmbientContext";
 
 const sourceIdToIndex = (srcId?: string | null): number => {
   if (!srcId) return 0;
@@ -33,11 +29,13 @@ const Movie = () => {
   const [params] = useSearchParams();
   const { lang, t } = useLanguage();
   const { user } = useAuth();
+  const { setAmbientColor } = useAmbient();
   const [movie, setMovie] = useState<TMDBMovie | null>(null);
   const [loading, setLoading] = useState(true);
   const [playing, setPlaying] = useState(false);
   const [recommendations, setRecommendations] = useState<TMDBMovie[]>([]);
   const [showTrailer, setShowTrailer] = useState(false);
+  const playerRef = useRef<HTMLDivElement>(null);
 
   const resumeRequested = params.get("resume") === "1";
   const initialSourceIndex = useMemo(() => sourceIdToIndex(params.get("src")), [params]);
@@ -58,19 +56,19 @@ const Movie = () => {
     getMovieDetails(id, tmdbLang(lang))
       .then((m) => {
         setMovie(m);
+        if (m.backdrop_path) setAmbientColor(`hsl(var(--accent) / 0.15)`);
         if (resumeRequested) setPlaying(true);
       })
       .finally(() => setLoading(false));
     getMovieRecommendations(id, tmdbLang(lang))
       .then((r) => setRecommendations(r.results.filter((m) => m.poster_path)))
       .catch(() => {});
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, lang]);
 
   if (loading || !movie) {
     return (
       <Layout>
-        <div className="h-[60vh] shimmer-gold" />
+        <div className="h-[80vh] shimmer-gold rounded-b-3xl" />
       </Layout>
     );
   }
@@ -87,7 +85,7 @@ const Movie = () => {
 
   const saveHistory = (sourceLabel: string) => {
     if (!user) return;
-    const sid = sourceLabel.split(" ")[0]; // "S1"
+    const sid = sourceLabel.split(" ")[0];
     upsertWatchEntry(user.id, {
       tmdb_id: movie.id,
       media_type: "movie",
@@ -98,142 +96,152 @@ const Movie = () => {
     }).catch(() => {});
   };
 
+  const startWatching = () => {
+    setPlaying(true);
+    setTimeout(() => {
+      playerRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, 100);
+  };
+
   return (
     <Layout>
-      <section className="relative min-h-[70vh] pt-24 pb-12 overflow-hidden">
+      {/* Cinematic Hero */}
+      <section className="relative min-h-[90vh] flex items-end pb-24 overflow-hidden">
         {backdrop && (
-          <img src={backdrop} alt="" className="absolute inset-0 w-full h-full object-cover opacity-40" />
+          <div className="absolute inset-0 z-0">
+            <img src={backdrop} alt="" className="w-full h-full object-cover scale-110 animate-scale-in" />
+            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-r from-background via-background/30 to-transparent" />
+          </div>
         )}
-        <div className="absolute inset-0 grain" />
-        <div className="absolute inset-0 bg-gradient-to-t from-surface-primary via-surface-primary/80 to-surface-primary/30" />
-
-        <div className="relative container grid md:grid-cols-[280px_1fr] gap-8 items-end">
-          <Link
-            to="/"
-            className="absolute top-0 start-6 md:start-0 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-accent transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4 rtl:rotate-180" /> Retour
-          </Link>
-
-          {poster && (
-            <img src={poster} alt={movie.title} className="w-56 md:w-[280px] rounded-2xl border border-accent-subtle shadow-glow animate-float" />
-          )}
+        
+        <div className="container relative z-10 grid lg:grid-cols-[300px_1fr] gap-12 items-end">
+          <div className="hidden lg:block animate-fade-in">
+            <img src={poster} alt={movie.title} className="w-full rounded-2xl border border-white/10 shadow-2xl shadow-accent/20" />
+          </div>
 
           <div className="animate-fade-slide-up">
-            <div className="flex flex-wrap gap-2 mb-4">
-              {movie.genres?.slice(0, 4).map((g) => (
-                <span key={g.id} className="text-xs uppercase tracking-wider px-3 py-1 rounded-full border border-accent-subtle text-accent bg-accent/5">
+            <Link to="/" className="inline-flex items-center gap-2 text-accent/80 hover:text-accent mb-6 transition-colors group">
+              <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform rtl:rotate-180" />
+              <span className="text-xs font-bold uppercase tracking-widest">{t("nav_home")}</span>
+            </Link>
+
+            <div className="flex flex-wrap gap-2 mb-6">
+              {movie.genres?.slice(0, 4).map(g => (
+                <span key={g.id} className="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[10px] font-bold uppercase tracking-widest text-accent">
                   {g.name}
                 </span>
               ))}
             </div>
 
-            <h1 className="font-display text-3xl md:text-5xl lg:text-6xl font-bold mb-3 text-gradient-accent">
+            <h1 className="font-display text-4xl md:text-6xl lg:text-8xl font-bold mb-4 text-white leading-tight">
               {movie.title}
             </h1>
+
             {movie.tagline && (
-              <p className="font-decorative text-lg text-accent/80 mb-5 italic">{movie.tagline}</p>
+              <p className="text-xl text-accent/90 italic mb-8 font-decorative">{movie.tagline}</p>
             )}
 
-            <div className="flex flex-wrap items-center gap-5 text-sm text-muted-foreground mb-6">
-              {movie.vote_average > 0 && (
-                <span className="inline-flex items-center gap-1.5 text-foreground">
-                  <Star className="w-4 h-4 text-accent fill-accent" />
-                  {movie.vote_average.toFixed(1)}
-                </span>
-              )}
-              {year && <span className="inline-flex items-center gap-1.5"><Calendar className="w-4 h-4" /> {year}</span>}
-              {runtime && <span className="inline-flex items-center gap-1.5"><Clock className="w-4 h-4" /> {runtime}</span>}
+            <div className="flex flex-wrap items-center gap-8 mb-10 text-white/60 font-medium">
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-accent text-accent-foreground font-black">
+                <Star className="w-4 h-4 fill-current" />
+                {movie.vote_average.toFixed(1)}
+              </div>
+              <span className="flex items-center gap-2"><Calendar className="w-4 h-4" /> {year}</span>
+              <span className="flex items-center gap-2"><Clock className="w-4 h-4" /> {runtime}</span>
               {movie.original_language && (
-                <span className="inline-flex items-center gap-1.5 uppercase">
-                  <Globe2 className="w-4 h-4" /> {movie.original_language}
-                </span>
+                <span className="flex items-center gap-2 uppercase"><Globe2 className="w-4 h-4" /> {movie.original_language}</span>
               )}
             </div>
 
-            <p className="text-foreground/85 max-w-3xl leading-relaxed mb-8">{movie.overview}</p>
+            <p className="text-lg text-white/70 max-w-3xl leading-relaxed mb-12 line-clamp-3 md:line-clamp-none">
+              {movie.overview}
+            </p>
 
-            <div className="flex flex-wrap items-center gap-3">
+            <div className="flex flex-wrap items-center gap-5">
               {!playing && (
                 <button
-                  onClick={() => setPlaying(true)}
-                  className="inline-flex items-center gap-2.5 bg-gradient-accent text-accent-foreground font-semibold px-8 py-4 rounded-full shadow-accent hover:scale-[1.04] active:scale-[0.98] transition-transform duration-300 ease-luxe animate-pulse-glow"
+                  onClick={startWatching}
+                  className="inline-flex items-center gap-3 bg-accent text-accent-foreground px-12 py-5 rounded-full font-bold shadow-glow hover:scale-105 active:scale-95 transition-all"
                 >
-                  <Play className="w-5 h-5 fill-accent-foreground" />
-                  {t("hero_watch")}
+                  <Play className="w-6 h-6 fill-current" /> {t("hero_watch")}
                 </button>
               )}
               {trailer && (
                 <button
                   onClick={() => setShowTrailer(true)}
-                  className="inline-flex items-center gap-2.5 bg-surface-card border border-accent-subtle text-foreground font-semibold px-8 py-4 rounded-full hover:bg-accent/10 transition-all duration-300 ease-luxe"
+                  className="inline-flex items-center gap-3 bg-white/5 hover:bg-white/10 border border-white/10 px-8 py-5 rounded-full font-bold transition-all"
                 >
-                  <Youtube className="w-5 h-5 text-red-600" />
-                  {t("hero_trailer") || "Trailer"}
+                  <Youtube className="w-6 h-6 text-red-500" /> {t("hero_trailer")}
                 </button>
               )}
-              <FavoriteButton
-                tmdbId={movie.id}
-                mediaType="movie"
-                title={movie.title}
-                posterPath={movie.poster_path}
-                backdropPath={movie.backdrop_path}
-              />
+              <FavoriteButton tmdbId={movie.id} mediaType="movie" title={movie.title} posterPath={movie.poster_path} />
               <ShareButtons title={movie.title} />
             </div>
           </div>
         </div>
       </section>
 
-      <TrailerModal 
-        isOpen={showTrailer} 
-        onClose={() => setShowTrailer(false)} 
-        videoKey={trailer?.key || null} 
-        title={movie.title} 
-      />
+      <TrailerModal isOpen={showTrailer} onClose={() => setShowTrailer(false)} videoKey={trailer?.key} title={movie.title} />
 
-      {playing && (
-        <section className="container py-8 animate-fade-in">
-          <VideoPlayer
-            imdb_id={imdb || ""}
-            tmdb_id={movie.id}
-            type="movie"
-            title={movie.title}
-            initialSourceIndex={initialSourceIndex}
-            customUrl={(movie as any).video_url}
-            onPlayStart={(_i, label) => saveHistory(label)}
-            onSourceChange={(_i, label) => saveHistory(label)}
-          />
-        </section>
-      )}
+      {/* Video Player */}
+      <div ref={playerRef} className="scroll-mt-24">
+        {playing && (
+          <section className="container py-12 animate-scale-in">
+            <VideoPlayer
+              imdb_id={imdb || ""}
+              tmdb_id={movie.id}
+              type="movie"
+              title={movie.title}
+              initialSourceIndex={initialSourceIndex}
+              customUrl={(movie as any).video_url}
+              onPlayStart={(_i, label) => saveHistory(label)}
+              onSourceChange={(_i, label) => saveHistory(label)}
+            />
+          </section>
+        )}
+      </div>
 
-      {playing && !imdb && (
-        <section className="container py-8">
-          <p className="text-center text-muted-foreground">IMDb ID non disponible pour ce titre.</p>
-        </section>
-      )}
-
-      {playing && (
-        <section className="container pb-12">
-          <SubtitleFinder 
-            imdbId={imdb} 
-            tmdbId={movie.id} 
-            type="movie" 
-            title={movie.title} 
-          />
-        </section>
-      )}
-
-      {recommendations.length > 0 && (
-        <MovieRow title="Recommandé pour vous" items={recommendations} />
-      )}
-      {movie.similar?.results && movie.similar.results.length > 0 && (
-        <MovieRow title="Films similaires" items={movie.similar.results} />
-      )}
-
-      <section className="container py-12">
-        <ReviewSection tmdbId={movie.id} mediaType="movie" />
+      {/* Extras & Info */}
+      <section className="container py-16 grid lg:grid-cols-3 gap-12 border-t border-white/5">
+        <div className="lg:col-span-2">
+          <SubtitleFinder imdbId={imdb} tmdbId={movie.id} type="movie" title={movie.title} />
+          
+          <div className="mt-20">
+            <ReviewSection tmdbId={movie.id} mediaType="movie" />
+          </div>
+        </div>
+        
+        <div className="space-y-12">
+          {/* Detailed Info */}
+          <div className="p-6 rounded-2xl bg-white/5 border border-white/10">
+            <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
+              <Info className="w-5 h-5 text-accent" /> {lang === "ar" ? "معلومات إضافية" : "More Info"}
+            </h3>
+            <dl className="space-y-4">
+              <div className="flex justify-between border-b border-white/5 pb-2">
+                <dt className="text-white/40">{lang === "ar" ? "الميزانية" : "Budget"}</dt>
+                <dd className="font-medium">{movie.budget > 0 ? `$${movie.budget.toLocaleString()}` : "N/A"}</dd>
+              </div>
+              <div className="flex justify-between border-b border-white/5 pb-2">
+                <dt className="text-white/40">{lang === "ar" ? "الإيرادات" : "Revenue"}</dt>
+                <dd className="font-medium">{movie.revenue > 0 ? `$${movie.revenue.toLocaleString()}` : "N/A"}</dd>
+              </div>
+              <div className="flex justify-between border-b border-white/5 pb-2">
+                <dt className="text-white/40">{lang === "ar" ? "الحالة" : "Status"}</dt>
+                <dd className="font-medium">{movie.status}</dd>
+              </div>
+            </dl>
+          </div>
+        </div>
       </section>
+
+      {/* Recommendations */}
+      {recommendations.length > 0 && (
+        <div className="py-16 bg-black/20">
+          <MovieRow title={lang === "ar" ? "أفلام مشابهة" : "Similar Movies"} items={recommendations} />
+        </div>
+      )}
     </Layout>
   );
 };
