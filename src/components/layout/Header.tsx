@@ -58,7 +58,7 @@ export const Header = () => {
             <img
               src="/icon.png"
               alt="BNKhub Logo"
-              className="absolute inset-0 w-full h-full object-cover theme-icon scale-[1.2] group-hover:scale-[1.4] transition-transform duration-700"
+              className="absolute inset-0 w-full h-full object-cover theme-icon scale-[1.2] group-hover:scale-[1.4] transition-transform duration-700 brightness-110 sepia-[0.5] saturate-[2] hue-rotate-[10deg] contrast-125"
             />
           </div>
           <div className="flex flex-col leading-none ms-2 md:ms-3">

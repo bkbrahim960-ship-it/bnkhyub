@@ -75,8 +75,8 @@ export const Landing = () => {
       <main className="relative z-10 flex-1 flex flex-col container max-w-6xl mx-auto px-6 py-12">
         {/* Header Logo */}
         <div className={`flex items-center gap-4 mb-16 transition-all duration-1000 transform ${isVisible ? "translate-y-0 opacity-100" : "-translate-y-10 opacity-0"}`}>
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-accent/20 to-accent/5 backdrop-blur-2xl border border-accent/30 flex items-center justify-center shadow-glow">
-            <Zap className="w-10 h-10 text-accent fill-accent/20" />
+          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-accent/20 to-accent/5 backdrop-blur-2xl border border-accent/30 flex items-center justify-center shadow-glow overflow-hidden">
+            <img src="/icon.png" alt="Logo" className="w-full h-full object-cover brightness-110 sepia-[0.5] saturate-[3] hue-rotate-[10deg] contrast-125" />
           </div>
           <div>
             <h1 className="text-4xl font-bold tracking-tighter">BNK<span className="text-accent">hub</span></h1>

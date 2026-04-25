@@ -33,11 +33,6 @@ const BRANDS: Brand[] = [
     id: 384, 
     name: "HBO Max", 
     logo: "https://upload.wikimedia.org/wikipedia/commons/1/17/HBO_Max_Logo.svg"
-  },
-  { 
-    id: 15, 
-    name: "Hulu", 
-    logo: "https://upload.wikimedia.org/wikipedia/commons/e/e4/Hulu_Logo.svg"
   }
 ];
 
@@ -52,22 +47,22 @@ export const BrandRow = () => {
         <h2 className="text-2xl font-bold tracking-tight text-foreground/90">{t("brands_title")}</h2>
       </div>
       
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6">
         {BRANDS.map((brand) => (
           <button
             key={brand.id}
             onClick={() => navigate(`/movies?provider=${brand.id}&providerName=${brand.name}`)}
-            className="group relative flex flex-col items-center justify-center aspect-[16/9] p-6 rounded-2xl bg-surface-card/40 backdrop-blur-xl border border-border/50 hover:border-accent/60 transition-all duration-500 hover:scale-[1.05] hover:shadow-glow active:scale-95 overflow-hidden"
+            className="group relative flex flex-col items-center justify-center aspect-[16/9] p-6 rounded-2xl bg-surface-card/60 backdrop-blur-xl border border-border/50 hover:border-accent/60 transition-all duration-500 hover:scale-[1.05] hover:shadow-glow active:scale-95 overflow-hidden"
           >
-            {/* Golden Background Glow on Hover */}
-            <div className="absolute inset-0 bg-gradient-to-br from-accent/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            {/* Ambient Background Glow on Hover */}
+            <div className="absolute inset-0 bg-gradient-to-br from-accent/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             
-            {/* Logo with shadow and scale effect */}
+            {/* Logo with original colors */}
             <div className="relative z-10 w-full h-full flex items-center justify-center">
                <img 
                 src={brand.logo} 
                 alt={brand.name} 
-                className="w-full h-full object-contain filter grayscale brightness-200 contrast-125 opacity-70 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700 drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]"
+                className="w-full h-full object-contain filter drop-shadow-lg group-hover:scale-110 transition-transform duration-700"
               />
             </div>
 
