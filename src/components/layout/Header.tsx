@@ -55,10 +55,18 @@ export const Header = () => {
           }
         }}>
           <div id="main-logo-container" className="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-black/40 backdrop-blur-md overflow-hidden flex items-center justify-center shadow-accent group-hover:shadow-glow transition-all duration-500 relative group-hover:scale-105">
-            <img
-              src="/icon.png"
-              alt="BNKhub Logo"
-              className="absolute inset-0 w-full h-full object-cover theme-icon scale-[1.2] group-hover:scale-[1.4] transition-transform duration-700 brightness-110 sepia-[0.5] saturate-[2] hue-rotate-[10deg] contrast-125"
+              style={{ 
+                backgroundColor: 'var(--accent)',
+                maskImage: 'url(/icon.png)',
+                WebkitMaskImage: 'url(/icon.png)',
+                maskSize: 'contain',
+                WebkitMaskSize: 'contain',
+                maskRepeat: 'no-repeat',
+                WebkitMaskRepeat: 'no-repeat',
+                maskPosition: 'center',
+                WebkitMaskPosition: 'center'
+              }}
+              className="w-full h-full transition-transform duration-700 scale-[0.8] group-hover:scale-[1.0]"
             />
           </div>
           <div className="flex flex-col leading-none ms-2 md:ms-3">

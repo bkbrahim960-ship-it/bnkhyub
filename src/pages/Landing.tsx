@@ -76,7 +76,20 @@ export const Landing = () => {
         {/* Header Logo */}
         <div className={`flex items-center gap-4 mb-16 transition-all duration-1000 transform ${isVisible ? "translate-y-0 opacity-100" : "-translate-y-10 opacity-0"}`}>
           <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-accent/20 to-accent/5 backdrop-blur-2xl border border-accent/30 flex items-center justify-center shadow-glow overflow-hidden">
-            <img src="/icon.png" alt="Logo" className="w-full h-full object-cover brightness-110 sepia-[0.5] saturate-[3] hue-rotate-[10deg] contrast-125" />
+            <div 
+              style={{ 
+                backgroundColor: 'var(--accent)',
+                maskImage: 'url(/icon.png)',
+                WebkitMaskImage: 'url(/icon.png)',
+                maskSize: 'contain',
+                WebkitMaskSize: 'contain',
+                maskRepeat: 'no-repeat',
+                WebkitMaskRepeat: 'no-repeat',
+                maskPosition: 'center',
+                WebkitMaskPosition: 'center'
+              }}
+              className="w-full h-full scale-[0.7]"
+            />
           </div>
           <div>
             <h1 className="text-4xl font-bold tracking-tighter">BNK<span className="text-accent">hub</span></h1>
