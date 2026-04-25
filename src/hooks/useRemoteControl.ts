@@ -5,7 +5,7 @@ export const useRemoteControl = (sessionId?: string) => {
   const [lastCommand, setLastCommand] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!sessionId) return;
+    if (!sessionId || !supabase) return;
 
     const channel = supabase.channel(`remote_${sessionId}`, {
       config: { broadcast: { self: false } },

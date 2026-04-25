@@ -144,11 +144,10 @@ const ProfilePage = () => {
                     <button
                       key={l}
                       onClick={() => setLang(l)}
-                      className={`flex items-center gap-2 px-3 py-2.5 rounded-lg border text-sm transition-all ${
-                        active
+                      className={`flex items-center gap-2 px-3 py-2.5 rounded-lg border text-sm transition-all ${active
                           ? "border-accent bg-accent/10 text-accent shadow-accent"
                           : "border-border bg-surface-primary hover:border-accent-subtle"
-                      }`}
+                        }`}
                     >
                       <span className="text-base">{meta.flag}</span>
                       <span>{meta.label}</span>
@@ -171,11 +170,10 @@ const ProfilePage = () => {
                     <button
                       key={tn}
                       onClick={() => setTheme(tn)}
-                      className={`flex flex-col items-center gap-1.5 p-2.5 rounded-lg border transition-all ${
-                        active
+                      className={`flex flex-col items-center gap-1.5 p-2.5 rounded-lg border transition-all ${active
                           ? "border-accent shadow-accent"
                           : "border-border hover:border-accent-subtle"
-                      }`}
+                        }`}
                       title={meta.label}
                     >
                       <span
@@ -195,8 +193,8 @@ const ProfilePage = () => {
                 <p className="text-sm font-semibold">{t("profile_kids_mode") || "Mode Enfants"}</p>
                 <p className="text-xs text-muted-foreground mt-1">{t("profile_kids_mode_desc") || "Filtrer le contenu non adapté aux plus jeunes"}</p>
               </div>
-              <Switch 
-                checked={kidsMode} 
+              <Switch
+                checked={kidsMode}
                 onCheckedChange={setKidsMode}
                 className="data-[state=checked]:bg-accent"
               />
@@ -212,9 +210,9 @@ const ProfilePage = () => {
               </div>
               <h3 className="text-xl font-bold mb-1">{t("profile_download_app")}</h3>
               <p className="text-xs text-muted-foreground mb-5 max-w-sm">{t("profile_download_desc")}</p>
-              <a 
-                href="/bnkhub.apk" 
-                download 
+              <a
+                href="/bnkhub.apk"
+                download
                 className="inline-flex items-center gap-3 bg-accent text-accent-foreground font-bold px-8 py-3 rounded-full hover:scale-105 transition-transform"
               >
                 <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -303,6 +301,16 @@ const ProfilePage = () => {
             </div>
           )}
 
+          {/* Analytics (Solo si logueado) */}
+          {user && (
+            <div className="mb-8">
+              <p className="text-xs uppercase tracking-widest text-muted-foreground mb-4">
+                {lang === "ar" ? "إحصائيات المشاهدة" : "Your Activity"}
+              </p>
+              <WatchAnalytics userId={user.id} />
+            </div>
+          )}
+
           {/* Pseudo */}
           <label className="block mb-5">
             <span className="text-xs uppercase tracking-widest text-muted-foreground">
@@ -329,11 +337,10 @@ const ProfilePage = () => {
                   <button
                     key={l}
                     onClick={() => setPrefLang(l)}
-                    className={`flex items-center gap-2 px-3 py-2.5 rounded-lg border text-sm transition-all ${
-                      active
+                    className={`flex items-center gap-2 px-3 py-2.5 rounded-lg border text-sm transition-all ${active
                         ? "border-accent bg-accent/10 text-accent shadow-accent"
                         : "border-border bg-surface-primary hover:border-accent-subtle"
-                    }`}
+                      }`}
                   >
                     <span className="text-base">{meta.flag}</span>
                     <span>{meta.label}</span>
@@ -356,11 +363,10 @@ const ProfilePage = () => {
                   <button
                     key={tn}
                     onClick={() => setPrefTheme(tn)}
-                    className={`flex flex-col items-center gap-1.5 p-2.5 rounded-lg border transition-all ${
-                      active
+                    className={`flex flex-col items-center gap-1.5 p-2.5 rounded-lg border transition-all ${active
                         ? "border-accent shadow-accent"
                         : "border-border hover:border-accent-subtle"
-                    }`}
+                      }`}
                     title={meta.label}
                   >
                     <span
@@ -380,8 +386,8 @@ const ProfilePage = () => {
               <p className="text-sm font-semibold">{t("profile_kids_mode") || "Mode Enfants"}</p>
               <p className="text-xs text-muted-foreground mt-1">{t("profile_kids_mode_desc") || "Filtrer le contenu non adapté aux plus jeunes"}</p>
             </div>
-            <Switch 
-              checked={kidsMode} 
+            <Switch
+              checked={kidsMode}
               onCheckedChange={setKidsMode}
               className="data-[state=checked]:bg-accent"
             />
@@ -396,8 +402,8 @@ const ProfilePage = () => {
               </p>
               <p className="text-xs text-muted-foreground mt-1">{t("profile_notifications_desc") || "Recevoir des alertes pour les nouveautés"}</p>
             </div>
-            <Switch 
-              checked={typeof window !== "undefined" && Notification.permission === "granted"} 
+            <Switch
+              checked={typeof window !== "undefined" && Notification.permission === "granted"}
               onCheckedChange={async (val) => {
                 if (val && typeof window !== "undefined") {
                   const permission = await Notification.requestPermission();
@@ -410,8 +416,8 @@ const ProfilePage = () => {
           {/* Remote Control Pairing */}
           <div className="mb-8 p-6 rounded-2xl bg-surface-primary border border-border flex flex-col md:flex-row items-center gap-6 animate-fade-in">
             <div className="bg-white p-3 rounded-xl shadow-glow">
-              <QRCodeSVG 
-                value={`${window.location.origin}/remote?session=${(window as any).tvSessionId || 'default'}`} 
+              <QRCodeSVG
+                value={`${window.location.origin}/remote?session=${(window as any).tvSessionId || 'default'}`}
                 size={120}
               />
             </div>
@@ -421,8 +427,8 @@ const ProfilePage = () => {
                 {lang === "ar" ? "تحويل الهاتف إلى ريموت" : "Phone as Remote"}
               </h3>
               <p className="text-xs text-muted-foreground mb-4">
-                {lang === "ar" 
-                  ? "امسح الكود بهاتفك للتحكم في التلفاز والكتابة بسهولة." 
+                {lang === "ar"
+                  ? "امسح الكود بهاتفك للتحكم في التلفاز والكتابة بسهولة."
                   : "Scan this code with your phone to control the TV and type easily."}
               </p>
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-accent/10 border border-accent/20 text-[10px] font-bold text-accent">
@@ -440,9 +446,9 @@ const ProfilePage = () => {
             </div>
             <h3 className="text-xl font-bold mb-1">{t("profile_download_app")}</h3>
             <p className="text-xs text-muted-foreground mb-5 max-w-sm">{t("profile_download_desc")}</p>
-            <a 
-              href="/bnkhub.apk" 
-              download 
+            <a
+              href="/bnkhub.apk"
+              download
               className="inline-flex items-center gap-3 bg-accent text-accent-foreground font-bold px-8 py-3 rounded-full hover:scale-105 transition-transform shadow-glow-sm"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">

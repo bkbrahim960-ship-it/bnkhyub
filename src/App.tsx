@@ -23,6 +23,8 @@ import NotFound from "./pages/NotFound.tsx";
 
 import { AmbientProvider, AmbientBackground } from "@/context/AmbientContext";
 import { useTVNavigation } from "@/hooks/useTVNavigation";
+import { useRemoteControl } from "@/hooks/useRemoteControl";
+import { useState, useEffect } from "react";
 
 const queryClient = new QueryClient();
 
@@ -32,8 +34,9 @@ const TVNavigationActivator = () => {
   useRemoteControl(tvSessionId);
   
   useEffect(() => {
-    console.log("TV Session ID:", tvSessionId);
-    (window as any).tvSessionId = tvSessionId;
+    if (typeof window !== "undefined") {
+      (window as any).tvSessionId = tvSessionId;
+    }
   }, [tvSessionId]);
 
   return null;
@@ -43,37 +46,39 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <ThemeProvider>
       <AmbientProvider>
-        <AmbientBackground />
-        <div className="content-overlay">
-          <SettingsProvider>
-            <LanguageProvider>
-              <AuthProvider>
-                <TooltipProvider>
-                  <Toaster />
-                  <Sonner />
-                  <BrowserRouter>
-                    <TVNavigationActivator />
-                    <Routes>
-                      <Route path="/" element={<Home />} />
-                      <Route path="/movies" element={<Catalog mode="movies" />} />
-                      <Route path="/series" element={<Catalog mode="series" />} />
-                      <Route path="/movie/:id" element={<Movie />} />
-                      <Route path="/series/:id" element={<Series />} />
-                      <Route path="/channels" element={<Channels />} />
-                      <Route path="/search" element={<Search />} />
-                      <Route path="/auth" element={<Auth />} />
-                      <Route path="/profile" element={<Profile />} />
-                      <Route path="/my-list" element={<MyList />} />
-                      <Route path="/admin" element={<Admin />} />
-                      <Route path="/welcome" element={<Landing />} />
-                      <Route path="/remote" element={<Remote />} />
-                      <Route path="*" element={<NotFound />} />
-                    </Routes>
-                  </BrowserRouter>
-                </TooltipProvider>
-              </AuthProvider>
-            </LanguageProvider>
-          </SettingsProvider>
+        <div className="relative min-h-screen bg-background">
+          <AmbientBackground />
+          <div className="relative z-10">
+            <SettingsProvider>
+              <LanguageProvider>
+                <AuthProvider>
+                  <TooltipProvider>
+                    <Toaster />
+                    <Sonner />
+                    <BrowserRouter>
+                      <TVNavigationActivator />
+                      <Routes>
+                        <Route path="/" element={<Home />} />
+                        <Route path="/movies" element={<Catalog mode="movies" />} />
+                        <Route path="/series" element={<Catalog mode="series" />} />
+                        <Route path="/movie/:id" element={<Movie />} />
+                        <Route path="/series/:id" element={<Series />} />
+                        <Route path="/channels" element={<Channels />} />
+                        <Route path="/search" element={<Search />} />
+                        <Route path="/auth" element={<Auth />} />
+                        <Route path="/profile" element={<Profile />} />
+                        <Route path="/my-list" element={<MyList />} />
+                        <Route path="/admin" element={<Admin />} />
+                        <Route path="/welcome" element={<Landing />} />
+                        <Route path="/remote" element={<Remote />} />
+                        <Route path="*" element={<NotFound />} />
+                      </Routes>
+                    </BrowserRouter>
+                  </TooltipProvider>
+                </AuthProvider>
+              </LanguageProvider>
+            </SettingsProvider>
+          </div>
         </div>
       </AmbientProvider>
     </ThemeProvider>

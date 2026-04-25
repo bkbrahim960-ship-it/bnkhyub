@@ -250,10 +250,10 @@
   .dynamic-bg-container {
     position: fixed;
     inset: 0;
-    z-index: 0; /* Changed from -1 to 0 */
+    z-index: -100; /* Deepest layer */
     overflow: hidden;
-    background: hsl(var(--bg-primary));
     pointer-events: none;
+    background: transparent;
   }
 
   .ambient-glow {
@@ -263,16 +263,17 @@
     top: -25vmax;
     left: -25vmax;
     background: radial-gradient(circle at center, var(--ambient-color, transparent) 0%, transparent 70%);
-    opacity: 0.3;
-    filter: blur(100px);
-    transition: background 1.5s ease;
+    opacity: 0.25; /* Subtle */
+    filter: blur(120px);
+    transition: background 2s ease;
     will-change: background;
   }
 
   .content-overlay {
     position: relative;
-    z-index: 10; /* Content must be high */
+    z-index: 10;
     min-height: 100vh;
+    background: transparent;
   }
 @keyframes float {
   0%, 100% { transform: translateY(0); }

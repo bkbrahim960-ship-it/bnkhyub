@@ -4,7 +4,7 @@
 import { Link } from "react-router-dom";
 import { Star } from "lucide-react";
 import { IMG } from "@/services/tmdb";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAmbient } from "@/context/AmbientContext";
 
 interface Props {
@@ -22,8 +22,16 @@ export const MovieCard = ({ id, title, posterPath, year, rating, type = "movie",
   const { setAmbientColor } = useAmbient();
   const poster = IMG.poster(posterPath);
 
-  const handleActive = () => setAmbientColor(`hsl(var(--accent) / 0.4)`);
-  const handleLeave = () => setAmbientColor("transparent");
+  const handleActive = () => {
+    try {
+      setAmbientColor(`hsl(var(--accent) / 0.3)`);
+    } catch (e) {}
+  };
+  const handleLeave = () => {
+    try {
+      setAmbientColor("transparent");
+    } catch (e) {}
+  };
 
   return (
     <Link
@@ -32,7 +40,7 @@ export const MovieCard = ({ id, title, posterPath, year, rating, type = "movie",
       onMouseLeave={handleLeave}
       onFocus={handleActive}
       onBlur={handleLeave}
-      className={`group relative block shrink-0 w-[150px] sm:w-[170px] md:w-[190px] transition-all duration-500 ease-luxe hover:-translate-y-2 focus:z-50 ${className}`}
+      className={`group relative block shrink-0 w-[150px] sm:w-[170px] md:w-[190px] transition-all duration-500 ease-luxe hover:-translate-y-2 focus:z-[100] ${className}`}
     >
       <div className="relative aspect-[2/3] rounded-xl overflow-hidden bg-surface-card border border-border group-hover:border-accent-subtle group-hover:shadow-glow transition-all duration-500 ease-luxe">
         {!loaded && <div className="absolute inset-0 shimmer-gold" />}
