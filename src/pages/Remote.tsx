@@ -55,19 +55,21 @@ const Remote = () => {
           <QuickNavButton label="Live" onTrigger={() => handleNav("/channels", "Live")} />
         </div>
 
-        {/* Touchpad Area */}
         <div 
+          onPointerDown={(e) => {
+            sendCommand("MOUSE_CLICK");
+            if (window.navigator.vibrate) window.navigator.vibrate(20);
+          }}
           onPointerMove={(e) => {
-            if (e.buttons === 1) { // Only move if touching
+            if (e.buttons === 1) {
               const dx = e.movementX;
               const dy = e.movementY;
-              if (Math.abs(dx) > 0.5 || Math.abs(dy) > 0.5) {
+              if (Math.abs(dx) > 0.1 || Math.abs(dy) > 0.1) {
                 sendCommand(`MOUSE_MOVE:${dx}:${dy}`);
               }
             }
           }}
-          onClick={() => sendCommand("MOUSE_CLICK")}
-          className="w-full h-48 bg-black/40 backdrop-blur-md rounded-3xl border border-white/5 mb-8 flex flex-col items-center justify-center relative overflow-hidden group touch-none"
+          className="w-full h-48 bg-black/40 backdrop-blur-md rounded-3xl border border-white/5 mb-8 flex flex-col items-center justify-center relative overflow-hidden group touch-none cursor-none"
         >
           <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,var(--accent)_0%,transparent_70%)] group-active:opacity-30 transition-opacity" />
           <MousePointer2 className="w-8 h-8 text-white/10 group-active:text-accent/40 transition-colors mb-2" />
