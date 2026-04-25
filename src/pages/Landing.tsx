@@ -10,7 +10,8 @@ import {
   ChevronRight, 
   Zap, 
   Film,
-  Monitor
+  Monitor,
+  Download
 } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 
@@ -106,14 +107,25 @@ export const Landing = () => {
                 ? "أول منصة تدمج بين السينما العالمية، القنوات الحية، والإنتاج المحلي القبائلي في تجربة واحدة فاخرة."
                 : "La première plateforme qui fusionne le cinéma mondial, la TV live et les productions Kabyles locales."}
             </p>
-            <button 
-              onClick={handleStart}
-              className="group relative inline-flex items-center gap-4 bg-accent text-accent-foreground font-bold px-12 py-5 rounded-full text-xl hover:scale-105 active:scale-95 transition-all shadow-accent/40 shadow-2xl overflow-hidden"
-            >
-              <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity" />
-              {lang === "ar" ? "ابدأ الاستكشاف الآن" : "Commencer l'exploration"}
-              <ChevronRight className={`w-7 h-7 group-hover:translate-x-2 transition-transform ${isRTL ? "rotate-180 group-hover:-translate-x-2" : ""}`} />
-            </button>
+            <div className="flex flex-col sm:flex-row gap-4 mb-10">
+              <button
+                onClick={handleStart}
+                className="group relative inline-flex items-center justify-center gap-4 bg-accent text-accent-foreground font-bold px-10 py-5 rounded-full text-xl hover:scale-105 active:scale-95 transition-all shadow-accent/40 shadow-2xl overflow-hidden"
+              >
+                <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity" />
+                {lang === "ar" ? "ابدأ الاستكشاف الآن" : "Commencer l'exploration"}
+                <ChevronRight className={`w-7 h-7 group-hover:translate-x-2 transition-transform ${isRTL ? "rotate-180 group-hover:-translate-x-2" : ""}`} />
+              </button>
+
+              <a
+                href="/bnkhub.apk"
+                download="BNKhub.apk"
+                className="inline-flex items-center justify-center gap-3 bg-white/10 hover:bg-white/20 backdrop-blur-md text-white font-semibold px-8 py-5 rounded-full text-lg border border-white/10 transition-all hover:scale-105"
+              >
+                <Download className="w-6 h-6 text-accent" />
+                {lang === "ar" ? "تحميل للأندرويد" : "Télécharger pour Android"}
+              </a>
+            </div>
           </div>
 
           <div className={`relative transition-all duration-1000 delay-500 transform ${isVisible ? "scale-100 opacity-100" : "scale-90 opacity-0"}`}>
