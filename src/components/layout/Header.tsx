@@ -49,25 +49,9 @@ export const Header = () => {
     >
       <div className="w-full px-4 md:px-10 lg:px-16 flex items-center justify-between h-16 md:h-20 lg:h-24">
         {/* Logo */}
-        <div className="flex items-center group shrink-0 cursor-pointer" onClick={() => {
-          const el = document.getElementById("main-logo-container");
-          if (el) {
-            el.classList.add("animate-logo-jump");
-            setTimeout(() => {
-              el.classList.remove("animate-logo-jump");
-              window.location.href = "/";
-            }, 800);
-          }
-        }}>
-          <div id="main-logo-container" className="w-10 h-10 xs:w-12 xs:h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 overflow-hidden flex items-center justify-center shadow-accent group-hover:shadow-glow transition-all duration-500 relative group-hover:scale-105 rounded-lg md:rounded-xl">
-            <img 
-              src="/icon.png" 
-              alt="Logo"
-              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-            />
-          </div>
-          <div className="flex flex-col leading-none ms-2 md:ms-3 lg:ms-4">
-            <span className="font-display font-bold text-xl xs:text-2xl md:text-3xl lg:text-4xl tracking-tighter transition-colors group-hover:text-accent">
+        <div className="flex items-center group shrink-0 cursor-pointer" onClick={() => window.location.href = "/"}>
+          <div className="flex flex-col leading-none">
+            <span className="font-display font-bold text-2xl xs:text-3xl md:text-4xl lg:text-5xl tracking-tighter transition-colors group-hover:text-accent">
               BNK<span className="text-accent group-hover:text-foreground transition-colors">hub</span>
             </span>
             <span className="hidden sm:block font-decorative text-[8px] md:text-[10px] lg:text-[12px] text-muted-foreground tracking-[0.2em] uppercase opacity-60">
