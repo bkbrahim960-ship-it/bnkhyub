@@ -13,14 +13,24 @@ import { Search as SearchIcon, Loader2, SlidersHorizontal, X } from "lucide-reac
 
 const YEARS = Array.from({ length: 30 }, (_, i) => String(new Date().getFullYear() - i));
 
+import { useSearchParams } from "react-router-dom";
+
 const Search = () => {
   const { lang, t } = useLanguage();
   const { kidsMode } = useSettings();
+  const [searchParams, setSearchParams] = useSearchParams();
   const tl = tmdbLang(lang);
-  const [q, setQ] = useState("");
+  const [q, setQ] = useState(searchParams.get("q") || "");
   const [results, setResults] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
+
+  useEffect(() => {
+    const urlQ = searchParams.get("q");
+    if (urlQ !== null && urlQ !== q) {
+      setQ(urlQ);
+    }
+  }, [searchParams]);
 
   // Filters
   const [genres, setGenres] = useState<{ id: number; name: string }[]>([]);

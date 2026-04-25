@@ -41,6 +41,9 @@ const TVNavigationActivator = () => {
     if (lastCommand?.startsWith("NAV:")) {
       const path = lastCommand.replace("NAV:", "");
       navigate(path);
+    } else if (lastCommand?.startsWith("KEYBOARD:")) {
+      const text = lastCommand.replace("KEYBOARD:", "");
+      navigate(`/search?q=${encodeURIComponent(text)}`, { replace: true });
     }
   }, [lastCommand, navigate]);
 
