@@ -147,6 +147,127 @@ export const KABYLE_CONTENT: CustomMediaItem[] = [
     keywords: ["kabyle", "pucci", "doublage", "skarfez"]
   },
   {
+    id: 'm-mqidech',
+    title: 'Mqidech',
+    overview: 'Afilm n uḍsa i d-yesskanen tura n teqbaylit.',
+    poster_path: 'https://github.com/amazighkab/cinema-kabyle/blob/master/img/mqidech.jpg?raw=true',
+    category: 'Uḍsa • Akalas',
+    release_date: '2008',
+    vote_average: 4.2,
+    isDubbed: false,
+    video_url: 'https://vk.com/video_ext.php?oid=267205663&id=169785631&hash=7657c6a4d329bba1&hd=1',
+    media_type: "movie",
+    keywords: ["kabyle", "pucci", "doublage", "mqidech"]
+  },
+  {
+    id: 'm-uq-wr2rr1s0488m',
+    title: 'Afilm 1',
+    overview: 'Afilm n teqbaylit (UQload).',
+    poster_path: 'https://kabyletv.alwaysdata.net/image/20186089.jpg',
+    category: 'Afilm',
+    release_date: '—',
+    vote_average: 4.5,
+    video_url: 'https://uqload.com/embed-wr2rr1s0488m.html',
+    media_type: "movie",
+    keywords: ["kabyle", "pucci", "doublage"]
+  },
+  {
+    id: 'm-uq-cz2hwbawnuwe',
+    title: 'Afilm 2',
+    overview: 'Afilm n teqbaylit (UQload).',
+    poster_path: 'https://kabyletv.alwaysdata.net/image/96d8323186702e3b8a51fed19adb7a6d.jpg',
+    category: 'Afilm',
+    release_date: '—',
+    vote_average: 4.5,
+    video_url: 'https://uqload.com/embed-cz2hwbawnuwe.html',
+    media_type: "movie",
+    keywords: ["kabyle", "pucci", "doublage"]
+  },
+  {
+    id: 'm-uq-0jc0s8bdovy8',
+    title: 'Afilm 3',
+    overview: 'Afilm n teqbaylit (UQload).',
+    poster_path: 'https://kabyletv.alwaysdata.net/image/download.jpg',
+    category: 'Afilm',
+    release_date: '—',
+    vote_average: 4.5,
+    video_url: 'https://uqload.com/embed-0jc0s8bdovy8.html',
+    media_type: "movie",
+    keywords: ["kabyle", "pucci", "doublage"]
+  },
+  {
+    id: 'm-uq-7fiyh3verof3',
+    title: 'Afilm 4',
+    overview: 'Afilm n teqbaylit (UQload).',
+    poster_path: 'https://kabyletv.alwaysdata.net/image/p1.jpg',
+    category: 'Afilm',
+    release_date: '—',
+    vote_average: 4.5,
+    video_url: 'https://uqload.com/embed-7fiyh3verof3.html',
+    media_type: "movie",
+    keywords: ["kabyle", "pucci", "doublage"]
+  },
+  {
+    id: 'm-uq-eg8hie3ioj54',
+    title: 'Afilm 5',
+    overview: 'Afilm n teqbaylit (UQload).',
+    poster_path: 'https://kabyletv.alwaysdata.net/image/19099924.jpg',
+    category: 'Afilm',
+    release_date: '—',
+    vote_average: 4.5,
+    video_url: 'https://uqload.com/embed-eg8hie3ioj54.html',
+    media_type: "movie",
+    keywords: ["kabyle", "pucci", "doublage"]
+  },
+  {
+    id: 'm-uq-k0e4kayth43b',
+    title: 'Afilm 6',
+    overview: 'Afilm n teqbaylit (UQload).',
+    poster_path: 'https://kabyletv.alwaysdata.net/image/51eJoWwodML._AC_UF1000,1000_QL80_.jpg',
+    category: 'Afilm',
+    release_date: '—',
+    vote_average: 4.5,
+    video_url: 'https://uqload.com/embed-k0e4kayth43b.html',
+    media_type: "movie",
+    keywords: ["kabyle", "pucci", "doublage"]
+  },
+  {
+    id: 'm-uq-45cizb3g988j',
+    title: 'Afilm 7',
+    overview: 'Afilm n teqbaylit (UQload).',
+    poster_path: 'https://kabyletv.alwaysdata.net/image/qezboul.jpg',
+    category: 'Afilm',
+    release_date: '—',
+    vote_average: 4.5,
+    video_url: 'https://uqload.com/embed-45cizb3g988j.html',
+    media_type: "movie",
+    keywords: ["kabyle", "pucci", "doublage"]
+  },
+  {
+    id: 'm-uq-907jor35z6se',
+    title: 'Afilm 8',
+    overview: 'Afilm n teqbaylit (UQload).',
+    poster_path: 'https://kabyletv.alwaysdata.net/image/69199338_af.jpg',
+    category: 'Afilm',
+    release_date: '—',
+    vote_average: 4.5,
+    video_url: 'https://uqload.com/embed-907jor35z6se.html',
+    media_type: "movie",
+    keywords: ["kabyle", "pucci", "doublage"]
+  },
+  {
+    id: 'm-uq-aoxz0qpfb7q3',
+    title: 'Afilm 9',
+    overview: 'Afilm n teqbaylit (UQload).',
+    poster_path: 'https://kabyletv.alwaysdata.net/image/images.jpg',
+    category: 'Afilm',
+    release_date: '—',
+    vote_average: 4.5,
+    video_url: 'https://uqload.com/embed-aoxz0qpfb7q3.html',
+    media_type: "movie",
+    keywords: ["kabyle", "pucci", "doublage"]
+  },
+  {
     id: 's-imuhuchen',
     title: 'IMUḤUCEN',
     overview: 'Reda, Ɛisa, Ɛliluc, Ḥmimuc d imuḥucen, d iɛlaḍ. Yal tikkelt ara binen sewjaden taxnanast iwakken ad rewlen seg lḥebs.',
@@ -182,7 +303,18 @@ export const KABYLE_CONTENT: CustomMediaItem[] = [
       { id: 2, title: 'Tasedmirt 02', videoUrl: 'https://geo.dailymotion.com/player.html?video=xkn6i4' },
       { id: 3, title: 'Tasedmirt 03', videoUrl: 'https://geo.dailymotion.com/player.html?video=xkn6i5' },
       { id: 4, title: 'Tasedmirt 04', videoUrl: 'https://geo.dailymotion.com/player.html?video=xkn6i8' },
-      { id: 5, title: 'Tasedmirt 05', videoUrl: 'https://geo.dailymotion.com/player.html?video=xkn6ir' }
+      { id: 5, title: 'Tasedmirt 05', videoUrl: 'https://geo.dailymotion.com/player.html?video=xkn6ir' },
+      { id: 6, title: 'Tasedmirt 06', videoUrl: 'https://geo.dailymotion.com/player.html?video=xkneox' },
+      { id: 7, title: 'Tasedmirt 07', videoUrl: 'https://geo.dailymotion.com/player.html?video=xknep2' },
+      { id: 8, title: 'Tasedmirt 08', videoUrl: 'https://geo.dailymotion.com/player.html?video=xknep8' },
+      { id: 9, title: 'Tasedmirt 09', videoUrl: 'https://geo.dailymotion.com/player.html?video=xkng2z' },
+      { id: 10, title: 'Tasedmirt 10', videoUrl: 'https://geo.dailymotion.com/player.html?video=xkng31' },
+      { id: 11, title: 'Tasedmirt 11', videoUrl: 'https://geo.dailymotion.com/player.html?video=xkng37' },
+      { id: 12, title: 'Tasedmirt 12', videoUrl: 'https://geo.dailymotion.com/player.html?video=xkng3b' },
+      { id: 13, title: 'Tasedmirt 13', videoUrl: 'https://geo.dailymotion.com/player.html?video=xkng3g' },
+      { id: 14, title: 'Tasedmirt 14', videoUrl: 'https://geo.dailymotion.com/player.html?video=xknjwc' },
+      { id: 15, title: 'Tasedmirt 15', videoUrl: 'https://geo.dailymotion.com/player.html?video=xknjwe' },
+      { id: 16, title: 'Tasedmirt 16', videoUrl: 'https://geo.dailymotion.com/player.html?video=xknjwh' }
     ]
   },
   {
@@ -198,7 +330,52 @@ export const KABYLE_CONTENT: CustomMediaItem[] = [
     episodes: [
       { id: 1, title: 'Tasedmirt 01', videoUrl: 'https://odysee.com/$/embed/@asekles:d/wa3li-ak-tzizwit-EP-(1):f' },
       { id: 2, title: 'Tasedmirt 02', videoUrl: 'https://odysee.com/$/embed/@asekles:d/wa3li-ak-tzizwit-EP-(2):2' },
-      { id: 3, title: 'Tasedmirt 03', videoUrl: 'https://odysee.com/$/embed/@asekles:d/wa3li-ak-tzizwit-EP-(3):e' }
+      { id: 3, title: 'Tasedmirt 03', videoUrl: 'https://odysee.com/$/embed/@asekles:d/wa3li-ak-tzizwit-EP-(3):e' },
+      { id: 4, title: 'Tasedmirt 04', videoUrl: 'https://odysee.com/$/embed/@asekles:d/wa3li-ak-tzizwit-EP-(4):c' },
+      { id: 5, title: 'Tasedmirt 05', videoUrl: 'https://odysee.com/$/embed/@asekles:d/wa3li-ak-tzizwit-EP-(5):2' },
+      { id: 6, title: 'Tasedmirt 06', videoUrl: 'https://odysee.com/$/embed/@asekles:d/wa3li-ak-tzizwit-EP-(6):6' },
+      { id: 7, title: 'Tasedmirt 07', videoUrl: 'https://odysee.com/$/embed/@asekles:d/wa3li-ak-tzizwit-EP-(7):b' },
+      { id: 9, title: 'Tasedmirt 09', videoUrl: 'https://odysee.com/$/embed/@asekles:d/wa3li-ak-tzizwit-EP-(9):e' }
+    ]
+  },
+  {
+    id: 's-tom-jerry-ny',
+    title: 'Tom et Jerry deg New York',
+    overview: 'Tom d Jerry ttuɣalen ɣer New York anda i d-ttfadden tmezruy-nsen s uḍsa.',
+    poster_path: 'https://abdessah15.github.io/Asekles/Sans%20titre11.jpg',
+    category: 'Uḍsa • Uskan n warrac',
+    release_date: '2024',
+    vote_average: 4.8,
+    media_type: "tv",
+    keywords: ["kabyle", "pucci", "doublage", "tom", "jerry"],
+    episodes: [
+      { id: 1, title: 'Tasedmirt 01', videoUrl: 'https://odysee.com/$/embed/@asekles:d/ep1:9c' },
+      { id: 2, title: 'Tasedmirt 02', videoUrl: 'https://odysee.com/$/embed/@asekles:d/ep2:12a' },
+      { id: 3, title: 'Tasedmirt 03', videoUrl: 'https://odysee.com/$/embed/@asekles:d/ep3:e39' },
+      { id: 4, title: 'Tasedmirt 04', videoUrl: 'https://odysee.com/$/embed/@asekles:d/ep4:a5' },
+      { id: 5, title: 'Tasedmirt 05', videoUrl: 'https://odysee.com/$/embed/@asekles:d/ep5:643' },
+      { id: 6, title: 'Tasedmirt 06', videoUrl: 'https://odysee.com/$/embed/@asekles:d/ep6:a5' },
+      { id: 7, title: 'Tasedmirt 07', videoUrl: 'https://odysee.com/$/embed/@asekles:d/ep7:16' },
+      { id: 8, title: 'Tasedmirt 08', videoUrl: 'https://odysee.com/$/embed/@asekles:d/ep8:8968' },
+      { id: 9, title: 'Tasedmirt 09', videoUrl: 'https://odysee.com/$/embed/@asekles:d/ep-9:85' }
+    ]
+  },
+  {
+    id: 's-maca-micka',
+    title: 'Maca ak d Micka',
+    overview: 'Yiwet n teqrurt isemman Maca yettidiren ak d wersel iwumi semman Micka, syin taqsit n twuɣa glant-d s unecraḥ.',
+    poster_path: 'https://abdessah15.github.io/Asekles/Sans%20titre6.jpg',
+    category: 'Uḍsa • Uskan n warrac',
+    release_date: '2024',
+    vote_average: 4.9,
+    media_type: "tv",
+    keywords: ["kabyle", "pucci", "doublage", "maca", "micka"],
+    episodes: [
+      { id: 1, title: 'Tasedmirt 01', videoUrl: 'https://odysee.com/$/embed/@asekles:d/maca-ak-d-micka-EP-(1):a' },
+      { id: 2, title: 'Tasedmirt 02', videoUrl: 'https://odysee.com/$/embed/@asekles:d/maca-ak-d-micka-EP-(2):9' },
+      { id: 3, title: 'Tasedmirt 03', videoUrl: 'https://odysee.com/$/embed/@asekles:d/maca-ak-d-micka-EP-(3):5' },
+      { id: 4, title: 'Tasedmirt 04', videoUrl: 'https://odysee.com/$/embed/@asekles:d/maca-ak-d-micka-EP-(4):e' },
+      { id: 5, title: 'Tasedmirt 05', videoUrl: 'https://odysee.com/$/embed/@asekles:d/maca-ak-d-micka-EP-(5):f' }
     ]
   }
 ];
