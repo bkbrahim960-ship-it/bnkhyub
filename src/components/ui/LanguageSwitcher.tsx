@@ -25,7 +25,7 @@ export const LanguageSwitcher = () => {
           <span className="text-foreground/90 font-medium uppercase text-xs">{lang}</span>
         </button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="bg-surface-elevated border-border min-w-[180px]">
+      <DropdownMenuContent align="end" side="top" className="bg-surface-elevated border-border min-w-[180px] mb-2">
         {(Object.entries(LANGUAGES) as [Lang, (typeof LANGUAGES)[Lang]][]).map(([code, info]) => (
           <DropdownMenuItem
             key={code}

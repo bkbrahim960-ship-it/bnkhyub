@@ -36,7 +36,7 @@ export const ColorSwitcher = ({ compact = false }: { compact?: boolean }) => {
       </button>
 
       {open && (
-        <div className="absolute top-full mt-3 end-0 p-3 rounded-2xl bg-surface-card/90 backdrop-blur-xl border border-border shadow-card-luxe animate-fade-slide-up z-50 min-w-[180px]">
+        <div className="absolute bottom-full mb-3 end-0 p-3 rounded-2xl bg-surface-card/90 backdrop-blur-xl border border-border shadow-card-luxe animate-fade-in z-50 min-w-[180px]">
           <div className="grid grid-cols-3 gap-3">
             {(Object.entries(THEMES) as [ThemeName, { label: string; swatch: string }][]).map(
               ([name, t]) => {

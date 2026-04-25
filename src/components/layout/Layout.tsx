@@ -11,8 +11,7 @@ export const Layout = ({ children }: { children: ReactNode }) => {
   return (
     <div className="min-h-screen flex flex-col bg-surface-primary">
       <Header />
-      <main className="flex-1 pb-16 md:pb-0">{children}</main>
-      <Footer />
+      <main className="flex-1 pb-24 md:pb-32">{children}</main>
       <BottomNav />
       <InstallModal />
     </div>
