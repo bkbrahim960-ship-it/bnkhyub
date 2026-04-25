@@ -78,7 +78,7 @@ export const Landing = () => {
           <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-accent/20 to-accent/5 backdrop-blur-2xl border border-accent/30 flex items-center justify-center shadow-glow overflow-hidden">
             <div 
               style={{ 
-                backgroundColor: 'var(--accent)',
+                backgroundColor: 'hsl(var(--accent))',
                 maskImage: 'url(/icon.png)',
                 WebkitMaskImage: 'url(/icon.png)',
                 maskSize: 'contain',
