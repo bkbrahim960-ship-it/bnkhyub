@@ -139,30 +139,14 @@ export const Header = () => {
           </Popover>
 
           <div className="hidden lg:block">
-            <ColorSwitcher compact />
+            {/* Moved to Bottom Bar */}
           </div>
           <div className="hidden sm:block">
-            <LanguageSwitcher />
+            {/* Moved to Bottom Bar */}
           </div>
           <div className="hidden md:block">
             <InstallButton />
           </div>
-
-          <Link
-            to={user ? "/profile" : "/auth"}
-            className="flex items-center gap-2 p-1 md:p-1.5 pe-3 rounded-full hover:bg-surface-card transition-all border border-transparent hover:border-border group focus:outline-none focus:ring-2 focus:ring-accent"
-            aria-label={t("nav_profile")}
-            title={t("nav_profile")}
-          >
-            <div className={`p-1.5 md:p-2 rounded-full transition-colors ${user ? "bg-accent/20 text-accent group-hover:bg-accent/30" : "bg-surface-card"}`}>
-              <UserIcon className="w-4 h-4 md:w-5 md:h-5" />
-            </div>
-            {user && (
-              <span className="hidden md:block text-xs lg:text-sm font-medium max-w-[120px] truncate">
-                {user.user_metadata?.username || user.email?.split('@')[0]}
-              </span>
-            )}
-          </Link>
 
           <button
             className="md:hidden p-2 rounded-full hover:bg-surface-card focus:outline-none focus:ring-2 focus:ring-accent"
