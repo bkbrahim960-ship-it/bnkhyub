@@ -13,6 +13,8 @@ const dict = {
     nav_channels: "Chaînes TV",
     nav_search: "Rechercher",
     nav_profile: "Profil",
+    nav_mylist: "Ma liste",
+    nav_admin: "Administration",
 
     hero_watch: "Regarder",
     hero_trailer: "Bande-annonce",
@@ -43,6 +45,9 @@ const dict = {
     profile_kids_mode_desc: "Masquer le contenu mature",
     profile_notifications: "Notifications",
     profile_notifications_desc: "Alertes nouveautés & sorties",
+    profile_signout_success: "Déconnecté",
+    profile_save_error: "Erreur de sauvegarde",
+    profile_load_error: "Impossible de charger le profil",
 
     install_title: "Installer BNKhub",
     install_subtitle: "Profitez de BNKhub comme d'une vraie application, directement sur votre écran d'accueil.",
@@ -98,6 +103,8 @@ const dict = {
     nav_channels: "TV Channels",
     nav_search: "Search",
     nav_profile: "Profile",
+    nav_mylist: "My List",
+    nav_admin: "Admin Panel",
 
     hero_watch: "Watch",
     hero_info: "More info",
@@ -127,6 +134,9 @@ const dict = {
     profile_kids_mode_desc: "Hide mature content",
     profile_notifications: "Notifications",
     profile_notifications_desc: "New content & release alerts",
+    profile_signout_success: "Signed out",
+    profile_save_error: "Save error",
+    profile_load_error: "Unable to load profile",
 
     install_title: "Install BNKhub",
     install_subtitle: "Enjoy BNKhub as a real app, right from your home screen.",
@@ -182,6 +192,8 @@ const dict = {
     nav_channels: "قنوات تلفزيونية",
     nav_search: "بحث",
     nav_profile: "الملف",
+    nav_mylist: "قائمتي",
+    nav_admin: "لوحة الإدارة",
 
     hero_watch: "مشاهدة",
     hero_trailer: "الإعلان الرسمي",
@@ -212,6 +224,9 @@ const dict = {
     profile_kids_mode_desc: "إخفاء المحتوى المخصص للبالغين",
     profile_notifications: "الإشعارات",
     profile_notifications_desc: "تنبيهات عند إضافة محتوى جديد",
+    profile_signout_success: "تم تسجيل الخروج",
+    profile_save_error: "خطأ في الحفظ",
+    profile_load_error: "تعذر تحميل الملف الشخصي",
 
     install_title: "تثبيت BNKhub",
     install_subtitle: "استمتع بتطبيق BNKhub مباشرة من شاشتك الرئيسية.",
@@ -266,6 +281,8 @@ const dict = {
     nav_series: "Series",
     nav_search: "Buscar",
     nav_profile: "Perfil",
+    nav_mylist: "Mi lista",
+    nav_admin: "Administración",
 
     hero_watch: "Ver",
     hero_info: "Más información",
@@ -291,6 +308,10 @@ const dict = {
     profile_signout: "Cerrar sesión",
     profile_signin_prompt: "Inicia sesión para sincronizar tu perfil.",
     profile_signin_cta: "Iniciar sesión",
+
+    profile_signout_success: "Sesión cerrada",
+    profile_save_error: "Error al guardar",
+    profile_load_error: "No se pudo cargar el perfil",
 
     install_title: "Instalar BNKhub",
     install_subtitle: "Disfruta BNKhub como una app real, desde tu pantalla de inicio.",

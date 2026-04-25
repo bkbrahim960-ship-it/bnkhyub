@@ -50,7 +50,7 @@ const ProfilePage = () => {
           setPrefTheme((p.preferred_theme as ThemeName) ?? theme);
         }
       })
-      .catch(() => toast.error("Impossible de charger le profil"))
+      .catch(() => toast.error(t("profile_load_error")))
       .finally(() => setLoading(false));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, authLoading]);
@@ -89,7 +89,7 @@ const ProfilePage = () => {
       setTheme(prefTheme);
       toast.success(t("profile_saved"));
     } catch (err: any) {
-      toast.error(err?.message ?? "Erreur de sauvegarde");
+      toast.error(err?.message ?? t("profile_save_error"));
     } finally {
       setSaving(false);
     }
@@ -97,7 +97,7 @@ const ProfilePage = () => {
 
   const handleSignOut = async () => {
     await signOut();
-    toast.success("Déconnecté");
+    toast.success(t("profile_signout_success"));
     navigate("/");
   };
 
@@ -188,7 +188,7 @@ const ProfilePage = () => {
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               className="mt-1.5 w-full px-4 py-3 rounded-lg bg-surface-primary border border-border focus:border-accent-subtle focus:outline-none"
-              placeholder="Votre pseudo"
+              placeholder={t("profile_username")}
             />
           </label>
 

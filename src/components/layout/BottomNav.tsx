@@ -11,7 +11,7 @@ export const BottomNav = () => {
     { to: "/series", icon: Tv, label: t("nav_series") },
     { to: "/channels", icon: Monitor, label: t("nav_channels") },
     { to: "/search", icon: Search, label: t("nav_search") },
-    { to: "/my-list", icon: Heart, label: "Ma liste" },
+    { to: "/my-list", icon: Heart, label: t("nav_mylist") },
   ];
 
   return (

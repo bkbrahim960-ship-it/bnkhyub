@@ -32,7 +32,7 @@ export const Header = () => {
   ];
 
   if (user?.email === "bkbrahim960@gmail.com") {
-    navLinks.push({ to: "/admin", label: "Admin Panel" });
+    navLinks.push({ to: "/admin", label: t("nav_admin") });
   }
 
   return (
