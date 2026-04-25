@@ -42,9 +42,9 @@ export const Header = () => {
 
   return (
     <header
-      className={`fixed top-0 inset-x-0 z-50 transition-all duration-500 ease-luxe ${scrolled
+      className={`fixed top-0 inset-x-0 z-[100] transition-all duration-500 ease-luxe ${scrolled
           ? "bg-surface-primary/80 backdrop-blur-xl border-b border-border/60"
-          : "bg-gradient-to-b from-black/60 to-transparent"
+          : "bg-gradient-to-b from-black/80 to-transparent"
         }`}
     >
       <div className="container-fluid px-4 md:px-8 lg:px-12 flex items-center justify-between h-16 md:h-20 lg:h-24">

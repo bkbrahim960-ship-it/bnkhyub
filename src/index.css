@@ -351,10 +351,10 @@ a:focus-visible, button:focus-visible {
   position: relative;
 }
 
-/* TV Safe Areas (Overscan protection) */
+/* Removed PC padding to fix Header visibility */
 @media screen and (min-width: 1280px) {
   body {
-    padding: 2% 4%;
+    padding: 0;
   }
 }
 
