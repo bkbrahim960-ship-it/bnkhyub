@@ -307,14 +307,14 @@
 
 /* ─────── TV & ACCESSIBILITY FOCUS STYLES ─────── */
 :focus-visible {
-  outline: 3px solid hsl(var(--accent)) !important;
-  outline-offset: 3px !important;
-  box-shadow: 0 0 20px hsl(var(--accent) / 0.6) !important;
-  transform: scale(1.04) !important;
-  z-index: 50 !important;
-  transition: outline 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease !important;
-  will-change: transform !important;
-  border-radius: 12px;
+  outline: 4px solid hsl(var(--accent)) !important;
+  outline-offset: 4px !important;
+  box-shadow: 0 0 40px hsl(var(--accent) / 0.8) !important;
+  transform: scale(1.06) !important;
+  z-index: 99 !important;
+  transition: transform 0.1s ease-out, outline 0.1s ease-out !important;
+  will-change: transform;
+  border-radius: 8px;
 }
 
 /* Ensure focus items have relative position for z-index */
@@ -322,14 +322,31 @@ a:focus-visible, button:focus-visible {
   position: relative;
 }
 
+/* TV Safe Areas (Overscan protection) */
+@media screen and (min-width: 1280px) {
+  body {
+    padding: 2% 4%;
+  }
+}
+
 /* Reduce heavy animations on TV for performance */
 @media (max-resolution: 1dppx) {
   *, *::before, *::after {
     animation-duration: 0.1s !important;
-    transition-duration: 0.15s !important;
+    transition-duration: 0.1s !important;
   }
   .backdrop-blur-xl, .backdrop-blur-md, .backdrop-blur-2xl {
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
+    background-color: hsl(var(--bg-elevated)) !important;
   }
+  .shimmer-gold {
+    animation: none !important;
+    background: hsl(var(--bg-elevated)) !important;
+  }
+}
+
+/* Smooth Scrolling */
+html {
+  scroll-behavior: smooth;
 }

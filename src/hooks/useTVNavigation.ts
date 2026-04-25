@@ -36,35 +36,45 @@ function findNearest(
 
   const cur = getRect(current);
   let best: HTMLElement | null = null;
-  let bestDist = Infinity;
+  let bestScore = Infinity;
 
   for (const el of items) {
     const r = getRect(el);
     let valid = false;
-    let dist = 0;
+    let primaryDist = 0;
+    let secondaryDist = 0;
 
     switch (direction) {
       case "up":
-        valid = r.y < cur.y - 5;
-        dist = Math.abs(cur.x - r.x) * 0.4 + (cur.y - r.y);
+        valid = r.y < cur.y - 2;
+        primaryDist = cur.y - r.y;
+        secondaryDist = Math.abs(cur.x - r.x);
         break;
       case "down":
-        valid = r.y > cur.y + 5;
-        dist = Math.abs(cur.x - r.x) * 0.4 + (r.y - cur.y);
+        valid = r.y > cur.y + 2;
+        primaryDist = r.y - cur.y;
+        secondaryDist = Math.abs(cur.x - r.x);
         break;
       case "left":
-        valid = r.x < cur.x - 5;
-        dist = Math.abs(cur.y - r.y) * 0.4 + (cur.x - r.x);
+        valid = r.x < cur.x - 2;
+        primaryDist = cur.x - r.x;
+        secondaryDist = Math.abs(cur.y - r.y);
         break;
       case "right":
-        valid = r.x > cur.x + 5;
-        dist = Math.abs(cur.y - r.y) * 0.4 + (r.x - cur.x);
+        valid = r.x > cur.x + 2;
+        primaryDist = r.x - cur.x;
+        secondaryDist = Math.abs(cur.y - r.y);
         break;
     }
 
-    if (valid && dist < bestDist) {
-      bestDist = dist;
-      best = el;
+    if (valid) {
+      // Score: primary distance weighted heavily, secondary distance (alignment) weighted lightly
+      // This ensures we prefer items directly in front of us.
+      const score = primaryDist + secondaryDist * 2.5;
+      if (score < bestScore) {
+        bestScore = score;
+        best = el;
+      }
     }
   }
 
@@ -74,35 +84,28 @@ function findNearest(
 export function useTVNavigation() {
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
+      // Ignore keys if user is typing in an input
+      if (['INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName || '')) {
+        if (e.key === 'Escape') (document.activeElement as HTMLElement).blur();
+        return;
+      }
+
       const active = document.activeElement as HTMLElement | null;
       
-      // If nothing is focused, focus the first focusable element
       if (!active || active === document.body) {
         const first = getVisibleFocusable()[0];
-        if (first) {
-          first.focus({ preventScroll: false });
-          first.scrollIntoView({ behavior: "smooth", block: "center" });
-        }
+        if (first) first.focus();
         return;
       }
 
       let direction: "up" | "down" | "left" | "right" | null = null;
 
       switch (e.key) {
-        case "ArrowUp":
-          direction = "up";
-          break;
-        case "ArrowDown":
-          direction = "down";
-          break;
-        case "ArrowLeft":
-          direction = "left";
-          break;
-        case "ArrowRight":
-          direction = "right";
-          break;
+        case "ArrowUp": direction = "up"; break;
+        case "ArrowDown": direction = "down"; break;
+        case "ArrowLeft": direction = "left"; break;
+        case "ArrowRight": direction = "right"; break;
         case "Enter":
-          // Simulate click on focused element
           active.click();
           e.preventDefault();
           return;
@@ -112,13 +115,13 @@ export function useTVNavigation() {
         e.preventDefault();
         const next = findNearest(active, direction);
         if (next) {
-          next.focus({ preventScroll: false });
-          next.scrollIntoView({ behavior: "smooth", block: "nearest" });
+          next.focus();
+          next.scrollIntoView({ behavior: "auto", block: "center", inline: "center" });
         }
       }
     };
 
-    window.addEventListener("keydown", handler);
-    return () => window.removeEventListener("keydown", handler);
+    window.addEventListener("keydown", handler, { capture: true });
+    return () => window.removeEventListener("keydown", handler, { capture: true });
   }, []);
 }

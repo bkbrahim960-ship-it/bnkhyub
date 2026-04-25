@@ -42,7 +42,7 @@ export const Header = () => {
           : "bg-gradient-to-b from-black/60 to-transparent"
         }`}
     >
-      <div className="container flex items-center justify-between h-16 md:h-20">
+      <div className="container-fluid px-4 md:px-8 lg:px-12 flex items-center justify-between h-16 md:h-20 lg:h-24">
         {/* Logo */}
         <div className="flex items-center group shrink-0 cursor-pointer" onClick={() => {
           const el = document.getElementById("main-logo-container");
@@ -54,7 +54,7 @@ export const Header = () => {
             }, 800);
           }
         }}>
-          <div id="main-logo-container" className="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-black/40 backdrop-blur-md overflow-hidden flex items-center justify-center shadow-accent group-hover:shadow-glow transition-all duration-500 relative group-hover:scale-105">
+          <div id="main-logo-container" className="w-10 h-10 xs:w-12 xs:h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 rounded-xl md:rounded-2xl bg-black/40 backdrop-blur-md overflow-hidden flex items-center justify-center shadow-accent group-hover:shadow-glow transition-all duration-500 relative group-hover:scale-105">
             <img 
               src="/icon.png" 
               alt="Logo"
@@ -64,26 +64,25 @@ export const Header = () => {
               className="w-full h-full object-cover theme-icon-colored transition-transform duration-700 scale-[1.1] group-hover:scale-[1.3]"
             />
           </div>
-          <div className="flex flex-col leading-none ms-2 md:ms-3">
-            <span className="font-display font-bold text-2xl md:text-4xl tracking-tighter transition-colors group-hover:text-accent">
+          <div className="flex flex-col leading-none ms-2 md:ms-3 lg:ms-4">
+            <span className="font-display font-bold text-xl xs:text-2xl md:text-3xl lg:text-4xl tracking-tighter transition-colors group-hover:text-accent">
               BNK<span className="text-accent group-hover:text-foreground transition-colors">hub</span>
             </span>
-            <span className="hidden xs:block font-decorative text-[10px] md:text-[12px] text-muted-foreground tracking-[0.2em] uppercase opacity-60">
+            <span className="hidden sm:block font-decorative text-[8px] md:text-[10px] lg:text-[12px] text-muted-foreground tracking-[0.2em] uppercase opacity-60">
               {t("tagline")}
             </span>
           </div>
         </div>
 
-        {/* Nav desktop */}
-        <nav className="hidden md:flex items-center gap-8">
+        {/* Nav desktop & TV */}
+        <nav className="hidden md:flex items-center gap-4 lg:gap-8">
           {navLinks.map((l) => (
             <NavLink
               key={l.to}
               to={l.to}
               end={l.to === "/"}
               className={({ isActive }) =>
-                `text-sm font-medium transition-colors duration-300 relative focus:text-accent focus:outline-none ${isActive ? "text-accent" : "text-foreground/80 hover:text-foreground"
-                } after:content-[''] after:absolute after:-bottom-1.5 after:start-0 after:h-[2px] after:bg-accent after:transition-all after:duration-300 ${""
+                `px-3 py-2 text-sm lg:text-base font-medium transition-all duration-300 relative focus:text-accent focus:outline-none hover:scale-110 active:scale-95 ${isActive ? "text-accent" : "text-foreground/80 hover:text-foreground"
                 }`
               }
             >
@@ -91,7 +90,7 @@ export const Header = () => {
                 <>
                   {l.label}
                   <span
-                    className={`absolute -bottom-1.5 inset-x-0 h-[2px] bg-gradient-accent transition-transform duration-300 origin-center ${isActive ? "scale-x-100" : "scale-x-0"
+                    className={`absolute -bottom-1 inset-x-0 h-[3px] bg-gradient-accent transition-transform duration-300 origin-center rounded-full ${isActive ? "scale-x-100" : "scale-x-0"
                       }`}
                   />
                 </>
@@ -101,42 +100,46 @@ export const Header = () => {
         </nav>
 
         {/* Actions */}
-        <div className="flex items-center gap-2 md:gap-3">
+        <div className="flex items-center gap-1 xs:gap-2 md:gap-4 lg:gap-6">
           <Link
             to="/search"
-            className="p-2 rounded-full hover:bg-surface-card transition-colors"
+            className="p-2 md:p-3 rounded-full hover:bg-surface-card transition-all hover:scale-110 focus:outline-none focus:ring-2 focus:ring-accent"
             aria-label={t("nav_search")}
           >
-            <Search className="w-5 h-5" />
+            <Search className="w-5 h-5 md:w-6 md:h-6" />
           </Link>
           <div className="hidden lg:block">
             <ColorSwitcher compact />
           </div>
-          <LanguageSwitcher />
-          <InstallButton />
+          <div className="hidden sm:block">
+            <LanguageSwitcher />
+          </div>
+          <div className="hidden md:block">
+            <InstallButton />
+          </div>
 
           <Link
             to={user ? "/profile" : "/auth"}
-            className="flex items-center gap-2 p-1.5 pe-3 rounded-full hover:bg-surface-card transition-colors border border-transparent hover:border-border"
+            className="flex items-center gap-2 p-1 md:p-1.5 pe-3 rounded-full hover:bg-surface-card transition-all border border-transparent hover:border-border group focus:outline-none focus:ring-2 focus:ring-accent"
             aria-label={t("nav_profile")}
             title={t("nav_profile")}
           >
-            <div className={`p-1.5 rounded-full ${user ? "bg-accent/20 text-accent" : "bg-surface-card"}`}>
-              <UserIcon className="w-4 h-4" />
+            <div className={`p-1.5 md:p-2 rounded-full transition-colors ${user ? "bg-accent/20 text-accent group-hover:bg-accent/30" : "bg-surface-card"}`}>
+              <UserIcon className="w-4 h-4 md:w-5 md:h-5" />
             </div>
             {user && (
-              <span className="hidden sm:block text-xs font-medium max-w-[100px] truncate">
+              <span className="hidden md:block text-xs lg:text-sm font-medium max-w-[120px] truncate">
                 {user.user_metadata?.username || user.email?.split('@')[0]}
               </span>
             )}
           </Link>
 
           <button
-            className="md:hidden p-2 rounded-full hover:bg-surface-card"
+            className="md:hidden p-2 rounded-full hover:bg-surface-card focus:outline-none focus:ring-2 focus:ring-accent"
             onClick={() => setMobileOpen((v) => !v)}
             aria-label="Menu"
           >
-            {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
         </div>
       </div>
