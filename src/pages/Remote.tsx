@@ -17,7 +17,12 @@ const Remote = () => {
   const handleCommand = (cmd: string) => {
     setActiveKey(cmd);
     sendCommand(cmd);
-    setTimeout(() => setActiveKey(null), 100);
+    setTimeout(() => setActiveKey(null), 80);
+  };
+
+  const handleNav = (path: string, label: string) => {
+    sendCommand(`NAV:${path}`);
+    if (window.navigator.vibrate) window.navigator.vibrate(30);
   };
 
   if (!sessionId) {
@@ -37,15 +42,21 @@ const Remote = () => {
         <div className="text-center mb-10">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-accent/20 border border-accent/30 text-accent text-[10px] font-black tracking-widest animate-pulse shadow-glow">
             <PlayCircle className="w-3 h-3 fill-accent" />
-            LIVE CONNECTION
+            ULTRA-SPEED ACTIVE
           </div>
           <h1 className="text-3xl font-display font-bold mt-6 text-white tracking-tight">BNKhub <span className="text-accent">Remote</span></h1>
-          <p className="text-white/40 text-[10px] uppercase tracking-widest mt-2">Zero Latency Control</p>
+        </div>
+
+        {/* Quick Pages Navigation */}
+        <div className="flex flex-wrap justify-center gap-2 mb-10 w-full px-4">
+          <QuickNavButton label="Home" onTrigger={() => handleNav("/", "Home")} />
+          <QuickNavButton label="Movies" onTrigger={() => handleNav("/movies", "Movies")} />
+          <QuickNavButton label="Series" onTrigger={() => handleNav("/series", "Series")} />
+          <QuickNavButton label="Live" onTrigger={() => handleNav("/channels", "Live")} />
         </div>
 
         {/* Navigation Ring (D-PAD) */}
-        <div className="relative w-72 h-72 mb-12">
-          {/* Outer ring glow */}
+        <div className="relative w-72 h-72 mb-10">
           <div className="absolute inset-0 rounded-full border border-white/5 bg-white/[0.02] shadow-2xl" />
           
           <div className="absolute inset-0 grid grid-cols-3 grid-rows-3 gap-3 p-4">
@@ -54,7 +65,7 @@ const Remote = () => {
               icon={<ChevronUp className="w-8 h-8" />} 
               onTrigger={() => handleCommand("ArrowUp")} 
               isActive={activeKey === "ArrowUp"}
-              className="rounded-t-3xl border-b-0"
+              className="rounded-t-3xl"
             />
             <div />
 
@@ -62,10 +73,10 @@ const Remote = () => {
               icon={<ChevronLeft className="w-8 h-8" />} 
               onTrigger={() => handleCommand("ArrowLeft")} 
               isActive={activeKey === "ArrowLeft"}
-              className="rounded-l-3xl border-r-0"
+              className="rounded-l-3xl"
             />
             <ControlButton 
-              icon={<div className="w-4 h-4 rounded-full bg-accent shadow-glow" />} 
+              icon={<div className="w-5 h-5 rounded-full bg-accent shadow-glow" />} 
               onTrigger={() => handleCommand("Enter")} 
               isActive={activeKey === "Enter"}
               className="bg-accent/10 border-accent/30 scale-110 z-10 rounded-2xl"
@@ -74,7 +85,7 @@ const Remote = () => {
               icon={<ChevronRight className="w-8 h-8" />} 
               onTrigger={() => handleCommand("ArrowRight")} 
               isActive={activeKey === "ArrowRight"}
-              className="rounded-r-3xl border-l-0"
+              className="rounded-r-3xl"
             />
 
             <div />
@@ -82,61 +93,45 @@ const Remote = () => {
               icon={<ChevronDown className="w-8 h-8" />} 
               onTrigger={() => handleCommand("ArrowDown")} 
               isActive={activeKey === "ArrowDown"}
-              className="rounded-b-3xl border-t-0"
+              className="rounded-b-3xl"
             />
             <div />
           </div>
         </div>
 
         {/* Media Controls */}
-        <div className="grid grid-cols-3 gap-4 w-full px-6 mb-12">
+        <div className="grid grid-cols-3 gap-4 w-full px-8 mb-10">
            <MediaButton icon={<RotateCcw />} onTrigger={() => handleCommand("j")} />
-           <MediaButton icon={<Play className="fill-white" />} onTrigger={() => handleCommand(" ")} className="bg-white/10 scale-110" />
+           <MediaButton icon={<Play className="fill-white" />} onTrigger={() => handleCommand(" ")} className="bg-accent/40 border-accent scale-110" />
            <MediaButton icon={<RotateCw />} onTrigger={() => handleCommand("l")} />
         </div>
 
-        {/* Secondary Actions */}
-        <div className="grid grid-cols-2 gap-4 w-full px-6">
-          <ActionButton 
-            icon={<ArrowLeft />} 
-            label="Back" 
-            onTrigger={() => handleCommand("Escape")} 
-          />
-          <ActionButton 
-            icon={<Home />} 
-            label="Home" 
-            onTrigger={() => handleCommand("Home")} 
-          />
-          <ActionButton 
-            icon={<VolumeX />} 
-            label="Mute" 
-            onTrigger={() => handleCommand("m")} 
-          />
-          <ActionButton 
-            icon={<Search />} 
-            label="Search" 
-            onTrigger={() => handleCommand("s")} 
-          />
-        </div>
-
-        {/* Volume Bar Placeholder (Visual only) */}
-        <div className="mt-12 w-full px-12 flex items-center gap-4 text-white/20">
-          <VolumeX className="w-4 h-4" />
-          <div className="flex-1 h-1 bg-white/5 rounded-full overflow-hidden">
-            <div className="h-full bg-accent/40 w-2/3" />
-          </div>
-          <Volume2 className="w-4 h-4" />
+        {/* Action Buttons */}
+        <div className="grid grid-cols-2 gap-3 w-full px-6">
+          <ActionButton icon={<ArrowLeft />} label="Back" onTrigger={() => handleCommand("Escape")} />
+          <ActionButton icon={<Search />} label="Search" onTrigger={() => handleNav("/search", "Search")} />
+          <ActionButton icon={<VolumeX />} label="Mute" onTrigger={() => handleCommand("m")} />
+          <ActionButton icon={<Home />} label="Menu" onTrigger={() => handleCommand("Escape")} />
         </div>
       </div>
     </Layout>
   );
 };
 
+const QuickNavButton = ({ label, onTrigger }: any) => (
+  <button
+    onPointerDown={(e) => { e.preventDefault(); onTrigger(); }}
+    className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-[10px] font-black uppercase tracking-widest text-white/60 hover:text-accent hover:border-accent/40 active:scale-95 transition-all"
+  >
+    {label}
+  </button>
+);
+
 const ControlButton = ({ icon, onTrigger, isActive, className = "" }: any) => (
   <button
     onPointerDown={(e) => { e.preventDefault(); onTrigger(); }}
-    className={`flex items-center justify-center bg-surface-card/40 backdrop-blur-md border border-white/10 text-white/80 transition-all duration-75 shadow-xl ${
-      isActive ? "bg-accent/40 border-accent scale-95 shadow-accent/20" : "hover:bg-white/5"
+    className={`flex items-center justify-center bg-surface-card/40 backdrop-blur-md border border-white/10 text-white/80 transition-all duration-75 ${
+      isActive ? "bg-accent/60 border-accent scale-95 shadow-accent/40" : "hover:bg-white/5"
     } ${className}`}
   >
     {icon}
@@ -146,7 +141,7 @@ const ControlButton = ({ icon, onTrigger, isActive, className = "" }: any) => (
 const MediaButton = ({ icon, onTrigger, className = "" }: any) => (
   <button
     onPointerDown={(e) => { e.preventDefault(); onTrigger(); }}
-    className={`flex items-center justify-center aspect-square rounded-2xl bg-white/5 border border-white/5 text-white/80 active:scale-90 active:bg-accent/20 transition-all ${className}`}
+    className={`flex items-center justify-center aspect-square rounded-2xl bg-white/5 border border-white/5 text-white/80 active:scale-90 active:bg-accent/40 transition-all ${className}`}
   >
     {icon}
   </button>
@@ -155,9 +150,9 @@ const MediaButton = ({ icon, onTrigger, className = "" }: any) => (
 const ActionButton = ({ icon, label, onTrigger }: any) => (
   <button
     onPointerDown={(e) => { e.preventDefault(); onTrigger(); }}
-    className="flex items-center gap-3 p-5 rounded-2xl bg-white/5 border border-white/5 hover:border-accent/20 active:scale-95 active:bg-accent/10 transition-all group"
+    className="flex items-center gap-3 p-4 rounded-2xl bg-white/5 border border-white/5 active:scale-95 active:bg-accent/10 transition-all group"
   >
-    <div className="text-white/60 group-active:text-accent transition-colors">
+    <div className="text-white/40 group-active:text-accent transition-colors">
       {icon}
     </div>
     <span className="text-[10px] font-bold uppercase tracking-widest text-white/40 group-active:text-white transition-colors">{label}</span>

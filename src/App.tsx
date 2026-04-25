@@ -28,11 +28,21 @@ import { useState, useEffect } from "react";
 
 const queryClient = new QueryClient();
 
+import { useNavigate } from "react-router-dom";
+
 const TVNavigationActivator = () => {
   const [tvSessionId] = useState(() => Math.random().toString(36).substring(7));
+  const navigate = useNavigate();
   useTVNavigation();
-  useRemoteControl(tvSessionId);
+  const { lastCommand } = useRemoteControl(tvSessionId);
   
+  useEffect(() => {
+    if (lastCommand?.startsWith("NAV:")) {
+      const path = lastCommand.replace("NAV:", "");
+      navigate(path);
+    }
+  }, [lastCommand, navigate]);
+
   useEffect(() => {
     if (typeof window !== "undefined") {
       (window as any).tvSessionId = tvSessionId;
