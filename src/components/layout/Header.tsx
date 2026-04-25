@@ -156,14 +156,7 @@ export const Header = () => {
                   }`
                 }
               >
-                <img 
-              src="/icon.png" 
-              alt="Logo"
-              style={{ 
-                filter: `drop-shadow(0 0 12px hsl(var(--accent) / 0.6))`,
-              }}
-              className="w-full h-full object-cover animate-pulse-glow"
-            />
+                {l.label}
               </NavLink>
             ))}
             <div className="mt-3 pt-3 border-t border-border">
