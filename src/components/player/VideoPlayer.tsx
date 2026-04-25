@@ -140,6 +140,26 @@ export const VideoPlayer = ({
     setLoading(true);
   };
 
+  // Remote Control Listener
+  useEffect(() => {
+    const handleRemote = (e: KeyboardEvent) => {
+      if (e.key === "ArrowRight") {
+        const next = (sourceIndex + 1) % sources.length;
+        selectSource(next);
+      } else if (e.key === "ArrowLeft") {
+        const prev = (sourceIndex - 1 + sources.length) % sources.length;
+        selectSource(prev);
+      } else if (e.key === "Enter" && !playerActive) {
+        setPlayerActive(true);
+      } else if (e.key === "r" || e.key === "R") {
+        retry();
+      }
+    };
+
+    window.addEventListener("keydown", handleRemote);
+    return () => window.removeEventListener("keydown", handleRemote);
+  }, [sourceIndex, sources.length, playerActive]);
+
   return (
     <div className="w-full">
       <AdsNoticeModal
