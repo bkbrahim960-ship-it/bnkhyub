@@ -1,12 +1,18 @@
-/**
- * BNKhub — Page Films / Séries (liste paginée TMDB).
- */
-import { useParams, useSearchParams } from "react-router-dom";
+
+import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { MovieCard } from "@/components/movie/MovieCard";
 import { useLanguage } from "@/context/LanguageContext";
 import { tmdbLang } from "@/services/i18n";
-import { getPopularMovies, getPopularSeries, discoverMovies, discoverSeries, TMDBMovie, TMDBSeries } from "@/services/tmdb";
+import { 
+  getPopularMovies, 
+  getPopularSeries, 
+  discoverMovies, 
+  discoverSeries, 
+  TMDBMovie, 
+  TMDBSeries 
+} from "@/services/tmdb";
 import { useSettings } from "@/context/SettingsContext";
 
 interface Props {
@@ -17,6 +23,7 @@ const Catalog = ({ mode }: Props) => {
   const { lang, t } = useLanguage();
   const { kidsMode } = useSettings();
   const [searchParams] = useSearchParams();
+  
   const [items, setItems] = useState<(TMDBMovie | TMDBSeries)[]>([]);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
@@ -24,78 +31,113 @@ const Catalog = ({ mode }: Props) => {
   const providerId = searchParams.get("provider");
   const providerName = searchParams.get("providerName");
 
-  useEffect(() => {
-    setLoading(true);
-    
-    const tl = tmdbLang(lang);
-    const isMovies = mode === "movies";
-
-    const fetchItems = async () => {
-      try {
-        let r;
-        if (providerId) {
-          const params = { 
-            page: String(page), 
-            with_watch_providers: providerId, 
-            watch_region: "DZ", // Changé en Algérie pour plus de pertinence
-            sort_by: "popularity.desc"
-          };
-          r = isMovies ? await discoverMovies(tl, params) : await discoverSeries(tl, params);
-        } else {
-          r = isMovies ? await getPopularMovies(tl, page) : await getPopularSeries(tl, page);
-        }
-
-        const filtered = !kidsMode 
-          ? r.results 
-          : r.results.filter((m: any) => !m.genre_ids?.includes(27) && !m.genre_ids?.includes(53));
-          
-        setItems((prev) => (page === 1 ? filtered : [...prev, ...filtered]));
-      } catch (error) {
-        console.error("Error fetching catalog:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchItems();
-  }, [mode, page, lang, kidsMode, providerId]);
-
+  // Reset when mode, language or provider changes
   useEffect(() => {
     setPage(1);
     setItems([]);
-  }, [mode, lang]);
+  }, [mode, lang, providerId]);
+
+  useEffect(() => {
+    let active = true;
+    const tl = tmdbLang(lang);
+    const isMovies = mode === "movies";
+
+    const loadData = async () => {
+      setLoading(true);
+      try {
+        let response;
+        if (providerId) {
+          // Discover by provider
+          const params = {
+            page: String(page),
+            with_watch_providers: providerId,
+            watch_region: "FR", // Region FR is more reliable for worldwide content
+            sort_by: "popularity.desc"
+          };
+          response = isMovies ? await discoverMovies(tl, params) : await discoverSeries(tl, params);
+        } else {
+          // Normal popular list
+          response = isMovies ? await getPopularMovies(tl, page) : await getPopularSeries(tl, page);
+        }
+
+        if (!active) return;
+
+        if (response && response.results) {
+          const results = response.results;
+          const filtered = !kidsMode 
+            ? results 
+            : results.filter((m: any) => {
+                const genres = m.genre_ids || [];
+                return !genres.includes(27) && !genres.includes(53);
+              });
+
+          setItems(prev => page === 1 ? filtered : [...prev, ...filtered]);
+        }
+      } catch (err) {
+        console.error("Catalog Fetch Error:", err);
+      } finally {
+        if (active) setLoading(false);
+      }
+    };
+
+    loadData();
+    return () => { active = false; };
+  }, [mode, page, lang, kidsMode, providerId]);
 
   return (
     <Layout>
-      <section className="pt-28 pb-12 container">
-        <h1 className="font-display text-4xl md:text-5xl mb-8 text-gradient-accent">
-          {providerName ? `${providerName} Hub` : (mode === "movies" ? t("nav_movies") : t("nav_series"))}
-        </h1>
-
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5">
-          {items.map((m: any) => (
-            <MovieCard
-              key={m.id}
-              id={m.id}
-              title={m.title ?? m.name}
-              posterPath={m.poster_path}
-              year={(m.release_date ?? m.first_air_date ?? "").slice(0, 4)}
-              rating={m.vote_average}
-              type={mode === "movies" ? "movie" : "tv"}
-              className="w-full"
-            />
-          ))}
+      <section className="pt-28 pb-12 container min-h-screen">
+        <div className="flex items-center gap-4 mb-8">
+           <div className="h-10 w-1.5 bg-accent rounded-full shadow-glow" />
+           <h1 className="font-display text-4xl md:text-5xl text-gradient-accent">
+            {providerName ? `${providerName} Hub` : (mode === "movies" ? t("nav_movies") : t("nav_series"))}
+          </h1>
         </div>
 
-        <div className="flex justify-center mt-10">
-          <button
-            onClick={() => setPage((p) => p + 1)}
-            disabled={loading}
-            className="px-8 py-3 rounded-full border border-accent-subtle text-accent hover:bg-accent/10 transition-colors disabled:opacity-50"
-          >
-            {loading ? t("loading") : "Charger plus"}
-          </button>
-        </div>
+        {items.length === 0 && !loading ? (
+          <div className="flex flex-col items-center justify-center py-20 text-muted-foreground">
+            <p className="text-xl mb-4">{t("no_results") || "Aucun résultat trouvé"}</p>
+            <button 
+              onClick={() => window.location.href = window.location.pathname}
+              className="text-accent hover:underline"
+            >
+              Effacer les filtres
+            </button>
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+            {items.map((m: any, idx) => (
+              <div key={`${m.id}-${idx}`} className="animate-fade-slide-up" style={{ animationDelay: `${idx * 50}ms` }}>
+                <MovieCard
+                  id={m.id}
+                  title={m.title ?? m.name}
+                  posterPath={m.poster_path}
+                  year={(m.release_date ?? m.first_air_date ?? "").slice(0, 4)}
+                  rating={m.vote_average}
+                  type={mode === "movies" ? "movie" : "tv"}
+                  className="w-full"
+                />
+              </div>
+            ))}
+          </div>
+        )}
+
+        {loading && (
+          <div className="flex justify-center py-12">
+            <div className="w-10 h-10 border-4 border-accent border-t-transparent rounded-full animate-spin" />
+          </div>
+        )}
+
+        {!loading && items.length > 0 && (
+          <div className="flex justify-center mt-12">
+            <button
+              onClick={() => setPage(p => p + 1)}
+              className="px-10 py-4 bg-surface-card border border-accent/20 rounded-full hover:bg-accent hover:text-accent-foreground transition-all duration-300 font-bold shadow-glow-sm"
+            >
+              {lang === "ar" ? "تحميل المزيد" : "Charger plus"}
+            </button>
+          </div>
+        )}
       </section>
     </Layout>
   );
