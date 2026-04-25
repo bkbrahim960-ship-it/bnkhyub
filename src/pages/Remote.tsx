@@ -3,7 +3,7 @@ import { useRemoteControl } from "@/hooks/useRemoteControl";
 import { 
   ChevronUp, ChevronDown, ChevronLeft, ChevronRight, 
   CornerDownLeft, ArrowLeft, Search, Home, PlayCircle,
-  Volume2, VolumeX, RotateCcw, RotateCw, Play, Pause
+  Volume2, VolumeX, RotateCcw, RotateCw, Play, Pause, MousePointer2
 } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
 import { useEffect, useState } from "react";
@@ -53,6 +53,31 @@ const Remote = () => {
           <QuickNavButton label="Movies" onTrigger={() => handleNav("/movies", "Movies")} />
           <QuickNavButton label="Series" onTrigger={() => handleNav("/series", "Series")} />
           <QuickNavButton label="Live" onTrigger={() => handleNav("/channels", "Live")} />
+        </div>
+
+        {/* Touchpad Area */}
+        <div 
+          onPointerMove={(e) => {
+            if (e.buttons === 1) { // Only move if touching
+              const dx = e.movementX;
+              const dy = e.movementY;
+              if (Math.abs(dx) > 0.5 || Math.abs(dy) > 0.5) {
+                sendCommand(`MOUSE_MOVE:${dx}:${dy}`);
+              }
+            }
+          }}
+          onClick={() => sendCommand("MOUSE_CLICK")}
+          className="w-full h-48 bg-black/40 backdrop-blur-md rounded-3xl border border-white/5 mb-8 flex flex-col items-center justify-center relative overflow-hidden group touch-none"
+        >
+          <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,var(--accent)_0%,transparent_70%)] group-active:opacity-30 transition-opacity" />
+          <MousePointer2 className="w-8 h-8 text-white/10 group-active:text-accent/40 transition-colors mb-2" />
+          <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/20">Touchpad</span>
+          
+          {/* Decorative corners */}
+          <div className="absolute top-4 left-4 w-4 h-4 border-t border-l border-white/10" />
+          <div className="absolute top-4 right-4 w-4 h-4 border-t border-r border-white/10" />
+          <div className="absolute bottom-4 left-4 w-4 h-4 border-b border-l border-white/10" />
+          <div className="absolute bottom-4 right-4 w-4 h-4 border-b border-r border-white/10" />
         </div>
 
         {/* Navigation Ring (D-PAD) */}

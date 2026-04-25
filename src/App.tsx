@@ -24,6 +24,7 @@ import NotFound from "./pages/NotFound.tsx";
 import { AmbientProvider, AmbientBackground } from "@/context/AmbientContext";
 import { useTVNavigation } from "@/hooks/useTVNavigation";
 import { useRemoteControl } from "@/hooks/useRemoteControl";
+import { VirtualCursor } from "@/components/ui/VirtualCursor";
 import { useState, useEffect } from "react";
 
 const queryClient = new QueryClient();
@@ -67,6 +68,7 @@ const App = () => (
                     <Sonner />
                     <BrowserRouter>
                       <TVNavigationActivator />
+                      <VirtualCursor />
                       <Routes>
                         <Route path="/" element={<Home />} />
                         <Route path="/movies" element={<Catalog mode="movies" />} />
