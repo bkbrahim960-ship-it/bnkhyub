@@ -35,11 +35,14 @@ const ProfilePage = () => {
 
   useEffect(() => {
     if (!authLoading && !user) {
-      // Pas connecté : on laisse le rendu alternatif afficher le CTA
       setLoading(false);
       return;
     }
     if (!user) return;
+
+    // Force stop loading after 5 seconds even if fetch hangs
+    const timeout = setTimeout(() => setLoading(false), 5000);
+
     getMyProfile(user.id)
       .then((p) => {
         setProfile(p);
@@ -50,8 +53,15 @@ const ProfilePage = () => {
           setPrefTheme((p.preferred_theme as ThemeName) ?? theme);
         }
       })
-      .catch(() => toast.error(t("profile_load_error")))
-      .finally(() => setLoading(false));
+      .catch(() => {
+        // Silently fail - page will still render with defaults
+      })
+      .finally(() => {
+        clearTimeout(timeout);
+        setLoading(false);
+      });
+
+    return () => clearTimeout(timeout);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, authLoading]);
 
@@ -104,15 +114,117 @@ const ProfilePage = () => {
   if (!authLoading && !user) {
     return (
       <Layout>
-        <div className="container max-w-xl pt-28 pb-20 text-center">
-          <h1 className="font-display text-3xl text-gradient-accent mb-4">{t("profile_title")}</h1>
-          <p className="text-muted-foreground mb-6">{t("profile_signin_prompt")}</p>
-          <Link
-            to="/auth"
-            className="inline-flex items-center gap-2 bg-gradient-accent text-accent-foreground font-semibold px-6 py-3 rounded-full shadow-accent"
-          >
-            {t("profile_signin_cta")}
-          </Link>
+        <div className="container max-w-2xl pt-28 pb-20">
+          <div className="bg-surface-card/60 backdrop-blur-xl border border-border rounded-2xl p-6 md:p-8 shadow-card-luxe animate-fade-slide-up">
+            <h1 className="font-display text-3xl text-gradient-accent mb-6">{t("profile_title")}</h1>
+
+            {/* Sign-in prompt */}
+            <div className="mb-8 p-4 rounded-xl bg-accent/10 border border-accent/20 flex items-center justify-between">
+              <p className="text-sm text-muted-foreground">{t("profile_signin_prompt")}</p>
+              <Link
+                to="/auth"
+                className="inline-flex items-center gap-2 bg-accent text-accent-foreground font-semibold px-5 py-2 rounded-full text-sm"
+              >
+                {t("profile_signin_cta")}
+              </Link>
+            </div>
+
+            {/* Langue */}
+            <div className="mb-5">
+              <p className="text-xs uppercase tracking-widest text-muted-foreground mb-2">
+                {t("profile_language")}
+              </p>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                {(Object.keys(LANGUAGES) as Lang[]).map((l) => {
+                  const meta = LANGUAGES[l];
+                  const active = lang === l;
+                  return (
+                    <button
+                      key={l}
+                      onClick={() => setLang(l)}
+                      className={`flex items-center gap-2 px-3 py-2.5 rounded-lg border text-sm transition-all ${
+                        active
+                          ? "border-accent bg-accent/10 text-accent shadow-accent"
+                          : "border-border bg-surface-primary hover:border-accent-subtle"
+                      }`}
+                    >
+                      <span className="text-base">{meta.flag}</span>
+                      <span>{meta.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Thème */}
+            <div className="mb-8">
+              <p className="text-xs uppercase tracking-widest text-muted-foreground mb-2">
+                {t("profile_theme")}
+              </p>
+              <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
+                {(Object.keys(THEMES) as ThemeName[]).map((tn) => {
+                  const meta = THEMES[tn];
+                  const active = theme === tn;
+                  return (
+                    <button
+                      key={tn}
+                      onClick={() => setTheme(tn)}
+                      className={`flex flex-col items-center gap-1.5 p-2.5 rounded-lg border transition-all ${
+                        active
+                          ? "border-accent shadow-accent"
+                          : "border-border hover:border-accent-subtle"
+                      }`}
+                      title={meta.label}
+                    >
+                      <span
+                        className="w-8 h-8 rounded-full border-2 border-background"
+                        style={{ background: meta.swatch }}
+                      />
+                      <span className="text-[10px] text-muted-foreground">{meta.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Kids Mode */}
+            <div className="mb-8 flex items-center justify-between p-4 rounded-xl bg-surface-primary border border-border">
+              <div>
+                <p className="text-sm font-semibold">{t("profile_kids_mode") || "Mode Enfants"}</p>
+                <p className="text-xs text-muted-foreground mt-1">{t("profile_kids_mode_desc") || "Filtrer le contenu non adapté aux plus jeunes"}</p>
+              </div>
+              <Switch 
+                checked={kidsMode} 
+                onCheckedChange={setKidsMode}
+                className="data-[state=checked]:bg-accent"
+              />
+            </div>
+
+            {/* Download App */}
+            <div className="mb-4 p-6 rounded-2xl bg-gradient-to-br from-accent/10 to-accent/5 border border-accent/20 flex flex-col items-center text-center">
+              <div className="w-16 h-16 rounded-full bg-accent/20 flex items-center justify-center mb-4 shadow-glow">
+                <svg className="w-8 h-8 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="5" y="2" width="14" height="20" rx="2" ry="2" />
+                  <line x1="12" y1="18" x2="12.01" y2="18" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold mb-1">{t("profile_download_app")}</h3>
+              <p className="text-xs text-muted-foreground mb-5 max-w-sm">{t("profile_download_desc")}</p>
+              <a 
+                href="/bnkhub.apk" 
+                download 
+                className="inline-flex items-center gap-3 bg-accent text-accent-foreground font-bold px-8 py-3 rounded-full hover:scale-105 transition-transform"
+              >
+                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                  <polyline points="7 10 12 15 17 10" />
+                  <line x1="12" y1="15" x2="12" y2="3" />
+                </svg>
+                {lang === "ar" ? "تحميل الآن" : "Télécharger"}
+              </a>
+            </div>
+
+          </div>
         </div>
       </Layout>
     );
