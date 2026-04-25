@@ -5,7 +5,7 @@ import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { parseM3U } from "@/services/m3uParser";
-import { Trash2, Plus, Server, AlertTriangle, BarChart, Users, TrendingUp, Monitor } from "lucide-react";
+import { Trash2, Plus, Server, AlertTriangle, BarChart, Users, TrendingUp, Monitor, Star } from "lucide-react";
 import { BarChart as ReBarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 
 interface CustomServer {
@@ -435,7 +435,6 @@ CREATE POLICY "Admin full access" ON live_channels FOR ALL USING (auth.email() =
               ))}
             </div>
           )}
-        </div>
         </div>
 
         {/* Section Chaînes TV */}

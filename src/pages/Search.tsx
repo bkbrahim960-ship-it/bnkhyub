@@ -98,6 +98,7 @@ const Search = () => {
             discoverMovies(tl, params).catch(() => ({ results: [] })),
             discoverSeries(tl, params).catch(() => ({ results: [] })),
           ]);
+          const combined = [
             ...movies.results.map((m: any) => ({ ...m, media_type: "movie" })),
             ...series.results.map((s: any) => ({ ...s, media_type: "tv" })),
           ].sort((a: any, b: any) => b.vote_average - a.vote_average);
