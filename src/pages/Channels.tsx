@@ -84,7 +84,15 @@ const Channels = () => {
 
   const filteredChannels = channels.filter((c) => {
     const matchesSearch = c.name.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory = selectedCategory === "all" || c.category === selectedCategory;
+    
+    // Si "Toutes" est sélectionné, on masque les chaînes algériennes selon la demande de l'utilisateur
+    let matchesCategory = false;
+    if (selectedCategory === "all") {
+      matchesCategory = c.category !== "الجزائر";
+    } else {
+      matchesCategory = c.category === selectedCategory;
+    }
+    
     return matchesSearch && matchesCategory;
   });
 
