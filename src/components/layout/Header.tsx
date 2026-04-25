@@ -59,14 +59,11 @@ export const Header = () => {
             }, 800);
           }
         }}>
-          <div id="main-logo-container" className="w-10 h-10 xs:w-12 xs:h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 rounded-xl md:rounded-2xl bg-black/40 backdrop-blur-md overflow-hidden flex items-center justify-center shadow-accent group-hover:shadow-glow transition-all duration-500 relative group-hover:scale-105">
+          <div id="main-logo-container" className="w-10 h-10 xs:w-12 xs:h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 overflow-hidden flex items-center justify-center shadow-accent group-hover:shadow-glow transition-all duration-500 relative group-hover:scale-105 rounded-lg md:rounded-xl">
             <img 
               src="/icon.png" 
               alt="Logo"
-              style={{ 
-                filter: `drop-shadow(0 0 8px hsl(var(--accent) / 0.5))`,
-              }}
-              className="w-full h-full object-cover theme-icon-colored transition-transform duration-700 scale-[1.1] group-hover:scale-[1.3]"
+              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
             />
           </div>
           <div className="flex flex-col leading-none ms-2 md:ms-3 lg:ms-4">
