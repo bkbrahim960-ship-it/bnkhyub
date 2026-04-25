@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { MovieHero } from "@/components/movie/MovieHero";
 import { MovieRow } from "@/components/movie/MovieRow";
+import { BrandRow } from "@/components/movie/BrandRow";
 import { ContinueWatchingRow } from "@/components/movie/ContinueWatchingRow";
 import { useLanguage } from "@/context/LanguageContext";
 import { useSettings } from "@/context/SettingsContext";
@@ -83,6 +84,7 @@ const Home = () => {
       <MovieHero items={hero} />
 
       <div className="relative -mt-20 z-10">
+        <BrandRow />
         <ContinueWatchingRow />
         <MovieRow title={t("section_latest")} items={nowPlaying} loading={loading} />
         <MovieRow title={t("section_trending")} items={trending} loading={loading} />
