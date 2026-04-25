@@ -17,6 +17,7 @@ import Auth from "./pages/Auth";
 import Profile from "./pages/Profile";
 import Admin from "./pages/Admin";
 import MyList from "./pages/MyList";
+import Landing from "./pages/Landing";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -43,6 +44,7 @@ const App = () => (
                   <Route path="/profile" element={<Profile />} />
                   <Route path="/my-list" element={<MyList />} />
                   <Route path="/admin" element={<Admin />} />
+                  <Route path="/welcome" element={<Landing />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </BrowserRouter>

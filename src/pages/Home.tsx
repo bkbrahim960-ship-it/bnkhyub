@@ -3,6 +3,7 @@
  * Hero rotatif + rows TMDB + nouveautés vidsrc-embed.
  */
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { MovieHero } from "@/components/movie/MovieHero";
 import { MovieRow } from "@/components/movie/MovieRow";
@@ -21,9 +22,17 @@ import {
 } from "@/services/tmdb";
 
 const Home = () => {
+  const navigate = useNavigate();
   const { lang, t } = useLanguage();
   const { kidsMode } = useSettings();
   const tl = tmdbLang(lang);
+
+  useEffect(() => {
+    const hasSeen = localStorage.getItem("hasSeenLanding");
+    if (!hasSeen) {
+      navigate("/welcome");
+    }
+  }, [navigate]);
 
   const [hero, setHero] = useState<TMDBMovie[]>([]);
   const [popular, setPopular] = useState<TMDBMovie[]>([]);
