@@ -7,6 +7,7 @@ import { MovieCard } from "@/components/movie/MovieCard";
 import { useLanguage } from "@/context/LanguageContext";
 import { tmdbLang } from "@/services/i18n";
 import { getPopularMovies, getPopularSeries, TMDBMovie, TMDBSeries } from "@/services/tmdb";
+import { useSettings } from "@/context/SettingsContext";
 
 interface Props {
   mode: "movies" | "series";
@@ -14,6 +15,7 @@ interface Props {
 
 const Catalog = ({ mode }: Props) => {
   const { lang, t } = useLanguage();
+  const { kidsMode } = useSettings();
   const [items, setItems] = useState<(TMDBMovie | TMDBSeries)[]>([]);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
@@ -22,9 +24,14 @@ const Catalog = ({ mode }: Props) => {
     setLoading(true);
     const fetcher = mode === "movies" ? getPopularMovies : getPopularSeries;
     fetcher(tmdbLang(lang), page)
-      .then((r) => setItems((prev) => (page === 1 ? r.results : [...prev, ...r.results])))
+      .then((r) => {
+        const filtered = !kidsMode 
+          ? r.results 
+          : r.results.filter((m: any) => !m.genre_ids?.includes(27) && !m.genre_ids?.includes(53));
+        setItems((prev) => (page === 1 ? filtered : [...prev, ...filtered]));
+      })
       .finally(() => setLoading(false));
-  }, [mode, page, lang]);
+  }, [mode, page, lang, kidsMode]);
 
   useEffect(() => {
     setPage(1);

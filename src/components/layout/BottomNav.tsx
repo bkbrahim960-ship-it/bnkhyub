@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import { Home, Film, Tv, Search, Heart } from "lucide-react";
+import { Home, Film, Tv, Search, Heart, Monitor } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 
 export const BottomNav = () => {
@@ -9,6 +9,7 @@ export const BottomNav = () => {
     { to: "/", icon: Home, label: t("nav_home") },
     { to: "/movies", icon: Film, label: t("nav_movies") },
     { to: "/series", icon: Tv, label: t("nav_series") },
+    { to: "/channels", icon: Monitor, label: t("nav_channels") },
     { to: "/search", icon: Search, label: t("nav_search") },
     { to: "/my-list", icon: Heart, label: "Ma liste" },
   ];

@@ -4,7 +4,7 @@
  */
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 
-export type ThemeName = "gold" | "red" | "blue" | "purple" | "green" | "silver";
+export type ThemeName = "gold" | "red" | "blue" | "purple" | "green" | "silver" | "oled";
 
 export const THEMES: Record<ThemeName, { label: string; swatch: string }> = {
   gold:   { label: "Or Classique",  swatch: "#D4A843" },
@@ -13,6 +13,7 @@ export const THEMES: Record<ThemeName, { label: string; swatch: string }> = {
   purple: { label: "Violet Royal",  swatch: "#7B1FA2" },
   green:  { label: "Vert Émeraude", swatch: "#1B8A5A" },
   silver: { label: "Argent Platine",swatch: "#9E9E9E" },
+  oled:   { label: "OLED Black",    swatch: "#000000" },
 };
 
 interface ThemeCtx {

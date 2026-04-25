@@ -11,13 +11,15 @@ import { MovieRow } from "@/components/movie/MovieRow";
 import { FavoriteButton } from "@/components/movie/FavoriteButton";
 import { ShareButtons } from "@/components/movie/ShareButtons";
 import { SubtitleFinder } from "@/components/player/SubtitleFinder";
+import { TrailerModal } from "@/components/movie/TrailerModal";
+import { ReviewSection } from "@/components/movie/ReviewSection";
 import { IMG, getMovieDetails, getMovieRecommendations, TMDBMovie } from "@/services/tmdb";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
 import { tmdbLang } from "@/services/i18n";
 import { upsertWatchEntry } from "@/services/watchHistory";
 import { SOURCE_LABELS } from "@/services/player";
-import { Play, Star, Clock, Calendar, Globe2, ArrowLeft } from "lucide-react";
+import { Play, Star, Clock, Calendar, Globe2, ArrowLeft, Youtube } from "lucide-react";
 
 const sourceIdToIndex = (srcId?: string | null): number => {
   if (!srcId) return 0;
@@ -34,6 +36,7 @@ const Movie = () => {
   const [loading, setLoading] = useState(true);
   const [playing, setPlaying] = useState(false);
   const [recommendations, setRecommendations] = useState<TMDBMovie[]>([]);
+  const [showTrailer, setShowTrailer] = useState(false);
 
   const resumeRequested = params.get("resume") === "1";
   const initialSourceIndex = useMemo(() => sourceIdToIndex(params.get("src")), [params]);
@@ -67,6 +70,10 @@ const Movie = () => {
   const backdrop = IMG.backdrop(movie.backdrop_path, "original");
   const poster = IMG.poster(movie.poster_path, "w500");
   const imdb = (movie as any).imdb_id ?? (movie as any).external_ids?.imdb_id ?? "";
+  
+  const trailer = movie.videos?.results.find(
+    (v) => v.type === "Trailer" && v.site === "YouTube"
+  ) || movie.videos?.results.find((v) => v.site === "YouTube");
 
   const saveHistory = (sourceLabel: string) => {
     if (!user) return;
@@ -146,6 +153,15 @@ const Movie = () => {
                   {t("hero_watch")}
                 </button>
               )}
+              {trailer && (
+                <button
+                  onClick={() => setShowTrailer(true)}
+                  className="inline-flex items-center gap-2.5 bg-surface-card border border-accent-subtle text-foreground font-semibold px-8 py-4 rounded-full hover:bg-accent/10 transition-all duration-300 ease-luxe"
+                >
+                  <Youtube className="w-5 h-5 text-red-600" />
+                  {t("hero_trailer") || "Trailer"}
+                </button>
+              )}
               <FavoriteButton
                 tmdbId={movie.id}
                 mediaType="movie"
@@ -158,6 +174,13 @@ const Movie = () => {
           </div>
         </div>
       </section>
+
+      <TrailerModal 
+        isOpen={showTrailer} 
+        onClose={() => setShowTrailer(false)} 
+        videoKey={trailer?.key || null} 
+        title={movie.title} 
+      />
 
       {playing && imdb && (
         <section className="container py-8 animate-fade-in">
@@ -196,6 +219,10 @@ const Movie = () => {
       {movie.similar?.results && movie.similar.results.length > 0 && (
         <MovieRow title="Films similaires" items={movie.similar.results} />
       )}
+
+      <section className="container py-12">
+        <ReviewSection tmdbId={movie.id} mediaType="movie" />
+      </section>
     </Layout>
   );
 };

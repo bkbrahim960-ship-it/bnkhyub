@@ -6,6 +6,7 @@ import { Layout } from "@/components/layout/Layout";
 import { MovieCard } from "@/components/movie/MovieCard";
 import { searchMulti, getMovieGenres, discoverMovies, discoverSeries } from "@/services/tmdb";
 import { useLanguage } from "@/context/LanguageContext";
+import { useSettings } from "@/context/SettingsContext";
 import { tmdbLang } from "@/services/i18n";
 import { Search as SearchIcon, Loader2, SlidersHorizontal, X } from "lucide-react";
 
@@ -13,6 +14,7 @@ const YEARS = Array.from({ length: 30 }, (_, i) => String(new Date().getFullYear
 
 const Search = () => {
   const { lang, t } = useLanguage();
+  const { kidsMode } = useSettings();
   const tl = tmdbLang(lang);
   const [q, setQ] = useState("");
   const [results, setResults] = useState<any[]>([]);
@@ -96,18 +98,23 @@ const Search = () => {
             discoverMovies(tl, params).catch(() => ({ results: [] })),
             discoverSeries(tl, params).catch(() => ({ results: [] })),
           ]);
-          const combined = [
             ...movies.results.map((m: any) => ({ ...m, media_type: "movie" })),
             ...series.results.map((s: any) => ({ ...s, media_type: "tv" })),
           ].sort((a: any, b: any) => b.vote_average - a.vote_average);
-          setResults(combined.slice(0, 40));
+          
+          if (kidsMode) {
+            const kidsFiltered = combined.filter((m: any) => !m.genre_ids?.includes(27) && !m.genre_ids?.includes(53));
+            setResults(kidsFiltered.slice(0, 40));
+          } else {
+            setResults(combined.slice(0, 40));
+          }
         }
       }
     } catch {
       setResults([]);
     }
     setLoading(false);
-  }, [q, tl, selectedGenre, selectedYear, selectedRating, mediaFilter]);
+  }, [q, tl, selectedGenre, selectedYear, selectedRating, mediaFilter, kidsMode]);
 
   const clearFilters = () => {
     setSelectedGenre("");
@@ -152,7 +159,7 @@ const Search = () => {
               }`}
             >
               <SlidersHorizontal className="w-4 h-4" />
-              Filtres avancés
+              {t("search_filters")}
               {hasActiveFilters && (
                 <span className="w-2 h-2 rounded-full bg-accent animate-pulse-dot" />
               )}
@@ -162,7 +169,7 @@ const Search = () => {
                 onClick={clearFilters}
                 className="inline-flex items-center gap-1 px-3 py-2 rounded-full text-xs text-muted-foreground hover:text-red-400 transition-colors"
               >
-                <X className="w-3 h-3" /> Effacer les filtres
+                <X className="w-3 h-3" /> {t("search_clear")}
               </button>
             )}
           </div>
@@ -173,7 +180,7 @@ const Search = () => {
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                 {/* Media Type */}
                 <div>
-                  <label className="text-xs uppercase tracking-widest text-muted-foreground block mb-2">Type</label>
+                  <label className="text-xs uppercase tracking-widest text-muted-foreground block mb-2">{t("search_type")}</label>
                   <select
                     value={mediaFilter}
                     onChange={(e) => setMediaFilter(e.target.value as any)}
@@ -187,7 +194,7 @@ const Search = () => {
 
                 {/* Genre */}
                 <div>
-                  <label className="text-xs uppercase tracking-widest text-muted-foreground block mb-2">Genre</label>
+                  <label className="text-xs uppercase tracking-widest text-muted-foreground block mb-2">{t("search_genre")}</label>
                   <select
                     value={selectedGenre}
                     onChange={(e) => setSelectedGenre(e.target.value)}
@@ -202,7 +209,7 @@ const Search = () => {
 
                 {/* Year */}
                 <div>
-                  <label className="text-xs uppercase tracking-widest text-muted-foreground block mb-2">Année</label>
+                  <label className="text-xs uppercase tracking-widest text-muted-foreground block mb-2">{t("search_year")}</label>
                   <select
                     value={selectedYear}
                     onChange={(e) => setSelectedYear(e.target.value)}
@@ -217,7 +224,7 @@ const Search = () => {
 
                 {/* Rating */}
                 <div>
-                  <label className="text-xs uppercase tracking-widest text-muted-foreground block mb-2">Note minimum</label>
+                  <label className="text-xs uppercase tracking-widest text-muted-foreground block mb-2">{t("search_rating")}</label>
                   <select
                     value={selectedRating}
                     onChange={(e) => setSelectedRating(e.target.value)}

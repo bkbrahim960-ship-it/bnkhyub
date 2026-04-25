@@ -11,12 +11,14 @@ import { FavoriteButton } from "@/components/movie/FavoriteButton";
 import { ShareButtons } from "@/components/movie/ShareButtons";
 import { MovieRow } from "@/components/movie/MovieRow";
 import { SubtitleFinder } from "@/components/player/SubtitleFinder";
+import { TrailerModal } from "@/components/movie/TrailerModal";
+import { ReviewSection } from "@/components/movie/ReviewSection";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
 import { tmdbLang } from "@/services/i18n";
 import { upsertWatchEntry } from "@/services/watchHistory";
 import { SOURCE_LABELS } from "@/services/player";
-import { Play, Star, Calendar, ArrowLeft } from "lucide-react";
+import { Play, Star, Calendar, ArrowLeft, Youtube } from "lucide-react";
 
 const sourceIdToIndex = (srcId?: string | null): number => {
   if (!srcId) return 0;
@@ -37,6 +39,7 @@ const Series = () => {
   const [seasonData, setSeasonData] = useState<TMDBSeason | null>(null);
   const [seasonLoading, setSeasonLoading] = useState(false);
   const [recommendations, setRecommendations] = useState<any[]>([]);
+  const [showTrailer, setShowTrailer] = useState(false);
 
   const resumeRequested = params.get("resume") === "1";
   const resumeSeason = Number(params.get("s")) || null;
@@ -92,6 +95,10 @@ const Series = () => {
   const poster = IMG.poster(series.poster_path);
   const imdb = series.external_ids?.imdb_id ?? "";
   const seasons = series.seasons?.filter((s) => s.season_number > 0) ?? [];
+  
+  const trailer = series.videos?.results.find(
+    (v) => v.type === "Trailer" && v.site === "YouTube"
+  ) || series.videos?.results.find((v) => v.site === "YouTube");
 
   const saveHistory = (sourceLabel: string) => {
     if (!user) return;
@@ -156,11 +163,27 @@ const Series = () => {
                 posterPath={series.poster_path}
                 backdropPath={series.backdrop_path}
               />
+              {trailer && (
+                <button
+                  onClick={() => setShowTrailer(true)}
+                  className="inline-flex items-center gap-2.5 bg-surface-card border border-accent-subtle text-foreground font-semibold px-8 py-4 rounded-full hover:bg-accent/10 transition-all duration-300 ease-luxe"
+                >
+                  <Youtube className="w-5 h-5 text-red-600" />
+                  {t("hero_trailer") || "Trailer"}
+                </button>
+              )}
               <ShareButtons title={series.name} />
             </div>
           </div>
         </div>
       </section>
+
+      <TrailerModal 
+        isOpen={showTrailer} 
+        onClose={() => setShowTrailer(false)} 
+        videoKey={trailer?.key || null} 
+        title={series.name} 
+      />
 
       <section className="container py-8">
         <div className="mb-8">
@@ -275,6 +298,10 @@ const Series = () => {
       {recommendations.length > 0 && (
         <MovieRow title="Séries recommandées" items={recommendations} type="tv" />
       )}
+
+      <section className="container py-12">
+        <ReviewSection tmdbId={series.id} mediaType="tv" />
+      </section>
     </Layout>
   );
 };

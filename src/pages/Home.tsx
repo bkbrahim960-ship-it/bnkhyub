@@ -8,6 +8,7 @@ import { MovieHero } from "@/components/movie/MovieHero";
 import { MovieRow } from "@/components/movie/MovieRow";
 import { ContinueWatchingRow } from "@/components/movie/ContinueWatchingRow";
 import { useLanguage } from "@/context/LanguageContext";
+import { useSettings } from "@/context/SettingsContext";
 import { tmdbLang } from "@/services/i18n";
 import {
   getPopularMovies,
@@ -21,6 +22,7 @@ import {
 
 const Home = () => {
   const { lang, t } = useLanguage();
+  const { kidsMode } = useSettings();
   const tl = tmdbLang(lang);
 
   const [hero, setHero] = useState<TMDBMovie[]>([]);
@@ -42,18 +44,30 @@ const Home = () => {
       getNowPlaying(tl).catch(() => ({ results: [] })),
     ]).then(([tr, pop, top, tv, np]) => {
       if (canceled) return;
-      setTrending(tr.results);
-      setHero(tr.results.filter((m) => m.backdrop_path));
-      setPopular(pop.results);
-      setTopRated(top.results);
-      setPopularTV(tv.results);
-      setNowPlaying(np.results);
+      
+      const filterKids = (items: any[]) => {
+        if (!kidsMode) return items;
+        // Filter out Horror (27) and Thriller (53) and adult content
+        return items.filter((m: any) => 
+          !m.genre_ids?.includes(27) && 
+          !m.genre_ids?.includes(53) && 
+          !m.adult
+        );
+      };
+
+      setTrending(filterKids(tr.results));
+      setHero(filterKids(tr.results.filter((m: any) => m.backdrop_path)));
+      setPopular(filterKids(pop.results));
+      setTopRated(filterKids(top.results));
+      setPopularTV(filterKids(tv.results));
+      setNowPlaying(filterKids(np.results));
       setLoading(false);
     });
     return () => {
       canceled = true;
     };
-  }, [tl]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tl, kidsMode]);
 
   return (
     <Layout>

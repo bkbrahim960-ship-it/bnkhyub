@@ -27,6 +27,7 @@ export const Header = () => {
     { to: "/", label: t("nav_home") },
     { to: "/movies", label: t("nav_movies") },
     { to: "/series", label: t("nav_series") },
+    { to: "/channels", label: t("nav_channels") },
     { to: "/search", label: t("nav_search") },
   ];
 
@@ -43,8 +44,17 @@ export const Header = () => {
     >
       <div className="container flex items-center justify-between h-16 md:h-20">
         {/* Logo */}
-        <Link to="/" className="flex items-center group shrink-0">
-          <div className="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-black/40 backdrop-blur-md overflow-hidden flex items-center justify-center shadow-accent group-hover:shadow-glow transition-all duration-500 relative group-hover:scale-105">
+        <div className="flex items-center group shrink-0 cursor-pointer" onClick={() => {
+          const el = document.getElementById("main-logo-container");
+          if (el) {
+            el.classList.add("animate-logo-jump");
+            setTimeout(() => {
+              el.classList.remove("animate-logo-jump");
+              window.location.href = "/";
+            }, 800);
+          }
+        }}>
+          <div id="main-logo-container" className="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-black/40 backdrop-blur-md overflow-hidden flex items-center justify-center shadow-accent group-hover:shadow-glow transition-all duration-500 relative group-hover:scale-105">
             <img
               src="/icon.png"
               alt="BNKhub Logo"
@@ -59,7 +69,7 @@ export const Header = () => {
               {t("tagline")}
             </span>
           </div>
-        </Link>
+        </div>
 
         {/* Nav desktop */}
         <nav className="hidden md:flex items-center gap-8">

@@ -10,15 +10,18 @@ import { useAuth } from "@/context/AuthContext";
 import { useLanguage, LANGUAGES } from "@/context/LanguageContext";
 import { useTheme, THEMES, ThemeName } from "@/context/ThemeContext";
 import { getMyProfile, updateMyProfile, uploadAvatar, Profile } from "@/services/profile";
+import { useSettings } from "@/context/SettingsContext";
+import { Switch } from "@/components/ui/switch";
 import type { Lang } from "@/services/i18n";
 import { toast } from "sonner";
-import { Loader2, LogOut, Upload, User as UserIcon } from "lucide-react";
+import { Loader2, LogOut, Upload, User as UserIcon, Bell } from "lucide-react";
 
 const ProfilePage = () => {
   const navigate = useNavigate();
   const { user, loading: authLoading, signOut } = useAuth();
   const { t, lang, setLang } = useLanguage();
   const { theme, setTheme } = useTheme();
+  const { kidsMode, setKidsMode } = useSettings();
 
   const [profile, setProfile] = useState<Profile | null>(null);
   const [username, setUsername] = useState("");
@@ -245,6 +248,40 @@ const ProfilePage = () => {
                 );
               })}
             </div>
+          </div>
+
+          {/* Kids Mode */}
+          <div className="mb-8 flex items-center justify-between p-4 rounded-xl bg-surface-primary border border-border">
+            <div>
+              <p className="text-sm font-semibold">{t("profile_kids_mode") || "Mode Enfants"}</p>
+              <p className="text-xs text-muted-foreground mt-1">{t("profile_kids_mode_desc") || "Filtrer le contenu non adapté aux plus jeunes"}</p>
+            </div>
+            <Switch 
+              checked={kidsMode} 
+              onCheckedChange={setKidsMode}
+              className="data-[state=checked]:bg-accent"
+            />
+          </div>
+
+          {/* Notifications */}
+          <div className="mb-8 flex items-center justify-between p-4 rounded-xl bg-surface-primary border border-border">
+            <div>
+              <p className="text-sm font-semibold flex items-center gap-2">
+                <Bell className="w-4 h-4 text-accent" />
+                {t("profile_notifications") || "Notifications"}
+              </p>
+              <p className="text-xs text-muted-foreground mt-1">{t("profile_notifications_desc") || "Recevoir des alertes pour les nouveautés"}</p>
+            </div>
+            <Switch 
+              checked={typeof window !== "undefined" && Notification.permission === "granted"} 
+              onCheckedChange={async (val) => {
+                if (val && typeof window !== "undefined") {
+                  const permission = await Notification.requestPermission();
+                  if (permission === "granted") toast.success("Notifications activées !");
+                }
+              }}
+              className="data-[state=checked]:bg-accent"
+            />
           </div>
 
           <button
