@@ -5,6 +5,7 @@ import { useEffect, useState, useCallback } from "react";
 import { Layout } from "@/components/layout/Layout";
 import { MovieCard } from "@/components/movie/MovieCard";
 import { searchMulti, getMovieGenres, discoverMovies, discoverSeries } from "@/services/tmdb";
+import { searchCustomContent } from "@/services/customContent";
 import { useLanguage } from "@/context/LanguageContext";
 import { useSettings } from "@/context/SettingsContext";
 import { tmdbLang } from "@/services/i18n";
@@ -54,9 +55,15 @@ const Search = () => {
       if (q.trim().length >= 2) {
         // Text search
         const r = await searchMulti(q, tl);
-        let filtered = r.results.filter(
-          (item: any) => item.media_type === "movie" || item.media_type === "tv"
-        );
+        const customResults = searchCustomContent(q);
+        
+        let filtered = [
+          ...customResults,
+          ...r.results.filter(
+            (item: any) => (item.media_type === "movie" || item.media_type === "tv") && 
+            !customResults.some(cr => cr.title.toLowerCase() === (item.title || item.name || "").toLowerCase())
+          )
+        ];
         if (mediaFilter !== "all") {
           filtered = filtered.filter((item: any) => item.media_type === mediaFilter);
         }

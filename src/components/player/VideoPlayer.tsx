@@ -24,6 +24,8 @@ interface Props {
   onSourceChange?: (index: number, label: string) => void;
   /** Callback au lancement du lecteur (1re lecture) — pour créer l'entrée historique */
   onPlayStart?: (index: number, label: string) => void;
+  /** URL directe pour les contenus personnalisés */
+  customUrl?: string;
 }
 
 export const VideoPlayer = ({
@@ -36,6 +38,7 @@ export const VideoPlayer = ({
   initialSourceIndex = 0,
   onSourceChange,
   onPlayStart,
+  customUrl,
 }: Props) => {
   const { t } = useLanguage();
   const [sourceIndex, setSourceIndex] = useState(initialSourceIndex);
@@ -54,8 +57,8 @@ export const VideoPlayer = ({
   const [customSources, setCustomSources] = useState<string[]>([]);
   const [customLabels, setCustomLabels] = useState<string[]>([]);
 
-  const sources = [...baseSources, ...customSources];
-  const allLabels = [...SOURCE_LABELS, ...customLabels];
+  const sources = customUrl ? [customUrl] : [...baseSources, ...customSources];
+  const allLabels = customUrl ? ["Source Directe"] : [...SOURCE_LABELS, ...customLabels];
 
   useEffect(() => {
     const fetchCustomServers = async () => {

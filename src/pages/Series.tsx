@@ -17,6 +17,7 @@ import { useLanguage } from "@/context/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
 import { tmdbLang } from "@/services/i18n";
 import { upsertWatchEntry } from "@/services/watchHistory";
+import { KABYLE_CONTENT } from "@/services/customContent";
 import { SOURCE_LABELS } from "@/services/player";
 import { Play, Star, Calendar, ArrowLeft, Youtube } from "lucide-react";
 
@@ -50,6 +51,24 @@ const Series = () => {
     if (!id) return;
     setLoading(true);
     setPlaying(false);
+
+    const custom = KABYLE_CONTENT.find(c => c.id === id);
+    if (custom) {
+      const customSeries = {
+        ...custom,
+        seasons: [{ id: 1, name: "Saison 1", episode_count: custom.episodes?.length || 0, season_number: 1 }],
+      };
+      setSeries(customSeries as any);
+      setLoading(false);
+      
+      if (resumeRequested && resumeSeason && resumeEpisode) {
+        setSeason(resumeSeason);
+        setEpisode(resumeEpisode);
+        setPlaying(true);
+      }
+      return;
+    }
+
     getSeriesDetails(id, tmdbLang(lang))
       .then((s) => {
         setSeries(s);
@@ -76,6 +95,25 @@ const Series = () => {
 
   useEffect(() => {
     if (!series || !season) return;
+    
+    const custom = KABYLE_CONTENT.find(c => c.id === String(series.id));
+    if (custom) {
+      setSeasonData({
+        id: 1,
+        name: "Saison 1",
+        season_number: 1,
+        episodes: custom.episodes?.map(ep => ({
+          id: ep.id,
+          name: ep.title,
+          episode_number: ep.id,
+          still_path: null,
+          overview: ""
+        })) || []
+      } as any);
+      setSeasonLoading(false);
+      return;
+    }
+
     setSeasonLoading(true);
     getSeasonDetails(series.id, season, tmdbLang(lang))
       .then(setSeasonData)
@@ -199,17 +237,18 @@ const Series = () => {
           </select>
         </div>
 
-        {playing && imdb && (
+        {playing && (
           <div id="player-section" className="mb-12 animate-fade-slide-up">
             <VideoPlayer
               key={`${season}-${episode}`}
-              imdb_id={imdb}
+              imdb_id={imdb || ""}
               tmdb_id={series.id}
               type="tv"
               season={season}
               episode={episode}
               title={`${series.name} — S${season}E${episode}`}
               initialSourceIndex={initialSourceIndex}
+              customUrl={KABYLE_CONTENT.find(c => c.id === String(series.id))?.episodes?.find(e => e.id === episode)?.videoUrl}
               onPlayStart={(_i, label) => saveHistory(label)}
               onSourceChange={(_i, label) => saveHistory(label)}
             />

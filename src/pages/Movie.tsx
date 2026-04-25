@@ -18,6 +18,7 @@ import { useLanguage } from "@/context/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
 import { tmdbLang } from "@/services/i18n";
 import { upsertWatchEntry } from "@/services/watchHistory";
+import { KABYLE_CONTENT } from "@/services/customContent";
 import { SOURCE_LABELS } from "@/services/player";
 import { Play, Star, Clock, Calendar, Globe2, ArrowLeft, Youtube } from "lucide-react";
 
@@ -45,6 +46,15 @@ const Movie = () => {
     if (!id) return;
     setLoading(true);
     setPlaying(false);
+    
+    const custom = KABYLE_CONTENT.find(c => c.id === id);
+    if (custom) {
+      setMovie(custom as any);
+      setLoading(false);
+      if (resumeRequested) setPlaying(true);
+      return;
+    }
+
     getMovieDetails(id, tmdbLang(lang))
       .then((m) => {
         setMovie(m);
@@ -182,14 +192,15 @@ const Movie = () => {
         title={movie.title} 
       />
 
-      {playing && imdb && (
+      {playing && (
         <section className="container py-8 animate-fade-in">
           <VideoPlayer
-            imdb_id={imdb}
+            imdb_id={imdb || ""}
             tmdb_id={movie.id}
             type="movie"
             title={movie.title}
             initialSourceIndex={initialSourceIndex}
+            customUrl={(movie as any).video_url}
             onPlayStart={(_i, label) => saveHistory(label)}
             onSourceChange={(_i, label) => saveHistory(label)}
           />
