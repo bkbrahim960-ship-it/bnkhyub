@@ -55,6 +55,7 @@ export const Header = () => {
           }
         }}>
           <div id="main-logo-container" className="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-black/40 backdrop-blur-md overflow-hidden flex items-center justify-center shadow-accent group-hover:shadow-glow transition-all duration-500 relative group-hover:scale-105">
+            <div 
               style={{ 
                 backgroundColor: 'var(--accent)',
                 maskImage: 'url(/icon.png)',
