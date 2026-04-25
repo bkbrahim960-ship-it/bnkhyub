@@ -52,7 +52,7 @@ export const BrandRow = () => {
           <button
             key={brand.id}
             onClick={() => navigate(`/movies?provider=${brand.id}&providerName=${brand.name}`)}
-            className="group relative flex flex-col items-center justify-center aspect-[16/9] p-6 rounded-2xl bg-surface-card/60 backdrop-blur-xl border border-border/50 hover:border-accent/60 transition-all duration-500 hover:scale-[1.05] hover:shadow-glow active:scale-95 overflow-hidden"
+            className="group relative flex flex-col items-center justify-center aspect-[16/9] p-6 rounded-2xl bg-surface-card/60 backdrop-blur-xl border border-border/50 hover:border-accent/60 transition-all duration-500 hover:scale-[1.05] hover:shadow-glow active:scale-95 overflow-hidden focus:z-50 focus:outline-none"
           >
             {/* Ambient Background Glow on Hover */}
             <div className="absolute inset-0 bg-gradient-to-br from-accent/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />

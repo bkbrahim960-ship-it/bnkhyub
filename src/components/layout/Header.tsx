@@ -82,7 +82,7 @@ export const Header = () => {
               to={l.to}
               end={l.to === "/"}
               className={({ isActive }) =>
-                `text-sm font-medium transition-colors duration-300 relative ${isActive ? "text-accent" : "text-foreground/80 hover:text-foreground"
+                `text-sm font-medium transition-colors duration-300 relative focus:text-accent focus:outline-none ${isActive ? "text-accent" : "text-foreground/80 hover:text-foreground"
                 } after:content-[''] after:absolute after:-bottom-1.5 after:start-0 after:h-[2px] after:bg-accent after:transition-all after:duration-300 ${""
                 }`
               }

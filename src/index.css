@@ -304,3 +304,17 @@
   30% { opacity: 0.25; }
   100% { opacity: 0; }
 }
+
+/* ─────── TV & ACCESSIBILITY FOCUS STYLES ─────── */
+:focus-visible {
+  outline: none !important;
+  box-shadow: 0 0 0 4px hsl(var(--accent)), 0 0 30px hsl(var(--accent) / 0.8) !important;
+  transform: scale(1.05) !important;
+  z-index: 50 !important;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+}
+
+/* Ensure focus items have relative position for z-index */
+a:focus-visible, button:focus-visible {
+  position: relative;
+}
