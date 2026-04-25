@@ -20,7 +20,14 @@ import MyList from "./pages/MyList";
 import Landing from "./pages/Landing";
 import NotFound from "./pages/NotFound.tsx";
 
+import { useTVNavigation } from "@/hooks/useTVNavigation";
+
 const queryClient = new QueryClient();
+
+const TVNavigationActivator = () => {
+  useTVNavigation();
+  return null;
+};
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -32,6 +39,7 @@ const App = () => (
               <Toaster />
               <Sonner />
               <BrowserRouter>
+                <TVNavigationActivator />
                 <Routes>
                   <Route path="/" element={<Home />} />
                   <Route path="/movies" element={<Catalog mode="movies" />} />

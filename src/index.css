@@ -307,14 +307,29 @@
 
 /* ─────── TV & ACCESSIBILITY FOCUS STYLES ─────── */
 :focus-visible {
-  outline: none !important;
-  box-shadow: 0 0 0 4px hsl(var(--accent)), 0 0 30px hsl(var(--accent) / 0.8) !important;
-  transform: scale(1.05) !important;
+  outline: 3px solid hsl(var(--accent)) !important;
+  outline-offset: 3px !important;
+  box-shadow: 0 0 20px hsl(var(--accent) / 0.6) !important;
+  transform: scale(1.04) !important;
   z-index: 50 !important;
-  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+  transition: outline 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease !important;
+  will-change: transform !important;
+  border-radius: 12px;
 }
 
 /* Ensure focus items have relative position for z-index */
 a:focus-visible, button:focus-visible {
   position: relative;
+}
+
+/* Reduce heavy animations on TV for performance */
+@media (max-resolution: 1dppx) {
+  *, *::before, *::after {
+    animation-duration: 0.1s !important;
+    transition-duration: 0.15s !important;
+  }
+  .backdrop-blur-xl, .backdrop-blur-md, .backdrop-blur-2xl {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
 }
