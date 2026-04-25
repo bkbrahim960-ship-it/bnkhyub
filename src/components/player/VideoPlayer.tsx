@@ -8,7 +8,7 @@ import { useEffect, useRef, useState } from "react";
 import { getMovieSources, getTVSources, SOURCE_LABELS } from "@/services/player";
 import { AdsNoticeModal, hasSeenAdsNotice } from "./AdsNoticeModal";
 import { useLanguage } from "@/context/LanguageContext";
-import { Loader2, AlertCircle, RotateCw, Users, Share2 } from "lucide-react";
+import { Loader2, AlertCircle, RotateCw, Users, Share2, ShieldCheck } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useWatchParty } from "@/hooks/useWatchParty";
 import { useSearchParams } from "react-router-dom";
@@ -43,12 +43,13 @@ export const VideoPlayer = ({
   onPlayStart,
   customUrl,
 }: Props) => {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
   const [searchParams] = useSearchParams();
   const partyId = searchParams.get("party");
   const { participants } = useWatchParty(partyId || undefined);
   const [sourceIndex, setSourceIndex] = useState(initialSourceIndex);
   const [loading, setLoading] = useState(true);
+  const [shieldActive, setShieldActive] = useState(false);
   const [slow, setSlow] = useState<boolean[]>(Array(50).fill(false));
   const [adsOpen, setAdsOpen] = useState(!hasSeenAdsNotice());
   const [playerActive, setPlayerActive] = useState(hasSeenAdsNotice());
@@ -110,6 +111,15 @@ export const VideoPlayer = ({
       if (timeoutRef.current) window.clearTimeout(timeoutRef.current);
     };
   }, [sourceIndex, playerActive, imdb_id, tmdb_id, season, episode]);
+
+  useEffect(() => {
+    if (playerActive) {
+      setShieldActive(true);
+      // Auto-hide shield after 10s if user doesn't click, just in case
+      const timer = setTimeout(() => setShieldActive(false), 10000);
+      return () => clearTimeout(timer);
+    }
+  }, [playerActive, sourceIndex]);
 
   useEffect(() => {
     if (playerActive && !startedRef.current) {
@@ -177,10 +187,32 @@ export const VideoPlayer = ({
             title="BNKhub player"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
             allowFullScreen
+            sandbox="allow-forms allow-pointer-lock allow-same-origin allow-scripts allow-top-navigation-by-user-activation"
             referrerPolicy="no-referrer"
             onLoad={handleLoad}
             className="absolute inset-0 w-full h-full"
           />
+        )}
+
+        {playerActive && shieldActive && (
+          <div 
+            onClick={() => setShieldActive(false)}
+            className="absolute inset-0 z-[60] flex items-center justify-center bg-black/60 backdrop-blur-[2px] cursor-pointer group animate-fade-in"
+          >
+            <div className="bg-surface-card border border-accent/30 p-5 rounded-2xl shadow-luxe text-center transform transition-all group-hover:scale-105 active:scale-95">
+              <div className="w-12 h-12 bg-accent/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                <ShieldCheck className="w-7 h-7 text-accent animate-pulse" />
+              </div>
+              <p className="text-xs font-bold uppercase tracking-widest text-accent mb-1">
+                {lang === "ar" ? "حماية الإعلانات نشطة" : "Ad-Shield Active"}
+              </p>
+              <p className="text-[10px] text-muted-foreground max-w-[180px] mx-auto leading-relaxed">
+                {lang === "ar" 
+                  ? "انقر هنا لفتح المشغل بأمان ومنع النوافذ المنبثقة." 
+                  : "Click here to unlock the player safely and block popups."}
+              </p>
+            </div>
+          </div>
         )}
 
         {playerActive && loading && (
