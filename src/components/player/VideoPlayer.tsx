@@ -213,14 +213,35 @@ export const VideoPlayer = ({
     return () => window.removeEventListener('message', handleMessage);
   }, [type, episode, tmdb_id, imdb_id, lang]);
 
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const isAndroidTV = () => {
+    return /Android/i.test(navigator.userAgent) && (/TV/i.test(navigator.userAgent) || /Large/i.test(navigator.userAgent));
+  };
+
+  const handleStartPlay = () => {
+    setAdsOpen(false);
+    setPlayerActive(true);
+    
+    // Auto-fullscreen for Android TV
+    if (containerRef.current && isAndroidTV()) {
+      try {
+        if (containerRef.current.requestFullscreen) {
+          containerRef.current.requestFullscreen().catch(() => {});
+        } else if ((containerRef.current as any).webkitRequestFullscreen) {
+          (containerRef.current as any).webkitRequestFullscreen();
+        }
+      } catch (e) {
+        console.error("Fullscreen failed", e);
+      }
+    }
+  };
+
   return (
-    <div className="w-full">
+    <div className="w-full" ref={containerRef}>
       <AdsNoticeModal
         open={adsOpen}
-        onAccept={() => {
-          setAdsOpen(false);
-          setPlayerActive(true);
-        }}
+        onAccept={handleStartPlay}
         onClose={() => setAdsOpen(false)}
       />
 
@@ -251,10 +272,7 @@ export const VideoPlayer = ({
             <div className="relative group">
               <div className="absolute -inset-4 bg-accent/20 rounded-full blur-2xl group-hover:bg-accent/40 transition-all duration-700" />
               <button
-                onClick={() => {
-                  setAdsOpen(false);
-                  setPlayerActive(true);
-                }}
+                onClick={handleStartPlay}
                 className="relative bg-gradient-accent text-accent-foreground font-black px-10 py-5 rounded-full shadow-accent hover:scale-110 active:scale-95 transition-all flex items-center gap-3"
               >
                 <Play className="w-6 h-6 fill-current" />
