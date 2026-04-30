@@ -63,35 +63,31 @@ export const MovieCard = ({ id, title, posterPath, year, rating, type = "movie",
             {title}
           </div>
         )}
-        
-        {/* Hover Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex flex-col justify-end p-4">
-          <div className="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-             <div className="flex items-center gap-2 mb-1">
-                <img 
-                  src="https://www.themoviedb.org/assets/2/v4/logos/v2/blue_square_2-d537fb228cf3ded904ef09b136fe3fec72548ebc1fea3fbbd1ad9e36364db38b.svg" 
-                  alt="TMDB" 
-                  className="w-6 h-auto opacity-80"
-                />
-                {typeof rating === "number" && rating > 0 && (
-                  <span className="text-xs font-bold text-accent">{rating.toFixed(1)}</span>
-                )}
-             </div>
-             <p className="text-[10px] text-white/70 font-medium uppercase tracking-wider line-clamp-1">{type === 'movie' ? 'Film' : 'Série'}</p>
+        {/* Top Badges (Always Visible) */}
+        <div className="absolute top-2 left-2 right-2 flex items-center justify-between z-10 pointer-events-none">
+          {/* TMDB Rating Badge */}
+          {typeof rating === "number" && rating > 0 && (
+            <div className="flex items-center gap-1.5 bg-black/60 backdrop-blur-md px-2 py-1 rounded-lg border border-white/10 shadow-lg">
+              <img 
+                src="https://www.themoviedb.org/assets/2/v4/logos/v2/blue_square_2-d537fb228cf3ded904ef09b136fe3fec72548ebc1fea3fbbd1ad9e36364db38b.svg" 
+                alt="TMDB" 
+                className="w-4 h-auto"
+              />
+              <span className="text-[10px] font-bold text-white">{rating.toFixed(1)}</span>
+            </div>
+          )}
+          
+          {/* Type Badge */}
+          <div className="bg-accent/20 backdrop-blur-md px-1.5 py-0.5 rounded text-[8px] font-bold uppercase text-accent border border-accent/20">
+            {type === 'movie' ? 'HD' : 'TV'}
           </div>
         </div>
 
-        {/* Rating Badge (Always visible on mobile/desktop top left) */}
-        {typeof rating === "number" && rating > 0 && (
-          <div className="absolute top-2 start-2 flex items-center gap-1 bg-black/60 backdrop-blur-md px-2 py-1 rounded-lg text-[10px] font-bold border border-white/10 group-hover:border-accent/40 transition-colors">
-            <Star className="w-2.5 h-2.5 text-accent fill-accent" />
-            <span>{rating.toFixed(1)}</span>
-          </div>
-        )}
-        
-        {/* Type Badge (Top Right) */}
-        <div className="absolute top-2 end-2 bg-accent/20 backdrop-blur-md px-1.5 py-0.5 rounded text-[8px] font-bold uppercase text-accent border border-accent/20">
-          {type === 'movie' ? 'HD' : 'TV'}
+        {/* Hover Overlay (Simplified) */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex flex-col justify-end p-4">
+          <p className="text-[10px] text-accent font-bold uppercase tracking-widest transform translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
+            {type === 'movie' ? 'Regarder le Film' : 'Voir la Série'}
+          </p>
         </div>
       </div>
 
