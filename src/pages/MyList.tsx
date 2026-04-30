@@ -5,12 +5,14 @@ import { useEffect, useState } from "react";
 import { Layout } from "@/components/layout/Layout";
 import { MovieCard } from "@/components/movie/MovieCard";
 import { useAuth } from "@/context/AuthContext";
+import { useLanguage } from "@/context/LanguageContext";
 import { getUserFavorites, FavoriteEntry } from "@/services/favorites";
 import { Heart, LogIn } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const MyList = () => {
   const { user } = useAuth();
+  const { lang } = useLanguage();
   const [favorites, setFavorites] = useState<FavoriteEntry[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -61,10 +63,16 @@ const MyList = () => {
           </div>
 
           {loading ? (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5">
-              {Array.from({ length: 10 }).map((_, i) => (
-                <div key={i} className="aspect-[2/3] rounded-xl shimmer-gold" />
-              ))}
+            <div className="flex flex-col items-center justify-center min-h-[40vh]">
+              <div className="relative">
+                <div className="w-20 h-20 md:w-28 md:h-28 rounded-2xl overflow-hidden shadow-glow-accent animate-pulse-glow mb-6">
+                  <img src="/icon.png" alt="Loading..." className="w-full h-full object-cover" />
+                </div>
+                <div className="absolute -inset-4 border-2 border-accent/20 border-t-accent rounded-full animate-spin" />
+              </div>
+              <p className="text-sm font-bold uppercase tracking-widest text-accent animate-pulse">
+                {lang === 'ar' ? 'جاري تحميل مكتبتك...' : 'Chargement de votre bibliothèque...'}
+              </p>
             </div>
           ) : favorites.length > 0 ? (
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5">

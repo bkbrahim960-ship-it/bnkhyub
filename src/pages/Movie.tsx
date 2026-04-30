@@ -89,7 +89,14 @@ const Movie = () => {
   if (loading || !movie) {
     return (
       <Layout>
-        <div className="h-[80vh] shimmer-gold rounded-b-3xl" />
+        <div className="h-[80vh] flex flex-col items-center justify-center">
+          <div className="relative">
+            <div className="w-20 h-20 md:w-28 md:h-28 rounded-2xl overflow-hidden shadow-glow-accent animate-pulse-glow mb-6">
+              <img src="/icon.png" alt="Loading..." className="w-full h-full object-cover" />
+            </div>
+            <div className="absolute -inset-4 border-2 border-accent/20 border-t-accent rounded-full animate-spin" />
+          </div>
+        </div>
       </Layout>
     );
   }

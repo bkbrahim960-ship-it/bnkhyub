@@ -131,8 +131,13 @@ const Catalog = ({ mode }: Props) => {
         )}
 
         {loading && (
-          <div className="flex justify-center py-12">
-            <div className="w-10 h-10 border-4 border-accent border-t-transparent rounded-full animate-spin" />
+          <div className="flex flex-col items-center justify-center py-20">
+            <div className="relative">
+              <div className="w-16 h-16 rounded-xl overflow-hidden shadow-glow-accent animate-pulse-glow mb-4">
+                <img src="/icon.png" alt="Loading..." className="w-full h-full object-cover" />
+              </div>
+              <div className="absolute -inset-3 border-2 border-accent/20 border-t-accent rounded-full animate-spin" />
+            </div>
           </div>
         )}
 
