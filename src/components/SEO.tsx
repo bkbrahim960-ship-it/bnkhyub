@@ -17,9 +17,9 @@ export const SEO = ({
   url = 'https://bnk-huub.vercel.app',
   type = 'website'
 }: SEOProps) => {
-  const defaultTitle = 'BNK HUB | منصة المشاهدة الأولى للأفلام والمسلسلات - Le Cinéma Sans Limites';
-  const defaultDescription = 'موقع وتطبيق BNKhub لمشاهدة أحدث الأفلام والمسلسلات الأجنبية والعربية مترجمة بجودة 4K مجاناً وبدون إعلانات مزعجة. تم تصميم وبرمجة هذه المنصة الفاخرة من قبل Brahim Ben Keddache لتوفير تجربة سينمائية لا مثيل لها.';
-  const defaultKeywords = 'BNK HUB, BNKhub, Brahim Ben Keddache, FILM GRATUIT, SERIES GRATUIT, افلام و مسلسلات, فلم مترجم, مسلسلات مترجمة, مشاهدة افلام مجانا, تطبيق افلام, bnk hub movies, مسلسلات نتفليكس';
+  const defaultTitle = 'BNKhub — Le Cinéma du Monde, Sans Limites';
+  const defaultDescription = 'La première plateforme BNKhub pour regarder les derniers films et séries en 4K gratuitement et sans publicités intrusives. Conçue et développée par Brahim Ben Keddache.';
+  const defaultKeywords = 'BNK HUB, BNKhub, Brahim Ben Keddache, FILM GRATUIT, SERIES GRATUIT, films streaming, series streaming, regarder films, netflix gratuit, cinema';
 
   const siteTitle = title ? `${title} | BNK HUB` : defaultTitle;
   const siteDescription = description || defaultDescription;
