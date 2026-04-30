@@ -206,9 +206,13 @@ const Series = () => {
             </h1>
 
             <div className="flex flex-wrap items-center gap-6 mb-8">
-              <div className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-accent/20 border border-accent/30 text-accent">
-                <Star className="w-4 h-4 fill-accent" />
-                <span className="font-bold">{series.vote_average.toFixed(1)}</span>
+              <div className="flex items-center gap-3 px-4 py-2 rounded-2xl bg-black/40 backdrop-blur-xl border border-white/20 shadow-2xl">
+                <img 
+                  src="https://www.themoviedb.org/assets/2/v4/logos/v2/blue_square_2-d537fb228cf3ded904ef09b136fe3fec72548ebc1fea3fbbd1ad9e36364db38b.svg" 
+                  alt="TMDB" 
+                  className="w-8 h-auto drop-shadow-glow-accent"
+                />
+                <span className="text-xl font-black text-white">{series.vote_average.toFixed(1)}</span>
               </div>
               <span className="flex items-center gap-2 text-white/60 font-medium">
                 <Calendar className="w-4 h-4" /> {year}

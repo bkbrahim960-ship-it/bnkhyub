@@ -67,13 +67,13 @@ export const MovieCard = ({ id, title, posterPath, year, rating, type = "movie",
         <div className="absolute top-2 left-2 right-2 flex items-center justify-between z-10 pointer-events-none">
           {/* TMDB Rating Badge */}
           {typeof rating === "number" && rating > 0 && (
-            <div className="flex items-center gap-1.5 bg-black/60 backdrop-blur-md px-2 py-1 rounded-lg border border-white/10 shadow-lg">
+            <div className="flex items-center gap-2 bg-black/70 backdrop-blur-md px-2.5 py-1.5 rounded-lg border border-white/20 shadow-2xl scale-110 origin-left">
               <img 
                 src="https://www.themoviedb.org/assets/2/v4/logos/v2/blue_square_2-d537fb228cf3ded904ef09b136fe3fec72548ebc1fea3fbbd1ad9e36364db38b.svg" 
                 alt="TMDB" 
-                className="w-4 h-auto"
+                className="w-6 h-auto drop-shadow-md"
               />
-              <span className="text-[10px] font-bold text-white">{rating.toFixed(1)}</span>
+              <span className="text-xs font-black text-white drop-shadow-md">{rating.toFixed(1)}</span>
             </div>
           )}
           

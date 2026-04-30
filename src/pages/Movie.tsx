@@ -171,9 +171,13 @@ const Movie = () => {
             )}
 
             <div className="flex flex-wrap items-center gap-8 mb-10 text-white/60 font-medium">
-              <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-accent text-accent-foreground font-black">
-                <Star className="w-4 h-4 fill-current" />
-                {movie.vote_average.toFixed(1)}
+              <div className="flex items-center gap-3 px-4 py-2 rounded-2xl bg-black/40 backdrop-blur-xl border border-white/20 shadow-2xl">
+                <img 
+                  src="https://www.themoviedb.org/assets/2/v4/logos/v2/blue_square_2-d537fb228cf3ded904ef09b136fe3fec72548ebc1fea3fbbd1ad9e36364db38b.svg" 
+                  alt="TMDB" 
+                  className="w-8 h-auto drop-shadow-glow-accent"
+                />
+                <span className="text-xl font-black text-white">{movie.vote_average.toFixed(1)}</span>
               </div>
               <span className="flex items-center gap-2"><Calendar className="w-4 h-4" /> {year}</span>
               <span className="flex items-center gap-2"><Clock className="w-4 h-4" /> {runtime}</span>
