@@ -310,13 +310,11 @@ export const VideoPlayer = ({
               key={sourceIndex}
               src={sources[sourceIndex]}
               title="BNKhub player"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen; playsinline"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
               allowFullScreen
-              referrerPolicy="origin"
-              sandbox="allow-scripts allow-same-origin allow-presentation allow-forms"
+              referrerPolicy="no-referrer-when-downgrade"
               onLoad={handleLoad}
               className="absolute inset-0 w-full h-full"
-              style={{ width: "100%", height: "100%", border: "none" }}
             />
           )
         )}
