@@ -22,7 +22,7 @@ export interface PlayerConfig {
 
 /** Source principale (S1) — utilisée comme url officielle. */
 export const getPrimaryPlayerUrl = (c: PlayerConfig): string => {
-  const base = "https://vidsrc-embed.ru/embed";
+  const base = "https://vaplayer.ru/embed";
   const lang = c.lang ?? "fr";
   const ap = c.autoplay ?? 1;
   const idParam = c.imdb_id ? `imdb=${c.imdb_id}` : `tmdb=${c.tmdb_id}`;
@@ -46,6 +46,7 @@ export const getMovieSources = (imdb_id: string, tmdb_id: number | string): stri
   const color = safeGetAccentHex();
   const id = imdb_id || tmdb_id;
   return [
+    `https://vaplayer.ru/embed/movie/${imdb_id || tmdb_id}?primaryColor=${color.replace('#','')}&lang=fr`,
     `https://vidsrc-embed.ru/embed/movie?${imdb_id ? `imdb=${imdb_id}` : `tmdb=${tmdb_id}`}&ds_lang=fr`,
     `https://vidsrc.to/embed/movie/${id}`,
     `https://vidlink.pro/movie/${tmdb_id}?primaryColor=${color}`,
@@ -72,6 +73,7 @@ export const getTVSources = (
   const color = safeGetAccentHex();
   const id = imdb_id || tmdb_id;
   return [
+    `https://vaplayer.ru/embed/tv/${imdb_id || tmdb_id}/${season}/${episode}?primaryColor=${color.replace('#','')}&lang=fr`,
     `https://vidsrc-embed.ru/embed/tv?${imdb_id ? `imdb=${imdb_id}` : `tmdb=${tmdb_id}`}&season=${season}&episode=${episode}&ds_lang=fr`,
     `https://vidsrc.to/embed/tv/${id}/${season}/${episode}`,
     `https://vidlink.pro/tv/${tmdb_id}/${season}/${episode}?primaryColor=${color}`,
@@ -90,16 +92,16 @@ export const getTVSources = (
 };
 
 export const SOURCE_LABELS = [
-  "S1 · vidsrc-embed",
-  "S2 · vidsrc.to",
-  "S3 · 2embed.cc",
-  "S4 · 2embed.to",
-  "S5 · vidtube",
-  "S6 · vidsrc.me",
-  "S7 · multiembed",
-  "S8 · vidlux",
-  "S9 · embed-api",
-  "S10 · 2embed.cc*",
+  "S1 · VidAPI Premium",
+  "S2 · vidsrc-embed",
+  "S3 · vidsrc.to",
+  "S4 · 2embed.cc",
+  "S5 · 2embed.to",
+  "S6 · vidtube",
+  "S7 · vidsrc.me",
+  "S8 · multiembed",
+  "S9 · vidlux",
+  "S10 · embed-api",
   "S11 · VidLink (Ad-Free)",
   "S12 · AutoEmbed (High Speed)",
   "S13 · VidSrc ICU",
@@ -118,10 +120,10 @@ export interface VidsrcItem {
 
 export const getLatestMovies = async (page = 1): Promise<VidsrcItem[]> => {
   try {
-    const res = await fetch(`https://vidsrc-embed.ru/movies/latest/page-${page}.json`);
+    const res = await fetch(`https://vidapi.ru/movies/latest/page-${page}.json`);
     if (!res.ok) return [];
     const data = await res.json();
-    return Array.isArray(data) ? data : data.result ?? [];
+    return data.items ?? [];
   } catch {
     return [];
   }
@@ -129,10 +131,10 @@ export const getLatestMovies = async (page = 1): Promise<VidsrcItem[]> => {
 
 export const getLatestTVShows = async (page = 1): Promise<VidsrcItem[]> => {
   try {
-    const res = await fetch(`https://vidsrc-embed.ru/tvshows/latest/page-${page}.json`);
+    const res = await fetch(`https://vidapi.ru/tvshows/latest/page-${page}.json`);
     if (!res.ok) return [];
     const data = await res.json();
-    return Array.isArray(data) ? data : data.result ?? [];
+    return data.items ?? [];
   } catch {
     return [];
   }
@@ -140,10 +142,10 @@ export const getLatestTVShows = async (page = 1): Promise<VidsrcItem[]> => {
 
 export const getLatestEpisodes = async (page = 1): Promise<VidsrcItem[]> => {
   try {
-    const res = await fetch(`https://vidsrc-embed.ru/episodes/latest/page-${page}.json`);
+    const res = await fetch(`https://vidapi.ru/episodes/latest/page-${page}.json`);
     if (!res.ok) return [];
     const data = await res.json();
-    return Array.isArray(data) ? data : data.result ?? [];
+    return data.items ?? [];
   } catch {
     return [];
   }

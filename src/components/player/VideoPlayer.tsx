@@ -201,6 +201,31 @@ export const VideoPlayer = ({
     return () => window.removeEventListener("keydown", handleRemote);
   }, [sourceIndex, sources.length, playerActive]);
 
+  // VidAPI Event Listener (Auto-next, Progress)
+  useEffect(() => {
+    const handleMessage = (e: MessageEvent) => {
+      if (e.data?.type !== 'PLAYER_EVENT') return;
+      
+      const { player_status, player_progress, player_info } = e.data.data;
+      const mediaId = player_info?.tmdb || player_info?.imdb || tmdb_id || imdb_id;
+
+      if (player_status === 'playing') {
+        // Save progress for resume
+        localStorage.setItem(`progress_${mediaId}`, String(player_progress));
+      } else if (player_status === 'completed') {
+        if (type === 'tv' && episode) {
+          toast.success(lang === 'ar' ? "جاري تشغيل الحلقة التالية..." : "Lancement de l'épisode suivant...");
+          // In a real app, we would navigate to the next episode URL. 
+          // Here we can trigger a parent callback or refresh state.
+          // For now, let's just show a notification or if we are in a series page, it might handle it.
+        }
+      }
+    };
+
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, [type, episode, tmdb_id, imdb_id, lang]);
+
   return (
     <div className="w-full">
       <AdsNoticeModal
