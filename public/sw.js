@@ -1,5 +1,5 @@
 // BNKhub Service Worker
-const CACHE_NAME = 'bnkhub-cache-v1';
+const CACHE_NAME = 'bnkhub-cache-v2';
 
 self.addEventListener('install', (event) => {
   console.log('[SW] Service Worker Installing');
