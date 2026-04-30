@@ -51,10 +51,15 @@ export const getMovieSources = (imdb_id: string, tmdb_id: number | string): stri
     `https://autoembed.co/movie/tmdb/${tmdb_id}`,
     `https://embed.smashystream.com/playere.php?tmdb=${tmdb_id}`,
     `https://vidsrc-embed.ru/embed/movie?imdb=${imdb_id}&ds_lang=ar`,
-    `https://multiembed.mov/?video_id=${tmdb_id}`,
-    `https://vidsrc.me/embed/movie/${imdb_id}`,
+    `https://vidsrc.to/embed/movie/${imdb_id}`,
     `https://www.2embed.cc/embed/${imdb_id}`,
+    `https://www.2embed.to/embed/imdb/movie?id=${imdb_id}`,
+    `https://vidtube.one/embed-onltjl4kyhsr.html`,
+    `https://vidsrc.me/embed/movie/${imdb_id}`,
+    `https://multiembed.mov/?video_id=${tmdb_id}`,
     `https://vidlux.xyz/embed/movie/${tmdb_id}?color=${color}`,
+    `https://player.embed-api.stream/?id=${tmdb_id}`,
+    `https://2embed.cc/embed/${imdb_id}`,
   ];
 };
 
@@ -72,10 +77,15 @@ export const getTVSources = (
     `https://autoembed.co/tv/tmdb/${tmdb_id}-${season}-${episode}`,
     `https://embed.smashystream.com/playere.php?tmdb=${tmdb_id}&season=${season}&episode=${episode}`,
     `https://vidsrc-embed.ru/embed/tv?imdb=${imdb_id}&season=${season}&episode=${episode}&ds_lang=ar`,
-    `https://multiembed.mov/?video_id=${tmdb_id}&s=${season}&e=${episode}`,
-    `https://vidsrc.me/embed/tv/${imdb_id}/${season}/${episode}`,
+    `https://vidsrc.to/embed/tv/${imdb_id}/${season}/${episode}`,
     `https://www.2embed.cc/embed/${imdb_id}/${season}/${episode}`,
+    `https://www.2embed.to/embed/imdb/tv?id=${imdb_id}&s=${season}&e=${episode}`,
+    `https://vidtube.one/embed-onltjl4kyhsr.html`,
+    `https://vidsrc.me/embed/tv/${imdb_id}/${season}/${episode}`,
+    `https://multiembed.mov/?video_id=${tmdb_id}&s=${season}&e=${episode}`,
     `https://vidlux.xyz/embed/tv/${tmdb_id}/${season}/${episode}?color=${color}`,
+    `https://player.embed-api.stream/?id=${tmdb_id}&s=${season}&e=${episode}`,
+    `https://vidsrc-embed.ru/embed/tv?tmdb=${tmdb_id}&season=${season}&episode=${episode}&ds_lang=ar`,
   ];
 };
 
@@ -86,10 +96,15 @@ export const SOURCE_LABELS = [
   "VIP · AutoEmbed (No Buffering)",
   "S5 · SmashyStream (Arabic Subs)",
   "S6 · vidsrc-embed (Arabic Dub/Sub)",
-  "S7 · multiembed",
-  "S8 · vidsrc.me",
-  "S9 · 2embed.cc",
-  "S10 · vidlux",
+  "S7 · vidsrc.to",
+  "S8 · 2embed.cc",
+  "S9 · 2embed.to",
+  "S10 · vidtube",
+  "S11 · vidsrc.me",
+  "S12 · multiembed",
+  "S13 · vidlux",
+  "S14 · embed-api",
+  "S15 · 2embed.cc (Alt)",
 ];
 
 // ───── Nouveautés vidsrc-embed ─────
