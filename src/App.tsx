@@ -82,6 +82,8 @@ const SiteVisitTracker = () => {
   return null;
 };
 
+import { Onboarding } from "@/components/ui/Onboarding";
+
 const App = () => (
   <HelmetProvider>
     <QueryClientProvider client={queryClient}>
@@ -97,6 +99,7 @@ const App = () => (
                     <Toaster />
                     <Sonner />
                     <SEO />
+                    <Onboarding />
                     <BrowserRouter>
                       <SiteVisitTracker />
                       <TVNavigationActivator />
