@@ -143,6 +143,28 @@ const Search = () => {
 
   const hasActiveFilters = selectedGenre || selectedYear || selectedRating || mediaFilter !== "all";
 
+  // Recent Searches Feature
+  const [recentSearches, setRecentSearches] = useState<any[]>([]);
+  useEffect(() => {
+    const saved = localStorage.getItem("bnkhub_recent_searches");
+    if (saved) setRecentSearches(JSON.parse(saved));
+  }, []);
+
+  const saveToRecent = (item: any) => {
+    const newItem = {
+      id: item.id,
+      title: item.title || item.name,
+      poster_path: item.poster_path,
+      media_type: item.media_type,
+      vote_average: item.vote_average,
+      release_date: item.release_date || item.first_air_date
+    };
+    const filtered = recentSearches.filter(r => r.id !== newItem.id);
+    const updated = [newItem, ...filtered].slice(0, 4);
+    setRecentSearches(updated);
+    localStorage.setItem("bnkhub_recent_searches", JSON.stringify(updated));
+  };
+
   return (
     <Layout>
       <section className="pt-28 pb-8">
@@ -165,6 +187,40 @@ const Search = () => {
               <Loader2 className="absolute top-1/2 end-5 -translate-y-1/2 w-5 h-5 text-accent animate-spin" />
             )}
           </div>
+
+          {/* Recent Searches */}
+          {!q && recentSearches.length > 0 && !hasActiveFilters && (
+            <div className="mb-10 animate-fade-in">
+              <div className="flex items-center justify-between mb-5">
+                <h2 className="text-xs uppercase tracking-[0.3em] font-bold text-accent">
+                  {lang === "ar" ? "عمليات البحث الأخيرة" : "Recent Searches"}
+                </h2>
+                <button 
+                  onClick={() => {
+                    setRecentSearches([]);
+                    localStorage.removeItem("bnkhub_recent_searches");
+                  }}
+                  className="text-[10px] uppercase tracking-widest text-muted-foreground hover:text-red-400 transition-colors"
+                >
+                  {lang === "ar" ? "مسح السجل" : "Clear History"}
+                </button>
+              </div>
+              <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
+                {recentSearches.map((m) => (
+                  <div key={`recent-${m.id}`} onClick={() => saveToRecent(m)}>
+                    <MovieCard
+                      id={m.id}
+                      title={m.title}
+                      posterPath={m.poster_path}
+                      year={m.release_date?.slice(0, 4)}
+                      rating={m.vote_average}
+                      type={m.media_type}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Filter Toggle */}
           <div className="flex items-center gap-3 mb-6">
@@ -266,16 +322,17 @@ const Search = () => {
         {results.length > 0 && (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5">
             {results.map((m) => (
-              <MovieCard
-                key={`${m.media_type}-${m.id}`}
-                id={m.id}
-                title={m.title || m.name}
-                posterPath={m.poster_path}
-                year={(m.release_date || m.first_air_date)?.slice(0, 4)}
-                rating={m.vote_average}
-                type={m.media_type}
-                className="w-full"
-              />
+              <div key={`${m.media_type}-${m.id}`} onClick={() => saveToRecent(m)}>
+                <MovieCard
+                  id={m.id}
+                  title={m.title || m.name}
+                  posterPath={m.poster_path}
+                  year={(m.release_date || m.first_air_date)?.slice(0, 4)}
+                  rating={m.vote_average}
+                  type={m.media_type}
+                  className="w-full"
+                />
+              </div>
             ))}
           </div>
         )}
