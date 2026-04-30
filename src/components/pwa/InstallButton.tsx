@@ -1,36 +1,22 @@
 /**
- * BNKhub — Bouton flottant permanent « Installer l'app ».
- * Masqué si déjà installé.
+ * BNKhub — Bouton de téléchargement direct de l'APK Android.
  */
 import { Download } from "lucide-react";
-import { useState } from "react";
-import { useInstallPWA } from "@/hooks/useInstallPWA";
 import { useLanguage } from "@/context/LanguageContext";
-import { InstallModal } from "./InstallModal";
 
 export const InstallButton = () => {
-  const { installed } = useInstallPWA();
   const { t } = useLanguage();
-  const [forceOpen, setForceOpen] = useState(false);
-
-  if (installed) return null;
 
   return (
-    <>
-      <button
-        onClick={() => {
-          // Rouvre la modale en effaçant le flag temporairement
-          localStorage.removeItem("bnkhub_pwa_shown");
-          setForceOpen((v) => !v);
-          setTimeout(() => setForceOpen(false), 100);
-        }}
-        className="hidden md:inline-flex items-center gap-2 text-xs font-medium px-3 py-2 rounded-full border border-accent-subtle text-accent hover:bg-accent/10 transition-colors duration-300"
-        aria-label={t("install_float")}
-      >
-        <Download className="w-3.5 h-3.5" />
-        <span>{t("install_float")}</span>
-      </button>
-      {forceOpen && <InstallModal />}
-    </>
+    <a
+      href="/bnkhub.apk"
+      download="BNKhub.apk"
+      className="hidden md:inline-flex items-center gap-2 text-xs font-medium px-4 py-2 rounded-full border border-accent-subtle bg-accent/10 text-accent hover:bg-accent hover:text-accent-foreground shadow-glow transition-all duration-300"
+      aria-label={t("install_float")}
+    >
+      <Download className="w-4 h-4" />
+      <span className="font-bold">Android APK</span>
+    </a>
   );
 };
+
