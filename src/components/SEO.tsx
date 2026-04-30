@@ -17,9 +17,9 @@ export const SEO = ({
   url = 'https://bnk-huub.vercel.app',
   type = 'website'
 }: SEOProps) => {
-  const defaultTitle = 'BNK HUB | BNKhub - افلام و مسلسلات مترجمة مجانا | FILM GRATUIT SERIES GRATUIT';
-  const defaultDescription = 'موقع BNKhub الأول لمشاهدة أحدث الأفلام والمسلسلات مترجمة بجودة عالية مجانا. BNK HUB Film Gratuit, Series Gratuit, أفلام و مسلسلات حصرية.';
-  const defaultKeywords = 'BNK HUB, BNKhub, BNKHUB, FILM GRATUIT, SERIES GRATUIT, افلام و مسلسلات, فلم مترجم, مسلسلات مترجمة, مشاهدة افلام مجانا, موقع افلام, bnk hub movies';
+  const defaultTitle = 'BNK HUB | منصة المشاهدة الأولى للأفلام والمسلسلات - Le Cinéma Sans Limites';
+  const defaultDescription = 'موقع وتطبيق BNKhub لمشاهدة أحدث الأفلام والمسلسلات الأجنبية والعربية مترجمة بجودة 4K مجاناً وبدون إعلانات مزعجة. تم تصميم وبرمجة هذه المنصة الفاخرة من قبل Brahim Ben Keddache لتوفير تجربة سينمائية لا مثيل لها.';
+  const defaultKeywords = 'BNK HUB, BNKhub, Brahim Ben Keddache, FILM GRATUIT, SERIES GRATUIT, افلام و مسلسلات, فلم مترجم, مسلسلات مترجمة, مشاهدة افلام مجانا, تطبيق افلام, bnk hub movies, مسلسلات نتفليكس';
 
   const siteTitle = title ? `${title} | BNK HUB` : defaultTitle;
   const siteDescription = description || defaultDescription;
@@ -32,6 +32,7 @@ export const SEO = ({
       <meta name="title" content={siteTitle} />
       <meta name="description" content={siteDescription} />
       <meta name="keywords" content={siteKeywords} />
+      <meta name="author" content="Brahim Ben Keddache" />
       <meta name="language" content="ar, fr, en" />
       <meta name="robots" content="index, follow" />
 
