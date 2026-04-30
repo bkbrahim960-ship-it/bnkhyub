@@ -1,7 +1,7 @@
 {
-  "name": "BNKhub — Le Cinéma du Monde, Sans Limites",
+  "name": "BNKhub — منصة المشاهدة الأولى للأفلام والمسلسلات",
   "short_name": "BNKhub",
-  "description": "Streaming premium, gratuit et sans abonnement.",
+  "description": "موقع وتطبيق BNKhub لمشاهدة أحدث الأفلام والمسلسلات مترجمة بجودة 4K مجاناً. تم تصميم وبرمجة هذه المنصة من قبل Brahim Ben Keddache.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
