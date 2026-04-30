@@ -174,14 +174,27 @@ export const VideoPlayer = ({
   // Remote Control Listener
   useEffect(() => {
     const handleRemote = (e: KeyboardEvent) => {
+      const isTV = isAndroidTV();
+      
       if (e.key === "ArrowRight") {
+        if (!playerActive) return;
         const next = (sourceIndex + 1) % sources.length;
         selectSource(next);
       } else if (e.key === "ArrowLeft") {
+        if (!playerActive) return;
         const prev = (sourceIndex - 1 + sources.length) % sources.length;
         selectSource(prev);
-      } else if (e.key === "Enter" && !playerActive) {
-        setPlayerActive(true);
+      } else if (e.key === "Enter" || e.key === "OK" || e.key === "Select") {
+        if (!playerActive) {
+          handleStartPlay();
+        } else if (videoRef.current) {
+          // Toggle Play/Pause for HLS
+          if (videoRef.current.paused) videoRef.current.play().catch(() => {});
+          else videoRef.current.pause();
+        }
+      } else if (e.key === "Escape" || e.key === "Back" || e.key === "BrowserBack") {
+        if (adsOpen) setAdsOpen(false);
+        else if (playerActive) setPlayerActive(false);
       } else if (e.key === "r" || e.key === "R") {
         retry();
       }
@@ -189,7 +202,7 @@ export const VideoPlayer = ({
 
     window.addEventListener("keydown", handleRemote);
     return () => window.removeEventListener("keydown", handleRemote);
-  }, [sourceIndex, sources.length, playerActive]);
+  }, [sourceIndex, sources.length, playerActive, adsOpen]);
 
   // VidAPI Event Listener (Auto-next, Progress)
   useEffect(() => {
