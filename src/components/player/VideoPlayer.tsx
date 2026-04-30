@@ -97,23 +97,30 @@ export const VideoPlayer = ({
     fetchCustomServers();
   }, [imdb_id, tmdb_id, type, season, episode]);
 
-  // Recharge quand on change de source / d'item (sans auto-switch)
+  // Recharge quand on change de source / d'item
   useEffect(() => {
     if (!playerActive) return;
     setLoading(true);
     if (timeoutRef.current) window.clearTimeout(timeoutRef.current);
-    // Simple indicateur visuel "source lente" après 8s, sans bascule auto
+    
+    // Auto-fallback après 12s d'attente بدون تحميل
     timeoutRef.current = window.setTimeout(() => {
-      setSlow((prev) => {
-        const copy = [...prev];
-        copy[sourceIndex] = true;
-        return copy;
-      });
-    }, 8000);
+      if (loading && sourceIndex < sources.length - 1) {
+        toast.info(lang === 'ar' ? "السيرفر الحالي بطيء، جاري تجربة سيرفر آخر..." : "Serveur lent, passage au suivant...");
+        setSourceIndex(prev => prev + 1);
+      } else if (loading) {
+        setSlow(prev => {
+          const copy = [...prev];
+          copy[sourceIndex] = true;
+          return copy;
+        });
+      }
+    }, 12000);
+
     return () => {
       if (timeoutRef.current) window.clearTimeout(timeoutRef.current);
     };
-  }, [sourceIndex, playerActive, imdb_id, tmdb_id, season, episode]);
+  }, [sourceIndex, playerActive, imdb_id, tmdb_id, season, episode, loading]);
 
   useEffect(() => {
     const currentSource = sources[sourceIndex];

@@ -103,9 +103,9 @@ const Movie = () => {
 
   const year = movie.release_date?.slice(0, 4);
   const runtime = movie.runtime ? `${Math.floor(movie.runtime / 60)}h ${movie.runtime % 60}min` : null;
+  const imdb = movie.imdb_id || (movie as any).external_ids?.imdb_id || "";
   const backdrop = IMG.backdrop(movie.backdrop_path, "original");
   const poster = IMG.poster(movie.poster_path, "w500");
-  const imdb = (movie as any).imdb_id ?? (movie as any).external_ids?.imdb_id ?? "";
   
   const trailer = movie.videos?.results.find(
     (v) => v.type === "Trailer" && v.site === "YouTube"

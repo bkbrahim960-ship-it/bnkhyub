@@ -44,22 +44,22 @@ export const getPrimaryPlayerUrl = (c: PlayerConfig): string => {
 
 export const getMovieSources = (imdb_id: string, tmdb_id: number | string): string[] => {
   const color = safeGetAccentHex();
+  const id = imdb_id || tmdb_id;
   return [
-    `https://vidsrc-embed.ru/embed/movie?imdb=${imdb_id}&ds_lang=fr`,
-    `https://vidsrc.to/embed/movie/${imdb_id}`,
-    `https://www.2embed.cc/embed/${imdb_id}`,
-    `https://www.2embed.to/embed/imdb/movie?id=${imdb_id}`,
-    `https://vidtube.one/embed-onltjl4kyhsr.html`,
-    `https://vidsrc.me/embed/movie/${imdb_id}`,
-    `https://multiembed.mov/?video_id=${tmdb_id}`,
-    `https://vidlux.xyz/embed/movie/${tmdb_id}?color=${color}`,
-    `https://player.embed-api.stream/?id=${tmdb_id}`,
-    `https://2embed.cc/embed/${imdb_id}`,
+    `https://vidsrc-embed.ru/embed/movie?${imdb_id ? `imdb=${imdb_id}` : `tmdb=${tmdb_id}`}&ds_lang=fr`,
+    `https://vidsrc.to/embed/movie/${id}`,
     `https://vidlink.pro/movie/${tmdb_id}?primaryColor=${color}`,
     `https://autoembed.co/movie/tmdb/${tmdb_id}`,
-    `https://vidsrc.icu/embed/movie/${imdb_id}`,
-    `https://vidsrc.net/embed/movie/${imdb_id}`,
-    `https://vidsrc.xyz/embed/movie/${imdb_id}`,
+    `https://multiembed.mov/?video_id=${tmdb_id}`,
+    `https://vidlux.xyz/embed/movie/${tmdb_id}?color=${color}`,
+    `https://vidsrc.me/embed/movie/${id}`,
+    `https://vidsrc.icu/embed/movie/${id}`,
+    `https://vidsrc.net/embed/movie/${id}`,
+    `https://vidsrc.xyz/embed/movie/${id}`,
+    `https://www.2embed.cc/embed/${id}`,
+    `https://www.2embed.to/embed/imdb/movie?id=${id}`,
+    `https://player.embed-api.stream/?id=${tmdb_id}`,
+    `https://vidtube.one/embed-onltjl4kyhsr.html`,
   ];
 };
 
@@ -70,22 +70,22 @@ export const getTVSources = (
   episode: number,
 ): string[] => {
   const color = safeGetAccentHex();
+  const id = imdb_id || tmdb_id;
   return [
-    `https://vidsrc-embed.ru/embed/tv?imdb=${imdb_id}&season=${season}&episode=${episode}&ds_lang=fr`,
-    `https://vidsrc.to/embed/tv/${imdb_id}/${season}/${episode}`,
-    `https://www.2embed.cc/embed/${imdb_id}/${season}/${episode}`,
-    `https://www.2embed.to/embed/imdb/tv?id=${imdb_id}&s=${season}&e=${episode}`,
-    `https://vidtube.one/embed-onltjl4kyhsr.html`,
-    `https://vidsrc.me/embed/tv/${imdb_id}/${season}/${episode}`,
-    `https://multiembed.mov/?video_id=${tmdb_id}&s=${season}&e=${episode}`,
-    `https://vidlux.xyz/embed/tv/${tmdb_id}/${season}/${episode}`,
-    `https://player.embed-api.stream/?id=${tmdb_id}&s=${season}&e=${episode}`,
-    `https://vidsrc-embed.ru/embed/tv?tmdb=${tmdb_id}&season=${season}&episode=${episode}&ds_lang=fr`,
+    `https://vidsrc-embed.ru/embed/tv?${imdb_id ? `imdb=${imdb_id}` : `tmdb=${tmdb_id}`}&season=${season}&episode=${episode}&ds_lang=fr`,
+    `https://vidsrc.to/embed/tv/${id}/${season}/${episode}`,
     `https://vidlink.pro/tv/${tmdb_id}/${season}/${episode}?primaryColor=${color}`,
     `https://autoembed.co/tv/tmdb/${tmdb_id}-${season}-${episode}`,
-    `https://vidsrc.icu/embed/tv/${imdb_id}/${season}/${episode}`,
-    `https://vidsrc.net/embed/tv/${imdb_id}/${season}/${episode}`,
-    `https://vidsrc.xyz/embed/tv/${imdb_id}/${season}/${episode}`,
+    `https://multiembed.mov/?video_id=${tmdb_id}&s=${season}&e=${episode}`,
+    `https://vidlux.xyz/embed/tv/${tmdb_id}/${season}/${episode}`,
+    `https://vidsrc.me/embed/tv/${id}/${season}/${episode}`,
+    `https://vidsrc.icu/embed/tv/${id}/${season}/${episode}`,
+    `https://vidsrc.net/embed/tv/${id}/${season}/${episode}`,
+    `https://vidsrc.xyz/embed/tv/${id}/${season}/${episode}`,
+    `https://www.2embed.cc/embed/${id}/${season}/${episode}`,
+    `https://www.2embed.to/embed/imdb/tv?id=${id}&s=${season}&e=${episode}`,
+    `https://player.embed-api.stream/?id=${tmdb_id}&s=${season}&e=${episode}`,
+    `https://vidsrc-embed.ru/embed/tv?tmdb=${tmdb_id}&season=${season}&episode=${episode}&ds_lang=fr`,
   ];
 };
 
