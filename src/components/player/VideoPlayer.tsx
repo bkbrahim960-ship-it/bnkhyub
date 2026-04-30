@@ -219,18 +219,40 @@ export const VideoPlayer = ({
         <h2 className="font-display text-xl md:text-2xl text-accent mb-3 px-1">{title}</h2>
       )}
 
-      <div className="relative w-full aspect-video bg-black rounded-xl overflow-hidden border border-border shadow-card-luxe">
+      <div className="relative w-full aspect-video bg-black rounded-2xl overflow-hidden border border-white/10 shadow-2xl group/player">
+        {/* Unified Header Overlay */}
+        <div className="absolute top-0 inset-x-0 z-20 p-4 flex items-center justify-between bg-gradient-to-b from-black/80 to-transparent opacity-0 group-hover/player:opacity-100 transition-opacity duration-500">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-lg bg-accent/20 backdrop-blur-xl border border-accent/40 flex items-center justify-center">
+              <ShieldCheck className="w-4 h-4 text-accent" />
+            </div>
+            <div>
+              <p className="text-[10px] font-bold text-accent uppercase tracking-[0.2em]">{allLabels[sourceIndex] || SOURCE_LABELS[sourceIndex]}</p>
+              <h3 className="text-xs font-bold text-white/90 line-clamp-1">{title || "BNKhub Player"}</h3>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="px-2 py-0.5 rounded bg-red-500 text-[8px] font-black text-white animate-pulse">LIVE</span>
+            <span className="px-2 py-0.5 rounded bg-white/10 border border-white/20 text-[8px] font-black text-white/80">ULTRA HD</span>
+          </div>
+        </div>
+
         {!playerActive && (
-          <div className="absolute inset-0 flex items-center justify-center bg-surface-elevated">
-            <button
-              onClick={() => {
-                setAdsOpen(false);
-                setPlayerActive(true);
-              }}
-              className="bg-gradient-accent text-accent-foreground font-semibold px-8 py-4 rounded-full shadow-accent animate-pulse-glow"
-            >
-              ▶ {t("hero_watch")}
-            </button>
+          <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-surface-elevated/40 backdrop-blur-sm">
+            <div className="relative group">
+              <div className="absolute -inset-4 bg-accent/20 rounded-full blur-2xl group-hover:bg-accent/40 transition-all duration-700" />
+              <button
+                onClick={() => {
+                  setAdsOpen(false);
+                  setPlayerActive(true);
+                }}
+                className="relative bg-gradient-accent text-accent-foreground font-black px-10 py-5 rounded-full shadow-accent hover:scale-110 active:scale-95 transition-all flex items-center gap-3"
+              >
+                <Play className="w-6 h-6 fill-current" />
+                {t("hero_watch")}
+              </button>
+            </div>
+            <p className="mt-6 text-[10px] font-bold text-white/40 uppercase tracking-[0.3em] animate-pulse">Experience BNKhub Premium</p>
           </div>
         )}
 
