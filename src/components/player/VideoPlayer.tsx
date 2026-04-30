@@ -313,6 +313,7 @@ export const VideoPlayer = ({
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen; playsinline"
               allowFullScreen
               referrerPolicy="origin"
+              sandbox="allow-scripts allow-same-origin allow-presentation allow-forms"
               onLoad={handleLoad}
               className="absolute inset-0 w-full h-full"
               style={{ width: "100%", height: "100%", border: "none" }}
