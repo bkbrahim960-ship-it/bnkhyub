@@ -304,16 +304,6 @@ const ProfilePage = () => {
             </div>
           )}
 
-          {/* Analytics (Solo si logueado) */}
-          {user && (
-            <div className="mb-8">
-              <p className="text-xs uppercase tracking-widest text-muted-foreground mb-4">
-                {lang === "ar" ? "إحصائيات المشاهدة" : "Your Activity"}
-              </p>
-              <WatchAnalytics userId={user.id} />
-            </div>
-          )}
-
           {/* Pseudo */}
           <label className="block mb-5">
             <span className="text-xs uppercase tracking-widest text-muted-foreground">
