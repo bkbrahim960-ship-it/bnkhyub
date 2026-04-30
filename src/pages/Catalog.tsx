@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { MovieCard } from "@/components/movie/MovieCard";
+import { SEO } from "@/components/SEO";
 import { useLanguage } from "@/context/LanguageContext";
 import { tmdbLang } from "@/services/i18n";
 import { 
@@ -84,13 +85,20 @@ const Catalog = ({ mode }: Props) => {
     return () => { active = false; };
   }, [mode, page, lang, kidsMode, providerId]);
 
+  const pageTitle = providerName ? `${providerName} Hub` : (mode === "movies" ? t("nav_movies") : t("nav_series"));
+
   return (
     <Layout>
+      <SEO 
+        title={pageTitle}
+        description={`تصفح وشاهد أفضل ${pageTitle} مجاناً وبجودة عالية على BNK HUB.`}
+        keywords={`${pageTitle}, مشاهدة مجانية, BNK HUB, افلام و مسلسلات`}
+      />
       <section className="pt-28 pb-12 container min-h-screen">
         <div className="flex items-center gap-4 mb-8">
            <div className="h-10 w-1.5 bg-accent rounded-full shadow-glow" />
            <h1 className="font-display text-4xl md:text-5xl text-gradient-accent">
-            {providerName ? `${providerName} Hub` : (mode === "movies" ? t("nav_movies") : t("nav_series"))}
+            {pageTitle}
           </h1>
         </div>
 

@@ -14,6 +14,7 @@ import { useWatchParty } from "@/hooks/useWatchParty";
 import { useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 import Hls from "hls.js";
+import { PlayerSourceSelector } from "./PlayerSourceSelector";
 
 interface Props {
   imdb_id: string;
@@ -264,39 +265,24 @@ export const VideoPlayer = ({
         )}
       </div>
 
-      {/* Sélecteur manuel S1–S10 */}
+      {/* Sélecteur de source avancé */}
       <div className="mt-5">
-        <p className="text-xs uppercase tracking-widest text-muted-foreground mb-2">
-          {t("player_source")}
-        </p>
-        <div className="flex flex-wrap gap-2">
-          {sources.map((_, idx) => {
-            const isActive = idx === sourceIndex;
-            const isSlow = slow[idx];
-            return (
-              <button
-                key={idx}
-                onClick={() => selectSource(idx)}
-                className={`relative text-xs font-medium px-3 py-2 rounded-lg border transition-all duration-300 ease-luxe ${
-                  isActive
-                    ? "border-accent bg-accent/10 text-accent shadow-accent"
-                    : isSlow
-                    ? "border-border bg-surface-card text-muted-foreground"
-                    : "border-border bg-surface-card hover:border-accent-subtle text-foreground/80"
-                }`}
-                title={allLabels[idx] || SOURCE_LABELS[idx]}
-              >
-                {isActive && (
-                  <span
-                    className="absolute -top-1 -end-1 w-2 h-2 rounded-full animate-pulse-dot"
-                    style={{ background: "hsl(142 70% 50%)" }}
-                  />
-                )}
-                S{idx + 1}
-              </button>
-            );
+        <PlayerSourceSelector 
+          sources={sources.map((src, idx) => {
+            const isDirect = src.includes(".m3u8") || src.includes(".mp4") || src.includes("youtube");
+            return {
+              id: idx,
+              name: allLabels[idx] || SOURCE_LABELS[idx] || `Source ${idx + 1}`,
+              quality: isDirect ? "1080p" : "Auto",
+              speed: isDirect ? "50" : "30",
+              uptime: "99",
+              hasAds: !isDirect,
+              selected: idx === sourceIndex
+            };
           })}
-        </div>
+          onSelect={selectSource}
+          isLoading={false}
+        />
       </div>
 
       {/* Watch Party & Info */}

@@ -12,6 +12,7 @@ import { ReviewSection } from "@/components/movie/ReviewSection";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
 import { tmdbLang } from "@/services/i18n";
+import { SEO } from "@/components/SEO";
 import { upsertWatchEntry } from "@/services/watchHistory";
 import { KABYLE_CONTENT } from "@/services/customContent";
 import { SOURCE_LABELS } from "@/services/player";
@@ -164,6 +165,13 @@ const Series = () => {
 
   return (
     <Layout>
+      <SEO 
+        title={`مشاهدة مسلسل ${series.name} مترجم`}
+        description={series.overview || `شاهد جميع مواسم وحلقات مسلسل ${series.name} مترجم مجاناً على BNK HUB.`}
+        image={poster}
+        type="video.tv_show"
+        keywords={`${series.name}, مسلسل ${series.name}, مترجم, BNK HUB, مشاهدة مجانية, SERIES GRATUIT`}
+      />
       {/* Cinematic Hero */}
       <section className="relative min-h-[85vh] flex items-end pb-20 overflow-hidden">
         {backdrop && (

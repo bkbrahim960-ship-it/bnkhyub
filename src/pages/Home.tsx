@@ -10,6 +10,7 @@ import { MovieRow } from "@/components/movie/MovieRow";
 import { M3UMovieRow } from "@/components/movie/M3UMovieRow";
 import { BrandRow } from "@/components/movie/BrandRow";
 import { ContinueWatchingRow } from "@/components/movie/ContinueWatchingRow";
+import { SEO } from "@/components/SEO";
 import { useLanguage } from "@/context/LanguageContext";
 import { useSettings } from "@/context/SettingsContext";
 import { tmdbLang } from "@/services/i18n";
@@ -127,6 +128,10 @@ const Home = () => {
 
   return (
     <Layout>
+      <SEO 
+        title="أحدث الأفلام والمسلسلات مجاناً" 
+        description="شاهد وحمل أحدث الأفلام والمسلسلات بجودة عالية ومترجمة حصرياً على BNK HUB مجاناً."
+      />
       <MovieHero items={hero} />
 
       <div className="relative -mt-20 z-10">

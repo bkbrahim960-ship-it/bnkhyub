@@ -12,6 +12,7 @@ import { IMG, getMovieDetails, getMovieRecommendations, TMDBMovie } from "@/serv
 import { useLanguage } from "@/context/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
 import { tmdbLang } from "@/services/i18n";
+import { SEO } from "@/components/SEO";
 import { upsertWatchEntry } from "@/services/watchHistory";
 import { KABYLE_CONTENT } from "@/services/customContent";
 import { SOURCE_LABELS } from "@/services/player";
@@ -125,6 +126,13 @@ const Movie = () => {
 
   return (
     <Layout>
+      <SEO 
+        title={`مشاهدة فيلم ${movie.title} مترجم`}
+        description={movie.overview || `شاهد فيلم ${movie.title} بجودة عالية ومترجم مجاناً على BNK HUB.`}
+        image={poster}
+        type="video.movie"
+        keywords={`${movie.title}, فيلم ${movie.title}, مشاهدة فيلم ${movie.title}, افلام مترجمة, BNK HUB`}
+      />
       {/* Cinematic Hero */}
       <section className="relative min-h-[90vh] flex items-end pb-24 overflow-hidden">
         {backdrop && (

@@ -23,6 +23,8 @@ import NotFound from "./pages/NotFound.tsx";
 
 import { AmbientProvider, AmbientBackground } from "@/context/AmbientContext";
 import { useTVNavigation } from "@/hooks/useTVNavigation";
+import { HelmetProvider } from "react-helmet-async";
+import { SEO } from "@/components/SEO";
 import { useRemoteControl } from "@/hooks/useRemoteControl";
 import { VirtualCursor } from "@/components/ui/VirtualCursor";
 import { useState, useEffect } from "react";
@@ -57,7 +59,8 @@ const TVNavigationActivator = () => {
 };
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
+  <HelmetProvider>
+    <QueryClientProvider client={queryClient}>
     <ThemeProvider>
       <AmbientProvider>
         <div className="relative min-h-screen bg-background">
@@ -69,6 +72,7 @@ const App = () => (
                   <TooltipProvider>
                     <Toaster />
                     <Sonner />
+                    <SEO />
                     <BrowserRouter>
                       <TVNavigationActivator />
                       <VirtualCursor />
@@ -97,7 +101,8 @@ const App = () => (
         </div>
       </AmbientProvider>
     </ThemeProvider>
-  </QueryClientProvider>
+    </QueryClientProvider>
+  </HelmetProvider>
 );
 
 export default App;
