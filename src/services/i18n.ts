@@ -76,7 +76,7 @@ const dict = {
     player_all_failed: "Aucune source disponible",
     player_retry: "Réessayer depuis la source 1",
 
-    footer_credit: "Conçu & développé par",
+    footer_credit: "Cette application a été conçue et programmée par",
     footer_rights: "Tous droits réservés",
 
     search_placeholder: "Rechercher un film, une série…",
@@ -168,7 +168,7 @@ const dict = {
     player_all_failed: "No source available",
     player_retry: "Retry from source 1",
 
-    footer_credit: "Designed & developed by",
+    footer_credit: "This application was designed and programmed by",
     footer_rights: "All rights reserved",
 
     search_placeholder: "Search for a movie or show…",

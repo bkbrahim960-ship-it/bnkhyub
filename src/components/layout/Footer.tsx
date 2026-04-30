@@ -40,11 +40,16 @@ export const Footer = () => {
         </div>
 
         {/* Signature designer — obligatoire */}
-        <div className="mt-12 pt-6 border-t border-border flex flex-col items-center gap-1">
-          <p className="designer-credit">
-            {t("footer_credit")}{" "}
-            <span className="gold-name">Brahim Ben Keddache</span>
+        <div className="mt-12 pt-8 border-t border-white/5 flex flex-col items-center gap-2">
+          <p className="text-[11px] uppercase tracking-[0.4em] text-white/50 font-bold mb-2">
+            {t("footer_credit")}
           </p>
+          <div className="relative group p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-accent/50 transition-colors">
+            <div className="absolute -inset-4 bg-accent/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+            <span className="relative text-2xl md:text-3xl font-display font-black bg-gradient-to-r from-accent via-white to-accent bg-clip-text text-transparent animate-gradient-x tracking-tight">
+              Brahim Ben Keddache
+            </span>
+          </div>
         </div>
       </div>
     </footer>
