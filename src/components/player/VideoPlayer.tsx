@@ -101,26 +101,7 @@ export const VideoPlayer = ({
   useEffect(() => {
     if (!playerActive) return;
     setLoading(true);
-    if (timeoutRef.current) window.clearTimeout(timeoutRef.current);
-    
-    // Auto-fallback après 12s d'attente بدون تحميل
-    timeoutRef.current = window.setTimeout(() => {
-      if (loading && sourceIndex < sources.length - 1) {
-        toast.info(lang === 'ar' ? "السيرفر الحالي بطيء، جاري تجربة سيرفر آخر..." : "Serveur lent, passage au suivant...");
-        setSourceIndex(prev => prev + 1);
-      } else if (loading) {
-        setSlow(prev => {
-          const copy = [...prev];
-          copy[sourceIndex] = true;
-          return copy;
-        });
-      }
-    }, 12000);
-
-    return () => {
-      if (timeoutRef.current) window.clearTimeout(timeoutRef.current);
-    };
-  }, [sourceIndex, playerActive, imdb_id, tmdb_id, season, episode, loading]);
+  }, [sourceIndex, playerActive, imdb_id, tmdb_id, season, episode]);
 
   useEffect(() => {
     const currentSource = sources[sourceIndex];
@@ -214,10 +195,7 @@ export const VideoPlayer = ({
         localStorage.setItem(`progress_${mediaId}`, String(player_progress));
       } else if (player_status === 'completed') {
         if (type === 'tv' && episode) {
-          toast.success(lang === 'ar' ? "جاري تشغيل الحلقة التالية..." : "Lancement de l'épisode suivant...");
-          // In a real app, we would navigate to the next episode URL. 
-          // Here we can trigger a parent callback or refresh state.
-          // For now, let's just show a notification or if we are in a series page, it might handle it.
+          // Automatic next logic can be handled by parent or manual action
         }
       }
     };
