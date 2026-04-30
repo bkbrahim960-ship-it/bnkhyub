@@ -75,14 +75,15 @@ const Admin = () => {
 
   const fetchStats = async () => {
     try {
-      const [usersRes, viewsRes, reviewsRes] = await Promise.all([
+      const [usersRes, viewsRes, reviewsRes, visitsRes] = await Promise.all([
         supabase.from('profiles').select('id', { count: 'exact', head: true }),
         supabase.from('watch_history').select('id', { count: 'exact', head: true }),
-        supabase.from('reviews').select('id', { count: 'exact', head: true })
+        supabase.from('reviews').select('id', { count: 'exact', head: true }),
+        supabase.from('site_visits').select('id', { count: 'exact', head: true })
       ]);
       
       setStats({
-        users: usersRes.count || 0,
+        users: visitsRes.count || usersRes.count || 0, // Fallback to profiles if visits is 0 or error
         views: viewsRes.count || 0,
         reviews: reviewsRes.count || 0
       });
@@ -270,6 +271,20 @@ CREATE TABLE live_channels (
 ALTER TABLE live_channels ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Tout le monde peut voir les chaînes" ON live_channels FOR SELECT USING (true);
 CREATE POLICY "Admin full access" ON live_channels FOR ALL USING (auth.email() = 'bkbrahim960@gmail.com');
+
+-- ═══════════════════════════════════════
+-- TABLE SITE VISITS (Track Anonymous Visitors)
+-- ═══════════════════════════════════════
+
+CREATE TABLE site_visits (
+  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  session_id TEXT NOT NULL UNIQUE,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
+);
+
+ALTER TABLE site_visits ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Tout le monde peut insérer une visite" ON site_visits FOR INSERT WITH CHECK (true);
+CREATE POLICY "Tout le monde peut lire les visites" ON site_visits FOR SELECT USING (true);
   `.trim();
 
   if (authLoading || user?.email !== "bkbrahim960@gmail.com") {
@@ -303,11 +318,11 @@ CREATE POLICY "Admin full access" ON live_channels FOR ALL USING (auth.email() =
           <div className="bg-surface-card border border-border rounded-xl p-6 shadow-card-luxe">
             <div className="flex items-center justify-between mb-4">
               <Users className="w-6 h-6 text-accent" />
-              <span className="text-[10px] uppercase font-bold text-muted-foreground">Utilisateurs</span>
+              <span className="text-[10px] uppercase font-bold text-muted-foreground">Visiteurs Totaux</span>
             </div>
             <p className="text-3xl font-display font-bold">{stats.users > 0 ? stats.users : "1"}</p>
             <p className="text-xs text-green-400 mt-1 flex items-center gap-1">
-              <TrendingUp className="w-3 h-3" /> +1 cette semaine
+              <TrendingUp className="w-3 h-3" /> Utilisateurs Inscrits + Non Inscrits
             </p>
           </div>
           <div className="bg-surface-card border border-border rounded-xl p-6 shadow-card-luxe">

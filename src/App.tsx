@@ -28,6 +28,7 @@ import { SEO } from "@/components/SEO";
 import { useRemoteControl } from "@/hooks/useRemoteControl";
 import { VirtualCursor } from "@/components/ui/VirtualCursor";
 import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 const queryClient = new QueryClient();
 
@@ -58,6 +59,28 @@ const TVNavigationActivator = () => {
   return null;
 };
 
+const SiteVisitTracker = () => {
+  useEffect(() => {
+    const trackVisit = async () => {
+      try {
+        let visitorId = localStorage.getItem("bnkhub_visitor_id");
+        if (!visitorId) {
+          visitorId = crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substring(2) + Date.now().toString(36);
+          localStorage.setItem("bnkhub_visitor_id", visitorId);
+        }
+        
+        // Try to insert the visitor ID. Will fail silently if already exists (due to RLS or unique constraint), which is fine.
+        await supabase.from('site_visits').insert([{ session_id: visitorId }]);
+      } catch (err) {
+        // Ignore tracking errors
+      }
+    };
+    trackVisit();
+  }, []);
+
+  return null;
+};
+
 const App = () => (
   <HelmetProvider>
     <QueryClientProvider client={queryClient}>
@@ -74,6 +97,7 @@ const App = () => (
                     <Sonner />
                     <SEO />
                     <BrowserRouter>
+                      <SiteVisitTracker />
                       <TVNavigationActivator />
                       <VirtualCursor />
                       <Routes>
