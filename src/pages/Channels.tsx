@@ -41,8 +41,10 @@ const Channels = () => {
 
       // 2. Add Static Custom Channels (beIN, etc.)
       const customStaticChannels: Channel[] = [
-        { id: "bein-1", name: "بي إن سبورت 1 - HD", url: "https://devstreaming-cdn.apple.com/videos/streaming/examples/adv_dv_atmos/main.m3u8", category: "الرياضة", logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cc/beIN_Sports_1_logo.svg/1200px-beIN_Sports_1_logo.svg.png" },
-        { id: "bein-2", name: "بي إن سبورت 2 - HD", url: "https://sample.vodobox.net/skate_phantom_flex_4k/skate_phantom_flex_4k.m3u8", category: "الرياضة", logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/beIN_Sports_2_logo.svg/1200px-beIN_Sports_2_logo.svg.png" },
+        { id: "bein-1", name: "بي إن سبورت 1 - HD (مباشر)", url: "https://v1.shatv.io/bein1/index.m3u8", category: "الرياضة", logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cc/beIN_Sports_1_logo.svg/1200px-beIN_Sports_1_logo.svg.png" },
+        { id: "bein-2", name: "بي إن سبورت 2 - HD (مباشر)", url: "https://v1.shatv.io/bein2/index.m3u8", category: "الرياضة", logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/beIN_Sports_2_logo.svg/1200px-beIN_Sports_2_logo.svg.png" },
+        { id: "bein-3", name: "بي إن سبورت 3 - HD (مباشر)", url: "https://v1.shatv.io/bein3/index.m3u8", category: "الرياضة", logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/beIN_Sports_3_logo.svg/1200px-beIN_Sports_3_logo.svg.png" },
+        { id: "bein-4", name: "بي إن سبورت 4 - HD (مباشر)", url: "https://v1.shatv.io/bein4/index.m3u8", category: "الرياضة", logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/beIN_Sports_4_logo.svg/1200px-beIN_Sports_4_logo.svg.png" },
         { id: "ksa-sport-1", name: "السعودية الرياضية 1", url: "https://streaming.ksasport.sa/live/live1.m3u8", category: "الرياضة", logo_url: "https://upload.wikimedia.org/wikipedia/ar/thumb/0/07/KSA_Sports_logo.svg/1200px-KSA_Sports_logo.svg.png" },
         { id: "ksa-sport-2", name: "السعودية الرياضية 2", url: "https://streaming.ksasport.sa/live/live2.m3u8", category: "الرياضة", logo_url: "https://upload.wikimedia.org/wikipedia/ar/thumb/0/07/KSA_Sports_logo.svg/1200px-KSA_Sports_logo.svg.png" },
         { id: "bein-news", name: "بي إن سبورت الإخبارية", url: "https://beinsports-news.akamaized.net/hls/live/2000341/test/master.m3u8", category: "الرياضة", logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/BeIN_Sports_News_logo.svg/1200px-BeIN_Sports_News_logo.svg.png" },
