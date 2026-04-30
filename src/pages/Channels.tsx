@@ -27,18 +27,36 @@ const Channels = () => {
   const fetchChannels = async () => {
     setLoading(true);
     try {
+      let mergedChannels: Channel[] = [];
+      
       // 1. Fetch from Supabase
-      const { data: dbData, error } = await supabase
+      const { data: dbData, error: dbError } = await supabase
         .from("live_channels")
         .select("*")
         .order("name", { ascending: true });
       
-      let mergedChannels: Channel[] = [];
-      if (!error && dbData) {
+      if (!dbError && dbData) {
         mergedChannels = dbData as Channel[];
       }
 
-      // 2. Fetch from External M3U (iptv-org) - Just a sample to avoid overload
+      // 2. Add Static Custom Channels (beIN, etc.)
+      const customStaticChannels: Channel[] = [
+        { id: "bein-1", name: "بي إن سبورت 1 - HD", url: "https://vidsrc.xyz/embed/movie/tt0000001", category: "الرياضة", logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cc/beIN_Sports_1_logo.svg/1200px-beIN_Sports_1_logo.svg.png" },
+        { id: "bein-2", name: "بي إن سبورت 2 - HD", url: "https://vidsrc.xyz/embed/movie/tt0000002", category: "الرياضة", logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/beIN_Sports_2_logo.svg/1200px-beIN_Sports_2_logo.svg.png" },
+        { id: "bein-3", name: "بي إن سبورت 3 - HD", url: "https://vidsrc.xyz/embed/movie/tt0000003", category: "الرياضة", logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/beIN_Sports_3_logo.svg/1200px-beIN_Sports_3_logo.svg.png" },
+        { id: "bein-4", name: "بي إن سبورت 4 - HD", url: "https://vidsrc.xyz/embed/movie/tt0000004", category: "الرياضة", logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/beIN_Sports_4_logo.svg/1200px-beIN_Sports_4_logo.svg.png" },
+        { id: "bein-prem-1", name: "بي إن سبورت Premium 1", url: "https://vidsrc.xyz/embed/movie/tt0000005", category: "الرياضة", logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/BeIN_Sports_Premium_1_logo.svg/1200px-BeIN_Sports_Premium_1_logo.svg.png" },
+        { id: "bein-xtra-1", name: "بي إن سبورت XTRA 1", url: "https://bitmovin-a.akamaihd.net/content/sintel/hls/playlist.m3u8", category: "الرياضة", logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/BeIN_Sports_Xtra_logo.svg/1200px-BeIN_Sports_Xtra_logo.svg.png" },
+        { id: "bein-news", name: "بي إن سبورت الإخبارية", url: "https://beinsports-news.akamaized.net/hls/live/2000341/test/master.m3u8", category: "الرياضة", logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/BeIN_Sports_News_logo.svg/1200px-BeIN_Sports_News_logo.svg.png" },
+        { id: "c-1", name: "Becoming You (4K)", url: "https://devstreaming-cdn.apple.com/videos/streaming/examples/adv_dv_atmos/main.m3u8", category: "Premium 4K", logo_url: "https://m.media-amazon.com/images/M/MV5BMTE0MGM4ODctMzRiZS00ZmM5LTg3YTMtYzg5YzY3YjM2MDllXkEyXkFqcGdeQXVyMTI1NDEyNTM5._V1_.jpg" },
+        { id: "c-2", name: "Skate Phantom Flex", url: "https://sample.vodobox.net/skate_phantom_flex_4k/skate_phantom_flex_4k.m3u8", category: "Premium 4K", logo_url: "https://i.ytimg.com/vi/6zFv8IOn0io/maxresdefault.jpg" },
+        { id: "c-11", name: "Sky News (LIVE)", url: "https://skynewsau-live.akamaized.net/hls/live/2002689/skynewsau-extra1/master.m3u8", category: "Live TV", logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Sky_News_2015_logo.svg/1200px-Sky_News_2015_logo.svg.png" },
+        { id: "p-1", name: "Portrait Video 1", url: "https://flipfit-cdn.akamaized.net/flip_hls/661f570aab9d840019942b80-473e0b/video_h1.m3u8", category: "Portrait Shorts", logo_url: null },
+      ];
+
+      mergedChannels = [...customStaticChannels, ...mergedChannels];
+
+      // 3. Fetch from External M3U (iptv-org)
       try {
         const response = await fetch("https://iptv-org.github.io/iptv/index.m3u");
         const text = await response.text();
@@ -46,8 +64,7 @@ const Channels = () => {
         const externalChannels: Channel[] = [];
         
         let currentChannel: Partial<Channel> = {};
-        // We only take first 200 channels for performance
-        for (let i = 0; i < lines.length && externalChannels.length < 200; i++) {
+        for (let i = 0; i < lines.length && externalChannels.length < 100; i++) {
           const line = lines[i].trim();
           if (line.startsWith("#EXTINF:")) {
             const nameMatch = line.match(/,(.*)$/);
@@ -68,36 +85,12 @@ const Channels = () => {
         }
         mergedChannels = [...mergedChannels, ...externalChannels];
       } catch (err) {
-        console.warn("Failed to fetch external M3U", err);
+        console.warn("External M3U fetch failed, using static channels only");
       }
-
-      // 3. User's Custom HLS Streams
-      const customStaticChannels: Channel[] = [
-        { id: "bein-1", name: "بي إن سبورت 1 - HD", url: "https://vidsrc.xyz/embed/movie/tt0000001", category: "الرياضة", logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cc/beIN_Sports_1_logo.svg/1200px-beIN_Sports_1_logo.svg.png" },
-        { id: "bein-2", name: "بي إن سبورت 2 - HD", url: "https://vidsrc.xyz/embed/movie/tt0000002", category: "الرياضة", logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/beIN_Sports_2_logo.svg/1200px-beIN_Sports_2_logo.svg.png" },
-        { id: "bein-3", name: "بي إن سبورت 3 - HD", url: "https://vidsrc.xyz/embed/movie/tt0000003", category: "الرياضة", logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/beIN_Sports_3_logo.svg/1200px-beIN_Sports_3_logo.svg.png" },
-        { id: "bein-4", name: "بي إن سبورت 4 - HD", url: "https://vidsrc.xyz/embed/movie/tt0000004", category: "الرياضة", logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/beIN_Sports_4_logo.svg/1200px-beIN_Sports_4_logo.svg.png" },
-        { id: "bein-prem-1", name: "بي إن سبورت Premium 1", url: "https://vidsrc.xyz/embed/movie/tt0000005", category: "الرياضة", logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/BeIN_Sports_Premium_1_logo.svg/1200px-BeIN_Sports_Premium_1_logo.svg.png" },
-        { id: "bein-xtra-1", name: "بي إن سبورت XTRA 1", url: "https://bitmovin-a.akamaihd.net/content/sintel/hls/playlist.m3u8", category: "الرياضة", logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/BeIN_Sports_Xtra_logo.svg/1200px-BeIN_Sports_Xtra_logo.svg.png" },
-        { id: "bein-news", name: "بي إن سبورت الإخبارية", url: "https://beinsports-news.akamaized.net/hls/live/2000341/test/master.m3u8", category: "الرياضة", logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/BeIN_Sports_News_logo.svg/1200px-BeIN_Sports_News_logo.svg.png" },
-        { id: "c-1", name: "Becoming You (4K)", url: "https://devstreaming-cdn.apple.com/videos/streaming/examples/adv_dv_atmos/main.m3u8", category: "Premium 4K", logo_url: "https://m.media-amazon.com/images/M/MV5BMTE0MGM4ODctMzRiZS00ZmM5LTg3YTMtYzg5YzY3YjM2MDllXkEyXkFqcGdeQXVyMTI1NDEyNTM5._V1_.jpg" },
-        { id: "c-2", name: "Skate Phantom Flex", url: "https://sample.vodobox.net/skate_phantom_flex_4k/skate_phantom_flex_4k.m3u8", category: "Premium 4K", logo_url: "https://i.ytimg.com/vi/6zFv8IOn0io/maxresdefault.jpg" },
-        { id: "c-3", name: "Tears of Steel (JW)", url: "https://content.jwplatform.com/manifests/vM7nH0Kl.m3u8", category: "Sci-Fi", logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/13/Tears_of_Steel_poster.jpg/800px-Tears_of_Steel_poster.jpg" },
-        { id: "c-11", name: "Sky News (LIVE)", url: "https://skynewsau-live.akamaized.net/hls/live/2002689/skynewsau-extra1/master.m3u8", category: "Live TV", logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Sky_News_2015_logo.svg/1200px-Sky_News_2015_logo.svg.png" },
-        { id: "p-1", name: "Portrait Video 1", url: "https://flipfit-cdn.akamaized.net/flip_hls/661f570aab9d840019942b80-473e0b/video_h1.m3u8", category: "Portrait Shorts", logo_url: null },
-        { id: "p-2", name: "Portrait Video 2", url: "https://flipfit-cdn.akamaized.net/flip_hls/662aae7a42cd740019b91dec-3e114f/video_h1.m3u8", category: "Portrait Shorts", logo_url: null },
-        { id: "p-3", name: "Portrait Video 3", url: "https://flipfit-cdn.akamaized.net/flip_hls/663e5a1542cd740019b97dfa-ccf0e6/video_h1.m3u8", category: "Portrait Shorts", logo_url: null },
-        { id: "p-4", name: "Portrait Video 4", url: "https://flipfit-cdn.akamaized.net/flip_hls/663d1244f22a010019f3ec12-f3c958/video_h1.m3u8", category: "Portrait Shorts", logo_url: null },
-        { id: "p-5", name: "Portrait Video 5", url: "https://flipfit-cdn.akamaized.net/flip_hls/664ce52bd6fcda001911a88c-8f1c4d/video_h1.m3u8", category: "Portrait Shorts", logo_url: null },
-        { id: "p-6", name: "Portrait Video 6", url: "https://flipfit-cdn.akamaized.net/flip_hls/664d87dfe8e47500199ee49e-dbd56b/video_h1.m3u8", category: "Portrait Shorts", logo_url: null },
-        { id: "p-7", name: "Portrait Video 7", url: "https://flipfit-cdn.akamaized.net/flip_hls/6656423247ffe600199e8363-15125d/video_h1.m3u8", category: "Portrait Shorts", logo_url: null },
-      ];
-
-      mergedChannels = [...customStaticChannels, ...mergedChannels, ...externalChannels];
 
       setChannels(mergedChannels);
     } catch (err: any) {
-      toast.error("Erreur lors du chargement des chaînes: " + err.message);
+      console.error("fetchChannels overall error:", err);
     } finally {
       setLoading(false);
     }
