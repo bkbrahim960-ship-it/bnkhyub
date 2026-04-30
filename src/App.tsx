@@ -29,6 +29,7 @@ import { useRemoteControl } from "@/hooks/useRemoteControl";
 import { VirtualCursor } from "@/components/ui/VirtualCursor";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { Analytics } from "@vercel/analytics/react";
 
 const queryClient = new QueryClient();
 
@@ -117,6 +118,7 @@ const App = () => (
                         <Route path="*" element={<NotFound />} />
                       </Routes>
                     </BrowserRouter>
+                    <Analytics />
                   </TooltipProvider>
                 </AuthProvider>
               </LanguageProvider>
