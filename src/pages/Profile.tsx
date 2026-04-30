@@ -214,7 +214,9 @@ const ProfilePage = () => {
                 <p className="text-xs text-muted-foreground mb-5 max-w-sm">{t("profile_download_desc")}</p>
                 <a
                   href="/bnkhub.apk"
-                  download
+                  download="BNKhub.apk"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="inline-flex items-center gap-3 bg-accent text-accent-foreground font-bold px-8 py-3 rounded-full hover:scale-105 transition-transform"
                 >
                   <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -434,7 +436,9 @@ const ProfilePage = () => {
               <p className="text-xs text-muted-foreground mb-5 max-w-sm">{t("profile_download_desc")}</p>
               <a
                 href="/bnkhub.apk"
-                download
+                download="BNKhub.apk"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="inline-flex items-center gap-3 bg-accent text-accent-foreground font-bold px-8 py-3 rounded-full hover:scale-105 transition-transform shadow-glow-sm"
               >
                 <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
