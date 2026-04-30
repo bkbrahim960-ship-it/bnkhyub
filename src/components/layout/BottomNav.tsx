@@ -17,37 +17,30 @@ export const BottomNav = () => {
 
   return (
     <div className="fixed bottom-6 inset-x-4 md:inset-x-8 lg:inset-x-12 z-50 pointer-events-none">
-        {/* Single Navigation Bar with 3 Functional Buttons */}
-        <div className="mx-auto flex items-center justify-around gap-8 p-3 rounded-full bg-black/60 backdrop-blur-3xl border border-white/10 shadow-luxe w-fit px-10 pointer-events-auto">
+        {/* Single Navigation Bar with 3 Premium Icon Buttons */}
+        <div className="mx-auto flex items-center justify-around gap-12 p-2 rounded-full bg-black/40 backdrop-blur-3xl border border-white/10 shadow-2xl w-fit px-12 pointer-events-auto">
           {/* Profile Button */}
           <NavLink
             to={user ? "/profile" : "/auth"}
             className={({ isActive }) =>
-              `flex flex-col items-center gap-1 transition-all duration-300 ${
-                isActive ? "text-accent scale-110" : "text-white/70 hover:text-white"
+              `p-3 rounded-full transition-all duration-500 hover:scale-125 active:scale-90 ${
+                isActive 
+                  ? "text-accent bg-accent/20 shadow-glow-accent border border-accent/40" 
+                  : "text-white/60 hover:text-white hover:bg-white/5 border border-transparent"
               }`
             }
           >
-            <UserIcon className="w-7 h-7" />
-            <span className="text-[10px] font-bold uppercase tracking-tighter">
-              {t("nav_profile")}
-            </span>
+            <UserIcon className="w-8 h-8 md:w-9 md:h-9" />
           </NavLink>
 
           {/* Language Switcher */}
-          <div className="flex flex-col items-center gap-1">
+          <div className="hover:scale-125 transition-transform duration-500">
             <LanguageSwitcher />
-            <span className="text-[10px] font-bold uppercase tracking-tighter text-white/70">
-              {t("settings_language")}
-            </span>
           </div>
 
           {/* Color Switcher */}
-          <div className="flex flex-col items-center gap-1">
+          <div className="hover:scale-125 transition-transform duration-500">
             <ColorSwitcher />
-            <span className="text-[10px] font-bold uppercase tracking-tighter text-white/70">
-              {t("settings_theme")}
-            </span>
           </div>
         </div>
     </div>
