@@ -149,7 +149,7 @@ export const VideoPlayer = ({
     if (playerActive && loading) {
       const safety = window.setTimeout(() => {
         setLoading(false);
-      }, 8000);
+      }, 1000);
       return () => window.clearTimeout(safety);
     }
   }, [playerActive, loading]);
