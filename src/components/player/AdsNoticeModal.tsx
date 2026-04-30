@@ -35,7 +35,7 @@ export const AdsNoticeModal = ({ open, onAccept, onClose }: Props) => {
 
   return (
     <div className="fixed inset-0 z-[110] flex items-center justify-center px-4 animate-fade-in">
-      <div className="absolute inset-0 bg-black/80 backdrop-blur-xl" onClick={onClose} />
+      <div className="absolute inset-0 bg-black/90" onClick={onClose} />
       <div className="relative w-full max-w-md bg-surface-elevated border border-white/10 rounded-3xl p-8 shadow-2xl animate-modal-in">
         <button onClick={onClose} className="absolute top-4 end-4 text-muted-foreground hover:text-white">
           <X className="w-5 h-5" />

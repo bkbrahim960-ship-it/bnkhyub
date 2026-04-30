@@ -145,6 +145,15 @@ export const VideoPlayer = ({
     if (timeoutRef.current) window.clearTimeout(timeoutRef.current);
   };
 
+  useEffect(() => {
+    if (playerActive && loading) {
+      const safety = window.setTimeout(() => {
+        setLoading(false);
+      }, 8000);
+      return () => window.clearTimeout(safety);
+    }
+  }, [playerActive, loading]);
+
   const selectSource = (idx: number) => {
     if (idx === sourceIndex) return;
     setSourceIndex(idx);
@@ -272,7 +281,7 @@ export const VideoPlayer = ({
               title="BNKhub player"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
               allowFullScreen
-              referrerPolicy="no-referrer"
+              referrerPolicy="no-referrer-when-downgrade"
               onLoad={handleLoad}
               className="absolute inset-0 w-full h-full"
             />
