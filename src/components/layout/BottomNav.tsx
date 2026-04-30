@@ -16,30 +16,40 @@ export const BottomNav = () => {
   ];
 
   return (
-    <div className="fixed bottom-4 inset-x-4 md:inset-x-8 lg:inset-x-12 z-50 pointer-events-none">
-        {/* Single Navigation Bar with 3 Buttons */}
-        <nav className="mx-auto flex items-center justify-around gap-2 p-2 rounded-full bg-black/40 backdrop-blur-3xl border border-white/10 shadow-luxe w-fit px-8">
-          {navItems.map((item) => {
-            const Icon = item.icon;
-            return (
-              <NavLink
-                key={item.to}
-                to={item.to}
-                end={item.to === "/"}
-                className={({ isActive }) =>
-                  `flex flex-col items-center gap-1 px-6 py-2 rounded-2xl transition-all duration-300 ${
-                    isActive ? "text-accent bg-accent/10" : "text-muted-foreground hover:text-foreground"
-                  }`
-                }
-              >
-                <Icon className="w-6 h-6" />
-                <span className="text-[10px] font-bold uppercase tracking-tighter">
-                  {item.label}
-                </span>
-              </NavLink>
-            );
-          })}
-        </nav>
+    <div className="fixed bottom-6 inset-x-4 md:inset-x-8 lg:inset-x-12 z-50 pointer-events-none">
+        {/* Single Navigation Bar with 3 Functional Buttons */}
+        <div className="mx-auto flex items-center justify-around gap-8 p-3 rounded-full bg-black/60 backdrop-blur-3xl border border-white/10 shadow-luxe w-fit px-10 pointer-events-auto">
+          {/* Profile Button */}
+          <NavLink
+            to={user ? "/profile" : "/auth"}
+            className={({ isActive }) =>
+              `flex flex-col items-center gap-1 transition-all duration-300 ${
+                isActive ? "text-accent scale-110" : "text-white/70 hover:text-white"
+              }`
+            }
+          >
+            <UserIcon className="w-7 h-7" />
+            <span className="text-[10px] font-bold uppercase tracking-tighter">
+              {t("nav_profile")}
+            </span>
+          </NavLink>
+
+          {/* Language Switcher */}
+          <div className="flex flex-col items-center gap-1">
+            <LanguageSwitcher />
+            <span className="text-[10px] font-bold uppercase tracking-tighter text-white/70">
+              {t("settings_language")}
+            </span>
+          </div>
+
+          {/* Color Switcher */}
+          <div className="flex flex-col items-center gap-1">
+            <ColorSwitcher />
+            <span className="text-[10px] font-bold uppercase tracking-tighter text-white/70">
+              {t("settings_theme")}
+            </span>
+          </div>
+        </div>
     </div>
   );
 };
