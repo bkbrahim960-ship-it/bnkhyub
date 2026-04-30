@@ -12,11 +12,11 @@ export const Footer = () => {
       <div className="container py-12">
         <div className="grid gap-10 md:grid-cols-3 items-start">
           <div>
-            <Link to="/" className="flex items-center gap-2 mb-3">
-              <div className="w-9 h-9 rounded-xl bg-gradient-accent grid place-items-center shadow-accent">
-                <span className="font-display font-bold text-accent-foreground text-lg leading-none">B</span>
+            <Link to="/" className="flex items-center gap-3 mb-3 group">
+              <div className="w-10 h-10 rounded-xl overflow-hidden shadow-accent group-hover:scale-110 transition-transform">
+                <img src="/icon.png" alt="BNKhub" className="w-full h-full object-cover" />
               </div>
-              <span className="font-display font-bold text-lg">
+              <span className="font-display font-bold text-xl">
                 BNK<span className="text-accent">hub</span>
               </span>
             </Link>

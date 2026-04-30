@@ -49,16 +49,19 @@ export const Header = () => {
     >
       <div className="w-full px-4 md:px-10 lg:px-16 flex items-center justify-between h-16 md:h-20 lg:h-24">
         {/* Logo */}
-        <div className="flex items-center group shrink-0 cursor-pointer" onClick={() => window.location.href = "/"}>
+        <Link to="/" className="flex items-center gap-3 group shrink-0">
+          <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl overflow-hidden shadow-glow-accent group-hover:scale-110 transition-transform duration-500">
+            <img src="/icon.png" alt="BNKhub" className="w-full h-full object-cover" />
+          </div>
           <div className="flex flex-col leading-none">
-            <span className="font-display font-bold text-2xl xs:text-3xl md:text-4xl lg:text-5xl tracking-tighter transition-colors group-hover:text-accent">
+            <span className="font-display font-bold text-xl xs:text-2xl md:text-3xl lg:text-4xl tracking-tighter transition-colors group-hover:text-accent">
               BNK<span className="text-accent group-hover:text-foreground transition-colors">hub</span>
             </span>
-            <span className="hidden sm:block font-decorative text-[8px] md:text-[10px] lg:text-[12px] text-muted-foreground tracking-[0.2em] uppercase opacity-60">
+            <span className="hidden sm:block font-decorative text-[8px] md:text-[10px] text-muted-foreground tracking-[0.2em] uppercase opacity-60">
               {t("tagline")}
             </span>
           </div>
-        </div>
+        </Link>
 
         {/* Nav desktop & TV */}
         <nav className="hidden md:flex items-center gap-4 lg:gap-8">
