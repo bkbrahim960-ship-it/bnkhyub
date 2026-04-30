@@ -55,6 +55,11 @@ export const getMovieSources = (imdb_id: string, tmdb_id: number | string): stri
     `https://vidlux.xyz/embed/movie/${tmdb_id}?color=${color}`,
     `https://player.embed-api.stream/?id=${tmdb_id}`,
     `https://2embed.cc/embed/${imdb_id}`,
+    `https://vidlink.pro/movie/${tmdb_id}?primaryColor=${color}`,
+    `https://autoembed.co/movie/tmdb/${tmdb_id}`,
+    `https://vidsrc.icu/embed/movie/${imdb_id}`,
+    `https://vidsrc.net/embed/movie/${imdb_id}`,
+    `https://vidsrc.xyz/embed/movie/${imdb_id}`,
   ];
 };
 
@@ -63,18 +68,26 @@ export const getTVSources = (
   tmdb_id: number | string,
   season: number,
   episode: number,
-): string[] => [
-  `https://vidsrc-embed.ru/embed/tv?imdb=${imdb_id}&season=${season}&episode=${episode}&ds_lang=fr`,
-  `https://vidsrc.to/embed/tv/${imdb_id}/${season}/${episode}`,
-  `https://www.2embed.cc/embed/${imdb_id}/${season}/${episode}`,
-  `https://www.2embed.to/embed/imdb/tv?id=${imdb_id}&s=${season}&e=${episode}`,
-  `https://vidtube.one/embed-onltjl4kyhsr.html`,
-  `https://vidsrc.me/embed/tv/${imdb_id}/${season}/${episode}`,
-  `https://multiembed.mov/?video_id=${tmdb_id}&s=${season}&e=${episode}`,
-  `https://vidlux.xyz/embed/tv/${tmdb_id}/${season}/${episode}`,
-  `https://player.embed-api.stream/?id=${tmdb_id}&s=${season}&e=${episode}`,
-  `https://vidsrc-embed.ru/embed/tv?tmdb=${tmdb_id}&season=${season}&episode=${episode}&ds_lang=fr`,
-];
+): string[] => {
+  const color = safeGetAccentHex();
+  return [
+    `https://vidsrc-embed.ru/embed/tv?imdb=${imdb_id}&season=${season}&episode=${episode}&ds_lang=fr`,
+    `https://vidsrc.to/embed/tv/${imdb_id}/${season}/${episode}`,
+    `https://www.2embed.cc/embed/${imdb_id}/${season}/${episode}`,
+    `https://www.2embed.to/embed/imdb/tv?id=${imdb_id}&s=${season}&e=${episode}`,
+    `https://vidtube.one/embed-onltjl4kyhsr.html`,
+    `https://vidsrc.me/embed/tv/${imdb_id}/${season}/${episode}`,
+    `https://multiembed.mov/?video_id=${tmdb_id}&s=${season}&e=${episode}`,
+    `https://vidlux.xyz/embed/tv/${tmdb_id}/${season}/${episode}`,
+    `https://player.embed-api.stream/?id=${tmdb_id}&s=${season}&e=${episode}`,
+    `https://vidsrc-embed.ru/embed/tv?tmdb=${tmdb_id}&season=${season}&episode=${episode}&ds_lang=fr`,
+    `https://vidlink.pro/tv/${tmdb_id}/${season}/${episode}?primaryColor=${color}`,
+    `https://autoembed.co/tv/tmdb/${tmdb_id}-${season}-${episode}`,
+    `https://vidsrc.icu/embed/tv/${imdb_id}/${season}/${episode}`,
+    `https://vidsrc.net/embed/tv/${imdb_id}/${season}/${episode}`,
+    `https://vidsrc.xyz/embed/tv/${imdb_id}/${season}/${episode}`,
+  ];
+};
 
 export const SOURCE_LABELS = [
   "S1 · vidsrc-embed",
@@ -87,6 +100,11 @@ export const SOURCE_LABELS = [
   "S8 · vidlux",
   "S9 · embed-api",
   "S10 · 2embed.cc*",
+  "S11 · VidLink (Ad-Free)",
+  "S12 · AutoEmbed (High Speed)",
+  "S13 · VidSrc ICU",
+  "S14 · VidSrc NET",
+  "S15 · VidSrc XYZ",
 ];
 
 // ───── Nouveautés vidsrc-embed ─────
