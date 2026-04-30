@@ -135,10 +135,10 @@ const Home = () => {
           title={lang === "ar" ? "أفضل المسلسلات العالمية" : "Global Masterpieces"} 
           type="tv"
           items={[
-            { id: 1399, name: "Game of Thrones", poster_path: "/7WsyChvRStv9OidunSjdua9p3Yv.jpg", vote_average: 8.5, first_air_date: "2011" },
-            { id: 71446, name: "Money Heist", poster_path: "/reEMJA1uzpG3SZ09VD9QH0Mxy6A.jpg", vote_average: 8.3, first_air_date: "2017" },
-            { id: 1396, name: "Breaking Bad", poster_path: "/ztkUQvBZ97v9m6sTebpPcAtQo9L.jpg", vote_average: 8.9, first_air_date: "2008" },
-            { id: 102903, name: "Outer Banks", poster_path: "/788ID9AAn866rZ9vXpL6C96Of6l.jpg", vote_average: 8.4, first_air_date: "2020" },
+            { id: 1399, name: "Game of Thrones", poster_path: "https://image.tmdb.org/t/p/w500/7WsyChvRStv9OidunSjdua9p3Yv.jpg", vote_average: 8.5, first_air_date: "2011" },
+            { id: 71446, name: "Money Heist", poster_path: "https://image.tmdb.org/t/p/w500/reEMJA1uzpG3SZ09VD9QH0Mxy6A.jpg", vote_average: 8.3, first_air_date: "2017" },
+            { id: 1396, name: "Breaking Bad", poster_path: "https://image.tmdb.org/t/p/w500/ztkUQvBZ97v9m6sTebpPcAtQo9L.jpg", vote_average: 8.9, first_air_date: "2008" },
+            { id: 102903, name: "Outer Banks", poster_path: "https://image.tmdb.org/t/p/w500/788ID9AAn866rZ9vXpL6C96Of6l.jpg", vote_average: 8.4, first_air_date: "2020" },
           ] as any} 
         />
 
