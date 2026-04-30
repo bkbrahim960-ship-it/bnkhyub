@@ -23,7 +23,7 @@ export interface PlayerConfig {
 /** Source principale (S1) — utilisée comme url officielle. */
 export const getPrimaryPlayerUrl = (c: PlayerConfig): string => {
   const base = "https://vaplayer.ru/embed";
-  const lang = c.lang ?? "fr";
+  const lang = c.lang ?? "ar";
   const ap = c.autoplay ?? 1;
   const idParam = c.imdb_id ? `imdb=${c.imdb_id}` : `tmdb=${c.tmdb_id}`;
 
@@ -46,8 +46,8 @@ export const getMovieSources = (imdb_id: string, tmdb_id: number | string): stri
   const color = safeGetAccentHex();
   const id = imdb_id || tmdb_id;
   return [
-    `https://vaplayer.ru/embed/movie/${imdb_id || tmdb_id}?primaryColor=${color.replace('#','')}&lang=fr`,
-    `https://vidsrc-embed.ru/embed/movie?${imdb_id ? `imdb=${imdb_id}` : `tmdb=${tmdb_id}`}&ds_lang=fr`,
+    `https://vaplayer.ru/embed/movie/${imdb_id || tmdb_id}?primaryColor=${color.replace('#','')}&lang=ar`,
+    `https://vidsrc-embed.ru/embed/movie?${imdb_id ? `imdb=${imdb_id}` : `tmdb=${tmdb_id}`}&ds_lang=ar`,
     `https://vidsrc.to/embed/movie/${id}`,
     `https://vidlink.pro/movie/${tmdb_id}?primaryColor=${color}`,
     `https://autoembed.co/movie/tmdb/${tmdb_id}`,
@@ -73,8 +73,8 @@ export const getTVSources = (
   const color = safeGetAccentHex();
   const id = imdb_id || tmdb_id;
   return [
-    `https://vaplayer.ru/embed/tv/${imdb_id || tmdb_id}/${season}/${episode}?primaryColor=${color.replace('#','')}&lang=fr`,
-    `https://vidsrc-embed.ru/embed/tv?${imdb_id ? `imdb=${imdb_id}` : `tmdb=${tmdb_id}`}&season=${season}&episode=${episode}&ds_lang=fr`,
+    `https://vaplayer.ru/embed/tv/${imdb_id || tmdb_id}/${season}/${episode}?primaryColor=${color.replace('#','')}&lang=ar`,
+    `https://vidsrc-embed.ru/embed/tv?${imdb_id ? `imdb=${imdb_id}` : `tmdb=${tmdb_id}`}&season=${season}&episode=${episode}&ds_lang=ar`,
     `https://vidsrc.to/embed/tv/${id}/${season}/${episode}`,
     `https://vidlink.pro/tv/${tmdb_id}/${season}/${episode}?primaryColor=${color}`,
     `https://autoembed.co/tv/tmdb/${tmdb_id}-${season}-${episode}`,
@@ -87,7 +87,7 @@ export const getTVSources = (
     `https://www.2embed.cc/embed/${id}/${season}/${episode}`,
     `https://www.2embed.to/embed/imdb/tv?id=${id}&s=${season}&e=${episode}`,
     `https://player.embed-api.stream/?id=${tmdb_id}&s=${season}&e=${episode}`,
-    `https://vidsrc-embed.ru/embed/tv?tmdb=${tmdb_id}&season=${season}&episode=${episode}&ds_lang=fr`,
+    `https://vidsrc-embed.ru/embed/tv?tmdb=${tmdb_id}&season=${season}&episode=${episode}&ds_lang=ar`,
   ];
 };
 
