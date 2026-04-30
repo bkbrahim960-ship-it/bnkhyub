@@ -377,12 +377,7 @@ const Series = () => {
 
       <TrailerModal isOpen={showTrailer} onClose={() => setShowTrailer(false)} videoKey={trailer?.key} title={series.name} />
 
-      {/* Subtitles & Extras */}
-      {playing && (
-        <section className="container py-12 border-t border-white/5">
-          <SubtitleFinder imdbId={imdb} tmdbId={series.id} type="tv" title={series.name} season={season} episode={episode} />
-        </section>
-      )}
+
 
       {/* Recommendations */}
       {recommendations.length > 0 && (
@@ -391,10 +386,7 @@ const Series = () => {
         </div>
       )}
 
-      {/* Reviews */}
-      <section className="container py-20">
-        <ReviewSection tmdbId={series.id} mediaType="tv" />
-      </section>
+
     </Layout>
   );
 };

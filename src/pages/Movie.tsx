@@ -242,39 +242,7 @@ const Movie = () => {
         )}
       </div>
 
-      {/* Extras & Info */}
-      <section className="container py-16 grid lg:grid-cols-3 gap-12 border-t border-white/5">
-        <div className="lg:col-span-2">
-          <SubtitleFinder imdbId={imdb} tmdbId={movie.id} type="movie" title={movie.title} />
-          
-          <div className="mt-20">
-            <ReviewSection tmdbId={movie.id} mediaType="movie" />
-          </div>
-        </div>
-        
-        <div className="space-y-12">
-          {/* Detailed Info */}
-          <div className="p-6 rounded-2xl bg-white/5 border border-white/10">
-            <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
-              <Info className="w-5 h-5 text-accent" /> {lang === "ar" ? "معلومات إضافية" : "More Info"}
-            </h3>
-            <dl className="space-y-4">
-              <div className="flex justify-between border-b border-white/5 pb-2">
-                <dt className="text-white/40">{lang === "ar" ? "الميزانية" : "Budget"}</dt>
-                <dd className="font-medium">{movie.budget > 0 ? `$${movie.budget.toLocaleString()}` : "N/A"}</dd>
-              </div>
-              <div className="flex justify-between border-b border-white/5 pb-2">
-                <dt className="text-white/40">{lang === "ar" ? "الإيرادات" : "Revenue"}</dt>
-                <dd className="font-medium">{movie.revenue > 0 ? `$${movie.revenue.toLocaleString()}` : "N/A"}</dd>
-              </div>
-              <div className="flex justify-between border-b border-white/5 pb-2">
-                <dt className="text-white/40">{lang === "ar" ? "الحالة" : "Status"}</dt>
-                <dd className="font-medium">{movie.status}</dd>
-              </div>
-            </dl>
-          </div>
-        </div>
-      </section>
+
 
       {/* Recommendations */}
       {recommendations.length > 0 && (
