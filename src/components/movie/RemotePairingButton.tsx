@@ -13,7 +13,10 @@ import { useLanguage } from "@/context/LanguageContext";
 export const RemotePairingButton = () => {
   const { lang } = useLanguage();
   const tvSessionId = (window as any).tvSessionId || "default";
-  const pairingUrl = `${window.location.origin}/remote?session=${tvSessionId}`;
+  const baseUrl = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" 
+    ? "https://bnk-huub.vercel.app" 
+    : window.location.origin;
+  const pairingUrl = `${baseUrl}/remote?session=${tvSessionId}`;
 
   return (
     <Dialog>

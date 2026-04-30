@@ -190,17 +190,17 @@ const Movie = () => {
               {!playing && (
                 <button
                   onClick={startWatching}
-                  className="inline-flex items-center gap-3 bg-accent text-accent-foreground px-12 py-5 rounded-full font-bold shadow-glow hover:scale-105 active:scale-95 transition-all"
+                  className="inline-flex items-center gap-2 bg-accent text-accent-foreground px-8 py-4 rounded-full font-bold shadow-glow hover:scale-105 active:scale-95 transition-all text-sm md:text-base"
                 >
-                  <Play className="w-6 h-6 fill-current" /> {t("hero_watch")}
+                  <Play className="w-5 h-5 fill-current" /> {t("hero_watch")}
                 </button>
               )}
               {trailer && (
                 <button
                   onClick={() => setShowTrailer(true)}
-                  className="inline-flex items-center gap-3 bg-white/5 hover:bg-white/10 border border-white/10 px-8 py-5 rounded-full font-bold transition-all"
+                  className="inline-flex items-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 px-8 py-4 rounded-full font-bold transition-all text-sm md:text-base"
                 >
-                  <Youtube className="w-6 h-6 text-red-500" /> {t("hero_trailer")}
+                  <Youtube className="w-5 h-5 text-red-500" /> {t("hero_trailer")}
                 </button>
               )}
               <FavoriteButton tmdbId={movie.id} mediaType="movie" title={movie.title} posterPath={movie.poster_path} />

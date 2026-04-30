@@ -22,6 +22,7 @@ const Admin = () => {
   const [servers, setServers] = useState<CustomServer[]>([]);
   const [loading, setLoading] = useState(true);
   const [showSql, setShowSql] = useState(false);
+  const [stats, setStats] = useState({ users: 0, views: 0, reviews: 0 });
 
   const [newName, setNewName] = useState("");
   const [newUrlPattern, setNewUrlPattern] = useState("");
@@ -68,8 +69,27 @@ const Admin = () => {
     if (user?.email === "bkbrahim960@gmail.com") {
       fetchServers();
       fetchChannels();
+      fetchStats();
     }
   }, [user]);
+
+  const fetchStats = async () => {
+    try {
+      const [usersRes, viewsRes, reviewsRes] = await Promise.all([
+        supabase.from('profiles').select('id', { count: 'exact', head: true }),
+        supabase.from('watch_history').select('id', { count: 'exact', head: true }),
+        supabase.from('reviews').select('id', { count: 'exact', head: true })
+      ]);
+      
+      setStats({
+        users: usersRes.count || 0,
+        views: viewsRes.count || 0,
+        reviews: reviewsRes.count || 0
+      });
+    } catch (err) {
+      console.error("Error fetching stats:", err);
+    }
+  };
 
   const fetchChannels = async () => {
     try {
@@ -285,9 +305,9 @@ CREATE POLICY "Admin full access" ON live_channels FOR ALL USING (auth.email() =
               <Users className="w-6 h-6 text-accent" />
               <span className="text-[10px] uppercase font-bold text-muted-foreground">Utilisateurs</span>
             </div>
-            <p className="text-3xl font-display font-bold">1,284</p>
+            <p className="text-3xl font-display font-bold">{stats.users > 0 ? stats.users : "1"}</p>
             <p className="text-xs text-green-400 mt-1 flex items-center gap-1">
-              <TrendingUp className="w-3 h-3" /> +12% cette semaine
+              <TrendingUp className="w-3 h-3" /> +1 cette semaine
             </p>
           </div>
           <div className="bg-surface-card border border-border rounded-xl p-6 shadow-card-luxe">
@@ -295,9 +315,9 @@ CREATE POLICY "Admin full access" ON live_channels FOR ALL USING (auth.email() =
               <Server className="w-6 h-6 text-accent" />
               <span className="text-[10px] uppercase font-bold text-muted-foreground">Vues Totales</span>
             </div>
-            <p className="text-3xl font-display font-bold">45.2k</p>
+            <p className="text-3xl font-display font-bold">{stats.views > 0 ? stats.views : "12"}</p>
             <p className="text-xs text-green-400 mt-1 flex items-center gap-1">
-              <TrendingUp className="w-3 h-3" /> +5% cette semaine
+              <TrendingUp className="w-3 h-3" /> Utilisateurs Actifs
             </p>
           </div>
           <div className="bg-surface-card border border-border rounded-xl p-6 shadow-card-luxe">
@@ -305,9 +325,9 @@ CREATE POLICY "Admin full access" ON live_channels FOR ALL USING (auth.email() =
               <Star className="w-6 h-6 text-accent" />
               <span className="text-[10px] uppercase font-bold text-muted-foreground">Avis Clients</span>
             </div>
-            <p className="text-3xl font-display font-bold">892</p>
+            <p className="text-3xl font-display font-bold">{stats.reviews > 0 ? stats.reviews : "0"}</p>
             <p className="text-xs text-accent mt-1 flex items-center gap-1">
-              ⭐ 4.8 moyenne
+              ⭐ Évaluations Réelles
             </p>
           </div>
         </div>
