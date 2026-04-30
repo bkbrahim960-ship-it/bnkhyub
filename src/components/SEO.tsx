@@ -13,8 +13,8 @@ export const SEO = ({
   title,
   description,
   keywords,
-  image = '/og-image.jpg',
-  url = 'https://bnkhub.com',
+  image = '/icon.png',
+  url = 'https://bnk-huub.vercel.app',
   type = 'website'
 }: SEOProps) => {
   const defaultTitle = 'BNK HUB | BNKhub - افلام و مسلسلات مترجمة مجانا | FILM GRATUIT SERIES GRATUIT';
