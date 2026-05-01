@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { parseM3U } from "@/services/m3uParser";
 import { Trash2, Plus, Server, AlertTriangle, BarChart, Users, TrendingUp, Monitor, Star } from "lucide-react";
 import { BarChart as ReBarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
+import { AdminAIAssistant } from "@/components/admin/AdminAIAssistant";
 
 interface CustomServer {
   id: string;
@@ -583,6 +584,7 @@ CREATE POLICY "Tout le monde peut lire les visites" ON site_visits FOR SELECT US
           </div>
         </div>
       </div>
+      <AdminAIAssistant />
     </Layout>
   );
 };
