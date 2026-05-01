@@ -42,6 +42,31 @@ export const getPrimaryPlayerUrl = (c: PlayerConfig): string => {
   return `${base}/tv?${idParam}&ds_lang=${lang}`;
 };
 
+export const fetchApiflixStream = async (id: string | number, type: "movie" | "tv", season?: number, episode?: number) => {
+  try {
+    const url = `https://apiflix.to/api/${type === "movie" ? "movie" : "tv"}?id=${id}${type === "tv" ? `&s=${season}&e=${episode}` : ""}&lang=ar`;
+    const res = await fetch(url);
+    const data = await res.json();
+    return data.stream_url || data.url || null;
+  } catch (error) {
+    console.error("APIFLIX error:", error);
+    return null;
+  }
+};
+
+export const fetchStreamDBStream = async (imdb_id: string, type: "movie" | "tv", season?: number, episode?: number) => {
+  try {
+    const url = `https://streamdb.pro/api/v2/stream?imdb=${imdb_id}${type === "tv" ? `&s=${season}&e=${episode}` : ""}&lang=ar`;
+    const res = await fetch(url);
+    const data = await res.json();
+    // StreamDB often returns an array of sources
+    return data.streams?.[0]?.url || data.url || null;
+  } catch (error) {
+    console.error("StreamDB error:", error);
+    return null;
+  }
+};
+
 export const getMovieSources = (imdb_id: string, tmdb_id: number | string): string[] => {
   const color = safeGetAccentHex();
   const id = imdb_id || tmdb_id;
@@ -49,10 +74,12 @@ export const getMovieSources = (imdb_id: string, tmdb_id: number | string): stri
     `https://vaplayer.ru/embed/movie/${imdb_id || tmdb_id}?primaryColor=${color.replace('#','')}&lang=ar`, // S1: Original Primary
     `https://vidsrc-embed.ru/embed/movie?${imdb_id ? `imdb=${imdb_id}` : `tmdb=${tmdb_id}`}&ds_lang=ar`, // S2: Original S2
     `https://vidsrc.to/embed/movie/${id}`, // S3: Original S3
-    `https://vidlink.pro/movie/${tmdb_id}?primaryColor=${color}`, // S4: New Ad-Free
-    `https://embed.su/embed/movie/${tmdb_id || imdb_id}`, // S5: New Clean
-    `https://superembed.stream/?video_id=${imdb_id || tmdb_id}&lang=ar`, // S6: SuperEmbed
-    `https://www.flixhq.to/embed/movie/${imdb_id || tmdb_id}`, // S7: FlixHQ
+    "APIFLIX_API", // S4: New API
+    "STREAMDB_API", // S5: New API
+    `https://vidlink.pro/movie/${tmdb_id}?primaryColor=${color}`, // S6: Ad-Free
+    `https://embed.su/embed/movie/${tmdb_id || imdb_id}`, // S7: Clean
+    `https://superembed.stream/?video_id=${imdb_id || tmdb_id}&lang=ar`,
+    `https://www.flixhq.to/embed/movie/${imdb_id || tmdb_id}`,
     `https://autoembed.co/movie/tmdb/${tmdb_id}`,
     `https://multiembed.mov/?video_id=${tmdb_id}`,
     `https://vidlux.xyz/embed/movie/${tmdb_id}?color=${color}`,
@@ -79,10 +106,12 @@ export const getTVSources = (
     `https://vaplayer.ru/embed/tv/${imdb_id || tmdb_id}/${season}/${episode}?primaryColor=${color.replace('#','')}&lang=ar`, // S1: Original Primary
     `https://vidsrc-embed.ru/embed/tv?${imdb_id ? `imdb=${imdb_id}` : `tmdb=${tmdb_id}`}&season=${season}&episode=${episode}&ds_lang=ar`, // S2: Original S2
     `https://vidsrc.to/embed/tv/${id}/${season}/${episode}`, // S3: Original S3
-    `https://vidlink.pro/tv/${tmdb_id}/${season}/${episode}?primaryColor=${color}`, // S4: New Ad-Free
-    `https://embed.su/embed/tv/${tmdb_id || imdb_id}/${season}/${episode}`, // S5: New Clean
-    `https://superembed.stream/?video_id=${imdb_id || tmdb_id}&s=${season}&e=${episode}&lang=ar`, // S6: SuperEmbed
-    `https://www.flixhq.to/embed/tv/${imdb_id || tmdb_id}/${season}/${episode}`, // S7: FlixHQ
+    "APIFLIX_API",
+    "STREAMDB_API",
+    `https://vidlink.pro/tv/${tmdb_id}/${season}/${episode}?primaryColor=${color}`, // S6: Ad-Free
+    `https://embed.su/embed/tv/${tmdb_id || imdb_id}/${season}/${episode}`, // S7: Clean
+    `https://superembed.stream/?video_id=${imdb_id || tmdb_id}&s=${season}&e=${episode}&lang=ar`,
+    `https://www.flixhq.to/embed/tv/${imdb_id || tmdb_id}/${season}/${episode}`,
     `https://autoembed.co/tv/tmdb/${tmdb_id}-${season}-${episode}`,
     `https://multiembed.mov/?video_id=${tmdb_id}&s=${season}&e=${episode}`,
     `https://vidlux.xyz/embed/tv/${tmdb_id}/${season}/${episode}`,
@@ -101,21 +130,23 @@ export const SOURCE_LABELS = [
   "S1 · VidAPI Premium",
   "S2 · vidsrc-embed (Arabic)",
   "S3 · vidsrc.to",
-  "S4 · VidLink (Ad-Free)",
-  "S5 · Embed.su (Clean)",
-  "S6 · SuperEmbed",
-  "S7 · FlixHQ",
-  "S8 · AutoEmbed",
-  "S9 · multiembed",
-  "S10 · vidlux",
-  "S11 · vidsrc.me",
-  "S12 · vidsrc.icu",
-  "S13 · vidsrc.net",
-  "S14 · vidsrc.xyz",
-  "S15 · 2embed.cc",
-  "S16 · 2embed.to",
-  "S17 · embed-api",
-  "S18 · vidsrc.cc",
+  "S4 · APIflix (Arabic API)",
+  "S5 · StreamDB (Multi API)",
+  "S6 · VidLink (Ad-Free)",
+  "S7 · Embed.su (Clean)",
+  "S8 · SuperEmbed",
+  "S9 · FlixHQ",
+  "S10 · AutoEmbed",
+  "S11 · multiembed",
+  "S12 · vidlux",
+  "S13 · vidsrc.me",
+  "S14 · vidsrc.icu",
+  "S15 · vidsrc.net",
+  "S16 · vidsrc.xyz",
+  "S17 · 2embed.cc",
+  "S18 · 2embed.to",
+  "S19 · embed-api",
+  "S20 · vidsrc.cc",
 ];
 
 // ───── Nouveautés vidsrc-embed ─────
