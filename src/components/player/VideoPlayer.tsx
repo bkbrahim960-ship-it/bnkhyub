@@ -235,19 +235,6 @@ export const VideoPlayer = ({
   const handleStartPlay = () => {
     setAdsOpen(false);
     setPlayerActive(true);
-    
-    // Auto-fullscreen for Android TV
-    if (containerRef.current && isAndroidTV()) {
-      try {
-        if (containerRef.current.requestFullscreen) {
-          containerRef.current.requestFullscreen().catch(() => {});
-        } else if ((containerRef.current as any).webkitRequestFullscreen) {
-          (containerRef.current as any).webkitRequestFullscreen();
-        }
-      } catch (e) {
-        console.error("Fullscreen failed", e);
-      }
-    }
   };
 
   return (
