@@ -9,7 +9,11 @@ interface Props {
 }
 
 export const hasSeenAdsNotice = () => {
-  return localStorage.getItem("bnkhub_ads_notice_seen") === "true";
+  try {
+    return localStorage.getItem("bnkhub_ads_notice_seen") === "true";
+  } catch (e) {
+    return true;
+  }
 };
 
 export const AdsNoticeModal = ({ open, onAccept, onClose }: Props) => {
@@ -29,7 +33,9 @@ export const AdsNoticeModal = ({ open, onAccept, onClose }: Props) => {
   if (!open) return null;
 
   const handleAccept = () => {
-    localStorage.setItem("bnkhub_ads_notice_seen", "true");
+    try {
+      localStorage.setItem("bnkhub_ads_notice_seen", "true");
+    } catch (e) {}
     onAccept();
   };
 

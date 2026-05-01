@@ -178,7 +178,7 @@ const Movie = () => {
             )}
 
             <div className="flex flex-wrap items-center gap-8 mb-10 text-white/60 font-medium">
-              <div className="flex items-center gap-3 px-4 py-2 rounded-2xl bg-black/40 backdrop-blur-xl border border-white/20 shadow-2xl">
+              <div className="flex items-center gap-3 px-4 py-2 rounded-2xl bg-black/40 border border-white/20 shadow-2xl">
                 <img 
                   src="https://www.themoviedb.org/assets/2/v4/logos/v2/blue_square_2-d537fb228cf3ded904ef09b136fe3fec72548ebc1fea3fbbd1ad9e36364db38b.svg" 
                   alt="TMDB" 

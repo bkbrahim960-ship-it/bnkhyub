@@ -266,7 +266,7 @@ export const VideoPlayer = ({
         {/* Unified Header Overlay */}
         <div className="absolute top-0 inset-x-0 z-20 p-4 flex items-center justify-between bg-gradient-to-b from-black/80 to-transparent opacity-0 group-hover/player:opacity-100 transition-opacity duration-500">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-accent/20 backdrop-blur-xl border border-accent/40 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-lg bg-accent/20 border border-accent/40 flex items-center justify-center">
               <ShieldCheck className="w-4 h-4 text-accent" />
             </div>
             <div>
@@ -281,7 +281,7 @@ export const VideoPlayer = ({
         </div>
 
         {!playerActive && (
-          <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-surface-elevated/40 backdrop-blur-sm">
+          <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-surface-elevated/80">
             <div className="relative group">
               <div className="absolute -inset-4 bg-accent/20 rounded-full blur-2xl group-hover:bg-accent/40 transition-all duration-700" />
               <button
