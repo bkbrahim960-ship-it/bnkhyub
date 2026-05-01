@@ -51,6 +51,8 @@ export const getMovieSources = (imdb_id: string, tmdb_id: number | string): stri
     `https://vidsrc.to/embed/movie/${id}`, // S3: Original S3
     `https://vidlink.pro/movie/${tmdb_id}?primaryColor=${color}`, // S4: New Ad-Free
     `https://embed.su/embed/movie/${tmdb_id || imdb_id}`, // S5: New Clean
+    `https://superembed.stream/?video_id=${imdb_id || tmdb_id}&lang=ar`, // S6: SuperEmbed
+    `https://www.flixhq.to/embed/movie/${imdb_id || tmdb_id}`, // S7: FlixHQ
     `https://autoembed.co/movie/tmdb/${tmdb_id}`,
     `https://multiembed.mov/?video_id=${tmdb_id}`,
     `https://vidlux.xyz/embed/movie/${tmdb_id}?color=${color}`,
@@ -79,6 +81,8 @@ export const getTVSources = (
     `https://vidsrc.to/embed/tv/${id}/${season}/${episode}`, // S3: Original S3
     `https://vidlink.pro/tv/${tmdb_id}/${season}/${episode}?primaryColor=${color}`, // S4: New Ad-Free
     `https://embed.su/embed/tv/${tmdb_id || imdb_id}/${season}/${episode}`, // S5: New Clean
+    `https://superembed.stream/?video_id=${imdb_id || tmdb_id}&s=${season}&e=${episode}&lang=ar`, // S6: SuperEmbed
+    `https://www.flixhq.to/embed/tv/${imdb_id || tmdb_id}/${season}/${episode}`, // S7: FlixHQ
     `https://autoembed.co/tv/tmdb/${tmdb_id}-${season}-${episode}`,
     `https://multiembed.mov/?video_id=${tmdb_id}&s=${season}&e=${episode}`,
     `https://vidlux.xyz/embed/tv/${tmdb_id}/${season}/${episode}`,
@@ -99,17 +103,19 @@ export const SOURCE_LABELS = [
   "S3 · vidsrc.to",
   "S4 · VidLink (Ad-Free)",
   "S5 · Embed.su (Clean)",
-  "S6 · AutoEmbed",
-  "S7 · multiembed",
-  "S8 · vidlux",
-  "S9 · vidsrc.me",
-  "S10 · vidsrc.icu",
-  "S11 · vidsrc.net",
-  "S12 · vidsrc.xyz",
-  "S13 · 2embed.cc",
-  "S14 · 2embed.to",
-  "S15 · embed-api",
-  "S16 · vidsrc.cc",
+  "S6 · SuperEmbed",
+  "S7 · FlixHQ",
+  "S8 · AutoEmbed",
+  "S9 · multiembed",
+  "S10 · vidlux",
+  "S11 · vidsrc.me",
+  "S12 · vidsrc.icu",
+  "S13 · vidsrc.net",
+  "S14 · vidsrc.xyz",
+  "S15 · 2embed.cc",
+  "S16 · 2embed.to",
+  "S17 · embed-api",
+  "S18 · vidsrc.cc",
 ];
 
 // ───── Nouveautés vidsrc-embed ─────
