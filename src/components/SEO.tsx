@@ -51,6 +51,15 @@ export const SEO = ({
       <meta property="twitter:description" content={siteDescription} />
       <meta property="twitter:image" content={image} />
       
+      {/* PWA / Mobile Tags */}
+      <meta name="apple-mobile-web-app-capable" content="yes" />
+      <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+      <meta name="apple-mobile-web-app-title" content="BNK HUB" />
+      <meta name="mobile-web-app-capable" content="yes" />
+      <meta name="theme-color" content="#D4A843" />
+      <meta name="format-detection" content="telephone=no" />
+      <meta name="apple-touch-fullscreen" content="yes" />
+
       {/* Canonical URL for SEO */}
       <link rel="canonical" href={url} />
     </Helmet>

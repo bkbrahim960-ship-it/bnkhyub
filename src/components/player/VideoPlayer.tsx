@@ -8,7 +8,7 @@ import { useEffect, useRef, useState } from "react";
 import { getMovieSources, getTVSources, SOURCE_LABELS } from "@/services/player";
 import { AdsNoticeModal, hasSeenAdsNotice } from "./AdsNoticeModal";
 import { useLanguage } from "@/context/LanguageContext";
-import { Loader2, AlertCircle, RotateCw, Users, Share2, ShieldCheck } from "lucide-react";
+import { Loader2, AlertCircle, RotateCw, Users, Share2, ShieldCheck, Play } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useWatchParty } from "@/hooks/useWatchParty";
 import { useSearchParams } from "react-router-dom";
@@ -107,21 +107,59 @@ export const VideoPlayer = ({
     const currentSource = sources[sourceIndex];
     if (playerActive && currentSource?.includes(".m3u8") && videoRef.current) {
       const video = videoRef.current;
-      if (Hls.isSupported()) {
+      
+      // Ensure playsInline for iOS
+      video.setAttribute('playsinline', 'true');
+      video.setAttribute('webkit-playsinline', 'true');
+
+      // Priority 1: Native HLS (Safari/iOS) - User specifically requested native HLS on iOS
+      if (video.canPlayType("application/vnd.apple.mpegurl")) {
+        console.log("Using native HLS support");
+        video.src = currentSource;
+        video.load();
+        const playPromise = video.play();
+        if (playPromise !== undefined) {
+          playPromise.catch((error) => {
+            console.log("Native HLS Autoplay prevented:", error);
+            // We'll show the controls so user can manual play if needed
+          });
+        }
+        setLoading(false);
+      } 
+      // Priority 2: Hls.js for browsers without native support
+      else if (Hls.isSupported()) {
+        console.log("Using hls.js support");
         if (hlsRef.current) hlsRef.current.destroy();
-        const hls = new Hls();
+        const hls = new Hls({
+          enableWorker: true,
+          lowLatencyMode: true,
+        });
         hls.loadSource(currentSource);
         hls.attachMedia(video);
         hlsRef.current = hls;
         hls.on(Hls.Events.MANIFEST_PARSED, () => {
-          video.play().catch(() => {});
+          const playPromise = video.play();
+          if (playPromise !== undefined) {
+            playPromise.catch(() => {
+              console.log("Hls.js Autoplay prevented");
+            });
+          }
           setLoading(false);
         });
-      } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
-        video.src = currentSource;
-        video.addEventListener("loadedmetadata", () => {
-          video.play().catch(() => {});
-          setLoading(false);
+        hls.on(Hls.Events.ERROR, (event, data) => {
+          if (data.fatal) {
+            switch (data.type) {
+              case Hls.ErrorTypes.NETWORK_ERROR:
+                hls.startLoad();
+                break;
+              case Hls.ErrorTypes.MEDIA_ERROR:
+                hls.recoverMediaError();
+                break;
+              default:
+                hls.destroy();
+                break;
+            }
+          }
         });
       }
     }
@@ -156,6 +194,17 @@ export const VideoPlayer = ({
 
   const selectSource = (idx: number) => {
     if (idx === sourceIndex) return;
+    
+    const nextSrc = sources[idx];
+    const isEmbed = !nextSrc?.includes('.m3u8') && !nextSrc?.includes('.mp4');
+
+    // Handle PWA iframe restrictions during source selection
+    if (playerActive && isPWA() && isEmbed) {
+      toast.info("Opening external player for PWA compatibility...");
+      window.open(nextSrc, '_blank');
+      return;
+    }
+
     setSourceIndex(idx);
     // Réinitialise le flag "lent" pour la source choisie
     setSlow((prev) => {
@@ -232,9 +281,30 @@ export const VideoPlayer = ({
     return /Android/i.test(navigator.userAgent) && (/TV/i.test(navigator.userAgent) || /Large/i.test(navigator.userAgent));
   };
 
+  const isPWA = () => 
+    window.matchMedia('(display-mode: standalone)').matches ||
+    (window.navigator as any).standalone === true;
+
   const handleStartPlay = () => {
     setAdsOpen(false);
+    
+    const currentSrc = sources[sourceIndex];
+    const isEmbed = !currentSrc?.includes('.m3u8') && !currentSrc?.includes('.mp4');
+
+    // Handle PWA iframe restrictions by opening embed sources in a new tab
+    if (isPWA() && isEmbed) {
+      toast.info("Opening external player for PWA compatibility...");
+      window.open(currentSrc, '_blank');
+      return;
+    }
+
     setPlayerActive(true);
+    // Bind play to user click for iOS compatibility
+    if (videoRef.current) {
+      videoRef.current.play().catch(() => {
+        console.log("Play triggered from click, but may need source to be loaded first");
+      });
+    }
   };
 
   return (
@@ -283,27 +353,31 @@ export const VideoPlayer = ({
           </div>
         )}
 
-        {playerActive && (
-          sources[sourceIndex]?.includes(".m3u8") ? (
-            <video
-              ref={videoRef}
-              className="absolute inset-0 w-full h-full object-contain bg-black"
-              controls
-              autoPlay
-              playsInline
-            />
-          ) : (
-            <iframe
-              key={sourceIndex}
-              src={sources[sourceIndex]}
-              title="BNKhub player"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
-              allowFullScreen
-              referrerPolicy="no-referrer-when-downgrade"
-              onLoad={handleLoad}
-              className="absolute inset-0 w-full h-full"
-            />
-          )
+        {/* Always render video element if it's an HLS source to allow pre-binding of play() */}
+        {sources[sourceIndex]?.includes(".m3u8") && (
+          <video
+            ref={videoRef}
+            className={`absolute inset-0 w-full h-full object-contain bg-black transition-opacity duration-300 ${playerActive ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+            controls
+            autoPlay
+            playsInline
+            // @ts-ignore
+            webkit-playsinline="true"
+          />
+        )}
+
+        {/* Render iframe for other sources */}
+        {playerActive && !sources[sourceIndex]?.includes(".m3u8") && (
+          <iframe
+            key={sourceIndex}
+            src={sources[sourceIndex]}
+            title="BNKhub player"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
+            allowFullScreen
+            referrerPolicy="no-referrer-when-downgrade"
+            onLoad={handleLoad}
+            className="absolute inset-0 w-full h-full"
+          />
         )}
 
         {playerActive && loading && (
