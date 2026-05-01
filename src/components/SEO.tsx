@@ -27,6 +27,7 @@ export const SEO = ({
 
   return (
     <Helmet>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
       {/* Primary Meta Tags */}
       <title>{siteTitle}</title>
       <meta name="title" content={siteTitle} />
