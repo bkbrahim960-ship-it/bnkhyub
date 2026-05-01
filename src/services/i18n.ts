@@ -261,7 +261,7 @@ const dict = {
     player_all_failed: "لا يوجد مصدر متاح",
     player_retry: "إعادة المحاولة من المصدر 1",
 
-    footer_credit: "تم تصميم و برمجة هادا التطبيق من قبل",
+    footer_credit: "تم تصميم وبرمجة هذا التطبيق بواسطة",
     footer_rights: "جميع الحقوق محفوظة",
 
     search_placeholder: "ابحث عن فيلم أو مسلسل…",

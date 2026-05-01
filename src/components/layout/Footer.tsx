@@ -35,20 +35,27 @@ export const Footer = () => {
 
           <div className="text-sm text-muted-foreground space-y-2">
             <h4 className="font-display text-foreground text-base mb-3">BNKhub</h4>
-            <p>© 2025 BNKhub — {t("footer_rights")}.</p>
+            <p>Le Cinéma du Monde, Sans Limites.</p>
           </div>
         </div>
 
         {/* Signature designer — obligatoire */}
-        <div className="mt-12 pt-8 border-t border-white/5 flex flex-col items-center gap-2">
-          <p className="text-[11px] uppercase tracking-[0.4em] text-white/50 font-bold mb-2">
+        <div className="mt-12 pt-8 border-t border-white/5 flex flex-col items-center gap-4">
+          <p className="text-[11px] uppercase tracking-[0.4em] text-white/50 font-bold">
             {t("footer_credit")}
           </p>
-          <div className="relative group p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-accent/50 transition-colors">
-            <div className="absolute -inset-4 bg-accent/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-            <span className="relative text-2xl md:text-3xl font-display font-black bg-gradient-to-r from-accent via-white to-accent bg-clip-text text-transparent animate-gradient-x tracking-tight">
-              Brahim Ben Keddache
-            </span>
+          <div className="relative group flex flex-col items-center gap-3">
+            <div className="relative p-5 md:p-7 rounded-2xl bg-white/5 border border-white/10 hover:border-accent/50 transition-all duration-500 hover:scale-105 active:scale-95 group">
+              <div className="absolute -inset-4 bg-accent/20 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+              <span className="relative text-2xl md:text-4xl font-display font-black bg-gradient-to-r from-accent via-white to-accent bg-clip-text text-transparent animate-gradient-x tracking-tight">
+                Brahim Ben Keddache
+              </span>
+            </div>
+            <p className="text-[10px] md:text-xs text-muted-foreground font-medium flex items-center gap-2">
+              <span className="w-8 h-[1px] bg-border" />
+              © 2025 BNKhub · {t("footer_rights")}
+              <span className="w-8 h-[1px] bg-border" />
+            </p>
           </div>
         </div>
       </div>
