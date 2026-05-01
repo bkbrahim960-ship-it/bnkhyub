@@ -46,11 +46,11 @@ export const getMovieSources = (imdb_id: string, tmdb_id: number | string): stri
   const color = safeGetAccentHex();
   const id = imdb_id || tmdb_id;
   return [
-    `https://vidlink.pro/movie/${tmdb_id}?primaryColor=${color}`, // S1: VidLink (Cleanest/Ad-Free)
-    `https://vidsrc-embed.ru/embed/movie?${imdb_id ? `imdb=${imdb_id}` : `tmdb=${tmdb_id}`}&ds_lang=ar`, // S2: Arabic Optimized
-    `https://embed.su/embed/movie/${tmdb_id || imdb_id}`, // S3: Clean HLS
-    `https://vaplayer.ru/embed/movie/${imdb_id || tmdb_id}?primaryColor=${color.replace('#','')}&lang=ar`,
-    `https://vidsrc.to/embed/movie/${id}`,
+    `https://vaplayer.ru/embed/movie/${imdb_id || tmdb_id}?primaryColor=${color.replace('#','')}&lang=ar`, // S1: Original Primary
+    `https://vidsrc-embed.ru/embed/movie?${imdb_id ? `imdb=${imdb_id}` : `tmdb=${tmdb_id}`}&ds_lang=ar`, // S2: Original S2
+    `https://vidsrc.to/embed/movie/${id}`, // S3: Original S3
+    `https://vidlink.pro/movie/${tmdb_id}?primaryColor=${color}`, // S4: New Ad-Free
+    `https://embed.su/embed/movie/${tmdb_id || imdb_id}`, // S5: New Clean
     `https://autoembed.co/movie/tmdb/${tmdb_id}`,
     `https://multiembed.mov/?video_id=${tmdb_id}`,
     `https://vidlux.xyz/embed/movie/${tmdb_id}?color=${color}`,
@@ -74,11 +74,11 @@ export const getTVSources = (
   const color = safeGetAccentHex();
   const id = imdb_id || tmdb_id;
   return [
-    `https://vidlink.pro/tv/${tmdb_id}/${season}/${episode}?primaryColor=${color}`, // S1: VidLink (Cleanest)
-    `https://vidsrc-embed.ru/embed/tv?${imdb_id ? `imdb=${imdb_id}` : `tmdb=${tmdb_id}`}&season=${season}&episode=${episode}&ds_lang=ar`, // S2: Arabic Optimized
-    `https://embed.su/embed/tv/${tmdb_id || imdb_id}/${season}/${episode}`, // S3: Clean HLS
-    `https://vaplayer.ru/embed/tv/${imdb_id || tmdb_id}/${season}/${episode}?primaryColor=${color.replace('#','')}&lang=ar`,
-    `https://vidsrc.to/embed/tv/${id}/${season}/${episode}`,
+    `https://vaplayer.ru/embed/tv/${imdb_id || tmdb_id}/${season}/${episode}?primaryColor=${color.replace('#','')}&lang=ar`, // S1: Original Primary
+    `https://vidsrc-embed.ru/embed/tv?${imdb_id ? `imdb=${imdb_id}` : `tmdb=${tmdb_id}`}&season=${season}&episode=${episode}&ds_lang=ar`, // S2: Original S2
+    `https://vidsrc.to/embed/tv/${id}/${season}/${episode}`, // S3: Original S3
+    `https://vidlink.pro/tv/${tmdb_id}/${season}/${episode}?primaryColor=${color}`, // S4: New Ad-Free
+    `https://embed.su/embed/tv/${tmdb_id || imdb_id}/${season}/${episode}`, // S5: New Clean
     `https://autoembed.co/tv/tmdb/${tmdb_id}-${season}-${episode}`,
     `https://multiembed.mov/?video_id=${tmdb_id}&s=${season}&e=${episode}`,
     `https://vidlux.xyz/embed/tv/${tmdb_id}/${season}/${episode}`,
@@ -94,11 +94,11 @@ export const getTVSources = (
 };
 
 export const SOURCE_LABELS = [
-  "S1 · VidLink (Ad-Free)",
+  "S1 · VidAPI Premium",
   "S2 · vidsrc-embed (Arabic)",
-  "S3 · Embed.su (Clean)",
-  "S4 · VidAPI Premium",
-  "S5 · vidsrc.to",
+  "S3 · vidsrc.to",
+  "S4 · VidLink (Ad-Free)",
+  "S5 · Embed.su (Clean)",
   "S6 · AutoEmbed",
   "S7 · multiembed",
   "S8 · vidlux",
