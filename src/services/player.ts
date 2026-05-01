@@ -42,10 +42,30 @@ export const getPrimaryPlayerUrl = (c: PlayerConfig): string => {
   return `${base}/tv?${idParam}&ds_lang=${lang}`;
 };
 
+export const getConsumetStream = async (query: string, type: "movie" | "tv", season?: number, episode?: number) => {
+  try {
+    const searchRes = await fetch(`https://api.consumet.org/movies/voir/search?query=${encodeURIComponent(query)}`);
+    const searchData = await searchRes.json();
+    const item = searchData.results?.[0];
+    if (!item) return null;
+
+    const infoRes = await fetch(`https://api.consumet.org/movies/voir/${type === "movie" ? "movie" : "tv"}?id=${item.id}`);
+    const infoData = await infoRes.json();
+    
+    // For series, we might need to find the specific episode
+    // Consumet sources are often direct HLS links
+    return infoData.sources?.[0]?.url || null;
+  } catch (error) {
+    console.error("Consumet error:", error);
+    return null;
+  }
+};
+
 export const getMovieSources = (imdb_id: string, tmdb_id: number | string): string[] => {
   const color = safeGetAccentHex();
   const id = imdb_id || tmdb_id;
   return [
+    "CONSUMET_API", // Placeholder for lazy-loaded consumet
     `https://vaplayer.ru/embed/movie/${imdb_id || tmdb_id}?primaryColor=${color.replace('#','')}&lang=ar`,
     `https://vidsrc-embed.ru/embed/movie?${imdb_id ? `imdb=${imdb_id}` : `tmdb=${tmdb_id}`}&ds_lang=ar`,
     `https://vidsrc.to/embed/movie/${id}`,
@@ -73,6 +93,7 @@ export const getTVSources = (
   const color = safeGetAccentHex();
   const id = imdb_id || tmdb_id;
   return [
+    "CONSUMET_API",
     `https://vaplayer.ru/embed/tv/${imdb_id || tmdb_id}/${season}/${episode}?primaryColor=${color.replace('#','')}&lang=ar`,
     `https://vidsrc-embed.ru/embed/tv?${imdb_id ? `imdb=${imdb_id}` : `tmdb=${tmdb_id}`}&season=${season}&episode=${episode}&ds_lang=ar`,
     `https://vidsrc.to/embed/tv/${id}/${season}/${episode}`,
@@ -92,21 +113,22 @@ export const getTVSources = (
 };
 
 export const SOURCE_LABELS = [
-  "S1 · VidAPI Premium",
-  "S2 · vidsrc-embed",
-  "S3 · vidsrc.to",
-  "S4 · 2embed.cc",
-  "S5 · 2embed.to",
-  "S6 · vidtube",
-  "S7 · vidsrc.me",
-  "S8 · multiembed",
-  "S9 · vidlux",
-  "S10 · embed-api",
-  "S11 · VidLink (Ad-Free)",
-  "S12 · AutoEmbed (High Speed)",
-  "S13 · VidSrc ICU",
-  "S14 · VidSrc NET",
-  "S15 · VidSrc XYZ",
+  "S1 · Consumet Ad-Free",
+  "S2 · VidAPI Premium",
+  "S3 · vidsrc-embed",
+  "S4 · vidsrc.to",
+  "S5 · 2embed.cc",
+  "S6 · 2embed.to",
+  "S7 · vidtube",
+  "S8 · vidsrc.me",
+  "S9 · multiembed",
+  "S10 · vidlux",
+  "S11 · embed-api",
+  "S12 · VidLink (Ad-Free)",
+  "S13 · AutoEmbed (High Speed)",
+  "S14 · VidSrc ICU",
+  "S15 · VidSrc NET",
+  "S16 · VidSrc XYZ",
 ];
 
 // ───── Nouveautés vidsrc-embed ─────

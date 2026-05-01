@@ -58,6 +58,8 @@ export const VideoPlayer = ({
   const startedRef = useRef(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const hlsRef = useRef<Hls | null>(null);
+  const [consumetUrl, setConsumetUrl] = useState<string | null>(null);
+  const [resolvingConsumet, setResolvingConsumet] = useState(false);
 
   const baseSources =
     type === "movie"
@@ -101,10 +103,35 @@ export const VideoPlayer = ({
   useEffect(() => {
     if (!playerActive) return;
     setLoading(true);
-  }, [sourceIndex, playerActive, imdb_id, tmdb_id, season, episode]);
+    
+    // Resolve Consumet if needed
+    const currentSrc = sources[sourceIndex];
+    if (currentSrc === "CONSUMET_API" && title) {
+      const resolve = async () => {
+        setResolvingConsumet(true);
+        const { getConsumetStream } = await import("@/services/player");
+        const url = await getConsumetStream(title, type, season, episode);
+        setConsumetUrl(url);
+        setResolvingConsumet(false);
+        if (!url) {
+          toast.error("Consumet source failed, try another source");
+          // Fallback to next source if possible
+        }
+      };
+      resolve();
+    }
+  }, [sourceIndex, playerActive, imdb_id, tmdb_id, season, episode, title, type]);
 
   useEffect(() => {
-    const currentSource = sources[sourceIndex];
+    let currentSource = sources[sourceIndex];
+    
+    // Use resolved consumet URL if applicable
+    if (currentSource === "CONSUMET_API") {
+      if (resolvingConsumet) return;
+      if (!consumetUrl) return;
+      currentSource = consumetUrl;
+    }
+
     if (playerActive && currentSource?.includes(".m3u8") && videoRef.current) {
       const video = videoRef.current;
       
@@ -380,10 +407,10 @@ export const VideoPlayer = ({
           />
         )}
 
-        {playerActive && loading && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/60 pointer-events-none">
+        {playerActive && (loading || resolvingConsumet) && (
+          <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/60 pointer-events-none z-30">
             <Loader2 className="w-10 h-10 text-accent animate-spin mb-3" />
-            <p className="text-sm text-muted-foreground">{t("player_loading")}</p>
+            <p className="text-sm text-muted-foreground">{resolvingConsumet ? "Resolving ad-free stream..." : t("player_loading")}</p>
             <p className="text-xs text-accent mt-1">{allLabels[sourceIndex] || SOURCE_LABELS[sourceIndex]}</p>
           </div>
         )}
@@ -402,7 +429,7 @@ export const VideoPlayer = ({
       <div className="mt-5">
         <PlayerSourceSelector 
           sources={sources.map((src, idx) => {
-            const isDirect = src.includes(".m3u8") || src.includes(".mp4") || src.includes("youtube");
+            const isDirect = src.includes(".m3u8") || src.includes(".mp4") || src.includes("youtube") || src === "CONSUMET_API";
             return {
               id: idx,
               name: allLabels[idx] || SOURCE_LABELS[idx] || `Source ${idx + 1}`,
