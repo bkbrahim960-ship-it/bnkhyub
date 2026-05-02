@@ -122,8 +122,15 @@ export const MovieHero = ({ items }: Props) => {
       <div className="absolute inset-0 z-[2] grain" />
       <div className={`absolute inset-0 z-[2] bg-gradient-to-t ${kidsMode ? 'from-background via-background/40' : 'from-surface-primary via-surface-primary/60'} to-transparent`} />
       <div className={`absolute inset-0 z-[2] bg-gradient-to-r ${kidsMode ? 'from-background/80 via-background/20' : 'from-surface-primary/95 via-surface-primary/40'} to-transparent`} />
+      
+      {/* Blurred Edge Masking — prevents sharp cuts */}
+      <div className="absolute inset-0 z-[3] pointer-events-none shadow-[inset_0_0_120px_rgba(0,0,0,1)]" />
+      <div className="absolute -inset-6 z-[1] backdrop-blur-md pointer-events-none" 
+           style={{ maskImage: 'radial-gradient(circle, transparent 40%, black 100%)', WebkitMaskImage: 'radial-gradient(circle, transparent 40%, black 100%)' }} 
+      />
+
       {/* Extra bottom fade */}
-      <div className="absolute bottom-0 left-0 right-0 h-[40%] z-[2] bg-gradient-to-t from-background to-transparent" />
+      <div className="absolute bottom-0 left-0 right-0 h-[40%] z-[4] bg-gradient-to-t from-background via-background/90 to-transparent" />
 
       {/* Content */}
       <div className={`relative z-10 h-full container flex items-end md:items-center pb-12 md:pb-0 transition-opacity duration-1000 ${videoReady ? "opacity-0 group-hover:opacity-100" : "opacity-100"}`}>

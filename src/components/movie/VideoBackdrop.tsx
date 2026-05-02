@@ -56,11 +56,17 @@ export const VideoBackdrop = ({ backdropPath, videoKey, title }: Props) => {
       )}
 
       {/* Cinematic Overlays — stronger on mobile for text readability */}
-      <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-background/30 md:via-background/40 md:to-transparent" />
-      <div className="absolute inset-0 bg-gradient-to-r from-background/90 via-background/30 to-transparent md:from-background md:via-background/20" />
+      <div className="absolute inset-0 z-[2] bg-gradient-to-t from-background via-background/40 to-transparent" />
+      <div className="absolute inset-0 z-[2] bg-gradient-to-r from-background via-background/20 to-transparent" />
+      
+      {/* Blurred Edge Masking — prevents sharp cuts */}
+      <div className="absolute inset-0 z-[3] pointer-events-none shadow-[inset_0_0_100px_rgba(0,0,0,0.9)]" />
+      <div className="absolute -inset-4 z-[1] backdrop-blur-sm pointer-events-none" 
+           style={{ maskImage: 'radial-gradient(circle, transparent 50%, black 100%)', WebkitMaskImage: 'radial-gradient(circle, transparent 50%, black 100%)' }} 
+      />
       
       {/* Bottom fade for content readability */}
-      <div className="absolute bottom-0 left-0 right-0 h-[50%] md:h-[40%] bg-gradient-to-t from-background to-transparent" />
+      <div className="absolute bottom-0 left-0 right-0 h-[50%] md:h-[40%] z-[4] bg-gradient-to-t from-background via-background/80 to-transparent" />
     </div>
   );
 };

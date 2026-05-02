@@ -368,8 +368,25 @@ export const VideoPlayer = ({
           />
         )}
 
-        {/* Render iframe for other sources */}
-        {playerActive && !sources[sourceIndex]?.includes(".m3u8") && (
+        {/* Render YouTube if detected */}
+        {playerActive && (sources[sourceIndex]?.includes("youtube.com") || sources[sourceIndex]?.includes("youtu.be")) && (
+          <iframe
+            key={`yt-${sourceIndex}`}
+            src={`https://www.youtube.com/embed/${
+              sources[sourceIndex].includes("v=") 
+                ? sources[sourceIndex].split("v=")[1].split("&")[0] 
+                : sources[sourceIndex].split("/").pop()
+            }?autoplay=1&rel=0&modestbranding=1&showinfo=0&iv_load_policy=3`}
+            title="YouTube Video"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
+            allowFullScreen
+            onLoad={handleLoad}
+            className="absolute inset-0 w-full h-full border-0"
+          />
+        )}
+
+        {/* Render iframe for other sources (non-m3u8, non-youtube) */}
+        {playerActive && !sources[sourceIndex]?.includes(".m3u8") && !sources[sourceIndex]?.includes("youtube.com") && !sources[sourceIndex]?.includes("youtu.be") && (
           <iframe
             key={sourceIndex}
             src={sources[sourceIndex]}
