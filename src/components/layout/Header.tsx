@@ -13,11 +13,12 @@ import { useLanguage } from "@/context/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
 import { ColorSwitcher } from "@/components/ui/ColorSwitcher";
 import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
-import { InstallButton } from "@/components/pwa/InstallButton";
+import { useSettings } from "@/context/SettingsContext";
 
 export const Header = () => {
   const { t } = useLanguage();
   const { user } = useAuth();
+  const { kidsMode } = useSettings();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -41,12 +42,13 @@ export const Header = () => {
     navLinks.push({ to: "/admin", label: t("nav_admin") });
   }
 
+  const headerBg = kidsMode 
+    ? (scrolled ? "bg-white/40 backdrop-blur-3xl border-b border-pink-200" : "bg-gradient-to-b from-white/60 to-transparent")
+    : (scrolled ? "bg-black/20 backdrop-blur-3xl border-b border-white/5" : "bg-gradient-to-b from-black/80 to-transparent");
+
   return (
     <header
-      className={`fixed top-0 inset-x-0 z-[100] transition-all duration-500 ease-luxe pt-safe ${scrolled
-          ? "bg-black/20 backdrop-blur-3xl border-b border-white/5"
-          : "bg-gradient-to-b from-black/80 to-transparent"
-        }`}
+      className={`fixed top-0 inset-x-0 z-[100] transition-all duration-500 ease-luxe pt-safe ${headerBg}`}
     >
       <div className="w-full px-4 md:px-10 lg:px-16 flex items-center justify-between h-16 md:h-20 lg:h-24">
         {/* Logo */}

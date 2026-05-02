@@ -7,12 +7,15 @@ import { Play, Info } from "lucide-react";
 import { IMG, TMDBMovie } from "@/services/tmdb";
 import { useLanguage } from "@/context/LanguageContext";
 
+import { useSettings } from "@/context/SettingsContext";
+
 interface Props {
   items: TMDBMovie[];
 }
 
 export const MovieHero = ({ items }: Props) => {
   const { t } = useLanguage();
+  const { kidsMode } = useSettings();
   const [index, setIndex] = useState(0);
   const pool = items.slice(0, 6);
 
@@ -57,8 +60,8 @@ export const MovieHero = ({ items }: Props) => {
 
       {/* Grain + gradients */}
       <div className="absolute inset-0 grain" />
-      <div className="absolute inset-0 bg-gradient-to-t from-surface-primary via-surface-primary/60 to-transparent" />
-      <div className="absolute inset-0 bg-gradient-to-r from-surface-primary/95 via-surface-primary/40 to-transparent" />
+      <div className={`absolute inset-0 bg-gradient-to-t ${kidsMode ? 'from-white via-white/40' : 'from-surface-primary via-surface-primary/60'} to-transparent`} />
+      <div className={`absolute inset-0 bg-gradient-to-r ${kidsMode ? 'from-white/80 via-white/20' : 'from-surface-primary/95 via-surface-primary/40'} to-transparent`} />
 
       {/* Contenu */}
       <div className="relative z-10 h-full container flex items-end md:items-center pb-16 md:pb-0">
