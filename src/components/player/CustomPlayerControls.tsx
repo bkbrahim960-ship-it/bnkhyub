@@ -133,15 +133,26 @@ export const CustomPlayerControls = ({
               </button>
             </div>
 
-            {duration > 0 && (
-              <div className="text-sm font-mono text-white/80 font-bold bg-black/20 px-3 py-1 rounded-lg backdrop-blur-md">
-                {formatTime(progress)} <span className="text-white/30 mx-1">/</span> {formatTime(duration)}
-              </div>
-            )}
+            {/* Time */}
+            <div className="text-xs font-mono text-white/80 font-bold bg-black/40 px-3 py-1.5 rounded-lg backdrop-blur-md border border-white/5 flex items-center gap-2">
+              <span className="text-accent">{formatTime(progress)}</span>
+              <span className="text-white/20">|</span>
+              <span className="text-white/60">-{formatTime(Math.max(0, duration - progress))}</span>
+            </div>
           </div>
 
-          <div className="flex items-center gap-6">
-            <div className="flex items-center gap-3 group/vol">
+          <div className="flex items-center gap-4">
+            {/* Quick Subtitles Button */}
+            <button 
+              onClick={onShowSettings} // Direct to subtitles later
+              className="group/btn flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 hover:bg-accent/20 hover:border-accent/40 transition-all active:scale-95"
+            >
+              <Captions className="w-5 h-5 text-accent" />
+              <span className="text-[10px] font-black uppercase tracking-widest text-white/70 group-hover/btn:text-white">Subtitles</span>
+            </button>
+
+            {/* Volume */}
+            <div className="flex items-center gap-3 group/vol bg-white/5 px-3 py-2 rounded-xl border border-white/5">
               <button 
                 onClick={() => {
                   const newVol = volume > 0 ? 0 : 1;
@@ -150,9 +161,9 @@ export const CustomPlayerControls = ({
                 }}
                 className="text-white/70 hover:text-white transition-colors"
               >
-                {isMuted || volume === 0 ? <VolumeX className="w-6 h-6 text-destructive" /> : <Volume2 className="w-6 h-6" />}
+                {isMuted || volume === 0 ? <VolumeX className="w-5 h-5 text-destructive" /> : <Volume2 className="w-5 h-5" />}
               </button>
-              <div className="w-0 group-hover/vol:w-24 overflow-hidden transition-all duration-300">
+              <div className="w-0 group-hover/vol:w-20 overflow-hidden transition-all duration-500 ease-out">
                 <input 
                   type="range"
                   min={0}
@@ -160,7 +171,7 @@ export const CustomPlayerControls = ({
                   step={0.1}
                   value={volume}
                   onChange={(e) => onVolumeChange(Number(e.target.value))}
-                  className="w-full accent-accent"
+                  className="w-full accent-accent h-1"
                 />
               </div>
             </div>
@@ -169,7 +180,7 @@ export const CustomPlayerControls = ({
               <Settings className="w-5 h-5" />
             </button>
 
-            <button onClick={onToggleFullscreen} className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/70 hover:text-white transition-all">
+            <button onClick={onToggleFullscreen} className="w-10 h-10 rounded-full bg-accent/20 border border-accent/30 flex items-center justify-center text-accent hover:bg-accent hover:text-white transition-all shadow-accent/20">
               {isFullscreen ? <Minimize className="w-5 h-5" /> : <Maximize className="w-5 h-5" />}
             </button>
           </div>

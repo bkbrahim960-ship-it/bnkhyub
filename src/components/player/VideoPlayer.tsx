@@ -860,34 +860,38 @@ export const VideoPlayer = ({
 
         {/* Render YouTube if detected */}
         {playerActive && (sources[sourceIndex]?.includes("youtube.com") || sources[sourceIndex]?.includes("youtu.be")) && (
-          <iframe
-            key={`yt-${sourceIndex}`}
-            src={`https://www.youtube.com/embed/${
-              sources[sourceIndex].includes("v=") 
-                ? sources[sourceIndex].split("v=")[1].split("&")[0] 
-                : sources[sourceIndex].split("/").pop()
-            }?autoplay=1&rel=0&modestbranding=1&showinfo=0&iv_load_policy=3`}
-            title="YouTube Video"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
-            allowFullScreen
-            onLoad={handleLoad}
-            className="absolute inset-0 w-full h-full border-0"
-          />
+          <div className="absolute inset-0 overflow-hidden">
+            <iframe
+              key={`yt-${sourceIndex}`}
+              src={`https://www.youtube.com/embed/${
+                sources[sourceIndex].includes("v=") 
+                  ? sources[sourceIndex].split("v=")[1].split("&")[0] 
+                  : sources[sourceIndex].split("/").pop()
+              }?autoplay=1&rel=0&modestbranding=1&showinfo=0&iv_load_policy=3&controls=0`}
+              title="YouTube Video"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
+              allowFullScreen
+              onLoad={handleLoad}
+              className="absolute inset-0 w-full h-[115%] -top-[7.5%] border-0 scale-105"
+            />
+          </div>
         )}
 
         {/* Render iframe for other sources (non-m3u8, non-youtube) */}
         {playerActive && !sources[sourceIndex]?.includes(".m3u8") && !sources[sourceIndex]?.includes("youtube.com") && !sources[sourceIndex]?.includes("youtu.be") && (
-          <iframe
-            key={sourceIndex}
-            src={sources[sourceIndex]}
-            title="BNKhub player"
-            {...(sourceIndex === 0 ? { sandbox: "allow-scripts allow-same-origin allow-forms allow-presentation" } : {})}
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
-            allowFullScreen
-            referrerPolicy="no-referrer-when-downgrade"
-            onLoad={handleLoad}
-            className="absolute inset-0 w-full h-full"
-          />
+          <div className="absolute inset-0 overflow-hidden bg-black">
+            <iframe
+              key={sourceIndex}
+              src={sources[sourceIndex]}
+              title="BNKhub player"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
+              allowFullScreen
+              onLoad={handleLoad}
+              className="absolute inset-0 w-full h-[110%] -top-[5%] border-0 scale-105 transition-opacity duration-700"
+            />
+            {/* Mask to hide bottom controls of most iframes */}
+            <div className="absolute bottom-0 inset-x-0 h-[60px] bg-black/90 backdrop-blur-xl z-[40] pointer-events-none" />
+          </div>
         )}
 
         {playerActive && loading && (
