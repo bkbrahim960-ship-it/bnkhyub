@@ -17,7 +17,7 @@ import { toast } from "sonner";
 
 export const ContinueWatchingRow = () => {
   const { user } = useAuth();
-  const { t } = useLanguage();
+  const { lang, t } = useLanguage();
   const scrollRef = useRef<HTMLDivElement>(null);
   const [items, setItems] = useState<WatchHistoryEntry[]>([]);
   const [loading, setLoading] = useState(true);
@@ -71,7 +71,7 @@ export const ContinueWatchingRow = () => {
     <section className="relative py-4 group/row">
       <div className="container flex items-end justify-between mb-5">
         <h2 className="font-display text-2xl md:text-3xl">
-          <span className="text-gradient-accent">{lang === 'ar' ? 'متابعة المشاهدة' : 'Continuer à regarder'}</span>
+          <span className="text-gradient-accent">{t("section_continue")}</span>
         </h2>
         <div className="hidden md:flex gap-2 opacity-0 group-hover/row:opacity-100 transition-opacity duration-300">
           <button
