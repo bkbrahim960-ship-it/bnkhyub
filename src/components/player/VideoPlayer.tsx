@@ -8,7 +8,7 @@ import { useEffect, useRef, useState } from "react";
 import { getMovieSources, getTVSources, SOURCE_LABELS } from "@/services/player";
 import { AdsNoticeModal, hasSeenAdsNotice } from "./AdsNoticeModal";
 import { useLanguage } from "@/context/LanguageContext";
-import { Loader2, AlertCircle, RotateCw, ShieldCheck, Play, Settings, Lock, Unlock, FastForward, Languages, Subtitles, Monitor, Gauge, Pip as PipIcon, Maximize } from "lucide-react";
+import { Loader2, AlertCircle, RotateCw, ShieldCheck, Play, Settings, Lock, Unlock, FastForward, Languages, Captions, Monitor, Gauge, PictureInPicture as PipIcon, Maximize } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import Hls from "hls.js";
@@ -411,7 +411,7 @@ export const VideoPlayer = ({
                 { id: "quality", icon: Monitor, label: "Qualité" },
                 { id: "speed", icon: Gauge, label: "Vitesse" },
                 { id: "audio", icon: Languages, label: "Audio" },
-                { id: "subtitle", icon: Subtitles, label: "Sous-titres" }
+                { id: "subtitle", icon: Captions, label: "Sous-titres" }
               ].map((tab) => (
                 <button
                   key={tab.id}
