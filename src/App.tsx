@@ -83,8 +83,9 @@ const SiteVisitTracker = () => {
 };
 
 import { Onboarding } from "@/components/ui/Onboarding";
+import { SplashScreen } from "@/components/SplashScreen";
 
-const App = () => (
+const AppContent = () => (
   <HelmetProvider>
     <QueryClientProvider client={queryClient}>
     <ThemeProvider>
@@ -133,5 +134,25 @@ const App = () => (
     </QueryClientProvider>
   </HelmetProvider>
 );
+
+const App = () => {
+  const [showSplash, setShowSplash] = useState(() => {
+    // Show splash only once per session
+    if (sessionStorage.getItem("bnkhub_splash_shown")) return false;
+    return true;
+  });
+
+  const handleSplashFinish = () => {
+    setShowSplash(false);
+    sessionStorage.setItem("bnkhub_splash_shown", "1");
+  };
+
+  return (
+    <>
+      {showSplash && <SplashScreen onFinish={handleSplashFinish} />}
+      <AppContent />
+    </>
+  );
+};
 
 export default App;
