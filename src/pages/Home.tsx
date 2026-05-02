@@ -8,6 +8,7 @@ import { Layout } from "@/components/layout/Layout";
 import { MovieHero } from "@/components/movie/MovieHero";
 import { MovieRow } from "@/components/movie/MovieRow";
 import { M3UMovieRow } from "@/components/movie/M3UMovieRow";
+import { MovieCard } from "@/components/movie/MovieCard";
 import { BrandRow } from "@/components/movie/BrandRow";
 import { ContinueWatchingRow } from "@/components/movie/ContinueWatchingRow";
 import { SEO } from "@/components/SEO";
