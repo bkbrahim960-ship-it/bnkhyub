@@ -127,4 +127,4 @@ export const MovieCard = memo(({ id, title, posterPath, year, rating, type = "mo
       </div>
     </Link>
   );
-};
+});

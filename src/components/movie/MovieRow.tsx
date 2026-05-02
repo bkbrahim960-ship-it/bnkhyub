@@ -80,4 +80,4 @@ export const MovieRow = memo(({ title, items, type = "movie", loading }: Props) 
       </div>
     </section>
   );
-};
+});
