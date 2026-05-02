@@ -29,8 +29,17 @@ export const ContinueWatchingRow = () => {
       return;
     }
     setLoading(true);
-    getRecentHistory(user.id, 5)
-      .then(setItems)
+    getRecentHistory(user.id, 20)
+      .then((data) => {
+        // Deduplicate: keep only the most recent entry per tmdb_id
+        const seen = new Set<number>();
+        const unique = data.filter((entry) => {
+          if (seen.has(entry.tmdb_id)) return false;
+          seen.add(entry.tmdb_id);
+          return true;
+        });
+        setItems(unique.slice(0, 5));
+      })
       .catch(() => setItems([]))
       .finally(() => setLoading(false));
   };
