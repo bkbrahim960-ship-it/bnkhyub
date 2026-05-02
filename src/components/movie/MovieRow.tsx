@@ -58,7 +58,7 @@ export const MovieRow = ({ title, items, type = "movie", loading }: Props) => {
 
       <div
         ref={scrollRef}
-        className="container overflow-x-auto scrollbar-hide flex gap-4 md:gap-5 pb-4 snap-x snap-mandatory"
+        className="container overflow-x-auto scrollbar-hide flex gap-4 md:gap-5 pt-10 pb-6 snap-x snap-mandatory"
       >
         {loading
           ? Array.from({ length: 8 }).map((_, i) => (

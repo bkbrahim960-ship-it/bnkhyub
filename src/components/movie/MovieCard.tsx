@@ -49,10 +49,10 @@ export const MovieCard = ({ id, title, posterPath, year, rating, type = "movie",
       onMouseLeave={handleLeave}
       onFocus={handleActive}
       onBlur={handleLeave}
-      className={`group relative block shrink-0 w-[150px] sm:w-[170px] md:w-[190px] lg:w-[210px] transition-all duration-700 hover:-translate-y-3 focus:z-[100] ${className}`}
+      className={`group relative block shrink-0 w-[150px] sm:w-[170px] md:w-[190px] lg:w-[210px] transition-all duration-700 hover:-translate-y-3 focus:z-[100] hover:z-[50] ${className}`}
     >
-      {/* 3D-ish Glow effect behind card on hover */}
-      <div className="absolute -inset-2 bg-accent/20 rounded-[2rem] blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+      {/* 3D-ish Gradient Glow effect behind card on hover */}
+      <div className="absolute -inset-4 bg-gradient-to-tr from-accent/40 via-accent/10 to-accent-light/30 rounded-[3rem] blur-3xl opacity-0 group-hover:opacity-100 transition-all duration-700 pointer-events-none" />
 
       <div className="relative aspect-[2/3.2] rounded-2xl overflow-hidden bg-surface-card border border-white/5 group-hover:border-accent/40 group-hover:shadow-[0_20px_50px_-12px_rgba(0,0,0,0.8),0_0_20px_hsl(var(--accent)/0.2)] transition-all duration-700 ease-luxe">
         {!loaded && <div className="absolute inset-0 shimmer-gold" />}
