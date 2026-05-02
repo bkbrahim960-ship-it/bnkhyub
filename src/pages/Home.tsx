@@ -72,7 +72,7 @@ const KabyleCinemaRow = () => {
     <section className="relative py-8">
       <div className="container mb-5">
         <h2 className="font-display text-2xl md:text-3xl">
-          <span className="text-gradient-accent">🎬 سينما قبائلية — من أعمالي</span>
+          <span className="text-gradient-accent">Kabyle</span>
         </h2>
         <p className="text-sm text-muted-foreground mt-1">أفلام ومسلسلات بالأمازيغية القبائلية</p>
       </div>

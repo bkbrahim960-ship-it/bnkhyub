@@ -133,6 +133,48 @@
     --bg-elevated: 0 0% 6%;
   }
 
+  /* ─────── KIDS MODE THEME ─────── */
+  [data-kids="true"] {
+    --bg-primary: 198 100% 97%;       /* Ultra light sky blue */
+    --bg-secondary: 198 100% 92%;     /* Light sky blue */
+    --bg-card: 0 0% 100%;             /* Pure white for cards */
+    --bg-elevated: 198 60% 88%;
+    
+    --background: var(--bg-primary);
+    --foreground: 222 47% 11%;         /* Deep blue text */
+    
+    --card: var(--bg-card);
+    --card-foreground: 222 47% 11%;
+    
+    --popover: var(--bg-elevated);
+    --popover-foreground: 222 47% 11%;
+
+    --accent-h: 327; --accent-s: 100%; --accent-l: 54%; /* Playful Pink */
+    --accent-light: 327 100% 64%;
+    --accent-dark: 327 100% 44%;
+    --accent: var(--accent-h) var(--accent-s) var(--accent-l);
+    --accent-foreground: 0 0% 100%;   /* White text on accent */
+    
+    --muted: 198 30% 90%;
+    --muted-foreground: 215 16% 45%;
+    
+    --border: 198 40% 85%;
+    --input: 198 40% 85%;
+    --ring: var(--accent);
+
+    /* Gradients for kids */
+    --gradient-accent: linear-gradient(135deg, #FF69B4, #FFB6C1); /* Pink candy */
+    --gradient-hero: linear-gradient(
+      180deg,
+      transparent 0%,
+      hsl(var(--bg-primary) / 0.8) 70%,
+      hsl(var(--bg-primary)) 100%
+    );
+
+    --shadow-accent: 0 10px 20px -5px rgba(255, 105, 180, 0.4);
+    --shadow-glow: 0 0 30px rgba(255, 105, 180, 0.2);
+  }
+
   .theme-icon {
     /* Conversion intelligente de la couleur d'icône vers le accent color */
     filter: brightness(0.8) sepia(1) saturate(10) hue-rotate(calc((var(--accent-h) - 43) * 1deg)) brightness(1.1);

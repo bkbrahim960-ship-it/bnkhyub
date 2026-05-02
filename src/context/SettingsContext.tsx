@@ -26,6 +26,14 @@ export const SettingsProvider = ({ children }: { children: ReactNode }) => {
     localStorage.setItem(STORAGE, JSON.stringify({ kidsMode: val }));
   };
 
+  useEffect(() => {
+    if (kidsMode) {
+      document.documentElement.setAttribute("data-kids", "true");
+    } else {
+      document.documentElement.removeAttribute("data-kids");
+    }
+  }, [kidsMode]);
+
   return (
     <Ctx.Provider value={{ kidsMode, setKidsMode }}>
       {children}
