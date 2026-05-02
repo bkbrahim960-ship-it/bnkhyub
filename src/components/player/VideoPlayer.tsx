@@ -8,7 +8,7 @@ import { useEffect, useRef, useState } from "react";
 import { getMovieSources, getTVSources, SOURCE_LABELS } from "@/services/player";
 import { AdsNoticeModal, hasSeenAdsNotice } from "./AdsNoticeModal";
 import { useLanguage } from "@/context/LanguageContext";
-import { Loader2, AlertCircle, RotateCw, ShieldCheck, Play } from "lucide-react";
+import { Loader2, AlertCircle, RotateCw, ShieldCheck, Play, Settings, Lock, Unlock, FastForward, Languages, Subtitles, Monitor, Gauge, Pip as PipIcon, Maximize } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import Hls from "hls.js";
@@ -53,6 +53,19 @@ export const VideoPlayer = ({
   const startedRef = useRef(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const hlsRef = useRef<Hls | null>(null);
+
+  // Advanced Player States
+  const [playbackRate, setPlaybackRate] = useState(1);
+  const [audioTracks, setAudioTracks] = useState<any[]>([]);
+  const [subtitleTracks, setSubtitleTracks] = useState<any[]>([]);
+  const [levels, setLevels] = useState<any[]>([]);
+  const [isLocked, setIsLocked] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
+  const [activeTab, setActiveTab] = useState<"speed" | "quality" | "audio" | "subtitle">("quality");
+  const [currentAudio, setCurrentAudio] = useState(-1);
+  const [currentSubtitle, setCurrentSubtitle] = useState(-1);
+  const [currentLevel, setCurrentLevel] = useState(-1);
+  const [isPipAvailable] = useState(() => typeof document !== 'undefined' && 'pictureInPictureEnabled' in document);
 
   const baseSources =
     type === "movie"
@@ -133,7 +146,7 @@ export const VideoPlayer = ({
         hls.loadSource(currentSource);
         hls.attachMedia(video);
         hlsRef.current = hls;
-        hls.on(Hls.Events.MANIFEST_PARSED, () => {
+        hls.on(Hls.Events.MANIFEST_PARSED, (event, data) => {
           const playPromise = video.play();
           if (playPromise !== undefined) {
             playPromise.catch(() => {
@@ -141,6 +154,25 @@ export const VideoPlayer = ({
             });
           }
           setLoading(false);
+          
+          // Capture tracks and levels
+          setAudioTracks(hls.audioTracks);
+          setSubtitleTracks(hls.subtitleTracks);
+          setLevels(hls.levels);
+          setCurrentLevel(hls.currentLevel);
+          setCurrentAudio(hls.audioTrack);
+        });
+
+        hls.on(Hls.Events.LEVEL_SWITCHED, (event, data) => {
+          setCurrentLevel(data.level);
+        });
+
+        hls.on(Hls.Events.AUDIO_TRACK_SWITCHED, (event, data) => {
+          setCurrentAudio(data.id);
+        });
+
+        hls.on(Hls.Events.SUBTITLE_TRACK_SWITCHED, (event, data) => {
+          setCurrentSubtitle(data.id);
         });
         hls.on(Hls.Events.ERROR, (event, data) => {
           if (data.fatal) {
@@ -314,7 +346,7 @@ export const VideoPlayer = ({
 
       <div className="relative w-full aspect-video bg-black rounded-2xl overflow-hidden border border-white/10 shadow-2xl group/player">
         {/* Unified Header Overlay */}
-        <div className="absolute top-0 inset-x-0 z-20 p-4 flex items-center justify-between bg-gradient-to-b from-black/80 to-transparent opacity-0 group-hover/player:opacity-100 transition-opacity duration-500">
+        <div className={`absolute top-0 inset-x-0 z-20 p-4 flex items-center justify-between bg-gradient-to-b from-black/90 via-black/40 to-transparent transition-all duration-500 ${isLocked ? 'opacity-0 pointer-events-none' : 'opacity-0 group-hover/player:opacity-100'}`}>
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-lg bg-accent/20 border border-accent/40 flex items-center justify-center">
               <ShieldCheck className="w-4 h-4 text-accent" />
@@ -324,25 +356,191 @@ export const VideoPlayer = ({
               <h3 className="text-xs font-bold text-white/90 line-clamp-1">{title || "BNKhub Player"}</h3>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <span className="px-2 py-0.5 rounded bg-red-500 text-[8px] font-black text-white animate-pulse">LIVE</span>
-            <span className="px-2 py-0.5 rounded bg-white/10 border border-white/20 text-[8px] font-black text-white/80">ULTRA HD</span>
+          <div className="flex items-center gap-3">
+            {isPipAvailable && sources[sourceIndex]?.includes(".m3u8") && (
+              <button 
+                onClick={() => videoRef.current?.requestPictureInPicture()}
+                className="p-2 rounded-full bg-white/5 hover:bg-white/20 transition-colors text-white"
+                title="Picture in Picture"
+              >
+                <PipIcon className="w-4 h-4" />
+              </button>
+            )}
+            <button 
+              onClick={() => setShowSettings(!showSettings)}
+              className="p-2 rounded-full bg-white/5 hover:bg-white/20 transition-colors text-white"
+              title="Settings"
+            >
+              <Settings className={`w-4 h-4 ${showSettings ? 'rotate-90' : ''} transition-transform duration-500`} />
+            </button>
+            <button 
+              onClick={() => setIsLocked(true)}
+              className="p-2 rounded-full bg-white/5 hover:bg-white/20 transition-colors text-white"
+              title="Lock Screen"
+            >
+              <Lock className="w-4 h-4" />
+            </button>
           </div>
         </div>
 
-        {!playerActive && (
-          <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-surface-elevated/80">
-            <div className="relative group">
-              <div className="absolute -inset-4 bg-accent/20 rounded-full blur-2xl group-hover:bg-accent/40 transition-all duration-700" />
-              <button
-                onClick={handleStartPlay}
-                className="relative bg-gradient-accent text-accent-foreground font-black px-10 py-5 rounded-full shadow-accent hover:scale-110 active:scale-95 transition-all flex items-center gap-3"
-              >
-                <Play className="w-6 h-6 fill-current" />
-                {t("hero_watch")}
+        {/* Lock Overlay */}
+        {isLocked && (
+          <div className="absolute inset-0 z-[100] flex items-center justify-center bg-black/20 backdrop-blur-[2px]">
+            <button 
+              onClick={() => setIsLocked(false)}
+              className="p-6 rounded-full bg-black/60 border border-white/10 text-white hover:bg-accent/20 hover:border-accent/40 transition-all duration-500 group/unlock"
+            >
+              <Unlock className="w-8 h-8 group-hover/unlock:scale-125 transition-transform" />
+              <p className="absolute mt-12 left-1/2 -translate-x-1/2 text-[10px] font-bold uppercase tracking-widest opacity-0 group-hover/unlock:opacity-100 transition-opacity">Unlock</p>
+            </button>
+          </div>
+        )}
+
+        {/* Advanced Settings Modal */}
+        {showSettings && !isLocked && (
+          <div className="absolute inset-y-0 end-0 z-[60] w-full max-w-[320px] bg-black/90 backdrop-blur-2xl border-s border-white/10 p-6 flex flex-col animate-in slide-in-from-right duration-500">
+            <div className="flex items-center justify-between mb-8">
+              <h3 className="text-xl font-display font-bold text-accent">Paramètres</h3>
+              <button onClick={() => setShowSettings(false)} className="text-white/40 hover:text-white transition-colors">
+                <RotateCw className="w-5 h-5 rotate-45" />
               </button>
             </div>
-            <p className="mt-6 text-[10px] font-bold text-white/40 uppercase tracking-[0.3em] animate-pulse">Experience BNKhub Premium</p>
+
+            <div className="flex gap-2 mb-6 overflow-x-auto pb-2 scrollbar-hide">
+              {[
+                { id: "quality", icon: Monitor, label: "Qualité" },
+                { id: "speed", icon: Gauge, label: "Vitesse" },
+                { id: "audio", icon: Languages, label: "Audio" },
+                { id: "subtitle", icon: Subtitles, label: "Sous-titres" }
+              ].map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id as any)}
+                  className={`flex flex-col items-center gap-2 px-4 py-3 rounded-2xl border transition-all duration-300 min-w-[80px] ${
+                    activeTab === tab.id 
+                      ? "bg-accent/20 border-accent/40 text-accent" 
+                      : "bg-white/5 border-white/5 text-white/40 hover:bg-white/10"
+                  }`}
+                >
+                  <tab.icon className="w-5 h-5" />
+                  <span className="text-[10px] font-bold uppercase tracking-tighter">{tab.label}</span>
+                </button>
+              ))}
+            </div>
+
+            <div className="flex-1 overflow-y-auto space-y-2 pr-2 scrollbar-hide">
+              {activeTab === "quality" && (
+                <>
+                  <button 
+                    onClick={() => { if (hlsRef.current) hlsRef.current.currentLevel = -1; }}
+                    className={`w-full flex items-center justify-between p-4 rounded-xl border transition-all ${currentLevel === -1 ? 'bg-accent/10 border-accent/30 text-accent' : 'bg-white/5 border-white/5 text-white/70'}`}
+                  >
+                    <span className="font-bold">Auto</span>
+                    {currentLevel === -1 && <ShieldCheck className="w-4 h-4" />}
+                  </button>
+                  {levels.map((level, idx) => (
+                    <button 
+                      key={idx}
+                      onClick={() => { if (hlsRef.current) hlsRef.current.currentLevel = idx; }}
+                      className={`w-full flex items-center justify-between p-4 rounded-xl border transition-all ${currentLevel === idx ? 'bg-accent/10 border-accent/30 text-accent' : 'bg-white/5 border-white/5 text-white/70'}`}
+                    >
+                      <span className="font-bold">{level.height}p</span>
+                      <span className="text-[10px] opacity-40">{(level.bitrate / 1000000).toFixed(1)} Mbps</span>
+                      {currentLevel === idx && <ShieldCheck className="w-4 h-4" />}
+                    </button>
+                  ))}
+                  {levels.length === 0 && (
+                    <p className="text-center text-white/30 text-xs py-10 italic">Aucune option disponible pour cette source.</p>
+                  )}
+                </>
+              )}
+
+              {activeTab === "speed" && (
+                [0.5, 0.75, 1, 1.25, 1.5, 2].map((rate) => (
+                  <button 
+                    key={rate}
+                    onClick={() => { 
+                      setPlaybackRate(rate);
+                      if (videoRef.current) videoRef.current.playbackRate = rate;
+                    }}
+                    className={`w-full flex items-center justify-between p-4 rounded-xl border transition-all ${playbackRate === rate ? 'bg-accent/10 border-accent/30 text-accent' : 'bg-white/5 border-white/5 text-white/70'}`}
+                  >
+                    <span className="font-bold">{rate === 1 ? "Normale" : `${rate}x`}</span>
+                    {playbackRate === rate && <ShieldCheck className="w-4 h-4" />}
+                  </button>
+                ))
+              )}
+
+              {activeTab === "audio" && (
+                <>
+                  {audioTracks.map((track, idx) => (
+                    <button 
+                      key={idx}
+                      onClick={() => { if (hlsRef.current) hlsRef.current.audioTrack = idx; }}
+                      className={`w-full flex items-center justify-between p-4 rounded-xl border transition-all ${currentAudio === idx ? 'bg-accent/10 border-accent/30 text-accent' : 'bg-white/5 border-white/5 text-white/70'}`}
+                    >
+                      <span className="font-bold">{track.name || `Piste ${idx + 1}`}</span>
+                      <span className="text-[10px] opacity-40 uppercase">{track.lang}</span>
+                      {currentAudio === idx && <ShieldCheck className="w-4 h-4" />}
+                    </button>
+                  ))}
+                  {audioTracks.length <= 1 && (
+                    <p className="text-center text-white/30 text-xs py-10 italic">Source audio unique détectée.</p>
+                  )}
+                </>
+              )}
+
+              {activeTab === "subtitle" && (
+                <>
+                  <button 
+                    onClick={() => { if (hlsRef.current) hlsRef.current.subtitleTrack = -1; }}
+                    className={`w-full flex items-center justify-between p-4 rounded-xl border transition-all ${currentSubtitle === -1 ? 'bg-accent/10 border-accent/30 text-accent' : 'bg-white/5 border-white/5 text-white/70'}`}
+                  >
+                    <span className="font-bold">Désactivés</span>
+                    {currentSubtitle === -1 && <ShieldCheck className="w-4 h-4" />}
+                  </button>
+                  {subtitleTracks.map((track, idx) => (
+                    <button 
+                      key={idx}
+                      onClick={() => { if (hlsRef.current) hlsRef.current.subtitleTrack = idx; }}
+                      className={`w-full flex items-center justify-between p-4 rounded-xl border transition-all ${currentSubtitle === idx ? 'bg-accent/10 border-accent/30 text-accent' : 'bg-white/5 border-white/5 text-white/70'}`}
+                    >
+                      <span className="font-bold">{track.name || `Sous-titre ${idx + 1}`}</span>
+                      <span className="text-[10px] opacity-40 uppercase">{track.lang}</span>
+                      {currentSubtitle === idx && <ShieldCheck className="w-4 h-4" />}
+                    </button>
+                  ))}
+                  {subtitleTracks.length === 0 && (
+                    <p className="text-center text-white/30 text-xs py-10 italic">Aucun sous-titre intégré trouvé.</p>
+                  )}
+                </>
+              )}
+            </div>
+
+            <div className="mt-6 pt-6 border-t border-white/10">
+              <p className="text-[9px] text-white/20 uppercase tracking-[0.2em] text-center italic">BNKhub Premium Experience Engine</p>
+            </div>
+          </div>
+        )}
+
+        {!playerActive && (
+          <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-surface-elevated/80 backdrop-blur-sm">
+            <div className="relative group">
+              <div className="absolute -inset-8 bg-accent/20 rounded-full blur-3xl group-hover:bg-accent/40 transition-all duration-700 animate-pulse" />
+              <button
+                onClick={handleStartPlay}
+                className="relative bg-gradient-accent text-accent-foreground font-black px-12 py-6 rounded-full shadow-accent hover:scale-110 active:scale-95 transition-all flex items-center gap-4 border border-white/10"
+              >
+                <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+                  <Play className="w-6 h-6 fill-current" />
+                </div>
+                <div className="text-left">
+                  <p className="text-[10px] uppercase tracking-[0.2em] opacity-60">BNKhub Engine</p>
+                  <p className="text-xl font-display">{t("hero_watch")}</p>
+                </div>
+              </button>
+            </div>
+            <p className="mt-8 text-[10px] font-bold text-white/40 uppercase tracking-[0.4em] animate-pulse">Ultra HD · Multi-Server · No Limits</p>
           </div>
         )}
 
@@ -357,6 +555,30 @@ export const VideoPlayer = ({
             playsInline
             // @ts-ignore
             webkit-playsinline="true"
+          />
+        )}
+
+        {/* Interaction Shield & Gestures */}
+        {playerActive && !isLocked && (
+          <div 
+            className="absolute inset-0 z-10 grid grid-cols-3 pointer-events-auto"
+            onDoubleClick={(e) => {
+              const rect = e.currentTarget.getBoundingClientRect();
+              const x = e.clientX - rect.left;
+              const width = rect.width;
+              if (videoRef.current) {
+                if (x < width / 3) {
+                  videoRef.current.currentTime = Math.max(0, videoRef.current.currentTime - 10);
+                  toast.info("-10s");
+                } else if (x > (width / 3) * 2) {
+                  videoRef.current.currentTime = Math.min(videoRef.current.duration, videoRef.current.currentTime + 10);
+                  toast.info("+10s");
+                } else {
+                  if (videoRef.current.paused) videoRef.current.play();
+                  else videoRef.current.pause();
+                }
+              }
+            }}
           />
         )}
 

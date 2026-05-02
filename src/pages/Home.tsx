@@ -300,26 +300,43 @@ const Home = () => {
           </>
         ) : (
           <>
-            {supabaseM3ULists.map((list) => (
+            <MovieRow title={t("section_latest")} items={nowPlaying} loading={loading} />
+            <MovieRow title={t("section_trending")} items={trending} loading={loading} />
+            
+            {/* Netflix Style Genre Sections */}
+            <DiscoverRow title={lang === "ar" ? "🔥 أفلام الأكشن والمغامرة" : "🔥 Action & Aventure"} genres="28,12" type="movie" icon="💥" />
+            <DiscoverRow title={lang === "ar" ? "💡 أفلام الخيال العلمي" : "💡 Science-Fiction"} genres="878" type="movie" icon="🚀" />
+            
+            <MovieRow title={t("section_popular")} items={popular} loading={loading} />
+            
+            {/* M3U Custom Rows (Premium Content) */}
+            {supabaseM3ULists.slice(0, 3).map((list) => (
               <M3UMovieRow key={list.title_fr} title={lang === "ar" ? list.title_ar : list.title_fr} m3uUrl={list.url} type={list.type} />
             ))}
 
-            <MovieRow title={t("section_latest")} items={nowPlaying} loading={loading} />
-            <MovieRow title={t("section_trending")} items={trending} loading={loading} />
-            <MovieRow title={t("section_popular")} items={popular} loading={loading} />
             <MovieRow title={t("section_popular_tv")} items={popularTV} type="tv" loading={loading} />
+            
+            <DiscoverRow title={lang === "ar" ? "🎬 أفلام الرعب والإثارة" : "🎬 Horreur & Thriller"} genres="27,53" type="movie" icon="👻" />
+            
             <MovieRow title={lang === "ar" ? "⭐ أفضل المسلسلات على الإطلاق" : "⭐ Séries les mieux notées"} items={topRatedTV} type="tv" loading={loading} />
+            
+            {/* International Content Rows */}
+            <div className="bg-surface-elevated/30 py-8 my-8 border-y border-white/5 backdrop-blur-sm">
+              <DiscoverRow title={lang === "ar" ? "🇰🇷 الدراما الكورية" : "🇰🇷 K-Drama"} originalLanguage="ko" type="tv" genres="18" icon="✨" />
+              <DiscoverRow title={lang === "ar" ? "🇰🇷 السينما الكورية" : "🇰🇷 Cinéma Coréen"} originalLanguage="ko" type="movie" icon="🎬" />
+            </div>
+
             <MovieRow title={t("section_top_rated")} items={topRated} loading={loading} />
 
-            {/* Arabic Content */}
-            <DiscoverRow title={lang === "ar" ? "أفلام عربية" : "Films Arabes"} originalLanguage="ar" type="movie" icon="🎬" />
-            <DiscoverRow title={lang === "ar" ? "مسلسلات عربية" : "Séries Arabes"} originalLanguage="ar" type="tv" icon="📺" />
-
-            {/* Korean Content */}
-            <DiscoverRow title={lang === "ar" ? "دراما كورية" : "K-Drama"} originalLanguage="ko" type="tv" genres="18" icon="🇰🇷" />
-            <DiscoverRow title={lang === "ar" ? "أفلام كورية" : "Films Coréens"} originalLanguage="ko" type="movie" icon="🎥" />
+            {/* Specialized Content */}
+            <DiscoverRow title={lang === "ar" ? "🇸🇦 أقوى الأفلام العربية" : "🇸🇦 Films Arabes"} originalLanguage="ar" type="movie" icon="🌟" />
+            <DiscoverRow title={lang === "ar" ? "🇸🇦 المسلسلات العربية" : "🇸🇦 Séries Arabes"} originalLanguage="ar" type="tv" icon="📺" />
 
             <KabyleCinemaRow />
+            
+            {/* Dynamic Genre Footer Rows */}
+            <DiscoverRow title={lang === "ar" ? "😂 الكوميديا" : "😂 Comédie"} genres="35" type="movie" icon="🎭" />
+            <DiscoverRow title={lang === "ar" ? "📜 الوثائقيات" : "📜 Documentaires"} genres="99" type="movie" icon="🌍" />
           </>
         )}
       </div>
