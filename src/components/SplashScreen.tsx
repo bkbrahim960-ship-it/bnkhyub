@@ -18,29 +18,31 @@ export const SplashScreen = ({ onFinish }: { onFinish: () => void }) => {
         fadeOut ? "opacity-0 pointer-events-none" : "opacity-100"
       }`}
     >
-      {/* Spinning ring */}
-      <div className="relative w-32 h-32 flex items-center justify-center">
-        {/* Outer glow */}
-        <div className="absolute inset-0 rounded-full bg-accent/10 blur-2xl animate-pulse" />
+      {/* Outer glow pulse */}
+      <div className="absolute w-44 h-44 rounded-full bg-accent/10 blur-3xl animate-pulse" />
 
-        {/* Spinning border ring */}
+      {/* Spinning container — icon + ring spin together */}
+      <div
+        className="relative w-36 h-36 flex items-center justify-center"
+        style={{ animation: "splash-spin 2s linear infinite" }}
+      >
+        {/* Accent ring border */}
         <div
           className="absolute inset-0 rounded-full"
           style={{
-            background: `conic-gradient(from 0deg, transparent 0%, var(--accent) 30%, transparent 60%)`,
-            animation: "splash-spin 1.2s linear infinite",
+            background: `conic-gradient(from 0deg, transparent 0%, var(--accent) 25%, transparent 50%, var(--accent) 75%, transparent 100%)`,
             padding: "3px",
             WebkitMask: "radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 3px))",
             mask: "radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 3px))",
           }}
         />
 
-        {/* Inner dark circle with logo */}
-        <div className="relative w-24 h-24 rounded-full bg-black border border-white/10 flex items-center justify-center overflow-hidden shadow-2xl">
+        {/* Icon fills the circle */}
+        <div className="relative w-full h-full rounded-full overflow-hidden border-2 border-accent/30 shadow-2xl">
           <img
             src="/icon.png"
             alt="BNKhub"
-            className="w-16 h-16 object-contain"
+            className="w-full h-full object-cover"
           />
         </div>
       </div>
