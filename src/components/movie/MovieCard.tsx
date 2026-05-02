@@ -49,74 +49,85 @@ export const MovieCard = ({ id, title, posterPath, year, rating, type = "movie",
       onMouseLeave={handleLeave}
       onFocus={handleActive}
       onBlur={handleLeave}
-      className={`group relative block shrink-0 w-[150px] sm:w-[170px] md:w-[190px] transition-all duration-500 hover:-translate-y-2 focus:z-[100] ${className}`}
+      className={`group relative block shrink-0 w-[160px] sm:w-[180px] md:w-[200px] lg:w-[220px] transition-all duration-700 hover:-translate-y-3 focus:z-[100] ${className}`}
     >
-      <div className="relative aspect-[2/3] rounded-xl overflow-hidden bg-surface-card border border-border group-hover:border-accent-subtle group-hover:shadow-glow-accent transition-all duration-500 ease-luxe">
+      {/* 3D-ish Glow effect behind card on hover */}
+      <div className="absolute -inset-2 bg-accent/20 rounded-[2rem] blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+
+      <div className="relative aspect-[2/3.2] rounded-2xl overflow-hidden bg-surface-card border border-white/5 group-hover:border-accent/40 group-hover:shadow-[0_20px_50px_-12px_rgba(0,0,0,0.8),0_0_20px_hsl(var(--accent)/0.2)] transition-all duration-700 ease-luxe">
         {!loaded && <div className="absolute inset-0 shimmer-gold" />}
+        
         {poster ? (
           <img
             src={poster}
             alt={title}
             loading="lazy"
             onLoad={() => setLoaded(true)}
-            className={`w-full h-full object-cover transition-all duration-700 ease-luxe ${
+            className={`w-full h-full object-cover transition-all duration-1000 ease-out ${
               loaded ? "opacity-100" : "opacity-0"
-            } group-hover:scale-110`}
+            } group-hover:scale-110 group-hover:rotate-1`}
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-muted-foreground text-sm p-4 text-center">
+          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-surface-card to-surface-elevated text-muted-foreground text-sm p-6 text-center font-display italic">
             {title}
           </div>
         )}
-        {/* Top Badges (Always Visible) */}
-        <div className="absolute top-2 left-2 right-2 flex items-center justify-between z-10 pointer-events-none">
-          {/* TMDB Rating Badge */}
+
+        {/* Glossy Reflection overlay */}
+        <div className="absolute inset-0 bg-gradient-to-tr from-white/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+
+        {/* Top Badges */}
+        <div className="absolute top-3 left-3 right-3 flex items-center justify-between z-10 pointer-events-none">
+          {/* TMDB Rating Badge (Glassmorphic) */}
           {typeof rating === "number" && rating > 0 && (
-            <div className={`flex items-center gap-2 ${kidsMode ? 'bg-white/95 shadow-sm' : 'bg-black/70'} backdrop-blur-md px-2.5 py-1.5 rounded-lg border ${kidsMode ? 'border-sky-100' : 'border-white/20'} scale-110 origin-left transition-colors`}>
-              <img 
-                src="https://www.themoviedb.org/assets/2/v4/logos/v2/blue_square_2-d537fb228cf3ded904ef09b136fe3fec72548ebc1fea3fbbd1ad9e36364db38b.svg" 
-                alt="TMDB" 
-                className="w-6 h-auto drop-shadow-md"
-              />
-              <span className={`text-xs font-black ${kidsMode ? 'text-sky-600' : 'text-white'} drop-shadow-md`}>{rating.toFixed(1)}</span>
+            <div className={`flex items-center gap-1.5 backdrop-blur-xl ${kidsMode ? 'bg-white/90 border-sky-200' : 'bg-black/40 border-white/10'} px-2 py-1 rounded-full border shadow-xl transform group-hover:scale-110 transition-transform duration-500`}>
+              <Star className={`w-3 h-3 ${kidsMode ? 'text-sky-500' : 'text-accent'} fill-current`} />
+              <span className={`text-[11px] font-black ${kidsMode ? 'text-sky-700' : 'text-white'}`}>{rating.toFixed(1)}</span>
             </div>
           )}
           
-          {/* Type Badge */}
-          <div className={`${kidsMode ? 'bg-sky-500 text-white' : 'bg-accent/20 text-accent'} backdrop-blur-md px-1.5 py-0.5 rounded text-[8px] font-bold uppercase border border-white/20`}>
-            {type === 'movie' ? 'HD' : 'TV'}
+          {/* Format Badge */}
+          <div className={`backdrop-blur-md ${kidsMode ? 'bg-sky-500/80 text-white' : 'bg-black/40 text-accent'} px-2 py-0.5 rounded-full text-[9px] font-black border border-white/10 shadow-lg`}>
+            {type === 'movie' ? '4K' : 'TV'}
           </div>
         </div>
 
-        {/* Hover Overlay (Simplified) */}
-        <div className={`absolute inset-0 ${kidsMode ? 'bg-gradient-to-t from-sky-500/80' : 'bg-gradient-to-t from-black/90'} via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex flex-col justify-end p-4`}>
-          <div className="absolute top-2 right-2 transform translate-y-[-10px] group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-500 delay-100">
+        {/* Immersive Hover Overlay */}
+        <div className={`absolute inset-0 ${kidsMode ? 'bg-gradient-to-t from-sky-500/90' : 'bg-gradient-to-t from-black via-black/40 to-transparent'} opacity-0 group-hover:opacity-100 transition-all duration-500 flex flex-col justify-end p-5`}>
+          <div className="absolute top-3 right-3 transform translate-y-[-10px] group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-700 delay-100">
              <FavoriteButton 
                tmdbId={id} 
                mediaType={type} 
                title={title} 
                posterPath={posterPath} 
-               className="bg-black/40 backdrop-blur-md border-white/20 p-2.5"
+               className="bg-white/10 hover:bg-accent/20 backdrop-blur-2xl border-white/10 p-2.5 rounded-full"
              />
           </div>
 
-          <p className={`text-[10px] ${kidsMode ? 'text-white' : 'text-accent'} font-bold uppercase tracking-widest transform translate-y-2 group-hover:translate-y-0 transition-transform duration-500`}>
-            {type === 'movie' ? (lang === 'ar' ? 'مشاهدة الفيلم' : 'Regarder le Film') : (lang === 'ar' ? 'مشاهدة المسلسل' : 'Voir la Série')}
-          </p>
-          <h3 className="text-white font-bold text-sm line-clamp-1 mt-1 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-500 delay-75">
-            {title}
-          </h3>
+          <div className="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-700">
+            <div className={`flex items-center gap-2 ${kidsMode ? 'text-white' : 'text-accent'} mb-1`}>
+              <Play className="w-3 h-3 fill-current" />
+              <span className="text-[9px] font-black uppercase tracking-[0.2em]">
+                {type === 'movie' ? (lang === 'ar' ? 'تشغيل الفيلم' : 'Lecture') : (lang === 'ar' ? 'تشغيل المسلسل' : 'Voir épisodes')}
+              </span>
+            </div>
+            <h3 className="text-white font-display font-bold text-base md:text-lg leading-tight line-clamp-2 drop-shadow-lg">
+              {title}
+            </h3>
+          </div>
         </div>
       </div>
 
-      <div className="pt-3 px-1">
-        <h3 className="font-display font-semibold text-sm text-foreground line-clamp-1 group-hover:text-accent transition-colors">
+      {/* External Info (Visible when not hovered) */}
+      <div className="mt-4 px-1 group-hover:opacity-0 transition-opacity duration-500">
+        <h3 className="font-body font-bold text-sm text-foreground/90 line-clamp-1">
           {title}
         </h3>
-        <div className="flex items-center justify-between mt-1">
-          {year && <span className="text-[10px] text-muted-foreground font-medium">{year}</span>}
-          <div className="w-1 h-1 rounded-full bg-muted-foreground/30 mx-1" />
-          <span className="text-[10px] text-muted-foreground uppercase tracking-tighter">BNKhub Premium</span>
+        <div className="flex items-center gap-3 mt-1.5">
+          {year && <span className="text-[10px] text-muted-foreground font-bold tracking-wider">{year}</span>}
+          <span className={`text-[10px] font-black uppercase tracking-tighter ${kidsMode ? 'text-sky-500' : 'text-accent/60'}`}>
+            {type === 'movie' ? 'Cinéma' : 'Série TV'}
+          </span>
         </div>
       </div>
     </Link>

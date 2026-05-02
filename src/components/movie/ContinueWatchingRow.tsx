@@ -109,69 +109,90 @@ export const ContinueWatchingRow = () => {
               : "Film";
 
           return (
-            <div key={e.id} className="snap-start shrink-0 w-[260px] sm:w-[300px]">
-              <Link to={to} className="group relative block">
-                <div className="relative aspect-video rounded-xl overflow-hidden bg-surface-card border border-border group-hover:border-accent-subtle group-hover:shadow-glow transition-all duration-500 ease-luxe">
+            <div key={e.id} className="snap-start shrink-0 w-[280px] sm:w-[320px] md:w-[360px]">
+              <Link to={to} className="group relative block transition-all duration-700 hover:-translate-y-2">
+                {/* Glow effect on hover */}
+                <div className="absolute -inset-2 bg-accent/10 rounded-[1.5rem] blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+                
+                <div className="relative aspect-video rounded-2xl overflow-hidden bg-surface-card border border-white/5 group-hover:border-accent/40 group-hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.7)] transition-all duration-700 ease-luxe">
                   {backdrop ? (
-                    <img src={backdrop} alt={e.title} className="w-full h-full object-cover group-hover:scale-[1.05] transition-transform duration-500" />
+                    <img 
+                      src={backdrop} 
+                      alt={e.title} 
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
+                    />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-muted-foreground p-4 text-center">
+                    <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-surface-card to-surface-elevated text-muted-foreground p-6 text-center font-display italic">
                       {e.title}
                     </div>
                   )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
+                  
+                  {/* Cinematic Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
+                  
+                  {/* Glossy Reflection */}
+                  <div className="absolute inset-0 bg-gradient-to-tr from-white/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
 
-                  {/* Badge source + saison */}
-                  <div className="absolute top-2 start-2 flex gap-1.5">
-                    <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-black/70 border border-accent/40 text-accent">
+                  {/* Top Badges (Glass) */}
+                  <div className="absolute top-3 start-3 flex gap-2">
+                    <span className="backdrop-blur-xl bg-accent/20 text-accent text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full border border-accent/30 shadow-lg">
                       {subtitle}
                     </span>
                     {e.source_id && (
-                      <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-black/70 border border-border text-foreground/80">
+                      <span className="backdrop-blur-xl bg-black/40 text-white/80 text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full border border-white/10 shadow-lg">
                         {e.source_id}
                       </span>
                     )}
                   </div>
 
-                  {/* Bouton supprimer */}
+                  {/* Remove Button */}
                   <button
                     onClick={(ev) => {
                       ev.preventDefault();
                       ev.stopPropagation();
                       remove(e.id);
                     }}
-                    className="absolute top-2 end-2 w-7 h-7 rounded-full bg-black/70 hover:bg-destructive/80 grid place-items-center opacity-0 group-hover:opacity-100 transition-opacity"
+                    className="absolute top-3 end-3 w-8 h-8 rounded-full bg-black/40 hover:bg-destructive/80 backdrop-blur-xl border border-white/10 grid place-items-center opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-x-2 group-hover:translate-x-0"
                     aria-label="Retirer"
                   >
-                    <X className="w-3.5 h-3.5" />
+                    <X className="w-4 h-4" />
                   </button>
 
-                  {/* Progress Bar */}
+                  {/* Progress Bar (Sleek) */}
                   {e.duration_seconds && e.progress_seconds > 0 && (
-                    <div className="absolute bottom-0 inset-x-0 h-1 bg-white/20">
+                    <div className="absolute bottom-0 inset-x-0 h-1.5 bg-white/10 backdrop-blur-sm">
                       <div 
-                        className="h-full bg-accent shadow-[0_0_8px_hsl(var(--accent))]" 
+                        className="h-full bg-accent relative overflow-hidden" 
                         style={{ width: `${Math.min(100, (e.progress_seconds / e.duration_seconds) * 100)}%` }} 
-                      />
+                      >
+                         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent animate-shimmer" style={{ backgroundSize: '200% 100%' }} />
+                         <div className="absolute right-0 top-1/2 -translate-y-1/2 w-4 h-4 bg-accent blur-md" />
+                      </div>
                     </div>
                   )}
 
-                  {/* Bouton lecture (Hover) */}
-                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-black/40 backdrop-blur-[2px]">
-                    <div className="w-12 h-12 rounded-full bg-gradient-accent text-accent-foreground flex items-center justify-center shadow-accent scale-75 group-hover:scale-100 transition-transform duration-500">
-                      <Play className="w-6 h-6 fill-accent-foreground" />
+                  {/* Play Button Overlay */}
+                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-500 bg-black/30 backdrop-blur-[2px]">
+                    <div className="w-14 h-14 rounded-full bg-accent text-accent-foreground flex items-center justify-center shadow-[0_0_30px_hsl(var(--accent)/0.5)] scale-75 group-hover:scale-100 transition-transform duration-500">
+                      <Play className="w-7 h-7 fill-current" />
                     </div>
                   </div>
                 </div>
-                <div className="pt-3 px-1">
-                  <h3 className="font-bold text-sm text-foreground line-clamp-1 group-hover:text-accent transition-colors">
-                    {e.title}
-                  </h3>
-                  {e.duration_seconds && (
-                    <p className="text-[10px] text-muted-foreground mt-1 uppercase tracking-wider font-semibold">
-                      {Math.round((e.progress_seconds / e.duration_seconds) * 100)}% complété
-                    </p>
-                  )}
+
+                <div className="pt-4 px-1">
+                  <div className="flex items-center justify-between gap-4">
+                    <h3 className="font-body font-bold text-sm text-foreground/90 line-clamp-1 group-hover:text-accent transition-colors duration-300">
+                      {e.title}
+                    </h3>
+                    {e.duration_seconds && (
+                      <span className="shrink-0 text-[10px] font-black text-accent bg-accent/10 px-2 py-0.5 rounded-md">
+                        {Math.round((e.progress_seconds / e.duration_seconds) * 100)}%
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-[10px] text-muted-foreground mt-1.5 font-bold uppercase tracking-[0.1em] opacity-60">
+                    Continuer la lecture
+                  </p>
                 </div>
               </Link>
             </div>
