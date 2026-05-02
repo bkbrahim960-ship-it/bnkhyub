@@ -8,7 +8,10 @@ import { useEffect, useRef, useState } from "react";
 import { getMovieSources, getTVSources, SOURCE_LABELS } from "@/services/player";
 import { AdsNoticeModal, hasSeenAdsNotice } from "./AdsNoticeModal";
 import { ResumeModal } from "./ResumeModal";
+import { CustomPlayerControls } from "./CustomPlayerControls";
 import { useLanguage } from "@/context/LanguageContext";
+import { useAuth } from "@/context/AuthContext";
+import { getRecentHistory } from "@/services/watchHistory";
 import { useAuth } from "@/context/AuthContext";
 import { getRecentHistory } from "@/services/watchHistory";
 import { Loader2, AlertCircle, RotateCw, ShieldCheck, Play, Settings, Lock, Unlock, FastForward, Languages, Captions, Monitor, Gauge, PictureInPicture as PipIcon, Maximize, Search, Download, ExternalLink } from "lucide-react";
@@ -85,6 +88,13 @@ export const VideoPlayer = ({
   const [resumeModalOpen, setResumeModalOpen] = useState(false);
   const [historyProgress, setHistoryProgress] = useState(0);
   const [hasResumed, setHasResumed] = useState(false);
+
+  // Native Control States
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const [volume, setVolume] = useState(1);
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   // Auto-fetch Arabic subtitles on mount
   useEffect(() => {
@@ -236,6 +246,24 @@ export const VideoPlayer = ({
         hls.on(Hls.Events.LEVEL_SWITCHED, (event, data) => {
           setCurrentLevel(data.level);
         });
+
+        // Update state from video element
+        const video = videoRef.current;
+        if (video) {
+          const updateState = () => {
+            setIsPlaying(!video.paused);
+            setProgress(video.currentTime);
+            setDuration(video.duration);
+            setVolume(video.volume);
+          };
+          video.addEventListener("play", updateState);
+          video.addEventListener("pause", updateState);
+          video.addEventListener("timeupdate", updateState);
+          video.addEventListener("volumechange", updateState);
+          video.addEventListener("loadedmetadata", updateState);
+          
+          updateState(); // Initial sync
+        }
 
         hls.on(Hls.Events.AUDIO_TRACK_SWITCHED, (event, data) => {
           setCurrentAudio(data.id);
@@ -465,6 +493,49 @@ export const VideoPlayer = ({
               <p className="absolute mt-12 left-1/2 -translate-x-1/2 text-[10px] font-bold uppercase tracking-widest opacity-0 group-hover/unlock:opacity-100 transition-opacity">Unlock</p>
             </button>
           </div>
+        )}
+
+        {/* Custom Player UI (Only for HLS for now) */}
+        {sources[sourceIndex]?.includes(".m3u8") && (
+          <CustomPlayerControls 
+            isPlaying={isPlaying}
+            onPlayPause={() => {
+              if (videoRef.current) {
+                if (videoRef.current.paused) videoRef.current.play();
+                else videoRef.current.pause();
+              }
+            }}
+            onSeek={(offset) => {
+              if (videoRef.current) videoRef.current.currentTime += offset;
+            }}
+            onProgressChange={(val) => {
+              if (videoRef.current) videoRef.current.currentTime = val;
+            }}
+            onVolumeChange={(val) => {
+              if (videoRef.current) videoRef.current.volume = val;
+            }}
+            onToggleFullscreen={() => {
+              const el = videoRef.current?.parentElement;
+              if (el) {
+                if (!document.fullscreenElement) {
+                  el.requestFullscreen();
+                  setIsFullscreen(true);
+                } else {
+                  document.exitFullscreen();
+                  setIsFullscreen(false);
+                }
+              }
+            }}
+            isFullscreen={isFullscreen}
+            onShowSettings={() => setShowSettings(!showSettings)}
+            progress={progress}
+            duration={duration}
+            volume={volume}
+            isLocked={isLocked}
+            onToggleLock={() => setIsLocked(!isLocked)}
+            title={title}
+            subtitle={type === "tv" ? `S${season} E${episode}` : ""}
+          />
         )}
 
         {/* Resume / Restart Modal */}
@@ -748,7 +819,6 @@ export const VideoPlayer = ({
           <video
             ref={videoRef}
             className={`absolute inset-0 w-full h-full object-contain bg-black transition-opacity duration-300 ${playerActive ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
-            controls
             autoPlay
             playsInline
             // @ts-ignore
