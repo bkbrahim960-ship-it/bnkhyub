@@ -42,8 +42,8 @@ export const VideoBackdrop = ({ backdropPath, videoKey, title }: Props) => {
             isVideoReady ? "opacity-100" : "opacity-0"
           }`}
         >
-          {/* Shield to prevent interaction and hide YouTube UI */}
-          <div className="absolute inset-0 z-[2] pointer-events-none" />
+          {/* Shield to prevent interaction and hide YouTube UI - NO pointer-events-none so it blocks clicks */}
+          <div className="absolute inset-0 z-[2]" />
           
           <iframe
             src={`https://www.youtube.com/embed/${videoKey}?autoplay=1&mute=1&controls=0&loop=1&playlist=${videoKey}&rel=0&showinfo=0&modestbranding=1&iv_load_policy=3&vq=hd1080&playsinline=1&disablekb=1&fs=0`}
