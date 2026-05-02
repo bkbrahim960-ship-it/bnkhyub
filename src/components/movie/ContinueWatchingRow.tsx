@@ -29,7 +29,7 @@ export const ContinueWatchingRow = () => {
       return;
     }
     setLoading(true);
-    getRecentHistory(user.id, 15)
+    getRecentHistory(user.id, 5)
       .then(setItems)
       .catch(() => setItems([]))
       .finally(() => setLoading(false));

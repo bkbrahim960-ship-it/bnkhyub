@@ -33,6 +33,8 @@ export interface UpsertWatchInput {
   duration_seconds?: number | null;
 }
 
+const MAX_HISTORY_ITEMS = 5;
+
 /** Enregistre / met à jour une entrée d'historique pour l'utilisateur courant. */
 export const upsertWatchEntry = async (
   userId: string,
@@ -59,11 +61,31 @@ export const upsertWatchEntry = async (
       onConflict: "user_id,tmdb_id,media_type,season_number,episode_number",
     });
   if (error) throw error;
+
+  // Clean up: keep only the latest MAX_HISTORY_ITEMS entries
+  try {
+    const { data: allEntries } = await supabase
+      .from("watch_history")
+      .select("id, watched_at")
+      .eq("user_id", userId)
+      .order("watched_at", { ascending: false });
+
+    if (allEntries && allEntries.length > MAX_HISTORY_ITEMS) {
+      const toDelete = allEntries.slice(MAX_HISTORY_ITEMS).map((e) => e.id);
+      await supabase
+        .from("watch_history")
+        .delete()
+        .eq("user_id", userId)
+        .in("id", toDelete);
+    }
+  } catch {
+    // Cleanup errors are non-critical, ignore
+  }
 };
 
 export const getRecentHistory = async (
   userId: string,
-  limit = 20,
+  limit = MAX_HISTORY_ITEMS,
 ): Promise<WatchHistoryEntry[]> => {
   const { data, error } = await supabase
     .from("watch_history")
