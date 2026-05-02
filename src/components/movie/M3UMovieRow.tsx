@@ -66,7 +66,7 @@ export const M3UMovieRow = ({ title, m3uUrl, type = "movie" }: Props) => {
 
       <div
         ref={scrollRef}
-        className="container overflow-x-auto scrollbar-hide flex gap-4 md:gap-5 pt-20 pb-16 snap-x snap-mandatory"
+        className="container overflow-x-auto scrollbar-hide flex gap-4 md:gap-5 pt-12 pb-8 snap-x snap-mandatory"
       >
         {loading
           ? Array.from({ length: 8 }).map((_, i) => (
