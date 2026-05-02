@@ -374,6 +374,7 @@ export const VideoPlayer = ({
             key={sourceIndex}
             src={sources[sourceIndex]}
             title="BNKhub player"
+            sandbox="allow-scripts allow-same-origin allow-forms allow-presentation"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
             allowFullScreen
             referrerPolicy="no-referrer-when-downgrade"
