@@ -104,23 +104,74 @@ export const Header = () => {
             <PopoverTrigger asChild>
               <button className="relative p-2 md:p-3 rounded-full hover:bg-surface-card transition-all focus:outline-none focus:ring-2 focus:ring-accent">
                 <Bell className="w-5 h-5 md:w-6 md:h-6" />
-                <span className="absolute top-2.5 right-2.5 w-2.5 h-2.5 bg-accent border-2 border-surface-primary rounded-full" />
+                <span className="absolute top-2.5 right-2.5 w-2.5 h-2.5 bg-accent border-2 border-surface-primary rounded-full animate-pulse" />
               </button>
             </PopoverTrigger>
-            <PopoverContent className="w-72 md:w-80 bg-surface-card border-border p-4 shadow-luxe animate-in fade-in slide-in-from-top-2">
-              <h4 className="text-sm font-bold uppercase tracking-widest text-accent mb-4">{t("profile_notifications")}</h4>
-              <div className="flex flex-col gap-3">
-                <div className="p-3 rounded-xl bg-surface-primary border border-border/40 hover:border-accent/40 transition-colors cursor-pointer group">
-                  <p className="text-xs font-bold group-hover:text-accent transition-colors">Avatar: The Way of Water</p>
-                  <p className="text-[10px] text-muted-foreground">Maintenant disponible en 4K Ultra HD.</p>
-                  <p className="text-[9px] text-accent/60 mt-1 uppercase font-bold">2h ago</p>
-                </div>
-                <div className="p-3 rounded-xl bg-surface-primary border border-border/40 hover:border-accent/40 transition-colors cursor-pointer group">
-                  <p className="text-xs font-bold group-hover:text-accent transition-colors">Remote Control Active</p>
-                  <p className="text-[10px] text-muted-foreground">Contrôlez votre TV depuis votre smartphone.</p>
-                  <p className="text-[9px] text-accent/60 mt-1 uppercase font-bold">New</p>
-                </div>
+            <PopoverContent className="w-[320px] md:w-[380px] bg-surface-card/95 backdrop-blur-2xl border-white/5 p-0 overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-300">
+              <div className="p-5 border-b border-white/5 flex items-center justify-between bg-gradient-to-r from-accent/10 to-transparent">
+                <h4 className="text-sm font-black uppercase tracking-widest text-accent flex items-center gap-2">
+                   <Bell className="w-4 h-4" />
+                   {t("profile_notifications")}
+                </h4>
+                <span className="text-[10px] bg-accent/20 text-accent px-2 py-0.5 rounded-full font-bold">3 Nouveaux</span>
               </div>
+              
+              <div className="max-h-[400px] overflow-y-auto scrollbar-hide py-2">
+                {/* Notification: New Movie */}
+                <Link 
+                  to="/movie/76600" 
+                  className="flex items-start gap-4 p-4 hover:bg-white/5 transition-all group"
+                >
+                  <div className="w-12 h-16 rounded-lg overflow-hidden shrink-0 border border-white/10 group-hover:border-accent/40 transition-colors">
+                    <img src="https://image.tmdb.org/t/p/w200/t6Sna4asZ9fS6YpOiY782X69Yn0.jpg" alt="Avatar" className="w-full h-full object-cover" />
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between mb-1">
+                      <p className="text-xs font-black text-white group-hover:text-accent transition-colors">Avatar: The Way of Water</p>
+                      <span className="w-2 h-2 bg-accent rounded-full" />
+                    </div>
+                    <p className="text-[11px] text-muted-foreground leading-relaxed line-clamp-2">Le chef-d'œuvre de James Cameron est maintenant disponible en 4K Ultra HD sur BNKhub.</p>
+                    <p className="text-[9px] text-accent/60 mt-2 font-black uppercase tracking-tighter">Il y a 2h</p>
+                  </div>
+                </Link>
+
+                {/* Notification: New Episode */}
+                <Link 
+                  to="/series/1396" 
+                  className="flex items-start gap-4 p-4 hover:bg-white/5 transition-all group"
+                >
+                  <div className="w-12 h-16 rounded-lg overflow-hidden shrink-0 border border-white/10 group-hover:border-accent/40 transition-colors">
+                    <img src="https://image.tmdb.org/t/p/w200/ztkUQvFCz9Z96mZCNm60rxkv0BT.jpg" alt="Breaking Bad" className="w-full h-full object-cover" />
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between mb-1">
+                      <p className="text-xs font-black text-white group-hover:text-accent transition-colors">Breaking Bad: S05E16</p>
+                      <span className="w-2 h-2 bg-accent rounded-full" />
+                    </div>
+                    <p className="text-[11px] text-muted-foreground leading-relaxed">Le dernier épisode de la série culte est prêt à être visionné.</p>
+                    <p className="text-[9px] text-accent/60 mt-2 font-black uppercase tracking-tighter">Il y a 5h</p>
+                  </div>
+                </Link>
+
+                {/* Notification: Remote Control */}
+                <Link 
+                  to="/remote" 
+                  className="flex items-start gap-4 p-4 hover:bg-white/5 transition-all group"
+                >
+                  <div className="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center shrink-0 border border-accent/20 group-hover:bg-accent/20 transition-colors">
+                    <Search className="w-6 h-6 text-accent" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-xs font-black text-white group-hover:text-accent transition-colors">Contrôle à distance</p>
+                    <p className="text-[11px] text-muted-foreground leading-relaxed">Connectez votre smartphone pour piloter votre Smart TV en toute fluidité.</p>
+                    <p className="text-[9px] text-accent/60 mt-2 font-black uppercase tracking-tighter">Nouveau</p>
+                  </div>
+                </Link>
+              </div>
+
+              <button className="w-full py-4 text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground hover:text-white hover:bg-white/5 border-t border-white/5 transition-all">
+                Tout marquer comme lu
+              </button>
             </PopoverContent>
           </Popover>
 
