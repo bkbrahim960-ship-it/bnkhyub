@@ -33,7 +33,16 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Analytics } from "@vercel/analytics/react";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 5, // 5 minutes (data remains fresh)
+      gcTime: 1000 * 60 * 30, // 30 minutes (cache persists)
+      refetchOnWindowFocus: false,
+      retry: 1,
+    }
+  }
+});
 
 import { useNavigate } from "react-router-dom";
 

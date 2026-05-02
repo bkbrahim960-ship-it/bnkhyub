@@ -1,7 +1,4 @@
-/**
- * BNKhub — Row de films/séries avec scroll horizontal + boutons.
- */
-import { useRef } from "react";
+import { useRef, memo } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { MovieCard } from "./MovieCard";
 import { TMDBMovie, TMDBSeries } from "@/services/tmdb";
@@ -23,7 +20,7 @@ interface Props {
   loading?: boolean;
 }
 
-export const MovieRow = ({ title, items, type = "movie", loading }: Props) => {
+export const MovieRow = memo(({ title, items, type = "movie", loading }: Props) => {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const scroll = (dir: 1 | -1) => {

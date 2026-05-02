@@ -251,12 +251,7 @@
   .font-arabic     { font-family: "Cairo", system-ui, sans-serif; }
 
   .grain::before {
-    content: "";
-    position: absolute; inset: 0;
-    pointer-events: none;
-    opacity: 0.05;
-    mix-blend-mode: overlay;
-    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.6'/></svg>");
+    display: none;
   }
 
   .scrollbar-hide::-webkit-scrollbar { display: none; }
@@ -322,8 +317,8 @@
     top: -25vmax;
     left: -25vmax;
     background: radial-gradient(circle at center, var(--ambient-color, transparent) 0%, transparent 70%);
-    opacity: 0.25; /* Subtle */
-    filter: blur(120px);
+    opacity: 0.15; /* Subtle */
+    filter: blur(80px);
     transition: background 2s ease;
     will-change: background;
   }

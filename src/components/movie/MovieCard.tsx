@@ -1,10 +1,7 @@
-/**
- * BNKhub — MovieCard (carte film/série cliquable).
- */
+import React, { useState, memo } from "react";
 import { Link } from "react-router-dom";
 import { Star, Play } from "lucide-react";
 import { IMG } from "@/services/tmdb";
-import { useState } from "react";
 import { useAmbient } from "@/context/AmbientContext";
 import { useSettings } from "@/context/SettingsContext";
 import { useLanguage } from "@/context/LanguageContext";
@@ -21,12 +18,12 @@ interface Props {
   customUrl?: string;
 }
 
-export const MovieCard = ({ id, title, posterPath, year, rating, type = "movie", className = "", customUrl }: Props) => {
+export const MovieCard = memo(({ id, title, posterPath, year, rating, type = "movie", className = "", customUrl }: Props) => {
   const [loaded, setLoaded] = useState(false);
   const { setAmbientColor } = useAmbient();
   const { kidsMode } = useSettings();
   const { lang } = useLanguage();
-  const poster = IMG.poster(posterPath); 
+  const poster = IMG.poster(posterPath, "w342"); 
 
   const handleActive = () => {
     try {
