@@ -836,10 +836,10 @@ export const VideoPlayer = ({
           </video>
         )}
 
-        {/* Interaction Shield & Gestures */}
-        {playerActive && !isLocked && (
+        {/* Interaction Shield & Gestures (ONLY for HLS native player) */}
+        {playerActive && !isLocked && sources[sourceIndex]?.includes(".m3u8") && (
           <div 
-            className="absolute inset-0 z-10 grid grid-cols-3 pointer-events-auto"
+            className="absolute inset-0 z-20 grid grid-cols-3 pointer-events-auto"
             onDoubleClick={(e) => {
               const rect = e.currentTarget.getBoundingClientRect();
               const x = e.clientX - rect.left;
