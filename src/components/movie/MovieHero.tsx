@@ -1,12 +1,13 @@
 /**
  * BNKhub — Hero rotatif de la page d'accueil (auto-rotate 8s).
+ * Affiche un trailer vidéo en arrière-plan avec fallback sur l'image statique.
  */
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { Play, Info } from "lucide-react";
-import { IMG, TMDBMovie } from "@/services/tmdb";
+import { IMG, TMDBMovie, getMovieDetails } from "@/services/tmdb";
 import { useLanguage } from "@/context/LanguageContext";
-
+import { tmdbLang } from "@/services/i18n";
 import { useSettings } from "@/context/SettingsContext";
 
 interface Props {
@@ -14,28 +15,66 @@ interface Props {
 }
 
 export const MovieHero = ({ items }: Props) => {
-  const { t } = useLanguage();
+  const { lang, t } = useLanguage();
   const { kidsMode } = useSettings();
   const [index, setIndex] = useState(0);
+  const [trailerKeys, setTrailerKeys] = useState<Record<number, string>>({});
+  const [videoReady, setVideoReady] = useState(false);
   const pool = items.slice(0, 6);
 
+  // Auto-rotate
   useEffect(() => {
     if (pool.length < 2) return;
-    const id = setInterval(() => setIndex((i) => (i + 1) % pool.length), 8000);
+    const id = setInterval(() => setIndex((i) => (i + 1) % pool.length), 10000);
     return () => clearInterval(id);
   }, [pool.length]);
+
+  // Reset video state on slide change
+  useEffect(() => {
+    setVideoReady(false);
+  }, [index]);
+
+  // Fetch trailer for current movie
+  useEffect(() => {
+    if (pool.length === 0) return;
+    const movie = pool[index];
+    if (!movie || trailerKeys[movie.id]) return;
+
+    getMovieDetails(movie.id, tmdbLang(lang))
+      .then((details) => {
+        const trailer = details.videos?.results.find(
+          (v) => v.type === "Trailer" && v.site === "YouTube"
+        ) || details.videos?.results.find((v) => v.site === "YouTube");
+        
+        if (trailer) {
+          setTrailerKeys((prev) => ({ ...prev, [movie.id]: trailer.key }));
+        }
+      })
+      .catch(() => {});
+  }, [index, pool, lang]);
+
+  // Delayed video reveal
+  useEffect(() => {
+    const movie = pool[index];
+    if (!movie || !trailerKeys[movie.id]) return;
+
+    const timer = setTimeout(() => {
+      setVideoReady(true);
+    }, 1200);
+
+    return () => clearTimeout(timer);
+  }, [index, trailerKeys, pool]);
 
   if (pool.length === 0) {
     return <div className="h-[92vh] bg-surface-secondary shimmer-gold" />;
   }
 
   const movie = pool[index];
-  const backdrop = IMG.backdrop(movie.backdrop_path, "original");
-  const year = movie.release_date?.slice(0, 4);
+  const currentTrailerKey = trailerKeys[movie.id];
 
   return (
-    <section className="relative h-[92vh] min-h-[560px] w-full overflow-hidden">
-      {/* Backdrops empilés pour transition fondu */}
+    <section className="relative h-[80vh] md:h-[92vh] min-h-[500px] md:min-h-[560px] w-full overflow-hidden">
+      {/* Static Backdrops — always present as fallback */}
       {pool.map((m, i) => {
         const img = IMG.backdrop(m.backdrop_path, "original");
         return (
@@ -50,7 +89,7 @@ export const MovieHero = ({ items }: Props) => {
               <img
                 src={img}
                 alt=""
-                className="w-full h-full object-cover scale-105"
+                className="w-full h-full object-cover object-top scale-105"
                 loading={i === 0 ? "eager" : "lazy"}
               />
             )}
@@ -58,50 +97,70 @@ export const MovieHero = ({ items }: Props) => {
         );
       })}
 
-      {/* Grain + gradients */}
-      <div className="absolute inset-0 grain" />
-      <div className={`absolute inset-0 bg-gradient-to-t ${kidsMode ? 'from-background via-background/40' : 'from-surface-primary via-surface-primary/60'} to-transparent`} />
-      <div className={`absolute inset-0 bg-gradient-to-r ${kidsMode ? 'from-background/80 via-background/20' : 'from-surface-primary/95 via-surface-primary/40'} to-transparent`} />
+      {/* Video Trailer Background — fades in over the static image */}
+      {currentTrailerKey && (
+        <div
+          className={`absolute inset-0 z-[1] transition-opacity duration-1000 ease-in-out ${
+            videoReady ? "opacity-100" : "opacity-0"
+          }`}
+        >
+          <iframe
+            key={`trailer-${movie.id}-${index}`}
+            src={`https://www.youtube.com/embed/${currentTrailerKey}?autoplay=1&mute=1&controls=0&loop=1&playlist=${currentTrailerKey}&rel=0&showinfo=0&modestbranding=1&iv_load_policy=3&vq=hd1080&playsinline=1`}
+            title="Trailer"
+            className="absolute top-0 left-1/2 -translate-x-1/2 w-[300%] h-full md:w-[180%] lg:w-[120%] pointer-events-none"
+            allow="autoplay; encrypted-media"
+            style={{ border: 0 }}
+          />
+        </div>
+      )}
 
-      {/* Contenu */}
-      <div className="relative z-10 h-full container flex items-end md:items-center pb-16 md:pb-0">
+      {/* Grain + gradients */}
+      <div className="absolute inset-0 z-[2] grain" />
+      <div className={`absolute inset-0 z-[2] bg-gradient-to-t ${kidsMode ? 'from-background via-background/40' : 'from-surface-primary via-surface-primary/60'} to-transparent`} />
+      <div className={`absolute inset-0 z-[2] bg-gradient-to-r ${kidsMode ? 'from-background/80 via-background/20' : 'from-surface-primary/95 via-surface-primary/40'} to-transparent`} />
+      {/* Extra bottom fade */}
+      <div className="absolute bottom-0 left-0 right-0 h-[40%] z-[2] bg-gradient-to-t from-background to-transparent" />
+
+      {/* Content */}
+      <div className="relative z-10 h-full container flex items-end md:items-center pb-12 md:pb-0">
         <div
           key={movie.id}
           className="max-w-2xl animate-fade-slide-up"
         >
-          <span className="inline-block px-3 py-1 mb-4 text-xs uppercase tracking-[0.2em] rounded-full border border-accent-subtle text-accent bg-accent/5 backdrop-blur">
-            ★ {movie.vote_average.toFixed(1)}  ·  {year}
+          <span className="inline-block px-3 py-1 mb-3 md:mb-4 text-[10px] md:text-xs uppercase tracking-[0.2em] rounded-full border border-accent-subtle text-accent bg-accent/5 backdrop-blur">
+            ★ {movie.vote_average.toFixed(1)}  ·  {movie.release_date?.slice(0, 4)}
           </span>
 
-          <h1 className="font-display text-4xl md:text-6xl lg:text-7xl font-bold leading-[1.05] mb-5">
+          <h1 className="font-display text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-bold leading-[1.05] mb-3 md:mb-5">
             <span className="text-gradient-accent">{movie.title}</span>
           </h1>
 
-          <p className="text-foreground text-base md:text-lg leading-relaxed max-w-xl mb-8 line-clamp-3 font-medium">
+          <p className="text-foreground text-sm md:text-lg leading-relaxed max-w-xl mb-5 md:mb-8 line-clamp-2 md:line-clamp-3 font-medium">
             {movie.overview}
           </p>
 
           <div className="flex flex-wrap items-center gap-3">
             <Link
               to={`/movie/${movie.id}`}
-              className="inline-flex items-center gap-2.5 bg-gradient-accent text-accent-foreground font-semibold px-7 py-3.5 rounded-full shadow-accent hover:scale-[1.04] active:scale-[0.98] transition-transform duration-300 ease-luxe animate-pulse-glow"
+              className="inline-flex items-center gap-2 md:gap-2.5 bg-gradient-accent text-accent-foreground font-semibold px-5 md:px-7 py-3 md:py-3.5 rounded-full shadow-accent hover:scale-[1.04] active:scale-[0.98] transition-transform duration-300 ease-luxe animate-pulse-glow text-sm md:text-base"
             >
-              <Play className="w-5 h-5 fill-accent-foreground" />
+              <Play className="w-4 h-4 md:w-5 md:h-5 fill-accent-foreground" />
               {t("hero_watch")}
             </Link>
             <Link
               to={`/movie/${movie.id}`}
-              className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full border border-border bg-surface-elevated/60 backdrop-blur hover:bg-surface-elevated hover:border-accent-subtle transition-colors"
+              className="inline-flex items-center gap-2 px-5 md:px-6 py-3 md:py-3.5 rounded-full border border-border bg-surface-elevated/60 backdrop-blur hover:bg-surface-elevated hover:border-accent-subtle transition-colors text-sm md:text-base"
             >
-              <Info className="w-5 h-5" />
+              <Info className="w-4 h-4 md:w-5 md:h-5" />
               {t("hero_info")}
             </Link>
           </div>
         </div>
       </div>
 
-      {/* Indicateurs */}
-      <div className="absolute bottom-8 end-8 z-10 flex gap-2">
+      {/* Slide Indicators */}
+      <div className="absolute bottom-6 md:bottom-8 end-4 md:end-8 z-10 flex gap-2">
         {pool.map((_, i) => (
           <button
             key={i}
