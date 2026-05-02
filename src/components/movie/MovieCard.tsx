@@ -26,8 +26,7 @@ export const MovieCard = ({ id, title, posterPath, year, rating, type = "movie",
   const { setAmbientColor } = useAmbient();
   const { kidsMode } = useSettings();
   const { lang } = useLanguage();
-  // Utiliser le backdrop si disponible pour le format horizontal (عرضية)
-  const image = IMG.backdrop(posterPath, "w780"); 
+  const poster = IMG.poster(posterPath); 
 
   const handleActive = () => {
     try {
@@ -50,23 +49,23 @@ export const MovieCard = ({ id, title, posterPath, year, rating, type = "movie",
       onMouseLeave={handleLeave}
       onFocus={handleActive}
       onBlur={handleLeave}
-      className={`group relative block shrink-0 w-[240px] sm:w-[280px] md:w-[320px] transition-all duration-700 hover:-translate-y-3 focus:z-[100] ${className}`}
+      className={`group relative block shrink-0 w-[150px] sm:w-[170px] md:w-[190px] lg:w-[210px] transition-all duration-700 hover:-translate-y-3 focus:z-[100] ${className}`}
     >
       {/* 3D-ish Glow effect behind card on hover */}
-      <div className="absolute -inset-2 bg-accent/20 rounded-[1.5rem] blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+      <div className="absolute -inset-2 bg-accent/20 rounded-[2rem] blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
 
-      <div className="relative aspect-video rounded-xl overflow-hidden bg-surface-card border border-white/5 group-hover:border-accent/40 group-hover:shadow-[0_20px_50px_-12px_rgba(0,0,0,0.8),0_0_20px_hsl(var(--accent)/0.2)] transition-all duration-700 ease-luxe">
+      <div className="relative aspect-[2/3.2] rounded-2xl overflow-hidden bg-surface-card border border-white/5 group-hover:border-accent/40 group-hover:shadow-[0_20px_50px_-12px_rgba(0,0,0,0.8),0_0_20px_hsl(var(--accent)/0.2)] transition-all duration-700 ease-luxe">
         {!loaded && <div className="absolute inset-0 shimmer-gold" />}
         
-        {image ? (
+        {poster ? (
           <img
-            src={image}
+            src={poster}
             alt={title}
             loading="lazy"
             onLoad={() => setLoaded(true)}
             className={`w-full h-full object-cover transition-all duration-1000 ease-out ${
               loaded ? "opacity-100" : "opacity-0"
-            } group-hover:scale-110`}
+            } group-hover:scale-110 group-hover:rotate-1`}
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-surface-card to-surface-elevated text-muted-foreground text-sm p-6 text-center font-display italic">
@@ -112,7 +111,7 @@ export const MovieCard = ({ id, title, posterPath, year, rating, type = "movie",
                 {type === 'movie' ? (lang === 'ar' ? 'تشغيل الفيلم' : 'Lecture') : (lang === 'ar' ? 'تشغيل المسلسل' : 'Voir épisodes')}
               </span>
             </div>
-            <h3 className="text-white font-display font-bold text-base md:text-lg leading-tight line-clamp-1 drop-shadow-lg">
+            <h3 className="text-white font-display font-bold text-sm md:text-base leading-tight line-clamp-2 drop-shadow-lg">
               {title}
             </h3>
           </div>

@@ -122,13 +122,13 @@ const Catalog = ({ mode }: Props) => {
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 md:gap-8">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
             {items.map((m: any, idx) => (
               <div key={`${m.id}-${idx}`} className="animate-fade-slide-up" style={{ animationDelay: `${idx * 50}ms` }}>
                 <MovieCard
                   id={m.id}
                   title={m.title ?? m.name}
-                  posterPath={m.backdrop_path || m.poster_path}
+                  posterPath={m.poster_path}
                   year={(m.release_date ?? m.first_air_date ?? "").slice(0, 4)}
                   rating={m.vote_average}
                   type={mode === "movies" ? "movie" : "tv"}
