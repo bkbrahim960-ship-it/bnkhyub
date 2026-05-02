@@ -12,6 +12,7 @@ import { MovieCard } from "@/components/movie/MovieCard";
 import { BrandRow } from "@/components/movie/BrandRow";
 import { ContinueWatchingRow } from "@/components/movie/ContinueWatchingRow";
 import { ForYouRow } from "@/components/movie/ForYouRow";
+import { DiscoverRow } from "@/components/movie/DiscoverRow";
 import { SEO } from "@/components/SEO";
 import { useLanguage } from "@/context/LanguageContext";
 import { useSettings } from "@/context/SettingsContext";
@@ -309,6 +310,14 @@ const Home = () => {
             <MovieRow title={t("section_popular_tv")} items={popularTV} type="tv" loading={loading} />
             <MovieRow title={lang === "ar" ? "⭐ أفضل المسلسلات على الإطلاق" : "⭐ Séries les mieux notées"} items={topRatedTV} type="tv" loading={loading} />
             <MovieRow title={t("section_top_rated")} items={topRated} loading={loading} />
+
+            {/* Arabic Content */}
+            <DiscoverRow title={lang === "ar" ? "أفلام عربية" : "Films Arabes"} originalLanguage="ar" type="movie" icon="🎬" />
+            <DiscoverRow title={lang === "ar" ? "مسلسلات عربية" : "Séries Arabes"} originalLanguage="ar" type="tv" icon="📺" />
+
+            {/* Korean Content */}
+            <DiscoverRow title={lang === "ar" ? "دراما كورية" : "K-Drama"} originalLanguage="ko" type="tv" genres="18" icon="🇰🇷" />
+            <DiscoverRow title={lang === "ar" ? "أفلام كورية" : "Films Coréens"} originalLanguage="ko" type="movie" icon="🎥" />
 
             <KabyleCinemaRow />
           </>
