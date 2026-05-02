@@ -52,7 +52,7 @@ export const MovieCard = ({ id, title, posterPath, year, rating, type = "movie",
       className={`group relative block shrink-0 w-[110px] sm:w-[160px] md:w-[180px] lg:w-[200px] transition-all duration-300 hover:-translate-y-2 focus:z-[100] hover:z-[50] ${className}`}
     >
 
-      <div className="relative aspect-[2/3.2] rounded-2xl overflow-hidden bg-surface-card border border-white/5 group-hover:border-accent/40 group-hover:shadow-[0_20px_60px_-12px_rgba(0,0,0,0.9),0_0_40px_hsl(var(--accent)/0.4)] transition-[box-shadow,border-color,transform] duration-150 group-hover:scale-[1.05]">
+      <div className="relative aspect-[2/3.2] rounded-2xl overflow-hidden bg-transparent border border-white/5 group-hover:border-accent/40 group-hover:shadow-[0_20px_60px_-12px_rgba(0,0,0,0.9),0_0_40px_hsl(var(--accent)/0.4)] transition-[box-shadow,border-color,transform] duration-150 group-hover:scale-[1.05]">
         {!loaded && <div className="absolute inset-0 shimmer-gold" />}
         
         {poster ? (
@@ -66,7 +66,7 @@ export const MovieCard = ({ id, title, posterPath, year, rating, type = "movie",
             } group-hover:scale-110`}
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-surface-card to-surface-elevated text-muted-foreground text-sm p-6 text-center font-display italic">
+          <div className="w-full h-full flex items-center justify-center bg-white/5 backdrop-blur-sm text-muted-foreground text-[10px] p-4 text-center font-display italic">
             {title}
           </div>
         )}
