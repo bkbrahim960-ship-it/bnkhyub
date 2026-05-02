@@ -58,8 +58,6 @@ export const VideoPlayer = ({
   const startedRef = useRef(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const hlsRef = useRef<Hls | null>(null);
-  const [resolvedUrls, setResolvedUrls] = useState<Record<number, string>>({});
-  const [resolvingIdx, setResolvingIdx] = useState<number | null>(null);
 
   const baseSources =
     type === "movie"
@@ -103,36 +101,10 @@ export const VideoPlayer = ({
   useEffect(() => {
     if (!playerActive) return;
     setLoading(true);
-
-    const currentSrc = sources[sourceIndex];
-    if ((currentSrc === "APIFLIX_API" || currentSrc === "STREAMDB_API") && !resolvedUrls[sourceIndex]) {
-      const resolve = async () => {
-        setResolvingIdx(sourceIndex);
-        const { fetchApiflixStream, fetchStreamDBStream } = await import("@/services/player");
-        let url = null;
-        if (currentSrc === "APIFLIX_API") {
-          url = await fetchApiflixStream(tmdb_id || imdb_id, type, season, episode);
-        } else {
-          url = await fetchStreamDBStream(imdb_id, type, season, episode);
-        }
-        
-        if (url) {
-          setResolvedUrls(prev => ({ ...prev, [sourceIndex]: url }));
-        } else {
-          toast.error("Source failed to resolve. Try another one.");
-        }
-        setResolvingIdx(null);
-      };
-      resolve();
-    }
-  }, [sourceIndex, playerActive, imdb_id, tmdb_id, season, episode, title, type, resolvedUrls]);
+  }, [sourceIndex, playerActive, imdb_id, tmdb_id, season, episode]);
 
   useEffect(() => {
-    let currentSource = sources[sourceIndex];
-    if (currentSource.includes("_API")) {
-      if (resolvingIdx === sourceIndex) return;
-      currentSource = resolvedUrls[sourceIndex];
-    }
+    const currentSource = sources[sourceIndex];
 
     if (playerActive && currentSource?.includes(".m3u8") && videoRef.current) {
       const video = videoRef.current;
@@ -383,10 +355,8 @@ export const VideoPlayer = ({
         )}
 
         {/* Always render video element if it's an HLS source to allow pre-binding of play() */}
-        {(() => {
-           const src = sources[sourceIndex].includes("_API") ? resolvedUrls[sourceIndex] : sources[sourceIndex];
-           return src?.includes(".m3u8") || src?.includes(".mp4");
-        })() && (
+        {/* Always render video element if it's an HLS source to allow pre-binding of play() */}
+        {sources[sourceIndex]?.includes(".m3u8") && (
           <video
             ref={videoRef}
             className={`absolute inset-0 w-full h-full object-contain bg-black transition-opacity duration-300 ${playerActive ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
@@ -399,14 +369,10 @@ export const VideoPlayer = ({
         )}
 
         {/* Render iframe for other sources */}
-        {playerActive && (() => {
-           const src = sources[sourceIndex].includes("_API") ? resolvedUrls[sourceIndex] : sources[sourceIndex];
-           if (!src) return false;
-           return !src.includes(".m3u8") && !src.includes(".mp4");
-        })() && (
+        {playerActive && !sources[sourceIndex]?.includes(".m3u8") && (
           <iframe
             key={sourceIndex}
-            src={sources[sourceIndex].includes("_API") ? resolvedUrls[sourceIndex] : sources[sourceIndex]}
+            src={sources[sourceIndex]}
             title="BNKhub player"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
             allowFullScreen
@@ -416,10 +382,10 @@ export const VideoPlayer = ({
           />
         )}
 
-        {playerActive && (loading || resolvingIdx !== null) && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/60 pointer-events-none z-30">
+        {playerActive && loading && (
+          <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/60 pointer-events-none">
             <Loader2 className="w-10 h-10 text-accent animate-spin mb-3" />
-            <p className="text-sm text-muted-foreground">{resolvingIdx !== null ? "Resolving ad-free stream..." : t("player_loading")}</p>
+            <p className="text-sm text-muted-foreground">{t("player_loading")}</p>
             <p className="text-xs text-accent mt-1">{allLabels[sourceIndex] || SOURCE_LABELS[sourceIndex]}</p>
           </div>
         )}
@@ -438,8 +404,7 @@ export const VideoPlayer = ({
       <div className="mt-5">
         <PlayerSourceSelector 
           sources={sources.map((src, idx) => {
-            const resolved = src.includes("_API") ? resolvedUrls[idx] : src;
-            const isDirect = resolved?.includes(".m3u8") || resolved?.includes(".mp4") || src.includes("youtube") || src.includes("_API");
+            const isDirect = src.includes(".m3u8") || src.includes(".mp4") || src.includes("youtube");
             return {
               id: idx,
               name: allLabels[idx] || SOURCE_LABELS[idx] || `Source ${idx + 1}`,
