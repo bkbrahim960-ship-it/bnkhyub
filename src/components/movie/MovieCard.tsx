@@ -2,12 +2,13 @@
  * BNKhub — MovieCard (carte film/série cliquable).
  */
 import { Link } from "react-router-dom";
-import { Star } from "lucide-react";
+import { Star, Play } from "lucide-react";
 import { IMG } from "@/services/tmdb";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useAmbient } from "@/context/AmbientContext";
-
 import { useSettings } from "@/context/SettingsContext";
+import { useLanguage } from "@/context/LanguageContext";
+import { FavoriteButton } from "./FavoriteButton";
 
 interface Props {
   id: string | number;
@@ -88,10 +89,22 @@ export const MovieCard = ({ id, title, posterPath, year, rating, type = "movie",
 
         {/* Hover Overlay (Simplified) */}
         <div className={`absolute inset-0 ${kidsMode ? 'bg-gradient-to-t from-sky-500/80' : 'bg-gradient-to-t from-black/90'} via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex flex-col justify-end p-4`}>
+          <div className="absolute top-2 right-2 transform translate-y-[-10px] group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-500 delay-100">
+             <FavoriteButton 
+               tmdbId={id} 
+               mediaType={type} 
+               title={title} 
+               posterPath={posterPath} 
+               className="bg-black/40 backdrop-blur-md border-white/20 p-2.5"
+             />
+          </div>
 
           <p className={`text-[10px] ${kidsMode ? 'text-white' : 'text-accent'} font-bold uppercase tracking-widest transform translate-y-2 group-hover:translate-y-0 transition-transform duration-500`}>
-            {type === 'movie' ? 'Regarder le Film' : 'Voir la Série'}
+            {type === 'movie' ? (lang === 'ar' ? 'مشاهدة الفيلم' : 'Regarder le Film') : (lang === 'ar' ? 'مشاهدة المسلسل' : 'Voir la Série')}
           </p>
+          <h3 className="text-white font-bold text-sm line-clamp-1 mt-1 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-500 delay-75">
+            {title}
+          </h3>
         </div>
       </div>
 

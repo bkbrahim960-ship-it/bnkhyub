@@ -73,7 +73,9 @@ const Series = () => {
     getSeriesDetails(id, tmdbLang(lang))
       .then((s) => {
         setSeries(s);
-        if (s.backdrop_path) setAmbientColor(`hsl(var(--accent) / 0.2)`);
+        if (s.backdrop_path) {
+          setAmbientImage(IMG.backdrop(s.backdrop_path, "w780"));
+        }
         
         if (resumeRequested && resumeSeason && resumeEpisode) {
           setSeason(resumeSeason);
@@ -86,7 +88,12 @@ const Series = () => {
         }
       })
       .finally(() => setLoading(false));
-  }, [id, lang]);
+  }, [id, lang, setAmbientImage]);
+
+  // Clean up ambient on unmount
+  useEffect(() => {
+    return () => setAmbientImage(null);
+  }, [setAmbientImage]);
 
   useEffect(() => {
     if (!id) return;
@@ -170,14 +177,17 @@ const Series = () => {
     }, 100);
   };
 
+  const cast = (series as any).credits?.cast.slice(0, 10) || [];
+  const creator = (series as any).created_by?.[0]?.name || (series as any).credits?.crew.find((c: any) => c.job === 'Executive Producer')?.name;
+
   return (
     <Layout>
       <SEO 
-        title={`مشاهدة مسلسل ${series.name} مترجم`}
-        description={series.overview || `شاهد جميع مواسم وحلقات مسلسل ${series.name} مترجم مجاناً على BNK HUB.`}
+        title={`Regarder ${series.name} en Streaming`}
+        description={series.overview || `Regardez toutes les saisons de ${series.name} en haute qualité sur BNKhub.`}
         image={poster}
         type="video.tv_show"
-        keywords={`${series.name}, مسلسل ${series.name}, مترجم, BNK HUB, مشاهدة مجانية, SERIES GRATUIT`}
+        keywords={`${series.name}, regarder ${series.name}, serie gratuite, BNKhub`}
       />
       {/* Cinematic Hero */}
       <section className="relative min-h-[85vh] flex items-end pb-20 overflow-hidden">
@@ -190,8 +200,10 @@ const Series = () => {
         )}
         
         <div className="container relative z-10 grid lg:grid-cols-[300px_1fr] gap-12 items-end">
-          <div className="hidden lg:block animate-fade-in">
-            <img src={poster} alt={series.name} className="w-full rounded-2xl border border-white/10 shadow-2xl shadow-accent/20" />
+          <div className="hidden lg:block animate-fade-in group">
+            <div className="relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl shadow-accent/20">
+               <img src={poster} alt={series.name} className="w-full transition-transform duration-700 group-hover:scale-110" />
+            </div>
           </div>
 
           <div className="animate-fade-slide-up">
@@ -202,7 +214,7 @@ const Series = () => {
 
             <div className="flex flex-wrap gap-2 mb-6">
               {series.genres?.map(g => (
-                <span key={g.id} className="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[10px] font-bold uppercase tracking-widest text-accent">
+                <span key={g.id} className="px-3 py-1 rounded-full bg-accent/10 border border-accent/20 text-[10px] font-bold uppercase tracking-widest text-accent">
                   {g.name}
                 </span>
               ))}
@@ -213,44 +225,42 @@ const Series = () => {
             </h1>
 
             <div className="flex flex-wrap items-center gap-6 mb-8">
-              <div className="flex items-center gap-3 px-4 py-2 rounded-2xl bg-black/40 backdrop-blur-xl border border-white/20 shadow-2xl">
-                <img 
-                  src="https://www.themoviedb.org/assets/2/v4/logos/v2/blue_square_2-d537fb228cf3ded904ef09b136fe3fec72548ebc1fea3fbbd1ad9e36364db38b.svg" 
-                  alt="TMDB" 
-                  className="w-8 h-auto drop-shadow-glow-accent"
-                />
+              <div className="flex items-center gap-3 px-4 py-2 rounded-2xl bg-white/5 border border-white/10 shadow-2xl">
+                <Star className="w-5 h-5 text-accent fill-accent" />
                 <span className="text-xl font-black text-white">{series.vote_average.toFixed(1)}</span>
               </div>
-              <span className="flex items-center gap-2 text-white/60 font-medium">
-                <Calendar className="w-4 h-4" /> {year}
+              <span className="flex items-center gap-2 text-white/70 font-medium">
+                <Calendar className="w-4 h-4 text-accent" /> {year}
               </span>
-              <span className="px-2 py-0.5 rounded border border-white/20 text-[10px] font-bold text-white/80">
-                {series.number_of_seasons} SEASONS
+              <span className="px-3 py-1 rounded-full bg-accent/10 border border-accent/20 text-[10px] font-bold text-accent uppercase tracking-widest">
+                {series.number_of_seasons} SAISONS
               </span>
             </div>
 
-            <p className="text-lg text-white/70 max-w-2xl leading-relaxed mb-10 line-clamp-3 md:line-clamp-none">
+            <p className="text-lg text-white/60 max-w-2xl leading-relaxed mb-10 line-clamp-3 md:line-clamp-none">
               {series.overview}
             </p>
 
             <div className="flex flex-wrap items-center gap-4">
               <button
                 onClick={() => handleEpisodeClick(1)}
-                className="inline-flex items-center gap-2 bg-accent text-accent-foreground px-8 py-4 rounded-full font-bold shadow-glow hover:scale-105 active:scale-95 transition-all text-sm md:text-base"
+                className="inline-flex items-center gap-3 bg-accent text-accent-foreground px-10 py-4 rounded-full font-bold shadow-glow hover:scale-105 active:scale-95 transition-all text-sm md:text-base"
               >
                 <Play className="w-5 h-5 fill-current" /> {t("hero_watch")}
               </button>
               {trailer && (
                 <button
                   onClick={() => setShowTrailer(true)}
-                  className="inline-flex items-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 px-8 py-4 rounded-full font-bold transition-all text-sm md:text-base"
+                  className="inline-flex items-center gap-3 bg-white/5 hover:bg-white/10 border border-white/10 px-10 py-4 rounded-full font-bold transition-all text-sm md:text-base"
                 >
                   <Youtube className="w-5 h-5 text-red-500" /> {t("hero_trailer")}
                 </button>
               )}
-              <FavoriteButton tmdbId={series.id} mediaType="tv" title={series.name} posterPath={series.poster_path} />
-              <RemotePairingButton />
-              <ShareButtons title={series.name} />
+              <FavoriteButton tmdbId={series.id} mediaType="tv" title={series.name} posterPath={series.poster_path} className="px-6 py-4" />
+              <div className="flex gap-3">
+                <RemotePairingButton />
+                <ShareButtons title={series.name} />
+              </div>
             </div>
           </div>
         </div>
@@ -273,6 +283,10 @@ const Series = () => {
                 onPlayStart={(_i, label) => saveHistory(label)}
                 onSourceChange={(_i, label) => saveHistory(label)}
               />
+              {/* Subtitles Finder below player for TV */}
+              <div className="mt-8">
+                <SubtitleFinder imdbId={imdb} tmdbId={series.id} type="tv" title={series.name} season={season} episode={episode} />
+              </div>
             </div>
           )}
         </div>
@@ -280,8 +294,8 @@ const Series = () => {
         {/* Episodes & Seasons Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-12">
           <div>
-            <h2 className="text-3xl font-display font-bold text-white mb-2">{lang === "ar" ? "الحلقات" : "Episodes"}</h2>
-            <p className="text-white/40 text-sm">{series.name} • Season {season}</p>
+            <h2 className="text-3xl font-display font-bold text-white mb-2">{lang === "ar" ? "الحلقات" : "Épisodes"}</h2>
+            <p className="text-white/40 text-sm">{series.name} • Saison {season}</p>
           </div>
 
           {/* Season Tabs */}
@@ -353,7 +367,7 @@ const Series = () => {
                     {ep.name}
                   </h3>
                   <p className="text-[11px] text-white/50 leading-relaxed line-clamp-2 mb-4">
-                    {ep.overview || "No description available for this episode."}
+                    {ep.overview || "Aucune description disponible pour cet épisode."}
                   </p>
                   <div className="mt-auto flex items-center justify-between">
                     <span className="text-[10px] font-bold text-accent/60 uppercase tracking-tighter">
@@ -366,7 +380,7 @@ const Series = () => {
                 {/* Active Indicator */}
                 {episode === ep.episode_number && playing && (
                   <div className="absolute top-2 right-2 px-2 py-1 rounded bg-accent text-accent-foreground text-[8px] font-bold animate-pulse">
-                    WATCHING
+                    LECTURE
                   </div>
                 )}
               </button>
@@ -377,16 +391,90 @@ const Series = () => {
 
       <TrailerModal isOpen={showTrailer} onClose={() => setShowTrailer(false)} videoKey={trailer?.key} title={series.name} />
 
+      {/* DETAILED INFO SECTION */}
+      <section className="container py-20 border-t border-white/5">
+        <div className="grid lg:grid-cols-[1fr_350px] gap-16">
+          <div className="space-y-16">
+            {/* Cast */}
+            {cast.length > 0 && (
+              <div>
+                <h2 className="font-display text-3xl mb-8 flex items-center gap-3">
+                  <span className="w-8 h-1 bg-accent rounded-full" />
+                  Distribution
+                </h2>
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-6">
+                  {cast.map((person: any) => (
+                    <div key={person.id} className="group">
+                      <div className="aspect-[2/3] rounded-2xl overflow-hidden mb-3 bg-surface-card border border-border group-hover:border-accent/40 transition-all">
+                        {person.profile_path ? (
+                          <img 
+                            src={IMG.profile(person.profile_path)} 
+                            alt={person.name} 
+                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center bg-accent/5">
+                            <span className="text-accent/40 text-2xl font-black">{person.name[0]}</span>
+                          </div>
+                        )}
+                      </div>
+                      <h4 className="font-bold text-sm text-foreground line-clamp-1">{person.name}</h4>
+                      <p className="text-xs text-muted-foreground line-clamp-1">{person.character}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
 
+          {/* Sidebar Info */}
+          <div className="space-y-10">
+             <div className="p-8 rounded-3xl bg-surface-card/40 backdrop-blur-md border border-border/50">
+               <h3 className="text-[11px] uppercase tracking-[0.2em] text-accent font-black mb-6 opacity-60">Infos Série</h3>
+               
+               <div className="space-y-6">
+                 {creator && (
+                   <div>
+                     <p className="text-xs text-muted-foreground mb-1 uppercase tracking-widest font-bold">Créateur</p>
+                     <p className="text-lg font-bold">{creator}</p>
+                   </div>
+                 )}
+                 
+                 {series.number_of_episodes && (
+                   <div>
+                     <p className="text-xs text-muted-foreground mb-1 uppercase tracking-widest font-bold">Total Épisodes</p>
+                     <p className="text-lg font-bold">{series.number_of_episodes}</p>
+                   </div>
+                 )}
+
+                 {(series as any).status && (
+                   <div>
+                     <p className="text-xs text-muted-foreground mb-1 uppercase tracking-widest font-bold">Statut</p>
+                     <p className="text-lg font-bold">{(series as any).status}</p>
+                   </div>
+                 )}
+
+                 {(series as any).type && (
+                   <div>
+                     <p className="text-xs text-muted-foreground mb-1 uppercase tracking-widest font-bold">Format</p>
+                     <p className="text-lg font-bold">{(series as any).type}</p>
+                   </div>
+                 )}
+               </div>
+             </div>
+
+             {/* Reviews */}
+             <ReviewSection tmdbId={series.id} mediaType="tv" />
+          </div>
+        </div>
+      </section>
 
       {/* Recommendations */}
       {recommendations.length > 0 && (
-        <div className="py-12 bg-black/20">
-          <MovieRow title={lang === "ar" ? "مسلسلات مشابهة" : "Similar Series"} items={recommendations} type="tv" />
+        <div className="py-20 bg-gradient-to-b from-transparent to-black/40">
+          <MovieRow title={lang === "ar" ? "مسلسلات مشابهة" : "Séries similaires"} items={recommendations} type="tv" />
         </div>
       )}
-
-
     </Layout>
   );
 };

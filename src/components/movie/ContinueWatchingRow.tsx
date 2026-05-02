@@ -146,18 +146,32 @@ export const ContinueWatchingRow = () => {
                     <X className="w-3.5 h-3.5" />
                   </button>
 
-                  {/* Bouton lecture */}
-                  <div className="absolute bottom-0 inset-x-0 p-3">
-                    <div className="inline-flex items-center gap-2 bg-gradient-accent text-accent-foreground font-semibold px-4 py-2 rounded-full shadow-accent text-sm">
-                      <Play className="w-3.5 h-3.5 fill-accent-foreground" />
-                      {t("continue_resume")}
+                  {/* Progress Bar */}
+                  {e.duration_seconds && e.progress_seconds > 0 && (
+                    <div className="absolute bottom-0 inset-x-0 h-1 bg-white/20">
+                      <div 
+                        className="h-full bg-accent shadow-[0_0_8px_hsl(var(--accent))]" 
+                        style={{ width: `${Math.min(100, (e.progress_seconds / e.duration_seconds) * 100)}%` }} 
+                      />
+                    </div>
+                  )}
+
+                  {/* Bouton lecture (Hover) */}
+                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-black/40 backdrop-blur-[2px]">
+                    <div className="w-12 h-12 rounded-full bg-gradient-accent text-accent-foreground flex items-center justify-center shadow-accent scale-75 group-hover:scale-100 transition-transform duration-500">
+                      <Play className="w-6 h-6 fill-accent-foreground" />
                     </div>
                   </div>
                 </div>
-                <div className="pt-2 px-1">
-                  <h3 className="font-medium text-sm text-foreground line-clamp-1 group-hover:text-accent transition-colors">
+                <div className="pt-3 px-1">
+                  <h3 className="font-bold text-sm text-foreground line-clamp-1 group-hover:text-accent transition-colors">
                     {e.title}
                   </h3>
+                  {e.duration_seconds && (
+                    <p className="text-[10px] text-muted-foreground mt-1 uppercase tracking-wider font-semibold">
+                      {Math.round((e.progress_seconds / e.duration_seconds) * 100)}% complété
+                    </p>
+                  )}
                 </div>
               </Link>
             </div>
