@@ -19,6 +19,8 @@ import Admin from "./pages/Admin";
 import MyList from "./pages/MyList";
 import Landing from "./pages/Landing";
 import Remote from "./pages/Remote";
+import Person from "./pages/Person";
+import ComingSoon from "./pages/ComingSoon";
 import NotFound from "./pages/NotFound.tsx";
 
 import { AmbientProvider, AmbientBackground } from "@/context/AmbientContext";
@@ -119,6 +121,8 @@ const AppContent = () => (
                         <Route path="/admin" element={<Admin />} />
                         <Route path="/welcome" element={<Landing />} />
                         <Route path="/remote" element={<Remote />} />
+                        <Route path="/person/:id" element={<Person />} />
+                        <Route path="/coming-soon" element={<ComingSoon />} />
                         <Route path="*" element={<NotFound />} />
                       </Routes>
                     </BrowserRouter>

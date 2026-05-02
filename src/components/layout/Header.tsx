@@ -17,7 +17,7 @@ import { InstallButton } from "@/components/pwa/InstallButton";
 import { useSettings } from "@/context/SettingsContext";
 
 export const Header = () => {
-  const { t } = useLanguage();
+  const { lang, t } = useLanguage();
   const { user } = useAuth();
   const { kidsMode } = useSettings();
   const [scrolled, setScrolled] = useState(false);
@@ -35,6 +35,7 @@ export const Header = () => {
     { to: "/movies", label: t("nav_movies") },
     { to: "/series", label: t("nav_series") },
     { to: "/channels", label: t("nav_channels") },
+    { to: "/coming-soon", label: lang === "ar" ? "قريباً" : "Bientôt" },
     { to: "/search", label: t("nav_search") },
     { to: user ? "/profile" : "/auth", label: t("nav_profile") },
   ];

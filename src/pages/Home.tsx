@@ -11,6 +11,7 @@ import { M3UMovieRow } from "@/components/movie/M3UMovieRow";
 import { MovieCard } from "@/components/movie/MovieCard";
 import { BrandRow } from "@/components/movie/BrandRow";
 import { ContinueWatchingRow } from "@/components/movie/ContinueWatchingRow";
+import { ForYouRow } from "@/components/movie/ForYouRow";
 import { SEO } from "@/components/SEO";
 import { useLanguage } from "@/context/LanguageContext";
 import { useSettings } from "@/context/SettingsContext";
@@ -288,6 +289,7 @@ const Home = () => {
       <div className="relative -mt-20 z-10">
         <BrandRow />
         <ContinueWatchingRow />
+        <ForYouRow />
 
         {kidsMode ? (
           <>

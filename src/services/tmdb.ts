@@ -67,6 +67,21 @@ export interface TMDBSeries {
   seasons?: { season_number: number; episode_count: number; name: string; poster_path: string | null }[];
 }
 
+export interface TMDBPerson {
+  id: number;
+  name: string;
+  biography: string;
+  birthday: string | null;
+  deathday: string | null;
+  place_of_birth: string | null;
+  profile_path: string | null;
+  known_for_department: string;
+  combined_credits?: {
+    cast: (TMDBMovie & TMDBSeries & { character: string; media_type: "movie" | "tv" })[];
+    crew: (TMDBMovie & TMDBSeries & { job: string; media_type: "movie" | "tv" })[];
+  };
+}
+
 export interface TMDBEpisode {
   id: number;
   name: string;
@@ -153,4 +168,9 @@ export const discoverMovies = (lang = "fr-FR", params: Record<string, string> = 
 
 export const discoverSeries = (lang = "fr-FR", params: Record<string, string> = {}) =>
   fetchTMDB<{ results: TMDBSeries[]; total_pages: number }>("/discover/tv", { language: lang, ...params });
+
+// ───── PERSONS ─────
+export const getPersonDetails = (id: number | string, lang = "fr-FR") =>
+  fetchTMDB<TMDBPerson>(`/person/${id}`, { language: lang, append_to_response: "combined_credits,external_ids" });
+
 

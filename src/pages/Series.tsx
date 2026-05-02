@@ -20,6 +20,7 @@ import { SOURCE_LABELS } from "@/services/player";
 import { Play, Star, Calendar, ArrowLeft, Youtube, ChevronRight, Clock, Info } from "lucide-react";
 import { useAmbient } from "@/context/AmbientContext";
 import { RemotePairingButton } from "@/components/movie/RemotePairingButton";
+import { NextEpisodeOverlay } from "@/components/player/NextEpisodeOverlay";
 
 const sourceIdToIndex = (srcId?: string | null): number => {
   if (!srcId) return 0;
@@ -42,6 +43,7 @@ const Series = () => {
   const [seasonLoading, setSeasonLoading] = useState(false);
   const [recommendations, setRecommendations] = useState<any[]>([]);
   const [showTrailer, setShowTrailer] = useState(false);
+  const [showNextEpisode, setShowNextEpisode] = useState(false);
   const playerRef = useRef<HTMLDivElement>(null);
 
   const resumeRequested = params.get("resume") === "1";
@@ -282,6 +284,18 @@ const Series = () => {
                 onPlayStart={(_i, label) => saveHistory(label)}
                 onSourceChange={(_i, label) => saveHistory(label)}
               />
+              {/* Next Episode Button */}
+              {seasonData && episode < (seasonData.episodes?.length || 0) && (
+                <div className="mt-4 flex justify-end">
+                  <button
+                    onClick={() => setShowNextEpisode(true)}
+                    className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-accent/10 border border-accent/20 text-accent hover:bg-accent hover:text-accent-foreground font-bold text-sm transition-all"
+                  >
+                    <Play className="w-4 h-4 fill-current" />
+                    {lang === 'ar' ? 'الحلقة التالية' : 'Épisode suivant'}
+                  </button>
+                </div>
+              )}
               {/* Subtitles Finder below player for TV */}
               <div className="mt-8">
                 <SubtitleFinder imdbId={imdb} tmdbId={series.id} type="tv" title={series.name} season={season} episode={episode} />
@@ -289,6 +303,22 @@ const Series = () => {
             </div>
           )}
         </div>
+
+        {/* Auto-play Next Episode Overlay */}
+        {showNextEpisode && seasonData && episode < (seasonData.episodes?.length || 0) && (
+          <NextEpisodeOverlay
+            nextEpisodeTitle={seasonData.episodes[episode]?.name || `Épisode ${episode + 1}`}
+            nextEpisodeNumber={episode + 1}
+            seasonNumber={season}
+            seriesName={series.name}
+            stillPath={seasonData.episodes[episode]?.still_path ? IMG.backdrop(seasonData.episodes[episode].still_path, "w780") : backdrop}
+            onPlay={() => {
+              setShowNextEpisode(false);
+              handleEpisodeClick(episode + 1);
+            }}
+            onCancel={() => setShowNextEpisode(false)}
+          />
+        )}
 
         {/* Episodes & Seasons Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-12">
@@ -403,7 +433,7 @@ const Series = () => {
                 </h2>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-6">
                   {cast.map((person: any) => (
-                    <div key={person.id} className="group">
+                    <Link key={person.id} to={`/person/${person.id}`} className="group">
                       <div className="aspect-[2/3] rounded-2xl overflow-hidden mb-3 bg-surface-card border border-border group-hover:border-accent/40 transition-all">
                         {person.profile_path ? (
                           <img 
@@ -417,9 +447,9 @@ const Series = () => {
                           </div>
                         )}
                       </div>
-                      <h4 className="font-bold text-sm text-foreground line-clamp-1">{person.name}</h4>
+                      <h4 className="font-bold text-sm text-foreground line-clamp-1 group-hover:text-accent transition-colors">{person.name}</h4>
                       <p className="text-xs text-muted-foreground line-clamp-1">{person.character}</p>
-                    </div>
+                    </Link>
                   ))}
                 </div>
               </div>

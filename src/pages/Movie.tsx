@@ -265,7 +265,7 @@ const Movie = () => {
                 </h2>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-6">
                   {cast.map(person => (
-                    <div key={person.id} className="group">
+                    <Link key={person.id} to={`/person/${person.id}`} className="group">
                       <div className="aspect-[2/3] rounded-2xl overflow-hidden mb-3 bg-surface-card border border-border group-hover:border-accent/40 transition-all">
                         {person.profile_path ? (
                           <img 
@@ -279,9 +279,9 @@ const Movie = () => {
                           </div>
                         )}
                       </div>
-                      <h4 className="font-bold text-sm text-foreground line-clamp-1">{person.name}</h4>
+                      <h4 className="font-bold text-sm text-foreground line-clamp-1 group-hover:text-accent transition-colors">{person.name}</h4>
                       <p className="text-xs text-muted-foreground line-clamp-1">{person.character}</p>
-                    </div>
+                    </Link>
                   ))}
                 </div>
               </div>
