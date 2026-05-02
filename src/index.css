@@ -135,13 +135,13 @@
 
   /* ─────── KIDS MODE THEME ─────── */
   [data-kids="true"] {
-    --bg-primary: 198 100% 97%;       /* Ultra light sky blue */
-    --bg-secondary: 198 100% 92%;     /* Light sky blue */
+    --bg-primary: 198 100% 98%;       /* Ultra light sky blue (almost white) */
+    --bg-secondary: 198 80% 94%;      /* Light sky blue */
     --bg-card: 0 0% 100%;             /* Pure white for cards */
-    --bg-elevated: 198 60% 88%;
+    --bg-elevated: 198 60% 90%;
     
     --background: var(--bg-primary);
-    --foreground: 222 47% 11%;         /* Deep blue text */
+    --foreground: 222 47% 11%;         /* Deep dark blue text (very visible) */
     
     --card: var(--bg-card);
     --card-foreground: 222 47% 11%;
@@ -153,21 +153,21 @@
     --accent-light: 200 100% 65%;
     --accent-dark: 200 100% 40%;
     --accent: var(--accent-h) var(--accent-s) var(--accent-l);
-    --accent-foreground: 0 0% 100%;   /* White text on accent */
+    --accent-foreground: 0 0% 100%;   /* White text on blue accent */
     
     --muted: 198 30% 90%;
-    --muted-foreground: 215 16% 45%;
+    --muted-foreground: 222 20% 40%;
     
-    --border: 198 40% 85%;
-    --input: 198 40% 85%;
+    --border: 198 40% 80%;
+    --input: 198 40% 80%;
     --ring: var(--accent);
 
-    /* Gradients for kids */
-    --gradient-accent: linear-gradient(135deg, #00BFFF, #87CEFA); /* Sky Blue candy */
+    /* Gradients for kids (darker blues for text visibility) */
+    --gradient-accent: linear-gradient(135deg, #0080FF, #00BFFF); 
     --gradient-hero: linear-gradient(
       180deg,
       transparent 0%,
-      hsl(var(--bg-primary) / 0.8) 70%,
+      hsl(var(--bg-primary) / 0.4) 50%,
       hsl(var(--bg-primary)) 100%
     );
 

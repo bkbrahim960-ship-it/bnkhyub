@@ -60,8 +60,8 @@ export const MovieHero = ({ items }: Props) => {
 
       {/* Grain + gradients */}
       <div className="absolute inset-0 grain" />
-      <div className={`absolute inset-0 bg-gradient-to-t ${kidsMode ? 'from-white via-white/40' : 'from-surface-primary via-surface-primary/60'} to-transparent`} />
-      <div className={`absolute inset-0 bg-gradient-to-r ${kidsMode ? 'from-white/80 via-white/20' : 'from-surface-primary/95 via-surface-primary/40'} to-transparent`} />
+      <div className={`absolute inset-0 bg-gradient-to-t ${kidsMode ? 'from-background via-background/40' : 'from-surface-primary via-surface-primary/60'} to-transparent`} />
+      <div className={`absolute inset-0 bg-gradient-to-r ${kidsMode ? 'from-background/80 via-background/20' : 'from-surface-primary/95 via-surface-primary/40'} to-transparent`} />
 
       {/* Contenu */}
       <div className="relative z-10 h-full container flex items-end md:items-center pb-16 md:pb-0">
@@ -77,7 +77,7 @@ export const MovieHero = ({ items }: Props) => {
             <span className="text-gradient-accent">{movie.title}</span>
           </h1>
 
-          <p className="text-foreground/85 text-base md:text-lg leading-relaxed max-w-xl mb-8 line-clamp-3">
+          <p className="text-foreground text-base md:text-lg leading-relaxed max-w-xl mb-8 line-clamp-3 font-medium">
             {movie.overview}
           </p>
 
