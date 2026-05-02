@@ -31,7 +31,7 @@ const Movie = () => {
   const [params] = useSearchParams();
   const { lang, t } = useLanguage();
   const { user } = useAuth();
-  const { setAmbientColor } = useAmbient();
+  const { setAmbientColor, setAmbientImage } = useAmbient();
   const [movie, setMovie] = useState<TMDBMovie | null>(null);
   const [loading, setLoading] = useState(true);
   const [playing, setPlaying] = useState(false);

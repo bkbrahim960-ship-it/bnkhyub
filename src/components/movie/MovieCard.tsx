@@ -25,6 +25,7 @@ export const MovieCard = ({ id, title, posterPath, year, rating, type = "movie",
   const [loaded, setLoaded] = useState(false);
   const { setAmbientColor } = useAmbient();
   const { kidsMode } = useSettings();
+  const { lang } = useLanguage();
   const poster = IMG.poster(posterPath);
 
   const handleActive = () => {

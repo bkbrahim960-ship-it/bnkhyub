@@ -31,7 +31,7 @@ const Series = () => {
   const [params] = useSearchParams();
   const { lang, t } = useLanguage();
   const { user } = useAuth();
-  const { setAmbientColor } = useAmbient();
+  const { setAmbientColor, setAmbientImage } = useAmbient();
   const [series, setSeries] = useState<TMDBSeries | null>(null);
   const [loading, setLoading] = useState(true);
   const [season, setSeason] = useState(1);
