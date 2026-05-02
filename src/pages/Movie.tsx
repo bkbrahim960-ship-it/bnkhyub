@@ -7,7 +7,7 @@ import { FavoriteButton } from "@/components/movie/FavoriteButton";
 import { ShareButtons } from "@/components/movie/ShareButtons";
 
 import { TrailerModal } from "@/components/movie/TrailerModal";
-import { ReviewSection } from "@/components/movie/ReviewSection";
+
 import { VideoBackdrop } from "@/components/movie/VideoBackdrop";
 import { IMG, getMovieDetails, getMovieRecommendations, TMDBMovie } from "@/services/tmdb";
 import { useLanguage } from "@/context/LanguageContext";
@@ -337,8 +337,7 @@ const Movie = () => {
                </div>
              </div>
 
-             {/* Reviews */}
-             <ReviewSection tmdbId={movie.id} mediaType="movie" />
+
           </div>
         </div>
       </section>

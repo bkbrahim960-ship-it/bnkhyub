@@ -8,7 +8,7 @@ import { ShareButtons } from "@/components/movie/ShareButtons";
 import { MovieRow } from "@/components/movie/MovieRow";
 
 import { TrailerModal } from "@/components/movie/TrailerModal";
-import { ReviewSection } from "@/components/movie/ReviewSection";
+
 import { VideoBackdrop } from "@/components/movie/VideoBackdrop";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
@@ -492,8 +492,7 @@ const Series = () => {
                </div>
              </div>
 
-             {/* Reviews */}
-             <ReviewSection tmdbId={series.id} mediaType="tv" />
+
           </div>
         </div>
       </section>
