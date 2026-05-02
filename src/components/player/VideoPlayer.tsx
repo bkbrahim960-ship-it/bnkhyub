@@ -85,6 +85,7 @@ export const VideoPlayer = ({
   const [resumeModalOpen, setResumeModalOpen] = useState(false);
   const [historyProgress, setHistoryProgress] = useState(0);
   const [hasResumed, setHasResumed] = useState(false);
+  const [isWebFullscreen, setIsWebFullscreen] = useState(false);
 
   // Auto-fetch Arabic subtitles on mount
   useEffect(() => {
@@ -433,7 +434,15 @@ export const VideoPlayer = ({
         <h2 className="font-display text-xl md:text-2xl text-accent mb-3 px-1">{title}</h2>
       )}
 
-      <div className="relative w-full aspect-video bg-black rounded-2xl overflow-hidden border border-white/10 shadow-2xl group/player">
+      <div className={`relative w-full aspect-video bg-black rounded-2xl overflow-hidden border border-white/10 shadow-2xl group/player transition-all duration-500 ${isWebFullscreen ? 'fixed inset-0 z-[1000] rounded-none !aspect-auto h-screen' : ''}`}>
+        {/* Web Fullscreen Toggle (for iOS) */}
+        <button 
+          onClick={() => setIsWebFullscreen(!isWebFullscreen)}
+          className={`absolute top-4 end-4 z-[70] p-3 rounded-full backdrop-blur-xl border border-white/10 text-white/70 hover:text-white transition-all shadow-2xl ${isWebFullscreen ? 'bg-accent text-accent-foreground' : 'bg-black/40 md:hidden'}`}
+          title="Web Fullscreen"
+        >
+          {isWebFullscreen ? <Minimize className="w-5 h-5" /> : <Maximize className="w-5 h-5" />}
+        </button>
         {/* Unified Header Overlay */}
         <div className={`absolute top-0 inset-x-0 z-20 p-4 flex items-center justify-between bg-gradient-to-b from-black/90 via-black/40 to-transparent transition-all duration-500 ${isLocked ? 'opacity-0 pointer-events-none' : 'opacity-0 group-hover/player:opacity-100'}`}>
           <div className="flex items-center gap-3">
