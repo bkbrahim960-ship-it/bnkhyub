@@ -7,7 +7,10 @@
 import { useEffect, useRef, useState } from "react";
 import { getMovieSources, getTVSources, SOURCE_LABELS } from "@/services/player";
 import { AdsNoticeModal, hasSeenAdsNotice } from "./AdsNoticeModal";
+import { ResumeModal } from "./ResumeModal";
 import { useLanguage } from "@/context/LanguageContext";
+import { useAuth } from "@/context/AuthContext";
+import { getRecentHistory } from "@/services/watchHistory";
 import { Loader2, AlertCircle, RotateCw, ShieldCheck, Play, Settings, Lock, Unlock, FastForward, Languages, Captions, Monitor, Gauge, PictureInPicture as PipIcon, Maximize, Search, Download, ExternalLink } from "lucide-react";
 import { searchSubtitles, getDownloadUrl, SubtitleResult } from "@/services/opensubtitles";
 import { searchYTSSubtitles } from "@/services/yts_subtitles";
@@ -77,6 +80,12 @@ export const VideoPlayer = ({
   const [isSearchingSubs, setIsSearchingSubs] = useState(false);
   const [appliedExternalSub, setAppliedExternalSub] = useState<string | null>(null);
 
+  // Resume Logic
+  const { user } = useAuth();
+  const [resumeModalOpen, setResumeModalOpen] = useState(false);
+  const [historyProgress, setHistoryProgress] = useState(0);
+  const [hasResumed, setHasResumed] = useState(false);
+
   // Auto-fetch Arabic subtitles on mount
   useEffect(() => {
     const autoFetchSubs = async () => {
@@ -101,6 +110,32 @@ export const VideoPlayer = ({
       autoFetchSubs();
     }
   }, [imdb_id, playerActive]);
+
+  // Check for resume progress on mount
+  useEffect(() => {
+    if (!user || startedRef.current || hasResumed) return;
+
+    const checkHistory = async () => {
+      try {
+        const history = await getRecentHistory(user.id, 50);
+        const currentEntry = history.find(e => 
+          e.tmdb_id === Number(tmdb_id) && 
+          e.media_type === type && 
+          (!season || e.season_number === season) && 
+          (!episode || e.episode_number === episode)
+        );
+
+        if (currentEntry && currentEntry.progress_seconds > 60) {
+          setHistoryProgress(currentEntry.progress_seconds);
+          setResumeModalOpen(true);
+        }
+      } catch (err) {
+        console.error("Failed to check history for resume:", err);
+      }
+    };
+
+    checkHistory();
+  }, [user, tmdb_id, type, season, episode, hasResumed]);
 
   const baseSources =
     type === "movie"
@@ -431,6 +466,24 @@ export const VideoPlayer = ({
             </button>
           </div>
         )}
+
+        {/* Resume / Restart Modal */}
+        <ResumeModal 
+          open={resumeModalOpen}
+          progressSeconds={historyProgress}
+          onClose={() => setResumeModalOpen(false)}
+          onRestart={() => {
+            setResumeModalOpen(false);
+            setHasResumed(true);
+            if (videoRef.current) videoRef.current.currentTime = 0;
+          }}
+          onResume={() => {
+            setResumeModalOpen(false);
+            setHasResumed(true);
+            if (videoRef.current) videoRef.current.currentTime = historyProgress;
+            toast.success(lang === "ar" ? "تم استئناف المشاهدة" : "Lecture reprise");
+          }}
+        />
 
         {/* Advanced Settings Modal */}
         {showSettings && !isLocked && (
