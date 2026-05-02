@@ -43,7 +43,7 @@ export const SubtitleFinder = ({ imdbId, title, type, season, episode }: Props) 
   ];
 
   const languages = [
-    { label: "العربية", code: "ara", flag: "🇸🇦" },
+    { label: "Arabe", code: "ara", flag: "🇸🇦" },
     { label: "English", code: "eng", flag: "🇺🇸" },
     { label: "Français", code: "fre", flag: "🇫🇷" },
     { label: "Español", code: "spa", flag: "🇪🇸" },

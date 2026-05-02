@@ -34,7 +34,7 @@ export const SEO = ({
       <meta name="description" content={siteDescription} />
       <meta name="keywords" content={siteKeywords} />
       <meta name="author" content="Brahim Ben Keddache" />
-      <meta name="language" content="ar, fr, en" />
+      <meta name="language" content="fr, en" />
       <meta name="robots" content="index, follow" />
 
       {/* Open Graph / Facebook */}
