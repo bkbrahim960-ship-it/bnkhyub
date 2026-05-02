@@ -8,10 +8,8 @@ import { useEffect, useRef, useState } from "react";
 import { getMovieSources, getTVSources, SOURCE_LABELS } from "@/services/player";
 import { AdsNoticeModal, hasSeenAdsNotice } from "./AdsNoticeModal";
 import { useLanguage } from "@/context/LanguageContext";
-import { Loader2, AlertCircle, RotateCw, Users, Share2, ShieldCheck, Play } from "lucide-react";
+import { Loader2, AlertCircle, RotateCw, ShieldCheck, Play } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { useWatchParty } from "@/hooks/useWatchParty";
-import { useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 import Hls from "hls.js";
 import { PlayerSourceSelector } from "./PlayerSourceSelector";
@@ -46,9 +44,6 @@ export const VideoPlayer = ({
   customUrl,
 }: Props) => {
   const { t, lang } = useLanguage();
-  const [searchParams] = useSearchParams();
-  const partyId = searchParams.get("party");
-  const { participants } = useWatchParty(partyId || undefined);
   const [sourceIndex, setSourceIndex] = useState(initialSourceIndex);
   const [loading, setLoading] = useState(true);
   const [slow, setSlow] = useState<boolean[]>(Array(50).fill(false));
@@ -224,8 +219,6 @@ export const VideoPlayer = ({
   // Remote Control Listener
   useEffect(() => {
     const handleRemote = (e: KeyboardEvent) => {
-      const isTV = isAndroidTV();
-      
       if (e.key === "ArrowRight") {
         if (!playerActive) return;
         const next = (sourceIndex + 1) % sources.length;
@@ -238,7 +231,6 @@ export const VideoPlayer = ({
         if (!playerActive) {
           handleStartPlay();
         } else if (videoRef.current) {
-          // Toggle Play/Pause for HLS
           if (videoRef.current.paused) videoRef.current.play().catch(() => {});
           else videoRef.current.pause();
         }
