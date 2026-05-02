@@ -74,6 +74,14 @@ const Search = () => {
             !customResults.some(cr => cr.title.toLowerCase() === (item.title || item.name || "").toLowerCase())
           )
         ];
+
+        // Filter for Kids Mode if enabled
+        if (kidsMode) {
+          filtered = filtered.filter((item: any) => {
+            const genres = item.genre_ids || [];
+            return !genres.includes(27) && !genres.includes(53) && !item.adult;
+          });
+        }
         if (mediaFilter !== "all") {
           filtered = filtered.filter((item: any) => item.media_type === mediaFilter);
         }

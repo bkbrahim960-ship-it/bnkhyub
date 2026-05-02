@@ -46,8 +46,16 @@ const Catalog = ({ mode }: Props) => {
     const loadData = async () => {
       setLoading(true);
       try {
-        let response;
-        if (providerId) {
+        if (kidsMode) {
+          // If Kids Mode is on, prioritize Animation (16) and Family (10751) genres
+          const params = {
+            page: String(page),
+            with_genres: "16,10751",
+            sort_by: "popularity.desc",
+            watch_region: "FR"
+          };
+          response = isMovies ? await discoverMovies(tl, params) : await discoverSeries(tl, params);
+        } else if (providerId) {
           // Discover by provider
           const params = {
             page: String(page),
