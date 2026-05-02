@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 
 interface Props {
@@ -16,11 +15,8 @@ export const VideoBackdrop = ({ backdropPath, videoKey, title }: Props) => {
       return;
     }
     
-    // Reset state when videoKey changes
     setIsVideoReady(false);
     
-    // We use a small timeout to let the iframe start buffering
-    // Shortened to 800ms for near-instant playback feel
     const timer = setTimeout(() => {
       setIsVideoReady(true);
     }, 800); 
@@ -30,37 +26,38 @@ export const VideoBackdrop = ({ backdropPath, videoKey, title }: Props) => {
 
   return (
     <div className="absolute inset-0 z-0 overflow-hidden">
-      {/* Static Image Backdrop (Always present as fallback/initial) */}
+      {/* Static Image Backdrop — object-top so face/action stays visible on mobile */}
       <img
         src={backdropPath}
         alt={title}
-        className={`w-full h-full object-cover scale-110 transition-opacity duration-1000 ease-in-out ${
+        className={`w-full h-full object-cover object-top transition-opacity duration-1000 ease-in-out ${
           isVideoReady ? "opacity-0" : "opacity-100"
         }`}
       />
 
-      {/* Video Backdrop (YouTube Iframe) */}
+      {/* Video Backdrop — aligned to TOP, not centered, so it sticks to header */}
       {videoKey && (
         <div 
           className={`absolute inset-0 w-full h-full transition-opacity duration-1000 ease-in-out ${
-            isVideoReady ? "opacity-100 scale-100" : "opacity-0 scale-110"
+            isVideoReady ? "opacity-100" : "opacity-0"
           }`}
         >
           <iframe
-            src={`https://www.youtube.com/embed/${videoKey}?autoplay=1&mute=1&controls=0&loop=1&playlist=${videoKey}&rel=0&showinfo=0&modestbranding=1&iv_load_policy=3&vq=hd1080`}
+            src={`https://www.youtube.com/embed/${videoKey}?autoplay=1&mute=1&controls=0&loop=1&playlist=${videoKey}&rel=0&showinfo=0&modestbranding=1&iv_load_policy=3&vq=hd1080&playsinline=1`}
             title="Trailer"
-            className="absolute top-1/2 left-1/2 w-[115%] h-[115%] -translate-x-1/2 -translate-y-1/2 pointer-events-none object-cover"
+            className="absolute top-0 left-1/2 -translate-x-1/2 w-[300%] h-full md:w-[180%] lg:w-[120%] pointer-events-none"
             allow="autoplay; encrypted-media"
+            style={{ border: 0 }}
           />
         </div>
       )}
 
-      {/* Cinematic Overlays */}
-      <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
-      <div className="absolute inset-0 bg-gradient-to-r from-background via-background/20 to-transparent" />
+      {/* Cinematic Overlays — stronger on mobile for text readability */}
+      <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-background/30 md:via-background/40 md:to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-r from-background/90 via-background/30 to-transparent md:from-background md:via-background/20" />
       
-      {/* Vignette for extra focus */}
-      <div className="absolute inset-0 shadow-[inset_0_0_150px_rgba(0,0,0,0.8)]" />
+      {/* Bottom fade for content readability */}
+      <div className="absolute bottom-0 left-0 right-0 h-[50%] md:h-[40%] bg-gradient-to-t from-background to-transparent" />
     </div>
   );
 };

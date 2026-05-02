@@ -193,14 +193,14 @@ const Series = () => {
         keywords={`${series.name}, regarder ${series.name}, serie gratuite, BNKhub`}
       />
       {/* Cinematic Hero with Video Background */}
-      <section className="relative min-h-[90vh] flex items-end pb-20 overflow-hidden">
+      <section className="relative min-h-[75vh] md:min-h-[85vh] lg:min-h-[90vh] flex items-end pb-8 md:pb-14 lg:pb-20 overflow-hidden -mt-16 md:-mt-20 lg:-mt-24 pt-16 md:pt-20 lg:pt-24">
         <VideoBackdrop 
           backdropPath={backdrop} 
           videoKey={trailer?.key} 
           title={series.name} 
         />
         
-        <div className="container relative z-10 grid lg:grid-cols-[300px_1fr] gap-12 items-end">
+        <div className="container relative z-10 grid lg:grid-cols-[300px_1fr] gap-6 md:gap-12 items-end">
           <div className="hidden lg:block animate-fade-in group">
             <div className="relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl shadow-accent/20">
                <img src={poster} alt={series.name} className="w-full transition-transform duration-700 group-hover:scale-110" />
@@ -208,57 +208,57 @@ const Series = () => {
           </div>
 
           <div className="animate-fade-slide-up">
-            <Link to="/" className="inline-flex items-center gap-2 text-accent/80 hover:text-accent mb-6 transition-colors group">
+            <Link to="/" className="inline-flex items-center gap-2 text-accent/80 hover:text-accent mb-3 md:mb-6 transition-colors group">
               <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform rtl:rotate-180" />
               <span className="text-xs font-bold uppercase tracking-widest">{t("nav_home")}</span>
             </Link>
 
-            <div className="flex flex-wrap gap-2 mb-6">
+            <div className="flex flex-wrap gap-1.5 md:gap-2 mb-3 md:mb-6">
               {series.genres?.map(g => (
-                <span key={g.id} className="px-3 py-1 rounded-full bg-accent/10 border border-accent/20 text-[10px] font-bold uppercase tracking-widest text-accent">
+                <span key={g.id} className="px-2 md:px-3 py-0.5 md:py-1 rounded-full bg-accent/10 border border-accent/20 text-[9px] md:text-[10px] font-bold uppercase tracking-widest text-accent">
                   {g.name}
                 </span>
               ))}
             </div>
 
-            <h1 className="font-display text-4xl md:text-6xl lg:text-7xl font-bold mb-4 text-white leading-tight">
+            <h1 className="font-display text-2xl sm:text-3xl md:text-5xl lg:text-7xl font-bold mb-2 md:mb-4 text-white leading-tight">
               {series.name}
             </h1>
 
-            <div className="flex flex-wrap items-center gap-6 mb-8">
-              <div className="flex items-center gap-3 px-4 py-2 rounded-2xl bg-white/5 border border-white/10 shadow-2xl">
-                <Star className="w-5 h-5 text-accent fill-accent" />
-                <span className="text-xl font-black text-white">{series.vote_average.toFixed(1)}</span>
+            <div className="flex flex-wrap items-center gap-3 md:gap-6 mb-4 md:mb-8">
+              <div className="flex items-center gap-2 md:gap-3 px-3 md:px-4 py-1.5 md:py-2 rounded-2xl bg-white/5 border border-white/10">
+                <Star className="w-4 h-4 md:w-5 md:h-5 text-accent fill-accent" />
+                <span className="text-base md:text-xl font-black text-white">{series.vote_average.toFixed(1)}</span>
               </div>
-              <span className="flex items-center gap-2 text-white/70 font-medium">
-                <Calendar className="w-4 h-4 text-accent" /> {year}
+              <span className="flex items-center gap-1.5 text-white/70 text-sm md:text-base font-medium">
+                <Calendar className="w-3.5 h-3.5 md:w-4 md:h-4 text-accent" /> {year}
               </span>
-              <span className="px-3 py-1 rounded-full bg-accent/10 border border-accent/20 text-[10px] font-bold text-accent uppercase tracking-widest">
+              <span className="px-2 md:px-3 py-0.5 md:py-1 rounded-full bg-accent/10 border border-accent/20 text-[9px] md:text-[10px] font-bold text-accent uppercase tracking-widest">
                 {series.number_of_seasons} SAISONS
               </span>
             </div>
 
-            <p className="text-lg text-white/60 max-w-2xl leading-relaxed mb-10 line-clamp-3 md:line-clamp-none">
+            <p className="text-sm md:text-lg text-white/60 max-w-2xl leading-relaxed mb-5 md:mb-10 line-clamp-2 md:line-clamp-3 lg:line-clamp-none">
               {series.overview}
             </p>
 
-            <div className="flex flex-wrap items-center gap-4">
+            <div className="flex flex-wrap items-center gap-3 md:gap-4">
               <button
                 onClick={() => handleEpisodeClick(1)}
-                className="inline-flex items-center gap-3 bg-accent text-accent-foreground px-10 py-4 rounded-full font-bold shadow-glow hover:scale-105 active:scale-95 transition-all text-sm md:text-base"
+                className="inline-flex items-center gap-2 md:gap-3 bg-accent text-accent-foreground px-6 md:px-10 py-3 md:py-4 rounded-full font-bold shadow-glow hover:scale-105 active:scale-95 transition-all text-sm"
               >
-                <Play className="w-5 h-5 fill-current" /> {t("hero_watch")}
+                <Play className="w-4 h-4 md:w-5 md:h-5 fill-current" /> {t("hero_watch")}
               </button>
               {trailer && (
                 <button
                   onClick={() => setShowTrailer(true)}
-                  className="inline-flex items-center gap-3 bg-white/5 hover:bg-white/10 border border-white/10 px-10 py-4 rounded-full font-bold transition-all text-sm md:text-base"
+                  className="inline-flex items-center gap-2 md:gap-3 bg-white/5 hover:bg-white/10 border border-white/10 px-6 md:px-10 py-3 md:py-4 rounded-full font-bold transition-all text-sm"
                 >
-                  <Youtube className="w-5 h-5 text-red-500" /> {t("hero_trailer")}
+                  <Youtube className="w-4 h-4 md:w-5 md:h-5 text-red-500" /> {t("hero_trailer")}
                 </button>
               )}
-              <FavoriteButton tmdbId={series.id} mediaType="tv" title={series.name} posterPath={series.poster_path} className="px-6 py-4" />
-              <div className="flex gap-3">
+              <FavoriteButton tmdbId={series.id} mediaType="tv" title={series.name} posterPath={series.poster_path} className="px-4 md:px-6 py-3 md:py-4" />
+              <div className="hidden sm:flex gap-3">
                 <RemotePairingButton />
                 <ShareButtons title={series.name} />
               </div>
