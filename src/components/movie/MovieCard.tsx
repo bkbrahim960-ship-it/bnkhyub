@@ -49,12 +49,12 @@ export const MovieCard = ({ id, title, posterPath, year, rating, type = "movie",
       onMouseLeave={handleLeave}
       onFocus={handleActive}
       onBlur={handleLeave}
-      className={`group relative block shrink-0 w-[150px] sm:w-[170px] md:w-[190px] lg:w-[210px] transition-all duration-700 hover:-translate-y-3 focus:z-[100] hover:z-[50] ${className}`}
+      className={`group relative block shrink-0 w-[150px] sm:w-[170px] md:w-[190px] lg:w-[210px] transition-all duration-300 hover:-translate-y-3 focus:z-[100] hover:z-[50] ${className}`}
     >
       {/* 3D-ish Gradient Glow effect behind card on hover */}
-      <div className="absolute -inset-4 bg-gradient-to-tr from-accent/40 via-accent/10 to-accent-light/30 rounded-[3rem] blur-3xl opacity-0 group-hover:opacity-100 transition-all duration-700 pointer-events-none" />
+      <div className="absolute -inset-8 bg-gradient-to-tr from-accent/40 via-accent/10 to-accent-light/30 rounded-[3rem] blur-[60px] opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none" />
 
-      <div className="relative aspect-[2/3.2] rounded-2xl overflow-hidden bg-surface-card border border-white/5 group-hover:border-accent/40 group-hover:shadow-[0_20px_50px_-12px_rgba(0,0,0,0.8),0_0_20px_hsl(var(--accent)/0.2)] transition-all duration-700 ease-luxe">
+      <div className="relative aspect-[2/3.2] rounded-2xl overflow-hidden bg-surface-card border border-white/5 group-hover:border-accent/40 group-hover:shadow-[0_20px_50px_-12px_rgba(0,0,0,0.8),0_0_20px_hsl(var(--accent)/0.2)] transition-all duration-300">
         {!loaded && <div className="absolute inset-0 shimmer-gold" />}
         
         {poster ? (
@@ -63,7 +63,7 @@ export const MovieCard = ({ id, title, posterPath, year, rating, type = "movie",
             alt={title}
             loading="lazy"
             onLoad={() => setLoaded(true)}
-            className={`w-full h-full object-cover transition-all duration-1000 ease-out ${
+            className={`w-full h-full object-cover transition-all duration-300 ease-out ${
               loaded ? "opacity-100" : "opacity-0"
             } group-hover:scale-110 group-hover:rotate-1`}
           />
@@ -74,13 +74,13 @@ export const MovieCard = ({ id, title, posterPath, year, rating, type = "movie",
         )}
 
         {/* Glossy Reflection overlay */}
-        <div className="absolute inset-0 bg-gradient-to-tr from-white/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-tr from-white/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
 
         {/* Top Badges */}
         <div className="absolute top-3 left-3 right-3 flex items-center justify-between z-10 pointer-events-none">
           {/* TMDB Rating Badge (Glassmorphic) */}
           {typeof rating === "number" && rating > 0 && (
-            <div className={`flex items-center gap-1.5 backdrop-blur-xl ${kidsMode ? 'bg-white/90 border-sky-200' : 'bg-black/40 border-white/10'} px-2 py-1 rounded-full border shadow-xl transform group-hover:scale-110 transition-transform duration-500`}>
+            <div className={`flex items-center gap-1.5 backdrop-blur-xl ${kidsMode ? 'bg-white/90 border-sky-200' : 'bg-black/40 border-white/10'} px-2 py-1 rounded-full border shadow-xl transform group-hover:scale-110 transition-transform duration-300`}>
               <Star className={`w-3 h-3 ${kidsMode ? 'text-sky-500' : 'text-accent'} fill-current`} />
               <span className={`text-[11px] font-black ${kidsMode ? 'text-sky-700' : 'text-white'}`}>{rating.toFixed(1)}</span>
             </div>
@@ -93,8 +93,8 @@ export const MovieCard = ({ id, title, posterPath, year, rating, type = "movie",
         </div>
 
         {/* Immersive Hover Overlay */}
-        <div className={`absolute inset-0 ${kidsMode ? 'bg-gradient-to-t from-sky-500/90' : 'bg-gradient-to-t from-black via-black/40 to-transparent'} opacity-0 group-hover:opacity-100 transition-all duration-500 flex flex-col justify-end p-5`}>
-          <div className="absolute top-3 right-3 transform translate-y-[-10px] group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-700 delay-100">
+        <div className={`absolute inset-0 ${kidsMode ? 'bg-gradient-to-t from-sky-500/90' : 'bg-gradient-to-t from-black via-black/40 to-transparent'} opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col justify-end p-5`}>
+          <div className="absolute top-3 right-3 transform translate-y-[-10px] group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-300">
              <FavoriteButton 
                tmdbId={id} 
                mediaType={type} 
@@ -104,7 +104,7 @@ export const MovieCard = ({ id, title, posterPath, year, rating, type = "movie",
              />
           </div>
 
-          <div className="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-700">
+          <div className="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
             <div className={`flex items-center gap-2 ${kidsMode ? 'text-white' : 'text-accent'} mb-1`}>
               <Play className="w-3 h-3 fill-current" />
               <span className="text-[9px] font-black uppercase tracking-[0.2em]">
@@ -119,7 +119,7 @@ export const MovieCard = ({ id, title, posterPath, year, rating, type = "movie",
       </div>
 
       {/* External Info (Visible when not hovered) */}
-      <div className="mt-4 px-1 group-hover:opacity-0 transition-opacity duration-500">
+      <div className="mt-4 px-1 group-hover:opacity-0 transition-opacity duration-300">
         <h3 className="font-body font-bold text-sm text-foreground/90 line-clamp-1">
           {title}
         </h3>

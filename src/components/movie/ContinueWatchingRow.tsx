@@ -91,7 +91,7 @@ export const ContinueWatchingRow = () => {
 
       <div
         ref={scrollRef}
-        className="container overflow-x-auto scrollbar-hide flex gap-4 md:gap-5 pt-10 pb-8 snap-x snap-mandatory"
+        className="container overflow-x-auto scrollbar-hide flex gap-4 md:gap-5 pt-16 pb-12 snap-x snap-mandatory"
       >
         {items.map((e) => {
           const poster = IMG.poster(e.poster_path);
