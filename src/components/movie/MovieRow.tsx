@@ -64,7 +64,7 @@ export const MovieRow = ({ title, items, type = "movie", loading }: Props) => {
           ? Array.from({ length: 8 }).map((_, i) => (
               <div
                 key={i}
-                className="shrink-0 w-[150px] sm:w-[170px] md:w-[190px] aspect-[2/3] rounded-xl shimmer-gold"
+                className="shrink-0 w-[240px] sm:w-[280px] md:w-[320px] aspect-video rounded-xl shimmer-gold"
               />
             ))
           : items.map((m: any) => (

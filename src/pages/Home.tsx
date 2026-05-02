@@ -185,32 +185,18 @@ const KabyleCinemaRow = () => {
         </p>
       </div>
       <div className="container overflow-x-auto scrollbar-hide flex gap-4 md:gap-5 pb-4 snap-x snap-mandatory">
-        {all.map((item) => {
-          const to = item.media_type === "tv" ? `/series/${item.id}` : `/movie/${item.id}`;
-          return (
-            <Link key={item.id} to={to} className="snap-start shrink-0 w-[150px] sm:w-[170px] group">
-              <div className="relative aspect-[2/3] rounded-xl overflow-hidden bg-surface-card border border-border group-hover:border-accent-subtle group-hover:shadow-glow transition-all duration-500">
-                <img src={item.poster_path} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                <div className="absolute bottom-0 inset-x-0 p-3 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <div className="inline-flex items-center gap-1.5 bg-accent text-accent-foreground font-bold px-3 py-1.5 rounded-full text-[10px]">
-                    <Play className="w-3 h-3 fill-current" /> {lang === "ar" ? "مشاهدة" : "Regarder"}
-                  </div>
-                </div>
-                {item.isDubbed && (
-                  <span className="absolute top-2 start-2 px-1.5 py-0.5 rounded bg-accent text-accent-foreground text-[8px] font-black">DUB</span>
-                )}
-              </div>
-              <div className="pt-2 px-1">
-                <h3 className="font-medium text-xs text-foreground line-clamp-1 group-hover:text-accent transition-colors">{item.title}</h3>
-                <div className="flex items-center gap-1 mt-0.5">
-                  <Star className="w-3 h-3 text-accent fill-accent" />
-                  <span className="text-[10px] text-muted-foreground">{item.vote_average}</span>
-                </div>
-              </div>
-            </Link>
-          );
-        })}
+        {all.map((item) => (
+          <div key={item.id} className="snap-start">
+            <MovieCard 
+              id={item.id}
+              title={item.title}
+              posterPath={item.poster_path}
+              year="Kabyle"
+              rating={item.vote_average}
+              type={item.media_type as any}
+            />
+          </div>
+        ))}
       </div>
     </section>
   );
