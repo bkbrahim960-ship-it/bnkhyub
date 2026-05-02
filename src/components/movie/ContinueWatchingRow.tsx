@@ -4,7 +4,7 @@
  */
 import { Link } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
-import { ChevronLeft, ChevronRight, Play, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, Play, X, RotateCw } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { useLanguage } from "@/context/LanguageContext";
 import {
@@ -108,7 +108,9 @@ export const ContinueWatchingRow = () => {
           const subtitle =
             e.media_type === "tv" && e.season_number && e.episode_number
               ? `S${e.season_number}E${e.episode_number}`
-              : "Film";
+              : lang === "ar" ? "فيلم" : "Film";
+
+          const restartTo = basePath + (params.toString() ? `?${params.toString().replace("resume=1", "resume=0")}` : "");
 
           return (
             <div key={e.id} className="snap-start shrink-0 w-[280px] sm:w-[320px] md:w-[360px]">
@@ -173,11 +175,22 @@ export const ContinueWatchingRow = () => {
                     </div>
                   )}
 
-                  {/* Play Button Overlay */}
-                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-500 bg-black/30 backdrop-blur-[2px]">
-                    <div className="w-14 h-14 rounded-full bg-accent text-accent-foreground flex items-center justify-center shadow-[0_0_30px_hsl(var(--accent)/0.5)] scale-75 group-hover:scale-100 transition-transform duration-500">
+                  {/* Play / Restart Button Overlays */}
+                  <div className="absolute inset-0 flex items-center justify-center gap-4 opacity-0 group-hover:opacity-100 transition-all duration-500 bg-black/40 backdrop-blur-[3px]">
+                    <Link 
+                      to={to}
+                      className="w-14 h-14 rounded-full bg-accent text-accent-foreground flex items-center justify-center shadow-[0_0_30px_hsl(var(--accent)/0.5)] scale-75 group-hover:scale-100 transition-transform duration-500 hover:scale-110 active:scale-90"
+                      title={lang === "ar" ? "استكمال" : "Reprendre"}
+                    >
                       <Play className="w-7 h-7 fill-current" />
-                    </div>
+                    </Link>
+                    <Link 
+                      to={restartTo}
+                      className="w-12 h-12 rounded-full bg-white/10 text-white flex items-center justify-center border border-white/20 backdrop-blur-md scale-75 group-hover:scale-100 transition-transform duration-500 delay-75 hover:bg-white/20 hover:scale-110 active:scale-90"
+                      title={lang === "ar" ? "إعادة البداية" : "Recommencer"}
+                    >
+                      <RotateCw className="w-5 h-5" />
+                    </Link>
                   </div>
                 </div>
 
