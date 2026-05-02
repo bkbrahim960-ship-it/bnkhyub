@@ -263,7 +263,7 @@ const Movie = () => {
                   <span className="w-8 h-1 bg-accent rounded-full" />
                   Distribution
                 </h2>
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-6">
+                <div className="grid grid-cols-4 sm:grid-cols-3 md:grid-cols-5 gap-3 sm:gap-6">
                   {cast.map(person => (
                     <Link key={person.id} to={`/person/${person.id}`} className="group">
                       <div className="aspect-[2/3] rounded-2xl overflow-hidden mb-3 bg-surface-card border border-border group-hover:border-accent/40 transition-all">
@@ -279,8 +279,8 @@ const Movie = () => {
                           </div>
                         )}
                       </div>
-                      <h4 className="font-bold text-sm text-foreground line-clamp-1 group-hover:text-accent transition-colors">{person.name}</h4>
-                      <p className="text-xs text-muted-foreground line-clamp-1">{person.character}</p>
+                      <h4 className="font-bold text-[10px] sm:text-sm text-foreground line-clamp-1 group-hover:text-accent transition-colors">{person.name}</h4>
+                      <p className="text-[9px] sm:text-xs text-muted-foreground line-clamp-1">{person.character}</p>
                     </Link>
                   ))}
                 </div>
