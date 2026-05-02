@@ -1,9 +1,11 @@
+
 import { useState, useEffect } from "react";
 
 export const SplashScreen = ({ onFinish }: { onFinish: () => void }) => {
   const [fadeOut, setFadeOut] = useState(false);
 
   useEffect(() => {
+    // 3 seconds total splash, fade starts at 2.5s
     const fadeTimer = setTimeout(() => setFadeOut(true), 2500);
     const removeTimer = setTimeout(() => onFinish(), 3000);
     return () => {
@@ -14,64 +16,100 @@ export const SplashScreen = ({ onFinish }: { onFinish: () => void }) => {
 
   return (
     <div
-      className={`fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-black transition-opacity duration-500 ${
+      className={`fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-black transition-opacity duration-700 ease-in-out ${
         fadeOut ? "opacity-0 pointer-events-none" : "opacity-100"
       }`}
     >
-      {/* Outer glow pulse */}
-      <div className="absolute w-44 h-44 rounded-full bg-accent/10 blur-3xl animate-pulse" />
+      {/* Dynamic Background Atmosphere */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-accent/5 rounded-full blur-[120px] animate-pulse" />
+      </div>
 
-      {/* Spinning container — icon + ring spin together */}
-      <div
-        className="relative w-36 h-36 flex items-center justify-center"
-        style={{ animation: "splash-spin 2s linear infinite" }}
-      >
-        {/* Accent ring border */}
-        <div
-          className="absolute inset-0 rounded-full"
-          style={{
-            background: `conic-gradient(from 0deg, transparent 0%, var(--accent) 25%, transparent 50%, var(--accent) 75%, transparent 100%)`,
-            padding: "3px",
-            WebkitMask: "radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 3px))",
-            mask: "radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 3px))",
-          }}
-        />
-
-        {/* Icon fills the circle */}
-        <div className="relative w-full h-full rounded-full overflow-hidden border-2 border-accent/30 shadow-2xl">
-          <img
-            src="/icon.png"
-            alt="BNKhub"
-            className="w-full h-full object-cover"
+      <div className="relative flex flex-col items-center">
+        {/* Rotating Luxury Logo Container */}
+        <div className="relative w-40 h-40 md:w-48 md:h-48 flex items-center justify-center mb-12">
+          {/* Outer Spinning Ring */}
+          <div 
+            className="absolute inset-0 rounded-full border-2 border-dashed border-accent/20"
+            style={{ animation: "splash-spin 8s linear infinite" }}
           />
+          
+          {/* Inner Fast Spinning Gradient Ring */}
+          <div
+            className="absolute inset-2 rounded-full shadow-[0_0_50px_rgba(var(--accent-rgb),0.3)]"
+            style={{
+              background: `conic-gradient(from 0deg, transparent 0%, var(--accent) 50%, transparent 100%)`,
+              padding: "2px",
+              WebkitMask: "radial-gradient(farthest-side, transparent calc(100% - 2px), #000 calc(100% - 2px))",
+              mask: "radial-gradient(farthest-side, transparent calc(100% - 2px), #000 calc(100% - 2px))",
+              animation: "splash-spin 1.5s linear infinite"
+            }}
+          />
+
+          {/* Logo Icon */}
+          <div className="relative w-32 h-32 md:w-36 md:h-36 rounded-full overflow-hidden border-4 border-black shadow-2xl bg-black animate-scale-in">
+            <img
+              src="/icon.png"
+              alt="BNKhub"
+              className="w-full h-full object-cover"
+            />
+          </div>
+        </div>
+
+        {/* Brand Name with Luxe Shimmer */}
+        <div className="text-center space-y-6">
+          <h1
+            className="text-4xl md:text-5xl font-black tracking-[0.4em] uppercase"
+            style={{
+              background: "linear-gradient(90deg, #fff, var(--accent), #fff)",
+              backgroundSize: "200% auto",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              animation: "splash-shimmer 3s linear infinite",
+            }}
+          >
+            BNKhub
+          </h1>
+
+          {/* Credit Text (Arabic) - Cairo Font style */}
+          <div className="space-y-2 animate-fade-in" style={{ animationDelay: '500ms' }}>
+             <p className="text-white/40 text-[10px] md:text-xs uppercase tracking-[0.5em] font-medium">
+               Premium Cinematic Streaming
+             </p>
+             <div className="h-px w-12 bg-accent/30 mx-auto my-4" />
+             <p className="text-accent/80 font-display text-sm md:text-base tracking-wide" dir="rtl" style={{ fontFamily: "'Cairo', sans-serif" }}>
+               تم تصميم و برمجة الموقع من قبل <span className="font-bold text-white tracking-widest">BRAHIM BEN KEDDACHE</span>
+             </p>
+          </div>
         </div>
       </div>
 
-      {/* Brand name */}
-      <h1
-        className="mt-8 text-2xl font-black tracking-[0.3em] uppercase"
-        style={{
-          background: "linear-gradient(135deg, var(--accent), #fff, var(--accent))",
-          backgroundSize: "200% 200%",
-          WebkitBackgroundClip: "text",
-          WebkitTextFillColor: "transparent",
-          animation: "splash-shimmer 2s ease-in-out infinite",
-        }}
-      >
-        BNKhub
-      </h1>
-      <p className="mt-2 text-[10px] font-bold text-white/30 uppercase tracking-[0.4em] animate-pulse">
-        Loading Premium Experience
-      </p>
+      {/* Progress Bar Loader */}
+      <div className="absolute bottom-16 left-1/2 -translate-x-1/2 w-48 h-1 bg-white/5 rounded-full overflow-hidden">
+        <div className="h-full bg-accent animate-progress" />
+      </div>
 
-      {/* CSS Animations */}
       <style>{`
         @keyframes splash-spin {
+          from { transform: rotate(0deg); }
           to { transform: rotate(360deg); }
         }
         @keyframes splash-shimmer {
-          0%, 100% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
+          to { background-position: 200% center; }
+        }
+        @keyframes progress {
+          0% { width: 0%; }
+          100% { width: 100%; }
+        }
+        .animate-progress {
+          animation: progress 2.5s ease-out forwards;
+        }
+        .animate-scale-in {
+          animation: scale-in 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        @keyframes scale-in {
+          from { transform: scale(0.5); opacity: 0; }
+          to { transform: scale(1); opacity: 1; }
         }
       `}</style>
     </div>
