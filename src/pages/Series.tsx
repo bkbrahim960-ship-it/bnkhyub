@@ -6,7 +6,7 @@ import { IMG, getSeriesDetails, getSeasonDetails, getSeriesRecommendations, TMDB
 import { FavoriteButton } from "@/components/movie/FavoriteButton";
 import { ShareButtons } from "@/components/movie/ShareButtons";
 import { MovieRow } from "@/components/movie/MovieRow";
-import { SubtitleFinder } from "@/components/player/SubtitleFinder";
+
 import { TrailerModal } from "@/components/movie/TrailerModal";
 import { ReviewSection } from "@/components/movie/ReviewSection";
 import { VideoBackdrop } from "@/components/movie/VideoBackdrop";
@@ -298,7 +298,7 @@ const Series = () => {
               )}
               {/* Subtitles Finder below player for TV */}
               <div className="mt-8">
-                <SubtitleFinder imdbId={imdb} tmdbId={series.id} type="tv" title={series.name} season={season} episode={episode} />
+
               </div>
             </div>
           )}

@@ -5,7 +5,7 @@ import { VideoPlayer } from "@/components/player/VideoPlayer";
 import { MovieRow } from "@/components/movie/MovieRow";
 import { FavoriteButton } from "@/components/movie/FavoriteButton";
 import { ShareButtons } from "@/components/movie/ShareButtons";
-import { SubtitleFinder } from "@/components/player/SubtitleFinder";
+
 import { TrailerModal } from "@/components/movie/TrailerModal";
 import { ReviewSection } from "@/components/movie/ReviewSection";
 import { VideoBackdrop } from "@/components/movie/VideoBackdrop";
@@ -287,8 +287,7 @@ const Movie = () => {
               </div>
             )}
 
-            {/* Subtitles (from SubtitleFinder) */}
-            <SubtitleFinder imdbId={imdb} tmdbId={movie.id} type="movie" title={movie.title} />
+
           </div>
 
           {/* Sidebar Info */}

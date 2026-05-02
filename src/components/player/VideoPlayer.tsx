@@ -438,32 +438,6 @@ export const VideoPlayer = ({
         />
       </div>
 
-      {/* Watch Party & Info */}
-      <div className="mt-6 p-4 rounded-xl bg-surface-card border border-border flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2">
-            <Users className="w-5 h-5 text-accent" />
-            <div>
-              <p className="text-xs font-bold uppercase tracking-widest">{partyId ? "Party Active" : "Watch Party"}</p>
-              <p className="text-[10px] text-muted-foreground">{partyId ? `${participants} watching together` : "Watch with friends"}</p>
-            </div>
-          </div>
-        </div>
-        
-        <button
-          onClick={() => {
-            const id = partyId || Math.random().toString(36).substring(7);
-            const url = new URL(window.location.href);
-            url.searchParams.set("party", id);
-            navigator.clipboard.writeText(url.toString());
-            toast.success("Watch Party Link copied!");
-            if (!partyId) window.location.search = url.search;
-          }}
-          className="flex items-center gap-2 bg-accent/10 hover:bg-accent/20 text-accent text-xs font-bold px-4 py-2 rounded-full transition-all"
-        >
-          <Share2 className="w-3.5 h-3.5" />
-          {partyId ? "Invite Friends" : "Create Party"}
-        </button>
       </div>
     </div>
   );
