@@ -97,40 +97,37 @@ export const MovieHero = ({ items }: Props) => {
         );
       })}
 
-      {/* Video Trailer Background — fades in over the static image */}
+      {/* Video Trailer Background — Optimized for edge-to-edge coverage */}
       {currentTrailerKey && (
         <div
-          className={`absolute inset-0 z-[1] transition-opacity duration-1000 ease-in-out ${
+          className={`absolute inset-0 z-[1] transition-opacity duration-1500 ease-in-out bg-black ${
             videoReady ? "opacity-100" : "opacity-0"
           }`}
         >
-          {/* Shield to prevent interaction and hide YouTube UI - NO pointer-events-none so it blocks clicks */}
+          {/* Shield to prevent interaction and hide YouTube UI */}
           <div className="absolute inset-0 z-[2]" />
           
           <iframe
             key={`trailer-${movie.id}-${index}`}
             src={`https://www.youtube.com/embed/${currentTrailerKey}?autoplay=1&mute=1&controls=0&loop=1&playlist=${currentTrailerKey}&rel=0&showinfo=0&modestbranding=1&iv_load_policy=3&vq=hd1080&playsinline=1&disablekb=1&fs=0`}
             title="Trailer"
-            className="absolute top-0 left-1/2 -translate-x-1/2 w-[300%] h-full md:w-[180%] lg:w-[120%] pointer-events-none z-[1]"
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 min-w-[102%] min-h-[102%] w-[115vw] h-[115vh] md:w-[130%] md:h-[130%] lg:w-[110%] lg:h-[110%] pointer-events-none z-[1] object-cover"
             allow="autoplay; encrypted-media"
             style={{ border: 0 }}
           />
         </div>
       )}
 
-      {/* Grain + gradients */}
-      <div className="absolute inset-0 z-[2] grain" />
-      <div className={`absolute inset-0 z-[2] bg-gradient-to-t ${kidsMode ? 'from-background via-background/40' : 'from-surface-primary via-surface-primary/60'} to-transparent`} />
-      <div className={`absolute inset-0 z-[2] bg-gradient-to-r ${kidsMode ? 'from-background/80 via-background/20' : 'from-surface-primary/95 via-surface-primary/40'} to-transparent`} />
+      {/* Grain + gradients — Subtly tuned for more video visibility */}
+      <div className="absolute inset-0 z-[2] grain opacity-30" />
+      <div className={`absolute inset-0 z-[2] bg-gradient-to-t ${kidsMode ? 'from-background via-background/20' : 'from-surface-primary via-surface-primary/30'} to-transparent`} />
+      <div className={`absolute inset-0 z-[2] bg-gradient-to-r ${kidsMode ? 'from-background/60 via-background/10' : 'from-surface-primary/80 via-surface-primary/20'} to-transparent`} />
       
-      {/* Blurred Edge Masking — prevents sharp cuts */}
-      <div className="absolute inset-0 z-[3] pointer-events-none shadow-[inset_0_0_120px_rgba(0,0,0,1)]" />
-      <div className="absolute -inset-6 z-[1] backdrop-blur-md pointer-events-none" 
-           style={{ maskImage: 'radial-gradient(circle, transparent 40%, black 100%)', WebkitMaskImage: 'radial-gradient(circle, transparent 40%, black 100%)' }} 
-      />
-
-      {/* Extra bottom fade */}
-      <div className="absolute bottom-0 left-0 right-0 h-[40%] z-[4] bg-gradient-to-t from-background via-background/90 to-transparent" />
+      {/* Subtle edge masking */}
+      <div className="absolute inset-0 z-[3] pointer-events-none shadow-[inset_0_0_120px_rgba(0,0,0,0.5)]" />
+      
+      {/* Extra bottom fade for readability — balanced to show more of the bottom edges */}
+      <div className="absolute bottom-0 left-0 right-0 h-[35%] z-[4] bg-gradient-to-t from-background via-background/60 to-transparent" />
 
       {/* Content */}
       <div className={`relative z-10 h-full container flex items-end md:items-center pb-12 md:pb-0 transition-opacity duration-1000 ${videoReady ? "opacity-0 group-hover:opacity-100" : "opacity-100"}`}>

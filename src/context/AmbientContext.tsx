@@ -3,8 +3,10 @@ import React, { createContext, useContext, useState, useCallback } from "react";
 interface AmbientContextType {
   ambientColor: string;
   ambientImage: string | null;
+  ambientVideo: string | null;
   setAmbientColor: (color: string) => void;
   setAmbientImage: (image: string | null) => void;
+  setAmbientVideo: (video: string | null) => void;
 }
 
 const AmbientContext = createContext<AmbientContextType | undefined>(undefined);
@@ -12,6 +14,7 @@ const AmbientContext = createContext<AmbientContextType | undefined>(undefined);
 export const AmbientProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [ambientColor, setAmbientColor] = useState("transparent");
   const [ambientImage, setAmbientImage] = useState<string | null>(null);
+  const [ambientVideo, setAmbientVideo] = useState<string | null>(null);
 
   const updateColor = useCallback((color: string) => {
     setAmbientColor(color);
@@ -24,8 +27,10 @@ export const AmbientProvider: React.FC<{ children: React.ReactNode }> = ({ child
     <AmbientContext.Provider value={{ 
       ambientColor, 
       ambientImage, 
+      ambientVideo,
       setAmbientColor: updateColor,
-      setAmbientImage
+      setAmbientImage,
+      setAmbientVideo
     }}>
       {children}
     </AmbientContext.Provider>
@@ -33,10 +38,19 @@ export const AmbientProvider: React.FC<{ children: React.ReactNode }> = ({ child
 };
 
 export const AmbientBackground: React.FC = () => {
-  const { ambientColor, ambientImage } = useAmbient();
+  const { ambientColor, ambientImage, ambientVideo } = useAmbient();
   return (
     <div className="dynamic-bg-container" aria-hidden="true">
-      {ambientImage ? (
+      {ambientVideo ? (
+        <video
+          src={ambientVideo}
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover opacity-30 scale-110 blur-[2px] transition-opacity duration-1000 ease-in-out"
+        />
+      ) : ambientImage ? (
         <div 
           className="absolute inset-0 opacity-20 scale-125 blur-[120px] transition-all duration-1000 ease-in-out"
           style={{ 
@@ -51,7 +65,7 @@ export const AmbientBackground: React.FC = () => {
           style={{ background: `radial-gradient(circle at center, ${ambientColor} 0%, transparent 70%)` }} 
         />
       )}
-      <div className="absolute inset-0 bg-black/40" />
+      <div className="absolute inset-0 bg-black/60" />
     </div>
   );
 };

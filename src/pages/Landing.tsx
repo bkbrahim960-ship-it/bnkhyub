@@ -67,10 +67,23 @@ export const Landing = () => {
 
   return (
     <div className={`min-h-screen bg-black text-white selection:bg-accent selection:text-white overflow-hidden flex flex-col ${isRTL ? "font-arabic" : "font-sans"}`} dir={isRTL ? "rtl" : "ltr"}>
-      {/* Background Decor */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-accent/20 blur-[150px] rounded-full animate-pulse-glow" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-accent/10 blur-[150px] rounded-full" />
+      {/* Full-Screen Video Background */}
+      <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
+        <video 
+          src="https://cdn.pixabay.com/vimeo/328515712/clouds-23232.mp4?width=1280&hash=85049386d3b3c3b3b3b3b3b3b3b3b3b3b3b3b3b3" 
+          autoPlay 
+          loop 
+          muted 
+          playsInline 
+          className="w-full h-full object-cover opacity-40 scale-110"
+        />
+        {/* Cinematic Overlays */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-black/60" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,black_100%)] opacity-60" />
+        
+        {/* Subtle Glows */}
+        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-accent/10 blur-[150px] rounded-full animate-pulse-glow" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-accent/5 blur-[150px] rounded-full" />
       </div>
 
       {/* Content */}
