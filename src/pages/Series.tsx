@@ -458,39 +458,7 @@ const Series = () => {
 
           {/* Sidebar Info */}
           <div className="space-y-10">
-             <div className="p-8 rounded-3xl bg-surface-card/40 backdrop-blur-md border border-border/50">
-               <h3 className="text-[11px] uppercase tracking-[0.2em] text-accent font-black mb-6 opacity-60">Infos Série</h3>
-               
-               <div className="space-y-6">
-                 {creator && (
-                   <div>
-                     <p className="text-xs text-muted-foreground mb-1 uppercase tracking-widest font-bold">Créateur</p>
-                     <p className="text-lg font-bold">{creator}</p>
-                   </div>
-                 )}
-                 
-                 {series.number_of_episodes && (
-                   <div>
-                     <p className="text-xs text-muted-foreground mb-1 uppercase tracking-widest font-bold">Total Épisodes</p>
-                     <p className="text-lg font-bold">{series.number_of_episodes}</p>
-                   </div>
-                 )}
 
-                 {(series as any).status && (
-                   <div>
-                     <p className="text-xs text-muted-foreground mb-1 uppercase tracking-widest font-bold">Statut</p>
-                     <p className="text-lg font-bold">{(series as any).status}</p>
-                   </div>
-                 )}
-
-                 {(series as any).type && (
-                   <div>
-                     <p className="text-xs text-muted-foreground mb-1 uppercase tracking-widest font-bold">Format</p>
-                     <p className="text-lg font-bold">{(series as any).type}</p>
-                   </div>
-                 )}
-               </div>
-             </div>
 
 
           </div>

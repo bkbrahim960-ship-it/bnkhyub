@@ -292,50 +292,7 @@ const Movie = () => {
 
           {/* Sidebar Info */}
           <div className="space-y-10">
-             <div className="p-8 rounded-3xl bg-surface-card/40 backdrop-blur-md border border-border/50">
-               <h3 className="text-[11px] uppercase tracking-[0.2em] text-accent font-black mb-6 opacity-60">Détails de production</h3>
-               
-               <div className="space-y-6">
-                 {director && (
-                   <div>
-                     <p className="text-xs text-muted-foreground mb-1 uppercase tracking-widest font-bold">Réalisateur</p>
-                     <p className="text-lg font-bold">{director}</p>
-                   </div>
-                 )}
-                 
-                 {(movie as any).status && (
-                   <div>
-                     <p className="text-xs text-muted-foreground mb-1 uppercase tracking-widest font-bold">Statut</p>
-                     <p className="text-lg font-bold">{(movie as any).status}</p>
-                   </div>
-                 )}
 
-                 {(movie as any).budget > 0 && (
-                   <div>
-                     <p className="text-xs text-muted-foreground mb-1 uppercase tracking-widest font-bold">Budget</p>
-                     <p className="text-lg font-bold text-green-400">
-                       ${((movie as any).budget / 1000000).toFixed(1)}M
-                     </p>
-                   </div>
-                 )}
-
-                 {(movie as any).revenue > 0 && (
-                   <div>
-                     <p className="text-xs text-muted-foreground mb-1 uppercase tracking-widest font-bold">Recettes</p>
-                     <p className="text-lg font-bold text-blue-400">
-                       ${((movie as any).revenue / 1000000).toFixed(1)}M
-                     </p>
-                   </div>
-                 )}
-
-                 {movie.original_title && movie.original_title !== movie.title && (
-                   <div>
-                     <p className="text-xs text-muted-foreground mb-1 uppercase tracking-widest font-bold">Titre original</p>
-                     <p className="text-lg font-bold italic opacity-80">{movie.original_title}</p>
-                   </div>
-                 )}
-               </div>
-             </div>
 
 
           </div>
