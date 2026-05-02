@@ -9,6 +9,7 @@ import { MovieRow } from "@/components/movie/MovieRow";
 import { SubtitleFinder } from "@/components/player/SubtitleFinder";
 import { TrailerModal } from "@/components/movie/TrailerModal";
 import { ReviewSection } from "@/components/movie/ReviewSection";
+import { VideoBackdrop } from "@/components/movie/VideoBackdrop";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
 import { tmdbLang } from "@/services/i18n";
@@ -189,15 +190,13 @@ const Series = () => {
         type="video.tv_show"
         keywords={`${series.name}, regarder ${series.name}, serie gratuite, BNKhub`}
       />
-      {/* Cinematic Hero */}
-      <section className="relative min-h-[85vh] flex items-end pb-20 overflow-hidden">
-        {backdrop && (
-          <div className="absolute inset-0 z-0">
-            <img src={backdrop} alt="" className="w-full h-full object-cover scale-105 animate-scale-in" />
-            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
-            <div className="absolute inset-0 bg-gradient-to-r from-background via-background/40 to-transparent" />
-          </div>
-        )}
+      {/* Cinematic Hero with Video Background */}
+      <section className="relative min-h-[90vh] flex items-end pb-20 overflow-hidden">
+        <VideoBackdrop 
+          backdropPath={backdrop} 
+          videoKey={trailer?.key} 
+          title={series.name} 
+        />
         
         <div className="container relative z-10 grid lg:grid-cols-[300px_1fr] gap-12 items-end">
           <div className="hidden lg:block animate-fade-in group">

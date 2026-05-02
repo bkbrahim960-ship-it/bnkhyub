@@ -8,6 +8,7 @@ import { ShareButtons } from "@/components/movie/ShareButtons";
 import { SubtitleFinder } from "@/components/player/SubtitleFinder";
 import { TrailerModal } from "@/components/movie/TrailerModal";
 import { ReviewSection } from "@/components/movie/ReviewSection";
+import { VideoBackdrop } from "@/components/movie/VideoBackdrop";
 import { IMG, getMovieDetails, getMovieRecommendations, TMDBMovie } from "@/services/tmdb";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
@@ -150,15 +151,13 @@ const Movie = () => {
         type="video.movie"
         keywords={`${movie.title}, regarder ${movie.title}, film gratuit, BNKhub`}
       />
-      {/* Cinematic Hero */}
-      <section className="relative min-h-[90vh] flex items-end pb-24 overflow-hidden">
-        {backdrop && (
-          <div className="absolute inset-0 z-0">
-            <img src={backdrop} alt="" className="w-full h-full object-cover scale-110 animate-scale-in" />
-            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
-            <div className="absolute inset-0 bg-gradient-to-r from-background via-background/20 to-transparent" />
-          </div>
-        )}
+      {/* Cinematic Hero with Video Background */}
+      <section className="relative min-h-[95vh] flex items-end pb-24 overflow-hidden">
+        <VideoBackdrop 
+          backdropPath={backdrop} 
+          videoKey={trailer?.key} 
+          title={movie.title} 
+        />
         
         <div className="container relative z-10 grid lg:grid-cols-[300px_1fr] gap-12 items-end">
           <div className="hidden lg:block animate-fade-in group">
