@@ -70,7 +70,7 @@ export const MovieCard = ({ id, title, posterPath, year, rating, type = "movie",
         <div className="absolute top-2 left-2 right-2 flex items-center justify-between z-10 pointer-events-none">
           {/* TMDB Rating Badge */}
           {typeof rating === "number" && rating > 0 && (
-            <div className={`flex items-center gap-2 ${kidsMode ? 'bg-white/90 shadow-sky-200' : 'bg-black/70'} backdrop-blur-md px-2.5 py-1.5 rounded-lg border ${kidsMode ? 'border-sky-200' : 'border-white/20'} shadow-2xl scale-110 origin-left transition-colors`}>
+            <div className={`flex items-center gap-2 ${kidsMode ? 'bg-white/95 shadow-sm' : 'bg-black/70'} backdrop-blur-md px-2.5 py-1.5 rounded-lg border ${kidsMode ? 'border-sky-100' : 'border-white/20'} scale-110 origin-left transition-colors`}>
               <img 
                 src="https://www.themoviedb.org/assets/2/v4/logos/v2/blue_square_2-d537fb228cf3ded904ef09b136fe3fec72548ebc1fea3fbbd1ad9e36364db38b.svg" 
                 alt="TMDB" 
