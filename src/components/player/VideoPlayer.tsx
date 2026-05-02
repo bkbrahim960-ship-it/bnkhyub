@@ -8,7 +8,8 @@ import { useEffect, useRef, useState } from "react";
 import { getMovieSources, getTVSources, SOURCE_LABELS } from "@/services/player";
 import { AdsNoticeModal, hasSeenAdsNotice } from "./AdsNoticeModal";
 import { useLanguage } from "@/context/LanguageContext";
-import { Loader2, AlertCircle, RotateCw, ShieldCheck, Play, Settings, Lock, Unlock, FastForward, Languages, Captions, Monitor, Gauge, PictureInPicture as PipIcon, Maximize } from "lucide-react";
+import { Loader2, AlertCircle, RotateCw, ShieldCheck, Play, Settings, Lock, Unlock, FastForward, Languages, Captions, Monitor, Gauge, PictureInPicture as PipIcon, Maximize, Search, Download } from "lucide-react";
+import { searchSubtitles, getDownloadUrl, SubtitleResult } from "@/services/opensubtitles";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import Hls from "hls.js";
@@ -66,6 +67,36 @@ export const VideoPlayer = ({
   const [currentSubtitle, setCurrentSubtitle] = useState(-1);
   const [currentLevel, setCurrentLevel] = useState(-1);
   const [isPipAvailable] = useState(() => typeof document !== 'undefined' && 'pictureInPictureEnabled' in document);
+
+  // External Subtitles
+  const [externalSubs, setExternalSubs] = useState<SubtitleResult[]>([]);
+  const [isSearchingSubs, setIsSearchingSubs] = useState(false);
+  const [appliedExternalSub, setAppliedExternalSub] = useState<string | null>(null);
+
+  // Auto-fetch Arabic subtitles on mount
+  useEffect(() => {
+    const autoFetchSubs = async () => {
+      if (!imdb_id || appliedExternalSub) return;
+      try {
+        const results = await searchSubtitles(imdb_id);
+        setExternalSubs(results);
+        
+        if (results.length > 0) {
+          const url = await getDownloadUrl(results[0].attributes.file_id);
+          if (url) {
+            setAppliedExternalSub(url);
+            if (hlsRef.current) hlsRef.current.subtitleTrack = -1;
+          }
+        }
+      } catch (err) {
+        console.error("Auto-fetch subtitles failed:", err);
+      }
+    };
+    
+    if (playerActive) {
+      autoFetchSubs();
+    }
+  }, [imdb_id, playerActive]);
 
   const baseSources =
     type === "movie"
@@ -173,6 +204,7 @@ export const VideoPlayer = ({
 
         hls.on(Hls.Events.SUBTITLE_TRACK_SWITCHED, (event, data) => {
           setCurrentSubtitle(data.id);
+          setAppliedExternalSub(null); // Reset external if internal is chosen
         });
         hls.on(Hls.Events.ERROR, (event, data) => {
           if (data.fatal) {
@@ -492,27 +524,84 @@ export const VideoPlayer = ({
 
               {activeTab === "subtitle" && (
                 <>
-                  <button 
-                    onClick={() => { if (hlsRef.current) hlsRef.current.subtitleTrack = -1; }}
-                    className={`w-full flex items-center justify-between p-4 rounded-xl border transition-all ${currentSubtitle === -1 ? 'bg-accent/10 border-accent/30 text-accent' : 'bg-white/5 border-white/5 text-white/70'}`}
-                  >
-                    <span className="font-bold">Désactivés</span>
-                    {currentSubtitle === -1 && <ShieldCheck className="w-4 h-4" />}
-                  </button>
-                  {subtitleTracks.map((track, idx) => (
+                  <div className="mb-4">
                     <button 
-                      key={idx}
-                      onClick={() => { if (hlsRef.current) hlsRef.current.subtitleTrack = idx; }}
-                      className={`w-full flex items-center justify-between p-4 rounded-xl border transition-all ${currentSubtitle === idx ? 'bg-accent/10 border-accent/30 text-accent' : 'bg-white/5 border-white/5 text-white/70'}`}
+                      onClick={async () => {
+                        if (!imdb_id) return;
+                        setIsSearchingSubs(true);
+                        const results = await searchSubtitles(imdb_id);
+                        setExternalSubs(results);
+                        setIsSearchingSubs(false);
+                      }}
+                      disabled={isSearchingSubs || !imdb_id}
+                      className="w-full flex items-center justify-center gap-2 p-4 rounded-xl bg-accent text-accent-foreground font-bold hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50"
                     >
-                      <span className="font-bold">{track.name || `Sous-titre ${idx + 1}`}</span>
-                      <span className="text-[10px] opacity-40 uppercase">{track.lang}</span>
-                      {currentSubtitle === idx && <ShieldCheck className="w-4 h-4" />}
+                      {isSearchingSubs ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
+                      Rechercher en ligne (Arabe)
                     </button>
-                  ))}
-                  {subtitleTracks.length === 0 && (
-                    <p className="text-center text-white/30 text-xs py-10 italic">Aucun sous-titre intégré trouvé.</p>
-                  )}
+                  </div>
+
+                  <div className="space-y-2">
+                    <button 
+                      onClick={() => { 
+                        if (hlsRef.current) hlsRef.current.subtitleTrack = -1;
+                        setAppliedExternalSub(null);
+                      }}
+                      className={`w-full flex items-center justify-between p-4 rounded-xl border transition-all ${currentSubtitle === -1 && !appliedExternalSub ? 'bg-accent/10 border-accent/30 text-accent' : 'bg-white/5 border-white/5 text-white/70'}`}
+                    >
+                      <span className="font-bold">Désactivés</span>
+                      {currentSubtitle === -1 && !appliedExternalSub && <ShieldCheck className="w-4 h-4" />}
+                    </button>
+
+                    {/* Internal Subs */}
+                    {subtitleTracks.map((track, idx) => (
+                      <button 
+                        key={idx}
+                        onClick={() => { 
+                          if (hlsRef.current) hlsRef.current.subtitleTrack = idx;
+                          setAppliedExternalSub(null);
+                        }}
+                        className={`w-full flex items-center justify-between p-4 rounded-xl border transition-all ${currentSubtitle === idx ? 'bg-accent/10 border-accent/30 text-accent' : 'bg-white/5 border-white/5 text-white/70'}`}
+                      >
+                        <span className="font-bold">{track.name || `Sous-titre ${idx + 1}`}</span>
+                        <span className="text-[10px] opacity-40 uppercase">{track.lang}</span>
+                        {currentSubtitle === idx && <ShieldCheck className="w-4 h-4" />}
+                      </button>
+                    ))}
+
+                    {/* External Search Results */}
+                    {externalSubs.length > 0 && (
+                      <div className="pt-4 mt-4 border-t border-white/10">
+                        <p className="text-[10px] font-bold text-accent uppercase tracking-widest mb-3">Résultats OpenSubtitles</p>
+                        {externalSubs.map((sub) => (
+                          <button 
+                            key={sub.id}
+                            onClick={async () => {
+                              const url = await getDownloadUrl(sub.attributes.file_id);
+                              if (url) {
+                                // Since we are in a web environment, we might need a proxy or direct VTT conversion
+                                // For now, we set it as the applied sub
+                                setAppliedExternalSub(url);
+                                if (hlsRef.current) hlsRef.current.subtitleTrack = -1;
+                                toast.success("Traduction appliquée !");
+                              }
+                            }}
+                            className={`w-full flex items-center justify-between p-4 rounded-xl border mb-2 transition-all ${appliedExternalSub === sub.id ? 'bg-accent/10 border-accent/30 text-accent' : 'bg-white/5 border-white/5 text-white/70'}`}
+                          >
+                            <div className="text-left">
+                              <span className="font-bold block text-xs line-clamp-1">{sub.attributes.release}</span>
+                              <span className="text-[9px] opacity-40 uppercase">External Subtitle</span>
+                            </div>
+                            <Download className="w-4 h-4" />
+                          </button>
+                        ))}
+                      </div>
+                    )}
+
+                    {subtitleTracks.length === 0 && externalSubs.length === 0 && !isSearchingSubs && (
+                      <p className="text-center text-white/30 text-xs py-10 italic">Aucun sous-titre trouvé. Essayez la recherche en ligne.</p>
+                    )}
+                  </div>
                 </>
               )}
             </div>
@@ -545,7 +634,6 @@ export const VideoPlayer = ({
         )}
 
         {/* Always render video element if it's an HLS source to allow pre-binding of play() */}
-        {/* Always render video element if it's an HLS source to allow pre-binding of play() */}
         {sources[sourceIndex]?.includes(".m3u8") && (
           <video
             ref={videoRef}
@@ -555,7 +643,17 @@ export const VideoPlayer = ({
             playsInline
             // @ts-ignore
             webkit-playsinline="true"
-          />
+          >
+            {appliedExternalSub && (
+              <track 
+                src={appliedExternalSub} 
+                kind="subtitles" 
+                srcLang="ar" 
+                label="Arabe (Online)" 
+                default 
+              />
+            )}
+          </video>
         )}
 
         {/* Interaction Shield & Gestures */}
