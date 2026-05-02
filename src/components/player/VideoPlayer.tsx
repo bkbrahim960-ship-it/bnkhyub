@@ -8,10 +8,7 @@ import { useEffect, useRef, useState } from "react";
 import { getMovieSources, getTVSources, SOURCE_LABELS } from "@/services/player";
 import { AdsNoticeModal, hasSeenAdsNotice } from "./AdsNoticeModal";
 import { ResumeModal } from "./ResumeModal";
-import { CustomPlayerControls } from "./CustomPlayerControls";
 import { useLanguage } from "@/context/LanguageContext";
-import { useAuth } from "@/context/AuthContext";
-import { getRecentHistory } from "@/services/watchHistory";
 import { useAuth } from "@/context/AuthContext";
 import { getRecentHistory } from "@/services/watchHistory";
 import { Loader2, AlertCircle, RotateCw, ShieldCheck, Play, Settings, Lock, Unlock, FastForward, Languages, Captions, Monitor, Gauge, PictureInPicture as PipIcon, Maximize, Search, Download, ExternalLink } from "lucide-react";
@@ -88,13 +85,6 @@ export const VideoPlayer = ({
   const [resumeModalOpen, setResumeModalOpen] = useState(false);
   const [historyProgress, setHistoryProgress] = useState(0);
   const [hasResumed, setHasResumed] = useState(false);
-
-  // Native Control States
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const [duration, setDuration] = useState(0);
-  const [volume, setVolume] = useState(1);
-  const [isFullscreen, setIsFullscreen] = useState(false);
 
   // Auto-fetch Arabic subtitles on mount
   useEffect(() => {
@@ -495,47 +485,6 @@ export const VideoPlayer = ({
           </div>
         )}
 
-        {/* Custom Player UI (Universal Overlay) */}
-        <CustomPlayerControls 
-          isPlaying={isPlaying}
-          onPlayPause={() => {
-            if (videoRef.current) {
-              if (videoRef.current.paused) videoRef.current.play();
-              else videoRef.current.pause();
-            }
-          }}
-          onSeek={(offset) => {
-            if (videoRef.current) videoRef.current.currentTime += offset;
-          }}
-          onProgressChange={(val) => {
-            if (videoRef.current) videoRef.current.currentTime = val;
-          }}
-          onVolumeChange={(val) => {
-            if (videoRef.current) videoRef.current.volume = val;
-          }}
-          onToggleFullscreen={() => {
-            const el = videoRef.current?.parentElement;
-            if (el) {
-              if (!document.fullscreenElement) {
-                el.requestFullscreen();
-                setIsFullscreen(true);
-              } else {
-                document.exitFullscreen();
-                setIsFullscreen(false);
-              }
-            }
-          }}
-          isFullscreen={isFullscreen}
-          onShowSettings={() => setShowSettings(!showSettings)}
-          progress={progress}
-          duration={duration}
-          volume={volume}
-          isLocked={isLocked}
-          onToggleLock={() => setIsLocked(!isLocked)}
-          title={title}
-          subtitle={type === "tv" ? `S${season} E${episode}` : ""}
-        />
-
         {/* Resume / Restart Modal */}
         <ResumeModal 
           open={resumeModalOpen}
@@ -817,6 +766,7 @@ export const VideoPlayer = ({
           <video
             ref={videoRef}
             className={`absolute inset-0 w-full h-full object-contain bg-black transition-opacity duration-300 ${playerActive ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+            controls
             autoPlay
             playsInline
             // @ts-ignore
@@ -860,38 +810,32 @@ export const VideoPlayer = ({
 
         {/* Render YouTube if detected */}
         {playerActive && (sources[sourceIndex]?.includes("youtube.com") || sources[sourceIndex]?.includes("youtu.be")) && (
-          <div className="absolute inset-0 overflow-hidden">
-            <iframe
-              key={`yt-${sourceIndex}`}
-              src={`https://www.youtube.com/embed/${
-                sources[sourceIndex].includes("v=") 
-                  ? sources[sourceIndex].split("v=")[1].split("&")[0] 
-                  : sources[sourceIndex].split("/").pop()
-              }?autoplay=1&rel=0&modestbranding=1&showinfo=0&iv_load_policy=3&controls=0`}
-              title="YouTube Video"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
-              allowFullScreen
-              onLoad={handleLoad}
-              className="absolute inset-0 w-full h-[115%] -top-[7.5%] border-0 scale-105"
-            />
-          </div>
+          <iframe
+            key={`yt-${sourceIndex}`}
+            src={`https://www.youtube.com/embed/${
+              sources[sourceIndex].includes("v=") 
+                ? sources[sourceIndex].split("v=")[1].split("&")[0] 
+                : sources[sourceIndex].split("/").pop()
+            }?autoplay=1&rel=0&modestbranding=1&showinfo=0&iv_load_policy=3`}
+            title="YouTube Video"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
+            allowFullScreen
+            onLoad={handleLoad}
+            className="absolute inset-0 w-full h-full border-0"
+          />
         )}
 
         {/* Render iframe for other sources (non-m3u8, non-youtube) */}
         {playerActive && !sources[sourceIndex]?.includes(".m3u8") && !sources[sourceIndex]?.includes("youtube.com") && !sources[sourceIndex]?.includes("youtu.be") && (
-          <div className="absolute inset-0 overflow-hidden bg-black">
-            <iframe
-              key={sourceIndex}
-              src={sources[sourceIndex]}
-              title="BNKhub player"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
-              allowFullScreen
-              onLoad={handleLoad}
-              className="absolute inset-0 w-full h-[110%] -top-[5%] border-0 scale-105 transition-opacity duration-700"
-            />
-            {/* Mask to hide bottom controls of most iframes */}
-            <div className="absolute bottom-0 inset-x-0 h-[60px] bg-black/90 backdrop-blur-xl z-[40] pointer-events-none" />
-          </div>
+          <iframe
+            key={sourceIndex}
+            src={sources[sourceIndex]}
+            title="BNKhub player"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
+            allowFullScreen
+            onLoad={handleLoad}
+            className="absolute inset-0 w-full h-full border-0 transition-opacity duration-700"
+          />
         )}
 
         {playerActive && loading && (
