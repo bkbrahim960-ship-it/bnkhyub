@@ -73,7 +73,7 @@ export const MovieHero = ({ items }: Props) => {
   const currentTrailerKey = trailerKeys[movie.id];
 
   return (
-    <section className="relative h-[80vh] md:h-[92vh] min-h-[500px] md:min-h-[560px] w-full overflow-hidden">
+    <section className="relative h-[80vh] md:h-[92vh] min-h-[500px] md:min-h-[560px] w-full overflow-hidden group">
       {/* Static Backdrops — always present as fallback */}
       {pool.map((m, i) => {
         const img = IMG.backdrop(m.backdrop_path, "original");
@@ -126,7 +126,7 @@ export const MovieHero = ({ items }: Props) => {
       <div className="absolute bottom-0 left-0 right-0 h-[40%] z-[2] bg-gradient-to-t from-background to-transparent" />
 
       {/* Content */}
-      <div className="relative z-10 h-full container flex items-end md:items-center pb-12 md:pb-0">
+      <div className={`relative z-10 h-full container flex items-end md:items-center pb-12 md:pb-0 transition-opacity duration-1000 ${videoReady ? "opacity-0 group-hover:opacity-100" : "opacity-100"}`}>
         <div
           key={movie.id}
           className="max-w-2xl animate-fade-slide-up"
@@ -163,7 +163,7 @@ export const MovieHero = ({ items }: Props) => {
       </div>
 
       {/* Slide Indicators */}
-      <div className="absolute bottom-6 md:bottom-8 end-4 md:end-8 z-10 flex gap-2">
+      <div className={`absolute bottom-6 md:bottom-8 end-4 md:end-8 z-10 flex gap-2 transition-opacity duration-1000 ${videoReady ? "opacity-0 group-hover:opacity-100" : "opacity-100"}`}>
         {pool.map((_, i) => (
           <button
             key={i}
