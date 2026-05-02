@@ -13,6 +13,7 @@ import { useLanguage } from "@/context/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
 import { ColorSwitcher } from "@/components/ui/ColorSwitcher";
 import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
+import { InstallButton } from "@/components/pwa/InstallButton";
 import { useSettings } from "@/context/SettingsContext";
 
 export const Header = () => {

@@ -46,6 +46,7 @@ const Catalog = ({ mode }: Props) => {
     const loadData = async () => {
       setLoading(true);
       try {
+        let response;
         if (kidsMode) {
           // If Kids Mode is on, prioritize Animation (16) and Family (10751) genres
           const params = {
