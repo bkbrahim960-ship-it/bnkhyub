@@ -185,7 +185,7 @@ const KabyleCinemaRow = () => {
           {lang === "ar" ? "أفلام ومسلسلات بالأمازيغية القبائلية" : "Films et séries en langue Kabyle"}
         </p>
       </div>
-      <div className="container overflow-x-auto scrollbar-hide flex gap-4 md:gap-5 pt-16 pb-12 snap-x snap-mandatory">
+      <div className="container overflow-x-auto scrollbar-hide flex gap-4 md:gap-5 pt-20 pb-16 snap-x snap-mandatory">
         {all.map((item) => (
           <div key={item.id} className="snap-start">
             <MovieCard 
