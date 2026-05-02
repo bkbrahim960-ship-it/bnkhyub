@@ -46,10 +46,10 @@ export const getMovieSources = (imdb_id: string, tmdb_id: number | string): stri
   const color = safeGetAccentHex();
   const id = imdb_id || tmdb_id;
   return [
-    `https://vaplayer.ru/embed/movie/${imdb_id || tmdb_id}?primaryColor=${color.replace('#','')}&lang=ar`, // S1: Original Primary
-    `https://vidsrc-embed.ru/embed/movie?${imdb_id ? `imdb=${imdb_id}` : `tmdb=${tmdb_id}`}&ds_lang=ar`, // S2: Original S2
-    `https://vidsrc.to/embed/movie/${id}`, // S3: Original S3
-    `https://vidlink.pro/movie/${tmdb_id}?primaryColor=${color}`, // S4: Ad-Free
+    `https://vaplayer.ru/embed/movie/${imdb_id || tmdb_id}?primaryColor=${color.replace('#','')}&lang=ar&ds_lang=ar&autoplay=1`, // S1: Primary — Arabic subs auto-selected
+    `https://vidsrc-embed.ru/embed/movie?${imdb_id ? `imdb=${imdb_id}` : `tmdb=${tmdb_id}`}&ds_lang=ar`, // S2: Arabic subs
+    `https://vidsrc.to/embed/movie/${id}`, // S3
+    `https://vidlink.pro/movie/${tmdb_id}?primaryColor=${color}&autoSub=true`, // S4: Ad-Free
     `https://embed.su/embed/movie/${tmdb_id || imdb_id}`, // S5: Clean
     `https://superembed.stream/?video_id=${imdb_id || tmdb_id}&lang=ar`, // S6: SuperEmbed
     `https://www.flixhq.to/embed/movie/${imdb_id || tmdb_id}`, // S7: FlixHQ
@@ -76,10 +76,10 @@ export const getTVSources = (
   const color = safeGetAccentHex();
   const id = imdb_id || tmdb_id;
   return [
-    `https://vaplayer.ru/embed/tv/${imdb_id || tmdb_id}/${season}/${episode}?primaryColor=${color.replace('#','')}&lang=ar`, // S1: Original Primary
-    `https://vidsrc-embed.ru/embed/tv?${imdb_id ? `imdb=${imdb_id}` : `tmdb=${tmdb_id}`}&season=${season}&episode=${episode}&ds_lang=ar`, // S2: Original S2
-    `https://vidsrc.to/embed/tv/${id}/${season}/${episode}`, // S3: Original S3
-    `https://vidlink.pro/tv/${tmdb_id}/${season}/${episode}?primaryColor=${color}`, // S4: Ad-Free
+    `https://vaplayer.ru/embed/tv/${imdb_id || tmdb_id}/${season}/${episode}?primaryColor=${color.replace('#','')}&lang=ar&ds_lang=ar&autoplay=1`, // S1: Primary — Arabic subs auto-selected
+    `https://vidsrc-embed.ru/embed/tv?${imdb_id ? `imdb=${imdb_id}` : `tmdb=${tmdb_id}`}&season=${season}&episode=${episode}&ds_lang=ar`, // S2: Arabic subs
+    `https://vidsrc.to/embed/tv/${id}/${season}/${episode}`, // S3
+    `https://vidlink.pro/tv/${tmdb_id}/${season}/${episode}?primaryColor=${color}&autoSub=true`, // S4: Ad-Free
     `https://embed.su/embed/tv/${tmdb_id || imdb_id}/${season}/${episode}`, // S5: Clean
     `https://superembed.stream/?video_id=${imdb_id || tmdb_id}&s=${season}&e=${episode}&lang=ar`, // S6: SuperEmbed
     `https://www.flixhq.to/embed/tv/${imdb_id || tmdb_id}/${season}/${episode}`, // S7: FlixHQ
