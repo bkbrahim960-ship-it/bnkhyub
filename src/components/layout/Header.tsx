@@ -44,7 +44,7 @@ export const Header = () => {
   }
 
   const headerBg = kidsMode 
-    ? (scrolled ? "bg-white/40 backdrop-blur-3xl border-b border-pink-200" : "bg-gradient-to-b from-white/60 to-transparent")
+    ? (scrolled ? "bg-white/40 backdrop-blur-3xl border-b border-sky-200" : "bg-gradient-to-b from-white/60 to-transparent")
     : (scrolled ? "bg-black/20 backdrop-blur-3xl border-b border-white/5" : "bg-gradient-to-b from-black/80 to-transparent");
 
   return (

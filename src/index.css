@@ -149,9 +149,9 @@
     --popover: var(--bg-elevated);
     --popover-foreground: 222 47% 11%;
 
-    --accent-h: 327; --accent-s: 100%; --accent-l: 54%; /* Playful Pink */
-    --accent-light: 327 100% 64%;
-    --accent-dark: 327 100% 44%;
+    --accent-h: 200; --accent-s: 100%; --accent-l: 50%; /* Playful Sky Blue */
+    --accent-light: 200 100% 65%;
+    --accent-dark: 200 100% 40%;
     --accent: var(--accent-h) var(--accent-s) var(--accent-l);
     --accent-foreground: 0 0% 100%;   /* White text on accent */
     
@@ -163,7 +163,7 @@
     --ring: var(--accent);
 
     /* Gradients for kids */
-    --gradient-accent: linear-gradient(135deg, #FF69B4, #FFB6C1); /* Pink candy */
+    --gradient-accent: linear-gradient(135deg, #00BFFF, #87CEFA); /* Sky Blue candy */
     --gradient-hero: linear-gradient(
       180deg,
       transparent 0%,
@@ -171,8 +171,8 @@
       hsl(var(--bg-primary)) 100%
     );
 
-    --shadow-accent: 0 10px 20px -5px rgba(255, 105, 180, 0.4);
-    --shadow-glow: 0 0 30px rgba(255, 105, 180, 0.2);
+    --shadow-accent: 0 10px 20px -5px rgba(0, 191, 255, 0.4);
+    --shadow-glow: 0 0 30px rgba(0, 191, 255, 0.2);
   }
 
   .theme-icon {

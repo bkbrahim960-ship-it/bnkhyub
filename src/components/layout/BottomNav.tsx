@@ -37,14 +37,14 @@ export const BottomNav = () => {
             onClick={() => setKidsMode(!kidsMode)}
             className={`relative p-2 md:p-3 rounded-full transition-all duration-500 hover:scale-110 active:scale-95 border ${
               kidsMode
-                ? "text-pink-400 bg-pink-500/20 shadow-[0_0_15px_rgba(236,72,153,0.3)] border-pink-400/40"
+                ? "text-sky-400 bg-sky-500/20 shadow-[0_0_15px_rgba(14,165,233,0.3)] border-sky-400/40"
                 : "text-white/60 hover:text-white hover:bg-white/5 border-transparent"
             }`}
             aria-label="Kids Mode"
           >
             <Baby className="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8" />
             {kidsMode && (
-              <span className="absolute -top-1 -end-1 px-1 py-0.5 rounded bg-pink-500 text-white text-[6px] font-black uppercase">Kids</span>
+              <span className="absolute -top-1 -end-1 px-1 py-0.5 rounded bg-sky-500 text-white text-[6px] font-black uppercase">Kids</span>
             )}
           </button>
 
