@@ -20,10 +20,10 @@ export const VideoBackdrop = ({ backdropPath, videoKey, title }: Props) => {
     setIsVideoReady(false);
     
     // We use a small timeout to let the iframe start buffering
-    // Ideally we'd use the YouTube API, but this is a lightweight approach
+    // Shortened to 800ms for near-instant playback feel
     const timer = setTimeout(() => {
       setIsVideoReady(true);
-    }, 3500); 
+    }, 800); 
 
     return () => clearTimeout(timer);
   }, [videoKey]);
