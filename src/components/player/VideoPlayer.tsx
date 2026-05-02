@@ -495,48 +495,46 @@ export const VideoPlayer = ({
           </div>
         )}
 
-        {/* Custom Player UI (Only for HLS for now) */}
-        {sources[sourceIndex]?.includes(".m3u8") && (
-          <CustomPlayerControls 
-            isPlaying={isPlaying}
-            onPlayPause={() => {
-              if (videoRef.current) {
-                if (videoRef.current.paused) videoRef.current.play();
-                else videoRef.current.pause();
+        {/* Custom Player UI (Universal Overlay) */}
+        <CustomPlayerControls 
+          isPlaying={isPlaying}
+          onPlayPause={() => {
+            if (videoRef.current) {
+              if (videoRef.current.paused) videoRef.current.play();
+              else videoRef.current.pause();
+            }
+          }}
+          onSeek={(offset) => {
+            if (videoRef.current) videoRef.current.currentTime += offset;
+          }}
+          onProgressChange={(val) => {
+            if (videoRef.current) videoRef.current.currentTime = val;
+          }}
+          onVolumeChange={(val) => {
+            if (videoRef.current) videoRef.current.volume = val;
+          }}
+          onToggleFullscreen={() => {
+            const el = videoRef.current?.parentElement;
+            if (el) {
+              if (!document.fullscreenElement) {
+                el.requestFullscreen();
+                setIsFullscreen(true);
+              } else {
+                document.exitFullscreen();
+                setIsFullscreen(false);
               }
-            }}
-            onSeek={(offset) => {
-              if (videoRef.current) videoRef.current.currentTime += offset;
-            }}
-            onProgressChange={(val) => {
-              if (videoRef.current) videoRef.current.currentTime = val;
-            }}
-            onVolumeChange={(val) => {
-              if (videoRef.current) videoRef.current.volume = val;
-            }}
-            onToggleFullscreen={() => {
-              const el = videoRef.current?.parentElement;
-              if (el) {
-                if (!document.fullscreenElement) {
-                  el.requestFullscreen();
-                  setIsFullscreen(true);
-                } else {
-                  document.exitFullscreen();
-                  setIsFullscreen(false);
-                }
-              }
-            }}
-            isFullscreen={isFullscreen}
-            onShowSettings={() => setShowSettings(!showSettings)}
-            progress={progress}
-            duration={duration}
-            volume={volume}
-            isLocked={isLocked}
-            onToggleLock={() => setIsLocked(!isLocked)}
-            title={title}
-            subtitle={type === "tv" ? `S${season} E${episode}` : ""}
-          />
-        )}
+            }
+          }}
+          isFullscreen={isFullscreen}
+          onShowSettings={() => setShowSettings(!showSettings)}
+          progress={progress}
+          duration={duration}
+          volume={volume}
+          isLocked={isLocked}
+          onToggleLock={() => setIsLocked(!isLocked)}
+          title={title}
+          subtitle={type === "tv" ? `S${season} E${episode}` : ""}
+        />
 
         {/* Resume / Restart Modal */}
         <ResumeModal 
