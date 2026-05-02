@@ -33,7 +33,7 @@ export const MovieRow = ({ title, items, type = "movie", loading }: Props) => {
   };
 
   return (
-    <section className="relative py-8 group/row">
+    <section className="relative py-4 group/row">
       <div className="container flex items-end justify-between mb-5">
         <h2 className="font-display text-2xl md:text-3xl">
           <span className="text-gradient-accent">{title}</span>
@@ -58,7 +58,7 @@ export const MovieRow = ({ title, items, type = "movie", loading }: Props) => {
 
       <div
         ref={scrollRef}
-        className="container overflow-x-auto scrollbar-hide flex gap-4 md:gap-5 pt-12 pb-8 snap-x snap-mandatory"
+        className="container overflow-x-auto scrollbar-hide flex gap-4 md:gap-5 pt-6 pb-4 snap-x snap-mandatory"
       >
         {loading
           ? Array.from({ length: 8 }).map((_, i) => (

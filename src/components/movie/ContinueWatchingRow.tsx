@@ -68,21 +68,23 @@ export const ContinueWatchingRow = () => {
   };
 
   return (
-    <section className="relative py-8 group/row">
+    <section className="relative py-4 group/row">
       <div className="container flex items-end justify-between mb-5">
         <h2 className="font-display text-2xl md:text-3xl">
-          <span className="text-gradient-accent">{t("section_continue")}</span>
+          <span className="text-gradient-accent">{lang === 'ar' ? 'متابعة المشاهدة' : 'Continuer à regarder'}</span>
         </h2>
         <div className="hidden md:flex gap-2 opacity-0 group-hover/row:opacity-100 transition-opacity duration-300">
           <button
             onClick={() => scroll(-1)}
             className="w-10 h-10 rounded-full bg-surface-elevated/80 backdrop-blur border border-border hover:border-accent-subtle grid place-items-center"
+            aria-label="Précédent"
           >
             <ChevronLeft className="w-5 h-5 rtl:rotate-180" />
           </button>
           <button
             onClick={() => scroll(1)}
             className="w-10 h-10 rounded-full bg-surface-elevated/80 backdrop-blur border border-border hover:border-accent-subtle grid place-items-center"
+            aria-label="Suivant"
           >
             <ChevronRight className="w-5 h-5 rtl:rotate-180" />
           </button>
@@ -91,7 +93,7 @@ export const ContinueWatchingRow = () => {
 
       <div
         ref={scrollRef}
-        className="container overflow-x-auto scrollbar-hide flex gap-4 md:gap-5 pt-12 pb-8 snap-x snap-mandatory"
+        className="container overflow-x-auto scrollbar-hide flex gap-4 md:gap-5 pt-6 pb-4 snap-x snap-mandatory"
       >
         {items.map((e) => {
           const poster = IMG.poster(e.poster_path);
