@@ -122,7 +122,7 @@ const Catalog = ({ mode }: Props) => {
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6 pt-10 pb-20">
+          <div className="grid grid-cols-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2 sm:gap-6 pt-10 pb-20">
             {items.map((m: any, idx) => (
               <div key={`${m.id}-${idx}`} className="animate-fade-slide-up" style={{ animationDelay: `${idx * 50}ms` }}>
                 <MovieCard

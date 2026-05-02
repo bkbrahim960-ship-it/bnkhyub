@@ -375,7 +375,7 @@ const Search = () => {
                )}
 
                {/* Results Grid with Staggered Fade */}
-               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-8">
+               <div className="grid grid-cols-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 sm:gap-8">
                  {results.map((m, idx) => (
                     <div key={`${m.media_type}-${m.id}`} onClick={() => saveToRecent(m)} className="animate-fade-slide-up" style={{ animationDelay: `${idx * 30}ms` }}>
                        <MovieCard

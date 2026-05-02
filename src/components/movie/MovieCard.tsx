@@ -49,7 +49,7 @@ export const MovieCard = ({ id, title, posterPath, year, rating, type = "movie",
       onMouseLeave={handleLeave}
       onFocus={handleActive}
       onBlur={handleLeave}
-      className={`group relative block shrink-0 w-[150px] sm:w-[170px] md:w-[190px] lg:w-[210px] transition-[transform,z-index] duration-150 hover:-translate-y-4 focus:z-[100] hover:z-[50] ${className}`}
+      className={`group relative block shrink-0 w-[85px] sm:w-[160px] md:w-[180px] lg:w-[200px] transition-all duration-300 hover:-translate-y-2 focus:z-[100] hover:z-[50] ${className}`}
     >
 
       <div className="relative aspect-[2/3.2] rounded-2xl overflow-hidden bg-surface-card border border-white/5 group-hover:border-accent/40 group-hover:shadow-[0_20px_60px_-12px_rgba(0,0,0,0.9),0_0_40px_hsl(var(--accent)/0.4)] transition-[box-shadow,border-color,transform] duration-150 group-hover:scale-[1.05]">
@@ -78,14 +78,14 @@ export const MovieCard = ({ id, title, posterPath, year, rating, type = "movie",
         <div className="absolute top-3 left-3 right-3 flex items-center justify-between z-10 pointer-events-none">
           {/* TMDB Rating Badge (Glassmorphic) */}
           {typeof rating === "number" && rating > 0 && (
-            <div className={`flex items-center gap-1.5 backdrop-blur-xl ${kidsMode ? 'bg-white/90 border-sky-200' : 'bg-black/40 border-white/10'} px-2 py-1 rounded-full border shadow-xl transform group-hover:scale-110 transition-transform duration-150`}>
-              <Star className={`w-3 h-3 ${kidsMode ? 'text-sky-500' : 'text-accent'} fill-current`} />
-              <span className={`text-[11px] font-black ${kidsMode ? 'text-sky-700' : 'text-white'}`}>{rating.toFixed(1)}</span>
+            <div className={`flex items-center gap-1 backdrop-blur-xl ${kidsMode ? 'bg-white/90 border-sky-200' : 'bg-black/40 border-white/10'} px-1.5 py-0.5 rounded-full border shadow-xl transform group-hover:scale-110 transition-transform duration-150`}>
+              <Star className={`w-2 h-2 ${kidsMode ? 'text-sky-500' : 'text-accent'} fill-current`} />
+              <span className={`text-[9px] font-black ${kidsMode ? 'text-sky-700' : 'text-white'}`}>{rating.toFixed(1)}</span>
             </div>
           )}
           
           {/* Format Badge */}
-          <div className={`backdrop-blur-md ${kidsMode ? 'bg-sky-500/80 text-white' : 'bg-black/40 text-accent'} px-2 py-0.5 rounded-full text-[9px] font-black border border-white/10 shadow-lg`}>
+          <div className={`backdrop-blur-md ${kidsMode ? 'bg-sky-500/80 text-white' : 'bg-black/40 text-accent'} px-1.5 py-0.5 rounded-full text-[7px] font-black border border-white/10 shadow-lg`}>
             {type === 'movie' ? '4K' : 'TV'}
           </div>
         </div>
@@ -117,12 +117,12 @@ export const MovieCard = ({ id, title, posterPath, year, rating, type = "movie",
       </div>
 
       {/* External Info (Visible when not hovered) */}
-      <div className="mt-4 px-1 group-hover:opacity-0 transition-opacity duration-150">
-        <h3 className="font-body font-bold text-sm text-foreground/90 line-clamp-1">
+      <div className="mt-2 px-1 group-hover:opacity-0 transition-opacity duration-150">
+        <h3 className="font-body font-bold text-[10px] sm:text-sm text-foreground/90 line-clamp-1">
           {title}
         </h3>
-        <div className="flex items-center gap-3 mt-1.5">
-          {year && <span className="text-[10px] text-muted-foreground font-bold tracking-wider">{year}</span>}
+        <div className="flex items-center gap-2 mt-1">
+          {year && <span className="text-[8px] text-muted-foreground font-bold tracking-wider">{year}</span>}
           <span className={`text-[10px] font-black uppercase tracking-tighter ${kidsMode ? 'text-sky-500' : 'text-accent/60'}`}>
             {type === 'movie' ? 'Cinéma' : 'Série TV'}
           </span>
