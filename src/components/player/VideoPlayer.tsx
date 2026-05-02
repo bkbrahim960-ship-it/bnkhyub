@@ -8,8 +8,10 @@ import { useEffect, useRef, useState } from "react";
 import { getMovieSources, getTVSources, SOURCE_LABELS } from "@/services/player";
 import { AdsNoticeModal, hasSeenAdsNotice } from "./AdsNoticeModal";
 import { useLanguage } from "@/context/LanguageContext";
-import { Loader2, AlertCircle, RotateCw, ShieldCheck, Play, Settings, Lock, Unlock, FastForward, Languages, Captions, Monitor, Gauge, PictureInPicture as PipIcon, Maximize, Search, Download } from "lucide-react";
+import { Loader2, AlertCircle, RotateCw, ShieldCheck, Play, Settings, Lock, Unlock, FastForward, Languages, Captions, Monitor, Gauge, PictureInPicture as PipIcon, Maximize, Search, Download, ExternalLink } from "lucide-react";
 import { searchSubtitles, getDownloadUrl, SubtitleResult } from "@/services/opensubtitles";
+import { searchYTSSubtitles } from "@/services/yts_subtitles";
+import { searchSubscene } from "@/services/subscene";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import Hls from "hls.js";
@@ -70,6 +72,8 @@ export const VideoPlayer = ({
 
   // External Subtitles
   const [externalSubs, setExternalSubs] = useState<SubtitleResult[]>([]);
+  const [ytsSubs, setYtsSubs] = useState<any[]>([]);
+  const [subsceneResults, setSubsceneResults] = useState<any[]>([]);
   const [isSearchingSubs, setIsSearchingSubs] = useState(false);
   const [appliedExternalSub, setAppliedExternalSub] = useState<string | null>(null);
 
@@ -527,17 +531,26 @@ export const VideoPlayer = ({
                   <div className="mb-4">
                     <button 
                       onClick={async () => {
-                        if (!imdb_id) return;
+                        if (!imdb_id && !title) return;
                         setIsSearchingSubs(true);
-                        const results = await searchSubtitles(imdb_id);
-                        setExternalSubs(results);
-                        setIsSearchingSubs(false);
+                        try {
+                          const [osRes, ytsRes, subRes] = await Promise.all([
+                            imdb_id ? searchSubtitles(imdb_id) : Promise.resolve([]),
+                            imdb_id ? searchYTSSubtitles(imdb_id) : Promise.resolve([]),
+                            title ? searchSubscene(title) : Promise.resolve([])
+                          ]);
+                          setExternalSubs(osRes);
+                          setYtsSubs(ytsRes);
+                          setSubsceneResults(subRes);
+                        } finally {
+                          setIsSearchingSubs(false);
+                        }
                       }}
-                      disabled={isSearchingSubs || !imdb_id}
+                      disabled={isSearchingSubs}
                       className="w-full flex items-center justify-center gap-2 p-4 rounded-xl bg-accent text-accent-foreground font-bold hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50"
                     >
                       {isSearchingSubs ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
-                      Rechercher en ligne (Arabe)
+                      Recherche Multi-Sources (OpenSub, YTS, Subscene)
                     </button>
                   </div>
 
@@ -598,8 +611,52 @@ export const VideoPlayer = ({
                       </div>
                     )}
 
-                    {subtitleTracks.length === 0 && externalSubs.length === 0 && !isSearchingSubs && (
-                      <p className="text-center text-white/30 text-xs py-10 italic">Aucun sous-titre trouvé. Essayez la recherche en ligne.</p>
+                    {/* YTS Results */}
+                    {ytsSubs.length > 0 && (
+                      <div className="pt-4 mt-4 border-t border-white/10">
+                        <p className="text-[10px] font-bold text-blue-400 uppercase tracking-widest mb-3">Résultats YTS-Subs</p>
+                        {ytsSubs.map((sub, idx) => (
+                          <a 
+                            key={idx}
+                            href={sub.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="w-full flex items-center justify-between p-4 rounded-xl border border-white/5 bg-white/5 text-white/70 mb-2 hover:bg-white/10 transition-all"
+                          >
+                            <div className="text-left">
+                              <span className="font-bold block text-xs">Arabe VIP #{idx + 1}</span>
+                              <span className="text-[9px] opacity-40 uppercase">YTS Premium Search</span>
+                            </div>
+                            <ExternalLink className="w-4 h-4" />
+                          </a>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Subscene Results */}
+                    {subsceneResults.length > 0 && (
+                      <div className="pt-4 mt-4 border-t border-white/10">
+                        <p className="text-[10px] font-bold text-green-400 uppercase tracking-widest mb-3">Résultats Subscene</p>
+                        {subsceneResults.slice(0, 5).map((sub, idx) => (
+                          <a 
+                            key={idx}
+                            href={sub.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="w-full flex items-center justify-between p-4 rounded-xl border border-white/5 bg-white/5 text-white/70 mb-2 hover:bg-white/10 transition-all"
+                          >
+                            <div className="text-left">
+                              <span className="font-bold block text-xs line-clamp-1">{sub.title}</span>
+                              <span className="text-[9px] opacity-40 uppercase">Direct Subscene Link</span>
+                            </div>
+                            <ExternalLink className="w-4 h-4" />
+                          </a>
+                        ))}
+                      </div>
+                    )}
+
+                    {subtitleTracks.length === 0 && externalSubs.length === 0 && ytsSubs.length === 0 && subsceneResults.length === 0 && !isSearchingSubs && (
+                      <p className="text-center text-white/30 text-xs py-10 italic">Aucun sous-titre trouvé. Essayez la recherche multi-sources.</p>
                     )}
                   </div>
                 </>
