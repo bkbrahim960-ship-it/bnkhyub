@@ -5,9 +5,9 @@ export const SplashScreen = ({ onFinish }: { onFinish: () => void }) => {
   const [fadeOut, setFadeOut] = useState(false);
 
   useEffect(() => {
-    // 3 seconds total splash, fade starts at 2.5s
-    const fadeTimer = setTimeout(() => setFadeOut(true), 2500);
-    const removeTimer = setTimeout(() => onFinish(), 3000);
+    // 5 seconds total splash, fade starts at 4.5s
+    const fadeTimer = setTimeout(() => setFadeOut(true), 4500);
+    const removeTimer = setTimeout(() => onFinish(), 5000);
     return () => {
       clearTimeout(fadeTimer);
       clearTimeout(removeTimer);
@@ -16,7 +16,7 @@ export const SplashScreen = ({ onFinish }: { onFinish: () => void }) => {
 
   return (
     <div
-      className={`fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-black transition-opacity duration-700 ease-in-out ${
+      className={`fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-black transition-opacity duration-1000 ease-in-out ${
         fadeOut ? "opacity-0 pointer-events-none" : "opacity-100"
       }`}
     >
@@ -31,7 +31,7 @@ export const SplashScreen = ({ onFinish }: { onFinish: () => void }) => {
           {/* Outer Spinning Ring */}
           <div 
             className="absolute inset-0 rounded-full border-2 border-dashed border-accent/20"
-            style={{ animation: "splash-spin 8s linear infinite" }}
+            style={{ animation: "splash-spin 10s linear infinite" }}
           />
           
           {/* Inner Fast Spinning Gradient Ring */}
@@ -42,7 +42,7 @@ export const SplashScreen = ({ onFinish }: { onFinish: () => void }) => {
               padding: "2px",
               WebkitMask: "radial-gradient(farthest-side, transparent calc(100% - 2px), #000 calc(100% - 2px))",
               mask: "radial-gradient(farthest-side, transparent calc(100% - 2px), #000 calc(100% - 2px))",
-              animation: "splash-spin 1.5s linear infinite"
+              animation: "splash-spin 2s linear infinite"
             }}
           />
 
@@ -71,22 +71,22 @@ export const SplashScreen = ({ onFinish }: { onFinish: () => void }) => {
             BNKhub
           </h1>
 
-          {/* Credit Text (Arabic) - Cairo Font style */}
-          <div className="space-y-2 animate-fade-in" style={{ animationDelay: '500ms' }}>
+          {/* Credit Text (French) */}
+          <div className="space-y-2 animate-fade-in" style={{ animationDelay: '800ms' }}>
              <p className="text-white/40 text-[10px] md:text-xs uppercase tracking-[0.5em] font-medium">
-               Premium Cinematic Streaming
+               Premium Cinematic Experience
              </p>
              <div className="h-px w-12 bg-accent/30 mx-auto my-4" />
-             <p className="text-accent/80 font-display text-sm md:text-base tracking-wide" dir="rtl" style={{ fontFamily: "'Cairo', sans-serif" }}>
-               تم تصميم و برمجة الموقع من قبل <span className="font-bold text-white tracking-widest">BRAHIM BEN KEDDACHE</span>
+             <p className="text-accent/80 font-display text-sm md:text-lg tracking-wider">
+               Site conçu et programmé par <span className="font-bold text-white tracking-widest">BRAHIM BEN KEDDACHE</span>
              </p>
           </div>
         </div>
       </div>
 
-      {/* Progress Bar Loader */}
+      {/* Progress Bar Loader - Adjusted for 5s */}
       <div className="absolute bottom-16 left-1/2 -translate-x-1/2 w-48 h-1 bg-white/5 rounded-full overflow-hidden">
-        <div className="h-full bg-accent animate-progress" />
+        <div className="h-full bg-accent animate-progress" style={{ animationDuration: '4.5s' }} />
       </div>
 
       <style>{`
