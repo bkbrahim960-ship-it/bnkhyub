@@ -50,8 +50,12 @@ export const getMovieSources = (imdb_id: string, tmdb_id: number | string, subUr
   let s2 = `https://vidsrc-embed.ru/embed/movie?${imdb_id ? `imdb=${imdb_id}` : `tmdb=${tmdb_id}`}&ds_lang=ar`;
   
   if (subUrl) {
-    s1 += `&sub_url=${encodeURIComponent(subUrl)}&sub_label=${encodeURIComponent("Arabic (Clean)")}`;
-    s2 += `&sub_url=${encodeURIComponent(subUrl)}&sub_label=${encodeURIComponent("Arabic (Clean)")}`;
+    const encodedSub = encodeURIComponent(subUrl);
+    const label = encodeURIComponent("Arabic (Clean)");
+    // Try multiple common parameters for different servers
+    const subParams = `&sub_url=${encodedSub}&sub=${encodedSub}&subtitle=${encodedSub}&sub_label=${label}`;
+    s1 += subParams;
+    s2 += subParams;
   }
 
   return [
@@ -75,8 +79,12 @@ export const getTVSources = (
   let s2 = `https://vidsrc-embed.ru/embed/tv?${imdb_id ? `imdb=${imdb_id}` : `tmdb=${tmdb_id}`}&season=${season}&episode=${episode}&ds_lang=ar`;
 
   if (subUrl) {
-    s1 += `&sub_url=${encodeURIComponent(subUrl)}&sub_label=${encodeURIComponent("Arabic (Clean)")}`;
-    s2 += `&sub_url=${encodeURIComponent(subUrl)}&sub_label=${encodeURIComponent("Arabic (Clean)")}`;
+    const encodedSub = encodeURIComponent(subUrl);
+    const label = encodeURIComponent("Arabic (Clean)");
+    // Try multiple common parameters for different servers
+    const subParams = `&sub_url=${encodedSub}&sub=${encodedSub}&subtitle=${encodedSub}&sub_label=${label}`;
+    s1 += subParams;
+    s2 += subParams;
   }
 
   return [
