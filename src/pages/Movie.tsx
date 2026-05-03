@@ -161,7 +161,7 @@ const Movie = () => {
           title={movie.title} 
         />
         
-        <div className="container relative z-10 grid lg:grid-cols-[300px_1fr] gap-4 md:gap-12 items-end mt-auto">
+        <div className="container absolute inset-x-0 bottom-0 z-10 pb-12 md:pb-16 lg:pb-24 grid lg:grid-cols-[300px_1fr] gap-4 md:gap-12 items-end">
           <div className="hidden lg:block animate-fade-in group">
             <div className="relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl shadow-accent/20">
                <img src={poster} alt={movie.title} className="w-full transition-transform duration-700 group-hover:scale-110" />
