@@ -112,6 +112,25 @@ export const VideoPlayer = ({
     }
   }, [imdb_id, playerActive]);
 
+  // Bloquer les popups (window.open)
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    
+    const originalOpen = window.open;
+    window.open = function(url: string | URL | undefined, target?: string, features?: string) {
+      // Autoriser uniquement les fenêtres du même domaine (BNKhub)
+      if (typeof url === "string" && (url.startsWith(window.location.origin) || url.startsWith("/"))) {
+        return originalOpen.call(window, url, target, features);
+      }
+      console.log("BNKhub Shield — Popup Blocked:", url);
+      return null;
+    };
+
+    return () => {
+      window.open = originalOpen;
+    };
+  }, []);
+
   // Check for resume progress on mount
   useEffect(() => {
     if (!user || startedRef.current || hasResumed) return;
