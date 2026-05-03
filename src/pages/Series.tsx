@@ -269,7 +269,7 @@ const Series = () => {
         </div>
       </section>
 
-      <div className="container py-12">
+      <div className="container py-4">
         {/* Player Section */}
         <div ref={playerRef} className="scroll-mt-24">
           {playing && (
@@ -434,7 +434,7 @@ const Series = () => {
       <TrailerModal isOpen={showTrailer} onClose={() => setShowTrailer(false)} videoKey={trailer?.key} title={series.name} />
 
       {/* DETAILED INFO SECTION */}
-      <section className="container py-20 border-t border-white/5">
+      <section className="container py-8 border-t border-white/5">
         <div className="grid lg:grid-cols-[1fr_350px] gap-16">
           <div className="space-y-16">
             {/* Cast */}

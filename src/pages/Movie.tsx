@@ -239,7 +239,7 @@ const Movie = () => {
       {/* Video Player Section */}
       <div ref={playerContainerRef} className="scroll-mt-24">
         {playing && (
-          <section className="container py-12 animate-scale-in">
+          <section className="container py-4 animate-scale-in">
             <VideoPlayer
               ref={videoPlayerRef}
               imdb_id={imdb || ""}
@@ -264,7 +264,7 @@ const Movie = () => {
       </div>
 
       {/* DETAILED INFO SECTION */}
-      <section className="container py-20">
+      <section className="container py-8">
         <div className="grid lg:grid-cols-[1fr_350px] gap-16">
           <div className="space-y-16">
             {/* Cast */}
