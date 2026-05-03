@@ -540,17 +540,6 @@ export const VideoPlayer = ({
                 <div className="h-0.5 w-8 bg-accent/40 rounded-full mt-0.5" />
               </div>
             </div>
-
-            {/* Custom Fullscreen Overlay (Sits over the server's native button area) */}
-            <div className="absolute bottom-1 right-1 z-50 group-hover/player:opacity-100 opacity-0 transition-opacity duration-300">
-              <button 
-                onClick={toggleFullscreen}
-                className="bg-black/20 backdrop-blur-sm border border-white/5 p-1.5 rounded-md text-accent/60 hover:bg-accent/20 hover:text-accent transition-all active:scale-90"
-                title={isWebFullscreen ? "Réduire" : "Plein écran BNKhub"}
-              >
-                <Maximize className="w-4 h-4" />
-              </button>
-            </div>
           </>
         )}
 
