@@ -56,6 +56,8 @@ export const getMovieSources = (imdb_id: string, tmdb_id: number | string): stri
     `https://autoembed.co/movie/tmdb/${tmdb_id}`,
     `https://multiembed.mov/?video_id=${tmdb_id}`,
     `https://vidlux.xyz/embed/movie/${tmdb_id}?color=${color}`,
+    `https://vidsrc.pro/embed/movie/${id}`, // New Clean Source
+    `https://moviesapi.club/movie/${tmdb_id}`, // Clean Alternative
     `https://vidsrc.me/embed/movie/${id}`,
     `https://vidsrc.icu/embed/movie/${id}`,
     `https://vidsrc.net/embed/movie/${id}`,
@@ -86,6 +88,8 @@ export const getTVSources = (
     `https://autoembed.co/tv/tmdb/${tmdb_id}-${season}-${episode}`,
     `https://multiembed.mov/?video_id=${tmdb_id}&s=${season}&e=${episode}`,
     `https://vidlux.xyz/embed/tv/${tmdb_id}/${season}/${episode}`,
+    `https://vidsrc.pro/embed/tv/${id}/${season}/${episode}`, // New Clean Source
+    `https://moviesapi.club/tv/${tmdb_id}-${season}-${episode}`, // Clean Alternative
     `https://vidsrc.me/embed/tv/${id}/${season}/${episode}`,
     `https://vidsrc.icu/embed/tv/${id}/${season}/${episode}`,
     `https://vidsrc.net/embed/tv/${id}/${season}/${episode}`,
@@ -108,14 +112,16 @@ export const SOURCE_LABELS = [
   "S8 · AutoEmbed",
   "S9 · multiembed",
   "S10 · vidlux",
-  "S11 · vidsrc.me",
-  "S12 · vidsrc.icu",
-  "S13 · vidsrc.net",
-  "S14 · vidsrc.xyz",
-  "S15 · 2embed.cc",
-  "S16 · 2embed.to",
-  "S17 · embed-api",
-  "S18 · vidsrc.cc",
+  "S11 · vidsrc.pro (Ultra Clean)",
+  "S12 · moviesapi (No Ads)",
+  "S13 · vidsrc.me",
+  "S14 · vidsrc.icu",
+  "S15 · vidsrc.net",
+  "S16 · vidsrc.xyz",
+  "S17 · 2embed.cc",
+  "S18 · 2embed.to",
+  "S19 · embed-api",
+  "S20 · vidsrc.cc",
 ];
 
 // ───── Nouveautés vidsrc-embed ─────
