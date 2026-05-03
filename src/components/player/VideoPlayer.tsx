@@ -519,21 +519,13 @@ export const VideoPlayer = ({
       <div className={`relative w-full aspect-video bg-black rounded-2xl overflow-hidden border border-white/10 shadow-2xl group/player transition-all duration-500 ${isWebFullscreen ? 'fixed inset-0 z-[1000] rounded-none !aspect-auto h-screen' : ''}`}>
         {/* Custom Overlays Removed as requested */}
         
-        {/* Brand Watermark (Only for BNKhub Server S1) */}
+        {/* Permanent Brand Watermark (Only for BNKhub Server S1) */}
         {playerActive && sourceIndex === 0 && (
-          <div className="absolute top-6 right-6 z-40 flex flex-col items-end pointer-events-none select-none group-hover/player:opacity-100 opacity-40 transition-opacity duration-500">
+          <div className="absolute top-4 right-5 z-50 pointer-events-none select-none">
             <div className="flex flex-col items-end">
-              <span className="text-2xl md:text-4xl font-display font-black tracking-[0.2em] text-accent drop-shadow-[0_2px_20px_rgba(212,175,55,0.6)]">BNKHUB</span>
-              <div className="h-1 w-16 bg-gradient-to-r from-transparent to-accent rounded-full mt-1" />
+              <span className="text-lg md:text-xl font-display font-black tracking-[0.2em] text-accent/60 drop-shadow-[0_2px_10px_rgba(212,175,55,0.4)]">BNKHUB</span>
+              <div className="h-0.5 w-8 bg-accent/40 rounded-full mt-0.5" />
             </div>
-            {/* Custom Fullscreen Trigger to ensure watermark stays on top */}
-            <button 
-              onClick={toggleFullscreen}
-              className="mt-4 pointer-events-auto bg-black/40 backdrop-blur-md border border-white/10 p-3 rounded-full text-accent hover:scale-110 active:scale-95 transition-all shadow-xl"
-              title={isWebFullscreen ? "Réduire" : "Plein écran BNKhub"}
-            >
-              <Maximize className="w-5 h-5" />
-            </button>
           </div>
         )}
 
