@@ -202,7 +202,7 @@ const Series = () => {
           title={series.name} 
         />
         
-        <div className="container absolute inset-x-0 top-[55%] md:top-auto md:bottom-0 z-10 pb-12 md:pb-24 lg:pb-32 grid lg:grid-cols-[300px_1fr] gap-4 md:gap-12 items-end">
+        <div className="container absolute inset-x-0 bottom-0 z-20 pb-20 md:pb-24 lg:pb-32 grid lg:grid-cols-[300px_1fr] gap-4 md:gap-12 items-end">
           <div className="hidden lg:block animate-fade-in group">
             <div className="relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl shadow-accent/20">
                <img src={poster} alt={series.name} className="w-full transition-transform duration-700 group-hover:scale-110" />

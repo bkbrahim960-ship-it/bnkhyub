@@ -60,8 +60,8 @@ export const MovieHero = ({ items }: Props) => {
       <div className="absolute inset-0 z-[2] grain opacity-20" />
       <div className={`absolute inset-0 z-[2] bg-gradient-to-t ${kidsMode ? 'from-background via-background/40' : 'from-surface-primary via-surface-primary/50'} to-transparent`} />
       
-      {/* Content — Conditional positioning: Low on mobile, original on desktop */}
-      <div className="absolute inset-x-0 top-[55%] md:top-auto md:bottom-0 z-10 container pb-8 md:pb-32 lg:pb-40">
+      {/* Content — Positioned low and clear on mobile (pb-32) */}
+      <div className="absolute inset-x-0 bottom-0 z-20 container pb-24 md:pb-32 lg:pb-40">
         <div key={movie.id} className="max-w-2xl md:max-w-4xl animate-fade-slide-up">
           <span className="inline-block px-3 py-1 mb-3 text-[10px] md:text-sm uppercase tracking-[0.2em] rounded-full border border-accent-subtle text-accent bg-accent/5 backdrop-blur">
             ★ {movie.vote_average.toFixed(1)}  ·  {movie.release_date?.slice(0, 4)}
