@@ -42,22 +42,12 @@ export const getPrimaryPlayerUrl = (c: PlayerConfig): string => {
   return `${base}/tv?${idParam}&ds_lang=${lang}`;
 };
 
-export const getMovieSources = (imdb_id: string, tmdb_id: number | string, subUrl?: string): string[] => {
+export const getMovieSources = (imdb_id: string, tmdb_id: number | string): string[] => {
   const color = safeGetAccentHex();
   const id = imdb_id || tmdb_id;
-  
-  let s1 = `https://vaplayer.ru/embed/movie/${imdb_id || tmdb_id}?primaryColor=${color.replace('#','')}&lang=ar&ds_lang=ar&autoplay=1`;
-  let s2 = `https://vidsrc-embed.ru/embed/movie?${imdb_id ? `imdb=${imdb_id}` : `tmdb=${tmdb_id}`}&ds_lang=ar`;
-  
-  if (subUrl) {
-    const params = `&sub_url=${encodeURIComponent(subUrl)}&sub_label=${encodeURIComponent("Arabic")}`;
-    s1 += params;
-    s2 += params;
-  }
-
   return [
-    s1, // S1: Primary — Arabic subs auto-selected
-    s2, // S2: Arabic subs
+    `https://vaplayer.ru/embed/movie/${imdb_id || tmdb_id}?primaryColor=${color.replace('#','')}&lang=ar&ds_lang=ar&autoplay=1`, // S1: Primary — Arabic subs auto-selected
+    `https://vidsrc-embed.ru/embed/movie?${imdb_id ? `imdb=${imdb_id}` : `tmdb=${tmdb_id}`}&ds_lang=ar`, // S2: Arabic subs
     `https://vidsrc.to/embed/movie/${id}`, // S3
   ];
 };
@@ -67,26 +57,12 @@ export const getTVSources = (
   tmdb_id: number | string,
   season: number,
   episode: number,
-  subUrl?: string
 ): string[] => {
   const color = safeGetAccentHex();
   const id = imdb_id || tmdb_id;
-
-  let s1 = `https://vaplayer.ru/embed/tv/${imdb_id || tmdb_id}/${season}/${episode}?primaryColor=${color.replace('#','')}&lang=ar&ds_lang=ar&autoplay=1`;
-  let s2 = `https://vidsrc-embed.ru/embed/tv?${imdb_id ? `imdb=${imdb_id}` : `tmdb=${tmdb_id}`}&season=${season}&episode=${episode}&ds_lang=ar`;
-
-  if (subUrl) {
-    const encodedSub = encodeURIComponent(subUrl);
-    const label = encodeURIComponent("Arabic (Clean)");
-    // Try multiple common parameters for different servers
-    const subParams = `&sub_url=${encodedSub}&sub=${encodedSub}&subtitle=${encodedSub}&sub_label=${label}`;
-    s1 += subParams;
-    s2 += subParams;
-  }
-
   return [
-    s1, // S1: Primary — Arabic subs auto-selected
-    s2, // S2: Arabic subs
+    `https://vaplayer.ru/embed/tv/${imdb_id || tmdb_id}/${season}/${episode}?primaryColor=${color.replace('#','')}&lang=ar&ds_lang=ar&autoplay=1`, // S1: Primary — Arabic subs auto-selected
+    `https://vidsrc-embed.ru/embed/tv?${imdb_id ? `imdb=${imdb_id}` : `tmdb=${tmdb_id}`}&season=${season}&episode=${episode}&ds_lang=ar`, // S2: Arabic subs
     `https://vidsrc.to/embed/tv/${id}/${season}/${episode}`, // S3
   ];
 };
