@@ -317,8 +317,8 @@ export const VideoPlayer = ({
         {/* Standard Iframe */}
         {playerActive && !sources[sourceIndex]?.includes(".m3u8") && !sources[sourceIndex]?.includes("youtube.com") && !sources[sourceIndex]?.includes("youtu.be") && (
           <iframe
-            key={sourceIndex}
-            src={sources[sourceIndex]}
+            key={`${sourceIndex}-${appliedExternalSub}`}
+            src={`${sources[sourceIndex]}${appliedExternalSub ? `&sub=${encodeURIComponent(appliedExternalSub)}` : ''}`}
             {...(sourceIndex === 0 ? { 
               sandbox: "allow-scripts allow-same-origin allow-forms allow-presentation",
               title: "BNKhub Premium Server"
