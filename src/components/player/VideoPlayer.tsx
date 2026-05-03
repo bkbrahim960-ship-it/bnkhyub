@@ -430,7 +430,19 @@ export const VideoPlayer = ({
     window.addEventListener("keydown", handleRemote);
     
     const handleFsChange = () => {
-      setIsWebFullscreen(!!document.fullscreenElement);
+      const fsElem = document.fullscreenElement || (document as any).webkitFullscreenElement;
+      
+      // 🛡️ Branding Guard: Redirection active vers le conteneur
+      if (fsElem && fsElem.tagName === 'IFRAME' && containerRef.current) {
+        if (containerRef.current !== fsElem) {
+          containerRef.current.requestFullscreen().catch(() => {
+            // Fallback si la redirection est bloquée
+            console.log("🛡️ BNKhub Engine — Redirection bloquée par le navigateur");
+          });
+        }
+      }
+      
+      setIsWebFullscreen(!!fsElem);
     };
     document.addEventListener('fullscreenchange', handleFsChange);
     document.addEventListener('webkitfullscreenchange', handleFsChange);
