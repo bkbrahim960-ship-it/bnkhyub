@@ -466,16 +466,6 @@ export const VideoPlayer = ({
   const handleStartPlay = () => {
     setAdsOpen(false);
     
-    const currentSrc = sources[sourceIndex];
-    const isEmbed = !currentSrc?.includes('.m3u8') && !currentSrc?.includes('.mp4');
-
-    // Handle PWA iframe restrictions by opening embed sources in a new tab
-    if (isPWA() && isEmbed) {
-      toast.info("Opening external player for PWA compatibility...");
-      window.open(currentSrc, '_blank');
-      return;
-    }
-
     setPlayerActive(true);
     // Bind play to user click for iOS compatibility
     if (videoRef.current) {
