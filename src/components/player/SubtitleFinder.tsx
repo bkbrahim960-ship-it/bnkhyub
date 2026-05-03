@@ -2,7 +2,7 @@
  * BNKhub — SubtitleFinder (Advanced search for subtitles).
  * Provides direct links and search options for subtitles based on ID.
  */
-import { Languages, Download, ExternalLink, MessageSquare } from "lucide-react";
+import { Languages, Download, ExternalLink, MessageSquare, Captions } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 
 interface Props {
@@ -16,7 +16,7 @@ interface Props {
 }
 
 export const SubtitleFinder = ({ imdbId, tmdbId, title, type, season, episode, onSubtitleSelect }: Props) => {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
   const query = encodeURIComponent(title);
   const isTV = type === "tv";
   const tvSuffix = isTV ? ` S${String(season).padStart(2, "0")}E${String(episode).padStart(2, "0")}` : "";
