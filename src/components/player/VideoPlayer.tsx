@@ -565,10 +565,10 @@ export const VideoPlayer = ({
               sandbox: "allow-scripts allow-same-origin allow-forms allow-presentation",
               title: "BNKhub Premium Server"
             } : {
-              sandbox: "allow-scripts allow-same-origin allow-forms",
               title: "BNKhub Mirror Server"
             })}
             {...(sources[sourceIndex]?.includes('embedmaster.link') || sources[sourceIndex]?.includes('vidsrc') ? { 
+              sandbox: undefined,
               allow: "autoplay *; fullscreen *; picture-in-picture *; encrypted-media *"
             } : {
               allow: "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
