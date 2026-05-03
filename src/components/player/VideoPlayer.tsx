@@ -685,9 +685,76 @@ export const VideoPlayer = ({
             };
           })}
           onSelect={selectSource}
+          onToggleSettings={() => { setActiveTab("speed"); setShowSettings(true); }}
+          onToggleSubtitles={() => { setActiveTab("subtitle"); setShowSettings(true); }}
+          onToggleQuality={() => { setActiveTab("quality"); setShowSettings(true); }}
           isLoading={false}
         />
       </div>
+
+      {/* Settings Modal (Glassmorphism) */}
+      {showSettings && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 animate-in fade-in duration-300">
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-md" onClick={() => setShowSettings(false)} />
+          <div className="relative w-full max-w-md bg-black/40 border border-white/10 rounded-[2rem] p-8 shadow-2xl backdrop-blur-2xl animate-in zoom-in-95 duration-300 overflow-hidden">
+            <div className="absolute -top-24 -end-24 w-48 h-48 bg-accent/20 blur-[80px] rounded-full" />
+            
+            <div className="relative space-y-6">
+              <div className="flex items-center justify-between">
+                <h3 className="text-xl font-display font-black tracking-widest text-accent uppercase">{activeTab}</h3>
+                <button onClick={() => setShowSettings(false)} className="p-2 rounded-full hover:bg-white/10 text-white/40 transition-all">
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              <div className="space-y-2 max-h-[40vh] overflow-y-auto custom-scrollbar pr-2">
+                {activeTab === "speed" && [0.5, 0.75, 1, 1.25, 1.5, 2].map((rate) => (
+                  <button 
+                    key={rate}
+                    onClick={() => { setPlaybackRate(rate); setShowSettings(false); }}
+                    className={`w-full flex items-center justify-between px-5 py-4 rounded-2xl text-sm font-bold transition-all ${playbackRate === rate ? 'bg-accent text-black shadow-glow-sm' : 'bg-white/5 text-white/60 hover:bg-white/10'}`}
+                  >
+                    <span>{rate}x</span>
+                    {playbackRate === rate && <Check className="w-4 h-4" />}
+                  </button>
+                ))}
+
+                {activeTab === "subtitle" && (
+                  <div className="space-y-4">
+                    <p className="text-[10px] font-black text-white/30 uppercase tracking-widest px-2">External Subtitles</p>
+                    {externalSubs.length > 0 ? (
+                      externalSubs.map((sub, idx) => (
+                        <button 
+                          key={idx}
+                          onClick={async () => {
+                            const url = await getDownloadUrl(sub.attributes.file_id);
+                            if (url) setAppliedExternalSub(url);
+                            setShowSettings(false);
+                          }}
+                          className={`w-full flex items-center justify-between px-5 py-4 rounded-2xl text-sm font-bold transition-all bg-white/5 text-white/60 hover:bg-white/10`}
+                        >
+                          <span className="truncate max-w-[200px]">{sub.attributes.release}</span>
+                          <Languages className="w-4 h-4 text-accent/40" />
+                        </button>
+                      ))
+                    ) : (
+                      <div className="text-center py-8">
+                        <p className="text-xs text-white/40 italic">No external subtitles found.</p>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {(activeTab === "quality" || activeTab === "audio") && (
+                  <div className="text-center py-12">
+                    <p className="text-xs text-white/40 italic">Controlled by the server in mirror mode.</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
     </div>
   );
