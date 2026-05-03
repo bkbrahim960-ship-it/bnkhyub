@@ -436,64 +436,7 @@ export const VideoPlayer = ({
       )}
 
       <div className={`relative w-full aspect-video bg-black rounded-2xl overflow-hidden border border-white/10 shadow-2xl group/player transition-all duration-500 ${isWebFullscreen ? 'fixed inset-0 z-[1000] rounded-none !aspect-auto h-screen' : ''}`}>
-        {/* Web Fullscreen Toggle (for iOS) */}
-        <button 
-          onClick={() => setIsWebFullscreen(!isWebFullscreen)}
-          className={`absolute top-4 end-4 z-[70] p-3 rounded-full backdrop-blur-xl border border-white/10 text-white/70 hover:text-white transition-all shadow-2xl ${isWebFullscreen ? 'bg-accent text-accent-foreground' : 'bg-black/40 md:hidden'}`}
-          title="Web Fullscreen"
-        >
-          {isWebFullscreen ? <Minimize className="w-5 h-5" /> : <Maximize className="w-5 h-5" />}
-        </button>
-        {/* Unified Header Overlay */}
-        <div className={`absolute top-0 inset-x-0 z-20 p-4 flex items-center justify-between bg-gradient-to-b from-black/90 via-black/40 to-transparent transition-all duration-500 ${isLocked ? 'opacity-0 pointer-events-none' : 'opacity-0 group-hover/player:opacity-100'}`}>
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-accent/20 border border-accent/40 flex items-center justify-center">
-              <ShieldCheck className="w-4 h-4 text-accent" />
-            </div>
-            <div>
-              <p className="text-[10px] font-bold text-accent uppercase tracking-[0.2em]">{allLabels[sourceIndex] || SOURCE_LABELS[sourceIndex]}</p>
-              <h3 className="text-xs font-bold text-white/90 line-clamp-1">{title || "BNKhub Player"}</h3>
-            </div>
-          </div>
-          <div className="flex items-center gap-3">
-            {isPipAvailable && sources[sourceIndex]?.includes(".m3u8") && (
-              <button 
-                onClick={() => videoRef.current?.requestPictureInPicture()}
-                className="p-2 rounded-full bg-white/5 hover:bg-white/20 transition-colors text-white"
-                title="Picture in Picture"
-              >
-                <PipIcon className="w-4 h-4" />
-              </button>
-            )}
-            <button 
-              onClick={() => setShowSettings(!showSettings)}
-              className="p-2 rounded-full bg-white/5 hover:bg-white/20 transition-colors text-white"
-              title="Settings"
-            >
-              <Settings className={`w-4 h-4 ${showSettings ? 'rotate-90' : ''} transition-transform duration-500`} />
-            </button>
-            <button 
-              onClick={() => setIsLocked(true)}
-              className="p-2 rounded-full bg-white/5 hover:bg-white/20 transition-colors text-white"
-              title="Lock Screen"
-            >
-              <Lock className="w-4 h-4" />
-            </button>
-          </div>
-        </div>
-
-        {/* Lock Overlay */}
-        {isLocked && (
-          <div className="absolute inset-0 z-[100] flex items-center justify-center bg-black/20 backdrop-blur-[2px]">
-            <button 
-              onClick={() => setIsLocked(false)}
-              className="p-6 rounded-full bg-black/60 border border-white/10 text-white hover:bg-accent/20 hover:border-accent/40 transition-all duration-500 group/unlock"
-            >
-              <Unlock className="w-8 h-8 group-hover/unlock:scale-125 transition-transform" />
-              <p className="absolute mt-12 left-1/2 -translate-x-1/2 text-[10px] font-bold uppercase tracking-widest opacity-0 group-hover/unlock:opacity-100 transition-opacity">Unlock</p>
-            </button>
-          </div>
-        )}
+        {/* Only Official Server UI remains here */}
 
         {/* Resume / Restart Modal */}
         <ResumeModal 
@@ -794,29 +737,7 @@ export const VideoPlayer = ({
           </video>
         )}
 
-        {/* Interaction Shield & Gestures (ONLY for HLS native player) */}
-        {playerActive && !isLocked && sources[sourceIndex]?.includes(".m3u8") && (
-          <div 
-            className="absolute inset-0 z-20 grid grid-cols-3 pointer-events-auto"
-            onDoubleClick={(e) => {
-              const rect = e.currentTarget.getBoundingClientRect();
-              const x = e.clientX - rect.left;
-              const width = rect.width;
-              if (videoRef.current) {
-                if (x < width / 3) {
-                  videoRef.current.currentTime = Math.max(0, videoRef.current.currentTime - 10);
-                  toast.info("-10s");
-                } else if (x > (width / 3) * 2) {
-                  videoRef.current.currentTime = Math.min(videoRef.current.duration, videoRef.current.currentTime + 10);
-                  toast.info("+10s");
-                } else {
-                  if (videoRef.current.paused) videoRef.current.play();
-                  else videoRef.current.pause();
-                }
-              }
-            }}
-          />
-        )}
+        {/* Removed Interaction Shield & Gestures to prevent conflict with official UI */}
 
         {/* Render YouTube if detected */}
         {playerActive && (sources[sourceIndex]?.includes("youtube.com") || sources[sourceIndex]?.includes("youtu.be")) && (
