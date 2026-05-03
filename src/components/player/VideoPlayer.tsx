@@ -123,8 +123,11 @@ export const VideoPlayer = ({
     window.open = function(url?: string | URL, target?: string, features?: string) {
       const urlStr = url instanceof URL ? url.toString() : url;
       const isInternal = !urlStr || urlStr.startsWith(window.location.origin) || urlStr.startsWith("/") || urlStr === "about:blank";
+      
+      // Autoriser explicitement les sources de streaming (pour le mode PWA)
+      const isStreamingSource = urlStr && sources.some(s => urlStr.includes(s) || s.includes(urlStr));
 
-      if (isInternal) {
+      if (isInternal || isStreamingSource) {
         return originalOpen.call(window, url, target, features);
       }
       
