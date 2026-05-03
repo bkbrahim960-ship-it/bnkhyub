@@ -141,14 +141,20 @@ export const VideoPlayer = ({
       return null;
     };
 
-    // 2. Intercepter les clics suspects sur les overlays invisibles
+    // 2. Intercepter les clics suspects et le vol de focus (blur)
     const handleGlobalClick = (e: MouseEvent) => {
-      // Si le clic provient d'une zone suspecte ou d'un iframe caché
       const target = e.target as HTMLElement;
       if (target.tagName === 'IFRAME' && !target.id.includes('bnkhub')) {
         console.log("🛡️ BNKhub Engine — Clic suspect bloqué");
-        // e.preventDefault(); // Risqué car peut casser le player
       }
+    };
+
+    const handleWindowBlur = () => {
+      // Si la fenêtre perd le focus, c'est probablement une popup qui vient de s'ouvrir
+      // On tente de reprendre le focus immédiatement
+      setTimeout(() => {
+        window.focus();
+      }, 100);
     };
 
     // 3. Désactiver les alertes et dialogues
@@ -156,11 +162,13 @@ export const VideoPlayer = ({
     window.confirm = () => true;
 
     window.addEventListener('click', handleGlobalClick, true);
+    window.addEventListener('blur', handleWindowBlur);
     
     return () => {
       window.open = originalOpen;
       window.alert = originalAlert;
       window.removeEventListener('click', handleGlobalClick, true);
+      window.removeEventListener('blur', handleWindowBlur);
     };
   }, []);
 
