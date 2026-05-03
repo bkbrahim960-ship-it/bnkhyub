@@ -287,7 +287,7 @@ const Home = () => {
       />
       <MovieHero items={hero} />
 
-      <div className="relative -mt-20 z-10">
+      <div className="relative -mt-10 md:-mt-20 z-10">
         <ContinueWatchingRow />
         <BrandRow />
         <ForYouRow />

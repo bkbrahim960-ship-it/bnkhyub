@@ -73,7 +73,7 @@ export const MovieHero = ({ items }: Props) => {
   const currentTrailerKey = trailerKeys[movie.id];
 
   return (
-    <section className="relative h-[80vh] md:h-[92vh] min-h-[500px] md:min-h-[560px] w-full overflow-hidden group">
+    <section className="relative h-[65vh] md:h-[92vh] min-h-[400px] md:min-h-[560px] w-full overflow-hidden group">
       {/* Static Backdrops — always present as fallback */}
       {pool.map((m, i) => {
         const img = IMG.backdrop(m.backdrop_path, "original");
@@ -129,8 +129,8 @@ export const MovieHero = ({ items }: Props) => {
       {/* Extra bottom fade for readability — balanced to show more of the bottom edges */}
       <div className="absolute bottom-0 left-0 right-0 h-[35%] z-[4] bg-gradient-to-t from-background via-background/60 to-transparent" />
 
-      {/* Content — Positioned lower on mobile as requested (pb-10) */}
-      <div className={`relative z-10 h-full container flex items-end md:items-center pb-10 md:pb-0 transition-opacity duration-1000 ${videoReady ? "opacity-100" : "opacity-100"}`}>
+      {/* Content — Positioned much lower on mobile (pb-4) */}
+      <div className={`relative z-10 h-full container flex items-end md:items-center pb-4 md:pb-0 transition-opacity duration-1000 ${videoReady ? "opacity-100" : "opacity-100"}`}>
         <div
           key={movie.id}
           className="max-w-2xl animate-fade-slide-up"
