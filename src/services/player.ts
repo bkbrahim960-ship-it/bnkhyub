@@ -35,8 +35,7 @@ export const getMovieSources = (imdb_id: string, tmdb_id: number | string): stri
   return [
     `https://vaplayer.ru/embed/movie/${imdb_id || tmdb_id}?primaryColor=${color.replace('#','')}&lang=ar&ds_lang=ar&autoplay=1`, // S1: Primary
     getVidsrcEmbedUrl('movie', imdb_id, tmdb_id), // S2
-    `https://embed.filmu.in/movie/${id}`, // S4: Filmu
-    `https://godriveplayer.com/player.php?imdb=${imdb_id || tmdb_id}`, // S5: Godrive
+    `https://embed.filmu.in/movie/${id}`, // S3: Filmu
   ];
 };
 
@@ -52,16 +51,12 @@ export const getTVSources = (
   return [
     `https://vaplayer.ru/embed/tv/${imdb_id || tmdb_id}/${season}/${episode}?primaryColor=${color.replace('#','')}&lang=ar&ds_lang=ar&autoplay=1`, // S1: Primary
     getVidsrcEmbedUrl('tv', imdb_id, tmdb_id, season, episode), // S2
-    `https://vidsrc.to/embed/tv/${id}/${season}/${episode}`, // S3
-    `https://embed.filmu.in/tv/${id}/${season}/${episode}`, // S4: Filmu
-    `https://godriveplayer.com/player.php?type=series&tmdb=${tmdb_id}&season=${season}&episode=${episode}`, // S5: Godrive
+    `https://embed.filmu.in/tv/${id}/${season}/${episode}`, // S3: Filmu
   ];
 };
 
 export const SOURCE_LABELS = [
   "S1 · BNKhub serveur",
   "S2 · vidsrc-embed (Arabic)",
-  "S3 · vidsrc.to",
-  "S4 · Filmu (Premium)",
-  "S5 · GoDrive",
+  "S3 · Filmu (Premium)",
 ];
