@@ -11,7 +11,7 @@ import { ResumeModal } from "./ResumeModal";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
 import { getRecentHistory } from "@/services/watchHistory";
-import { Loader2, AlertCircle, RotateCw, ShieldCheck, Play, Settings, Lock, Unlock, FastForward, Languages, Captions, Monitor, Gauge, PictureInPicture as PipIcon, Maximize, Search, Download, ExternalLink } from "lucide-react";
+import { Loader2, AlertCircle, RotateCw, ShieldCheck, Play, Settings, Lock, Unlock, FastForward, Languages, Captions, Monitor, Gauge, PictureInPicture as PipIcon, Maximize, Search, Download, ExternalLink, X, Check } from "lucide-react";
 import { searchSubtitles, getDownloadUrl, SubtitleResult } from "@/services/opensubtitles";
 import { searchYTSSubtitles } from "@/services/yts_subtitles";
 import { searchSubscene } from "@/services/subscene";
@@ -59,6 +59,7 @@ export const VideoPlayer = ({
   const startedRef = useRef(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const hlsRef = useRef<Hls | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   // Advanced Player States
   const [playbackRate, setPlaybackRate] = useState(1);
@@ -99,334 +100,91 @@ export const VideoPlayer = ({
           const url = await getDownloadUrl(results[0].attributes.file_id);
           if (url) {
             setAppliedExternalSub(url);
-            if (hlsRef.current) hlsRef.current.subtitleTrack = -1;
           }
         }
       } catch (err) {
-        console.error("Auto-fetch subtitles failed:", err);
+        console.error("Auto-sub error:", err);
       }
     };
-    
-    if (playerActive) {
-      autoFetchSubs();
-    }
-  }, [imdb_id, playerActive]);
+    autoFetchSubs();
+  }, [imdb_id]);
 
-  // 🛡️ BNKhub Anti-Ad Engine — Système de blocage ultra-agressif
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    
-    const originalOpen = window.open;
-    const originalAlert = window.alert;
+  const sources = type === "movie" 
+    ? getMovieSources(imdb_id, tmdb_id) 
+    : getTVSources(imdb_id, tmdb_id, season!, episode!);
 
-    // 1. Overriding window.open avec auto-fermeture immédiate
-    window.open = function(url?: string | URL, target?: string, features?: string) {
-      const urlStr = url instanceof URL ? url.toString() : url;
-      const isInternal = !urlStr || urlStr.startsWith(window.location.origin) || urlStr.startsWith("/") || urlStr === "about:blank";
-      
-      // Autoriser explicitement les sources de streaming (pour le mode PWA)
-      const isStreamingSource = urlStr && sources.some(s => urlStr.includes(s) || s.includes(urlStr));
-
-      if (isInternal || isStreamingSource) {
-        return originalOpen.call(window, url, target, features);
-      }
-      
-      // Si une popup s'ouvre quand même, on tente de la capturer et de la fermer
-      try {
-        const adWin = originalOpen.call(window, url, target, features);
-        if (adWin) {
-          adWin.close();
-          console.log("🛡️ BNKhub Engine — Popup interceptée et fermée !");
-        }
-      } catch (e) {
-        // Bloqué par le navigateur ou erreur de cross-origin
-      }
-      return null;
-    };
-
-    // 2. Intercepter les clics suspects et le vol de focus (blur)
-    const handleGlobalClick = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      if (target.tagName === 'IFRAME' && !target.id.includes('bnkhub')) {
-        console.log("🛡️ BNKhub Engine — Clic suspect bloqué");
-      }
-    };
-
-    const handleWindowBlur = () => {
-      // Si la fenêtre perd le focus, c'est probablement une popup qui vient de s'ouvrir
-      // On tente de reprendre le focus immédiatement
-      setTimeout(() => {
-        window.focus();
-      }, 100);
-    };
-
-    // 3. Désactiver les alertes et dialogues
-    window.alert = () => {};
-    window.confirm = () => true;
-
-    window.addEventListener('click', handleGlobalClick, true);
-    window.addEventListener('blur', handleWindowBlur);
-    
-    return () => {
-      window.open = originalOpen;
-      window.alert = originalAlert;
-      window.removeEventListener('click', handleGlobalClick, true);
-      window.removeEventListener('blur', handleWindowBlur);
-    };
-  }, []);
-
-  // Check for resume progress on mount
-  useEffect(() => {
-    if (!user || startedRef.current || hasResumed) return;
-
-    const checkHistory = async () => {
-      try {
-        const history = await getRecentHistory(user.id, 50);
-        const currentEntry = history.find(e => 
-          e.tmdb_id === Number(tmdb_id) && 
-          e.media_type === type && 
-          (!season || e.season_number === season) && 
-          (!episode || e.episode_number === episode)
-        );
-
-        if (currentEntry && currentEntry.progress_seconds > 60) {
-          setHistoryProgress(currentEntry.progress_seconds);
-          setResumeModalOpen(true);
-        }
-      } catch (err) {
-        console.error("Failed to check history for resume:", err);
-      }
-    };
-
-    checkHistory();
-  }, [user, tmdb_id, type, season, episode, hasResumed]);
-
-  const baseSources =
-    type === "movie"
-      ? getMovieSources(imdb_id, tmdb_id)
-      : getTVSources(imdb_id, tmdb_id, season ?? 1, episode ?? 1);
-
-  const [customSources, setCustomSources] = useState<string[]>([]);
-  const [customLabels, setCustomLabels] = useState<string[]>([]);
-
-  const sources = customUrl ? [customUrl] : [...baseSources, ...customSources];
-  const allLabels = customUrl ? ["Source Directe"] : [...SOURCE_LABELS, ...customLabels];
-
-  useEffect(() => {
-    const fetchCustomServers = async () => {
-      try {
-        const { data, error } = await supabase.from("custom_servers").select("*");
-        if (!error && data) {
-          const relevant = data.filter((s: any) => s.type === "both" || s.type === type);
-          const cSources: string[] = [];
-          const cLabels: string[] = [];
-          relevant.forEach((s: any) => {
-            let url = s.url_pattern
-              .replace(/{imdb}/g, imdb_id || "")
-              .replace(/{tmdb}/g, String(tmdb_id || ""))
-              .replace(/{s}/g, String(season || 1))
-              .replace(/{e}/g, String(episode || 1));
-            cSources.push(url);
-            cLabels.push(`S${10 + cLabels.length + 1} · ${s.name}`);
-          });
-          setCustomSources(cSources);
-          setCustomLabels(cLabels);
-        }
-      } catch (err) {
-        // ignore
-      }
-    };
-    fetchCustomServers();
-  }, [imdb_id, tmdb_id, type, season, episode]);
-
-  // Recharge quand on change de source / d'item
-  useEffect(() => {
-    if (!playerActive) return;
-    setLoading(true);
-  }, [sourceIndex, playerActive, imdb_id, tmdb_id, season, episode]);
-
-  useEffect(() => {
-    const currentSource = sources[sourceIndex];
-
-    if (playerActive && currentSource?.includes(".m3u8") && videoRef.current) {
-      const video = videoRef.current;
-      
-      // Ensure playsInline for iOS
-      video.setAttribute('playsinline', 'true');
-      video.setAttribute('webkit-playsinline', 'true');
-
-      // Priority 1: Native HLS (Safari/iOS) - User specifically requested native HLS on iOS
-      if (video.canPlayType("application/vnd.apple.mpegurl")) {
-        console.log("Using native HLS support");
-        video.src = currentSource;
-        video.load();
-        const playPromise = video.play();
-        if (playPromise !== undefined) {
-          playPromise.catch((error) => {
-            console.log("Native HLS Autoplay prevented:", error);
-            // We'll show the controls so user can manual play if needed
-          });
-        }
-        setLoading(false);
-      } 
-      // Priority 2: Hls.js for browsers without native support
-      else if (Hls.isSupported()) {
-        console.log("Using hls.js support");
-        if (hlsRef.current) hlsRef.current.destroy();
-        const hls = new Hls({
-          enableWorker: true,
-          lowLatencyMode: true,
-        });
-        hls.loadSource(currentSource);
-        hls.attachMedia(video);
-        hlsRef.current = hls;
-        hls.on(Hls.Events.MANIFEST_PARSED, (event, data) => {
-          const playPromise = video.play();
-          if (playPromise !== undefined) {
-            playPromise.catch(() => {
-              console.log("Hls.js Autoplay prevented");
-            });
-          }
-          setLoading(false);
-          
-          // Capture tracks and levels
-          setAudioTracks(hls.audioTracks);
-          setSubtitleTracks(hls.subtitleTracks);
-          setLevels(hls.levels);
-          setCurrentLevel(hls.currentLevel);
-          setCurrentAudio(hls.audioTrack);
-        });
-
-        hls.on(Hls.Events.LEVEL_SWITCHED, (event, data) => {
-          setCurrentLevel(data.level);
-        });
-
-        // Update state from video element
-        const video = videoRef.current;
-        if (video) {
-          const updateState = () => {
-            setIsPlaying(!video.paused);
-            setProgress(video.currentTime);
-            setDuration(video.duration);
-            setVolume(video.volume);
-          };
-          video.addEventListener("play", updateState);
-          video.addEventListener("pause", updateState);
-          video.addEventListener("timeupdate", updateState);
-          video.addEventListener("volumechange", updateState);
-          video.addEventListener("loadedmetadata", updateState);
-          
-          updateState(); // Initial sync
-        }
-
-        hls.on(Hls.Events.AUDIO_TRACK_SWITCHED, (event, data) => {
-          setCurrentAudio(data.id);
-        });
-
-        hls.on(Hls.Events.SUBTITLE_TRACK_SWITCHED, (event, data) => {
-          setCurrentSubtitle(data.id);
-          setAppliedExternalSub(null); // Reset external if internal is chosen
-        });
-        hls.on(Hls.Events.ERROR, (event, data) => {
-          if (data.fatal) {
-            switch (data.type) {
-              case Hls.ErrorTypes.NETWORK_ERROR:
-                hls.startLoad();
-                break;
-              case Hls.ErrorTypes.MEDIA_ERROR:
-                hls.recoverMediaError();
-                break;
-              default:
-                hls.destroy();
-                break;
-            }
-          }
-        });
-      }
-    }
-    return () => {
-      if (hlsRef.current) {
-        hlsRef.current.destroy();
-        hlsRef.current = null;
-      }
-    };
-  }, [sourceIndex, playerActive, sources]);
-
-  useEffect(() => {
-    if (playerActive && !startedRef.current) {
-      startedRef.current = true;
-      onPlayStart?.(sourceIndex, allLabels[sourceIndex] || SOURCE_LABELS[sourceIndex]);
-    }
-  }, [playerActive, sourceIndex, onPlayStart, allLabels]);
+  const allLabels = Array(50).fill(null);
+  allLabels[0] = "BNKhub serveur";
 
   const handleLoad = () => {
     setLoading(false);
-    if (timeoutRef.current) window.clearTimeout(timeoutRef.current);
-  };
-
-  useEffect(() => {
-    if (playerActive && loading) {
-      const safety = window.setTimeout(() => {
-        setLoading(false);
-      }, 1000);
-      return () => window.clearTimeout(safety);
+    if (timeoutRef.current) {
+      window.clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
     }
-  }, [playerActive, loading]);
-
-  const selectSource = (idx: number) => {
-    if (idx === sourceIndex) return;
-    
-    const nextSrc = sources[idx];
-    const isEmbed = !nextSrc?.includes('.m3u8') && !nextSrc?.includes('.mp4');
-
-    // Handle PWA iframe restrictions during source selection
-    if (playerActive && isPWA() && isEmbed) {
-      toast.info("Opening external player for PWA compatibility...");
-      window.open(nextSrc, '_blank');
-      return;
-    }
-
-    setSourceIndex(idx);
-    // Réinitialise le flag "lent" pour la source choisie
-    setSlow((prev) => {
-      const copy = [...prev];
-      copy[idx] = false;
-      return copy;
-    });
-    onSourceChange?.(idx, allLabels[idx] || SOURCE_LABELS[idx]);
   };
 
   const retry = () => {
-    setSlow(Array(50).fill(false));
     setLoading(true);
+    const newSlow = [...slow];
+    newSlow[sourceIndex] = false;
+    setSlow(newSlow);
+    
+    const current = sources[sourceIndex];
+    setSourceIndex(-1);
+    setTimeout(() => setSourceIndex(sources.indexOf(current)), 10);
   };
 
-  // Remote Control Listener
+  const selectSource = (index: number) => {
+    if (index === sourceIndex) return;
+    setLoading(true);
+    setSourceIndex(index);
+    if (onSourceChange) {
+      onSourceChange(index, allLabels[index] || SOURCE_LABELS[index]);
+    }
+  };
+
+  const toggleFullscreen = () => {
+    if (!containerRef.current) return;
+    if (!document.fullscreenElement) {
+      containerRef.current.requestFullscreen().catch(err => {
+        console.error(`Error attempting to enable full-screen mode: ${err.message}`);
+      });
+    } else {
+      document.exitFullscreen();
+    }
+  };
+
   useEffect(() => {
-    const handleRemote = (e: KeyboardEvent) => {
-      if (e.key === "ArrowRight") {
-        if (!playerActive) return;
-        const next = (sourceIndex + 1) % sources.length;
-        selectSource(next);
-      } else if (e.key === "ArrowLeft") {
-        if (!playerActive) return;
-        const prev = (sourceIndex - 1 + sources.length) % sources.length;
-        selectSource(prev);
-      } else if (e.key === "Enter" || e.key === "OK" || e.key === "Select") {
-        if (!playerActive) {
-          handleStartPlay();
-        } else if (videoRef.current) {
-          if (videoRef.current.paused) videoRef.current.play().catch(() => {});
-          else videoRef.current.pause();
-        }
-      } else if (e.key === "Escape" || e.key === "Back" || e.key === "BrowserBack") {
-        if (adsOpen) setAdsOpen(false);
-        else if (playerActive) setPlayerActive(false);
-      } else if (e.key === "r" || e.key === "R") {
-        retry();
+    if (!playerActive) return;
+
+    setLoading(true);
+    const currentIdx = sourceIndex;
+    
+    timeoutRef.current = window.setTimeout(() => {
+      const newSlow = [...slow];
+      newSlow[currentIdx] = true;
+      setSlow(newSlow);
+      setLoading(false);
+    }, 8000);
+
+    if (onPlayStart && !startedRef.current) {
+      onPlayStart(sourceIndex, allLabels[sourceIndex] || SOURCE_LABELS[sourceIndex]);
+      startedRef.current = true;
+    }
+
+    return () => {
+      if (timeoutRef.current) {
+        window.clearTimeout(timeoutRef.current);
       }
     };
+  }, [sourceIndex, playerActive]);
 
+  useEffect(() => {
+    const handleRemote = (e: KeyboardEvent) => {
+      if (e.key === "f" || e.key === "F") toggleFullscreen();
+      if (e.key === "Escape" && isWebFullscreen) setIsWebFullscreen(false);
+    };
     window.addEventListener("keydown", handleRemote);
     
     const handleFsChange = () => {
@@ -452,132 +210,63 @@ export const VideoPlayer = ({
       document.removeEventListener('fullscreenchange', handleFsChange);
       document.removeEventListener('webkitfullscreenchange', handleFsChange);
     };
-  }, [sourceIndex, sources.length, playerActive, adsOpen]);
-
-  const toggleFullscreen = () => {
-    if (!containerRef.current) return;
-    
-    if (!document.fullscreenElement) {
-      if (containerRef.current.requestFullscreen) {
-        containerRef.current.requestFullscreen();
-      } else if ((containerRef.current as any).webkitRequestFullscreen) {
-        (containerRef.current as any).webkitRequestFullscreen();
-      }
-    } else {
-      if (document.exitFullscreen) {
-        document.exitFullscreen();
-      } else if ((document as any).webkitExitFullscreen) {
-        (document as any).webkitExitFullscreen();
-      }
-    }
-  };
-
-  // VidAPI Event Listener (Auto-next, Progress)
-  useEffect(() => {
-    const handleMessage = (e: MessageEvent) => {
-      if (e.data?.type !== 'PLAYER_EVENT') return;
-      
-      const { player_status, player_progress, player_info } = e.data.data;
-      const mediaId = player_info?.tmdb || player_info?.imdb || tmdb_id || imdb_id;
-
-      if (player_status === 'playing') {
-        // Save progress for resume
-        localStorage.setItem(`progress_${mediaId}`, String(player_progress));
-      } else if (player_status === 'completed') {
-        if (type === 'tv' && episode) {
-          // Automatic next logic can be handled by parent or manual action
-        }
-      }
-    };
-
-    window.addEventListener('message', handleMessage);
-    return () => window.removeEventListener('message', handleMessage);
-  }, [type, episode, tmdb_id, imdb_id, lang]);
-
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  const isAndroidTV = () => {
-    return /Android/i.test(navigator.userAgent) && (/TV/i.test(navigator.userAgent) || /Large/i.test(navigator.userAgent));
-  };
-
-  const isPWA = () => 
-    window.matchMedia('(display-mode: standalone)').matches ||
-    (window.navigator as any).standalone === true;
-
-  const handleStartPlay = () => {
-    setAdsOpen(false);
-    
-    setPlayerActive(true);
-    // Bind play to user click for iOS compatibility
-    if (videoRef.current) {
-      videoRef.current.play().catch(() => {
-        console.log("Play triggered from click, but may need source to be loaded first");
-      });
-    }
-  };
+  }, [isWebFullscreen]);
 
   return (
-    <div className="w-full" ref={containerRef}>
-      <AdsNoticeModal
-        open={adsOpen}
-        onAccept={handleStartPlay}
-        onClose={() => setAdsOpen(false)}
+    <div className="w-full max-w-5xl mx-auto">
+      <AdsNoticeModal open={adsOpen} onAccept={() => {
+        setAdsOpen(false);
+        setPlayerActive(true);
+      }} />
+
+      <ResumeModal 
+        open={resumeModalOpen}
+        progressSeconds={historyProgress}
+        onClose={() => setResumeModalOpen(false)}
+        onResume={() => {
+          setHasResumed(true);
+          setResumeModalOpen(false);
+          if (videoRef.current) {
+            videoRef.current.currentTime = historyProgress;
+            videoRef.current.play();
+          }
+        }}
+        onRestart={() => {
+          setHasResumed(true);
+          setResumeModalOpen(false);
+          if (videoRef.current) {
+            videoRef.current.currentTime = 0;
+            videoRef.current.play();
+          }
+        }}
       />
 
-      {title && (
-        <h2 className="font-display text-xl md:text-2xl text-accent mb-3 px-1">{title}</h2>
-      )}
-
-      <div className={`relative w-full aspect-video bg-black rounded-2xl overflow-hidden border border-white/10 shadow-2xl group/player transition-all duration-500 ${isWebFullscreen ? 'fixed inset-0 z-[1000] rounded-none !aspect-auto h-screen' : ''}`}>
-        {/* Custom Overlays Removed as requested */}
+      <div ref={containerRef} className={`relative w-full aspect-video bg-black rounded-2xl overflow-hidden border border-white/10 shadow-2xl group/player transition-all duration-500 ${isWebFullscreen ? 'fixed inset-0 z-[1000] rounded-none !aspect-auto h-screen' : ''}`}>
         
         {/* Permanent Brand Watermark (Only for BNKhub Server S1) */}
         {playerActive && sourceIndex === 0 && (
-          <>
-            <div className="absolute top-4 right-5 z-50 pointer-events-none select-none">
-              <div className="flex flex-col items-end">
-                <span className="text-lg md:text-xl font-display font-black tracking-[0.2em] text-accent/60 drop-shadow-[0_2px_10px_rgba(212,175,55,0.4)]">BNKHUB</span>
-                <div className="h-0.5 w-8 bg-accent/40 rounded-full mt-0.5" />
-              </div>
+          <div className="absolute top-4 right-5 z-50 pointer-events-none select-none">
+            <div className="flex flex-col items-end">
+              <span className="text-lg md:text-xl font-display font-black tracking-[0.2em] text-accent/60 drop-shadow-[0_2px_10px_rgba(212,175,55,0.4)]">BNKHUB</span>
+              <div className="h-0.5 w-8 bg-accent/40 rounded-full mt-0.5" />
             </div>
-          </>
+          </div>
         )}
 
-        {/* Lock Overlay Removed */}
-
-        {/* Resume / Restart Modal */}
-        <ResumeModal 
-          open={resumeModalOpen}
-          progressSeconds={historyProgress}
-          onClose={() => setResumeModalOpen(false)}
-          onRestart={() => {
-            setResumeModalOpen(false);
-            setHasResumed(true);
-            if (videoRef.current) videoRef.current.currentTime = 0;
-          }}
-          onResume={() => {
-            setResumeModalOpen(false);
-            setHasResumed(true);
-            if (videoRef.current) videoRef.current.currentTime = historyProgress;
-            toast.success(lang === "ar" ? "تم استئناف المشاهدة" : "Lecture reprise");
-          }}
-        />
-
-
         {!playerActive && (
-          <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-surface-elevated/80 backdrop-blur-sm">
-            <div className="relative group">
-              <div className="absolute -inset-8 bg-accent/20 rounded-full blur-3xl group-hover:bg-accent/40 transition-all duration-700 animate-pulse" />
-              <button
-                onClick={handleStartPlay}
-                className="relative bg-gradient-accent text-accent-foreground font-black px-12 py-6 rounded-full shadow-accent hover:scale-110 active:scale-95 transition-all flex items-center gap-4 border border-white/10"
+          <div className="absolute inset-0 flex flex-col items-center justify-center bg-surface-card/40 backdrop-blur-3xl z-30 p-12 text-center overflow-hidden">
+            <div className="absolute -top-24 -start-24 w-64 h-64 bg-accent/10 blur-[100px] rounded-full animate-pulse" />
+            <div className="relative z-10 animate-in fade-in zoom-in duration-1000">
+              <button 
+                onClick={() => { setAdsOpen(false); setPlayerActive(true); }}
+                className="group relative"
               >
-                <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
-                  <Play className="w-6 h-6 fill-current" />
+                <div className="absolute inset-0 bg-accent blur-2xl opacity-20 group-hover:opacity-40 transition-opacity" />
+                <div className="relative w-24 h-24 rounded-full bg-accent flex items-center justify-center text-black shadow-accent hover:scale-110 transition-transform duration-500">
+                  <Play className="w-10 h-10 fill-current ml-1" />
                 </div>
-                <div className="text-left">
-                  <p className="text-[10px] uppercase tracking-[0.2em] opacity-60">BNKhub Engine</p>
-                  <p className="text-xl font-display">{t("hero_watch")}</p>
+                <div className="mt-6 space-y-2">
+                  <p className="text-xl font-display font-black tracking-widest text-white uppercase">{t("hero_watch")}</p>
                 </div>
               </button>
             </div>
@@ -585,7 +274,7 @@ export const VideoPlayer = ({
           </div>
         )}
 
-        {/* Always render video element if it's an HLS source to allow pre-binding of play() */}
+        {/* Video Element for HLS */}
         {sources[sourceIndex]?.includes(".m3u8") && (
           <video
             ref={videoRef}
@@ -608,9 +297,7 @@ export const VideoPlayer = ({
           </video>
         )}
 
-        {/* Interaction Shield & Gestures Removed */}
-
-        {/* Render YouTube if detected */}
+        {/* YouTube Iframe */}
         {playerActive && (sources[sourceIndex]?.includes("youtube.com") || sources[sourceIndex]?.includes("youtu.be")) && (
           <iframe
             key={`yt-${sourceIndex}`}
@@ -627,7 +314,7 @@ export const VideoPlayer = ({
           />
         )}
 
-        {/* Render iframe for other sources (non-m3u8, non-youtube) */}
+        {/* Standard Iframe */}
         {playerActive && !sources[sourceIndex]?.includes(".m3u8") && !sources[sourceIndex]?.includes("youtube.com") && !sources[sourceIndex]?.includes("youtu.be") && (
           <iframe
             key={sourceIndex}
@@ -658,15 +345,6 @@ export const VideoPlayer = ({
             <p className="text-xs text-accent mt-1">{allLabels[sourceIndex] || SOURCE_LABELS[sourceIndex]}</p>
           </div>
         )}
-
-        {playerActive && slow[sourceIndex] && !loading && (
-          <div className="absolute top-3 end-3 flex items-center gap-2 bg-black/70 border border-border rounded-full px-3 py-1.5 text-xs">
-            <AlertCircle className="w-3.5 h-3.5 text-accent" />
-            <button onClick={retry} className="inline-flex items-center gap-1 hover:text-accent">
-              <RotateCw className="w-3 h-3" /> {t("player_retry")}
-            </button>
-          </div>
-        )}
       </div>
 
       {/* Sélecteur de source avancé */}
@@ -692,27 +370,35 @@ export const VideoPlayer = ({
         />
       </div>
 
-      {/* Settings Modal (Glassmorphism) */}
+      {/* Settings Modal (High-Contrast Glassmorphism) */}
       {showSettings && (
-        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 animate-in fade-in duration-300">
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-md" onClick={() => setShowSettings(false)} />
-          <div className="relative w-full max-w-md bg-black/40 border border-white/10 rounded-[2rem] p-8 shadow-2xl backdrop-blur-2xl animate-in zoom-in-95 duration-300 overflow-hidden">
-            <div className="absolute -top-24 -end-24 w-48 h-48 bg-accent/20 blur-[80px] rounded-full" />
+        <div className="fixed inset-0 z-[500] flex items-center justify-center p-4 animate-in fade-in duration-300">
+          <div className="absolute inset-0 bg-black/80 backdrop-blur-xl" onClick={() => setShowSettings(false)} />
+          
+          <div className="relative w-full max-w-sm bg-[#0a0a0a] border border-white/10 rounded-[2.5rem] p-8 shadow-[0_0_50px_rgba(0,0,0,0.8)] animate-in zoom-in-95 duration-300 overflow-hidden">
+            <div className="absolute -top-12 -end-12 w-32 h-32 bg-accent/10 blur-[60px] rounded-full" />
             
-            <div className="relative space-y-6">
-              <div className="flex items-center justify-between">
-                <h3 className="text-xl font-display font-black tracking-widest text-accent uppercase">{activeTab}</h3>
-                <button onClick={() => setShowSettings(false)} className="p-2 rounded-full hover:bg-white/10 text-white/40 transition-all">
+            <div className="relative space-y-8">
+              <div className="flex items-center justify-between border-b border-white/5 pb-4">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-xl bg-accent/10 text-accent">
+                    {activeTab === "speed" && <Gauge className="w-5 h-5" />}
+                    {activeTab === "subtitle" && <Captions className="w-5 h-5" />}
+                    {(activeTab === "quality" || activeTab === "audio") && <Settings className="w-5 h-5" />}
+                  </div>
+                  <h3 className="text-lg font-display font-black tracking-widest text-white uppercase">{activeTab}</h3>
+                </div>
+                <button onClick={() => setShowSettings(false)} className="p-2 rounded-full hover:bg-white/10 text-white/30 transition-all">
                   <X className="w-5 h-5" />
                 </button>
               </div>
 
-              <div className="space-y-2 max-h-[40vh] overflow-y-auto custom-scrollbar pr-2">
+              <div className="space-y-2 max-h-[50vh] overflow-y-auto custom-scrollbar pr-1">
                 {activeTab === "speed" && [0.5, 0.75, 1, 1.25, 1.5, 2].map((rate) => (
                   <button 
                     key={rate}
                     onClick={() => { setPlaybackRate(rate); setShowSettings(false); }}
-                    className={`w-full flex items-center justify-between px-5 py-4 rounded-2xl text-sm font-bold transition-all ${playbackRate === rate ? 'bg-accent text-black shadow-glow-sm' : 'bg-white/5 text-white/60 hover:bg-white/10'}`}
+                    className={`w-full flex items-center justify-between px-6 py-4 rounded-2xl text-sm font-black transition-all ${playbackRate === rate ? 'bg-accent text-black shadow-glow-sm' : 'bg-white/5 text-white/50 hover:bg-white/10 hover:text-white'}`}
                   >
                     <span>{rate}x</span>
                     {playbackRate === rate && <Check className="w-4 h-4" />}
@@ -721,7 +407,7 @@ export const VideoPlayer = ({
 
                 {activeTab === "subtitle" && (
                   <div className="space-y-4">
-                    <p className="text-[10px] font-black text-white/30 uppercase tracking-widest px-2">External Subtitles</p>
+                    <p className="text-[10px] font-black text-white/20 uppercase tracking-[0.3em] px-2">Subtitles Found</p>
                     {externalSubs.length > 0 ? (
                       externalSubs.map((sub, idx) => (
                         <button 
@@ -731,23 +417,27 @@ export const VideoPlayer = ({
                             if (url) setAppliedExternalSub(url);
                             setShowSettings(false);
                           }}
-                          className={`w-full flex items-center justify-between px-5 py-4 rounded-2xl text-sm font-bold transition-all bg-white/5 text-white/60 hover:bg-white/10`}
+                          className="w-full flex items-center justify-between px-5 py-4 rounded-2xl text-[11px] font-bold transition-all bg-white/5 text-white/50 hover:bg-white/10 hover:text-white border border-transparent hover:border-white/5"
                         >
-                          <span className="truncate max-w-[200px]">{sub.attributes.release}</span>
-                          <Languages className="w-4 h-4 text-accent/40" />
+                          <span className="truncate max-w-[220px]">{sub.attributes.release}</span>
+                          <Check className="w-3 h-3 text-accent opacity-0 group-hover:opacity-100" />
                         </button>
                       ))
                     ) : (
-                      <div className="text-center py-8">
-                        <p className="text-xs text-white/40 italic">No external subtitles found.</p>
+                      <div className="text-center py-12 bg-white/5 rounded-3xl border border-dashed border-white/10">
+                        <Loader2 className="w-6 h-6 text-accent/20 animate-spin mx-auto mb-3" />
+                        <p className="text-[10px] font-black text-white/20 uppercase tracking-widest">Searching or none found</p>
                       </div>
                     )}
                   </div>
                 )}
 
                 {(activeTab === "quality" || activeTab === "audio") && (
-                  <div className="text-center py-12">
-                    <p className="text-xs text-white/40 italic">Controlled by the server in mirror mode.</p>
+                  <div className="text-center py-16 bg-white/5 rounded-3xl border border-dashed border-white/10">
+                    <ShieldCheck className="w-8 h-8 text-accent/20 mx-auto mb-4" />
+                    <p className="text-xs text-white/40 font-medium px-8 leading-relaxed">
+                      This setting is managed automatically by the streaming server for optimal performance.
+                    </p>
                   </div>
                 )}
               </div>
@@ -755,7 +445,6 @@ export const VideoPlayer = ({
           </div>
         </div>
       )}
-
     </div>
   );
 };

@@ -6,7 +6,8 @@ import {
   Server, 
   ChevronDown,
   Check,
-  ShieldCheck
+  ShieldCheck,
+  X
 } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { 
@@ -58,40 +59,40 @@ export const PlayerSourceSelector = ({
   }
 
   return (
-    <div className="w-full mt-4 animate-fade-slide-up">
-      <div className="flex items-center justify-between gap-4 p-2.5 rounded-2xl bg-black/40 backdrop-blur-xl border border-white/10 shadow-2xl">
+    <div className="w-full mt-2 animate-in fade-in slide-in-from-bottom-4 duration-700">
+      <div className="flex items-center justify-between gap-4 p-1.5 px-3 rounded-2xl bg-[#0a0a0a]/80 backdrop-blur-3xl border border-white/5 shadow-2xl">
         
         {/* Left: Server Selection */}
         <div className="flex items-center gap-2">
-          <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-accent/10 border border-accent/20 text-accent group cursor-default">
-            <Server className="w-4 h-4" />
-            <span className="text-[10px] font-black uppercase tracking-[0.2em]">{isAr ? "السيرفر" : "SERVER"}</span>
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-accent/10 border border-accent/20 text-accent cursor-default">
+            <Server className="w-3.5 h-3.5" />
+            <span className="text-[9px] font-black uppercase tracking-[0.2em]">{isAr ? "السيرفر" : "SERVER"}</span>
           </div>
           
           <Popover>
             <PopoverTrigger asChild>
-              <button className="flex items-center gap-3 px-4 py-2.5 rounded-xl bg-white/5 border border-white/5 hover:border-white/20 transition-all group min-w-[160px]">
-                <span className="text-sm font-bold text-white/90 group-hover:text-white transition-colors">{currentSource?.name}</span>
-                <ChevronDown className="w-4 h-4 text-white/20 group-hover:text-white transition-all duration-300" />
+              <button className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 border border-white/5 hover:bg-white/10 hover:border-white/20 transition-all group min-w-[140px]">
+                <span className="text-xs font-bold text-white/80 group-hover:text-white transition-colors">{currentSource?.name}</span>
+                <ChevronDown className="w-3.5 h-3.5 text-white/20 group-hover:text-white transition-all duration-300" />
               </button>
             </PopoverTrigger>
-            <PopoverContent className="w-64 p-2 bg-black/90 backdrop-blur-xl border-white/10 shadow-2xl rounded-2xl">
+            <PopoverContent className="w-64 p-2 bg-[#0f0f0f] border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.5)] rounded-2xl">
               <div className="max-h-60 overflow-y-auto custom-scrollbar flex flex-col gap-1">
                 {sources.map((s, idx) => (
                   <button
                     key={s.id}
                     onClick={() => onSelect(idx)}
-                    className={`flex items-center justify-between px-4 py-3 rounded-xl text-sm font-bold transition-all ${
+                    className={`flex items-center justify-between px-4 py-3 rounded-xl text-xs font-bold transition-all ${
                       s.selected 
-                        ? "bg-accent text-black shadow-[0_0_15px_rgba(212,175,55,0.3)]" 
-                        : "hover:bg-white/10 text-white/60 hover:text-white"
+                        ? "bg-accent text-black" 
+                        : "hover:bg-white/5 text-white/50 hover:text-white"
                     }`}
                   >
                     <div className="flex items-center gap-2">
-                      <div className={`w-1.5 h-1.5 rounded-full ${s.selected ? 'bg-black' : 'bg-accent'}`} />
+                      <div className={`w-1.5 h-1.5 rounded-full ${s.selected ? 'bg-black' : 'bg-accent/40'}`} />
                       {s.name}
                     </div>
-                    {s.selected && <Check className="w-4 h-4" />}
+                    {s.selected && <Check className="w-3.5 h-3.5" />}
                   </button>
                 ))}
               </div>
@@ -99,41 +100,35 @@ export const PlayerSourceSelector = ({
           </Popover>
         </div>
 
-        {/* Right: Unified Controls (Quality, Subtitles) */}
-        <div className="flex items-center gap-2 pr-1">
-          {/* Quality Selector */}
+        {/* Right: Controls */}
+        <div className="flex items-center gap-1.5">
+          {/* Quality */}
           <button 
             onClick={onToggleQuality}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 hover:border-white/20 transition-all text-xs font-black text-white/70 hover:text-white group"
+            className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 border border-white/5 hover:bg-white/10 hover:border-white/20 transition-all text-[10px] font-black text-white/50 hover:text-white group"
           >
-            <Layers className="w-4 h-4 text-accent/80 group-hover:text-accent" />
+            <Layers className="w-3.5 h-3.5 text-accent/60 group-hover:text-accent" />
             <span className="uppercase tracking-widest">{currentSource?.quality || "Auto"}</span>
           </button>
 
-          {/* Subtitles Selector */}
+          {/* Subtitles */}
           <button 
             onClick={onToggleSubtitles}
-            className="flex items-center gap-3 px-4 py-2.5 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 hover:border-white/20 transition-all text-xs font-black text-white/70 hover:text-white group"
+            className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 border border-white/5 hover:bg-white/10 hover:border-white/20 transition-all text-[10px] font-black text-white/50 hover:text-white group"
           >
-            <Subtitles className="w-4 h-4 text-white/40 group-hover:text-white" />
+            <Subtitles className="w-3.5 h-3.5 text-white/20 group-hover:text-white" />
             <span className="uppercase tracking-widest">{isAr ? "العربية" : "Arabic"}</span>
-            <span className="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.5)]" />
+            <span className="w-1.5 h-1.5 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.4)]" />
           </button>
 
-          {/* Settings Button */}
+          {/* Settings */}
           <button 
             onClick={onToggleSettings}
-            className="p-2.5 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 hover:border-white/20 transition-all group"
+            className="p-1.5 rounded-lg bg-white/5 border border-white/5 hover:bg-white/10 hover:border-white/20 transition-all group"
           >
-            <Settings className="w-5 h-5 text-white/40 group-hover:text-white group-hover:rotate-90 transition-all duration-500" />
+            <Settings className="w-4 h-4 text-white/30 group-hover:text-white group-hover:rotate-90 transition-all duration-500" />
           </button>
         </div>
-      </div>
-      
-      {/* Mini Tip */}
-      <div className="mt-3 flex items-center gap-2 px-4 py-1 text-[9px] font-black text-white/20 uppercase tracking-[0.3em]">
-        <ShieldCheck className="w-3 h-3 text-accent/40" />
-        {isAr ? "جميع السيرفرات تدعم الترجمة العربية تلقائياً" : "All servers support Arabic subtitles automatically"}
       </div>
     </div>
   );
