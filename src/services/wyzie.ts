@@ -18,9 +18,9 @@ export const searchWyzieSubtitles = async (tmdbId: string | number, imdbId?: str
     return [];
   }
 
-  const fetchFromWyzie = async (id: string | number) => {
+  const fetchFromWyzie = async (id: string | number, lang: string) => {
     try {
-      const url = `${BASE_URL}/search?id=${id}&language=${language}&key=${API_KEY}`;
+      const url = `${BASE_URL}/search?id=${id}&language=${lang}&key=${API_KEY}`;
       const response = await fetch(url);
       if (!response.ok) return [];
       const data = await response.json();
@@ -30,10 +30,23 @@ export const searchWyzieSubtitles = async (tmdbId: string | number, imdbId?: str
     }
   };
 
-  // Try TMDB first, then IMDB as fallback
-  let data = await fetchFromWyzie(tmdbId);
-  if (data.length === 0 && imdbId) {
-    data = await fetchFromWyzie(imdbId);
+  // Priority: IMDB ID for Wyzie usually works better
+  const searchId = imdbId || tmdbId;
+  
+  // Try Arabic first
+  let data = await fetchFromWyzie(searchId, "ar");
+  
+  // If no Arabic, try English as fallback
+  if (data.length === 0) {
+    data = await fetchFromWyzie(searchId, "en");
+  }
+
+  // Final fallback with TMDB if IMDB was used and failed
+  if (data.length === 0 && imdbId && tmdbId) {
+    data = await fetchFromWyzie(tmdbId, "ar");
+    if (data.length === 0) {
+      data = await fetchFromWyzie(tmdbId, "en");
+    }
   }
 
   return data.map((sub: any) => {

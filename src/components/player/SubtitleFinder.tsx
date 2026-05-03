@@ -104,10 +104,18 @@ export const SubtitleFinder = ({ imdbId, tmdbId, title, type, season, episode, o
                  btn.innerHTML = '<div class="flex items-center gap-2"><div class="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></div><span class="text-[10px] font-bold">CHARGEMENT...</span></div>';
                  
                  try {
-                   const id = imdbId || tmdbId;
                    const API_KEY = "wyzie-e9b346c2994496155d332268cbe0ff6a";
-                   const response = await fetch(`https://sub.wyzie.io/search?id=${id}&language=ar&key=${API_KEY}`);
-                   const data = await response.json();
+                   const searchId = imdbId || tmdbId;
+                   
+                   // Try Arabic first
+                   let response = await fetch(`https://sub.wyzie.io/search?id=${searchId}&language=ar&key=${API_KEY}`);
+                   let data = await response.json();
+                   
+                   // Fallback to English if no Arabic found
+                   if (!Array.isArray(data) || data.length === 0) {
+                     response = await fetch(`https://sub.wyzie.io/search?id=${searchId}&language=en&key=${API_KEY}`);
+                     data = await response.json();
+                   }
                    
                    if (Array.isArray(data) && data.length > 0) {
                      if (onSubtitleSelect) {
@@ -127,11 +135,11 @@ export const SubtitleFinder = ({ imdbId, tmdbId, title, type, season, episode, o
                        window.open(subUrl, '_blank');
                      }
                    } else {
-                     alert("Aucune traduction trouvée sur Wyzie pour ce contenu.");
+                     alert(lang === 'ar' ? "لم يتم العثور على ترجمة في Wyzie." : "Aucune traduction trouvée sur Wyzie.");
                    }
                  } catch (err) {
                    console.error(err);
-                   alert("Erreur lors de la recherche Wyzie.");
+                   alert("Erreur Wyzie API.");
                  } finally {
                    btn.disabled = false;
                    btn.innerHTML = originalContent;
