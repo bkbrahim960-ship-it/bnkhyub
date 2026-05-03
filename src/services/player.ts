@@ -50,7 +50,7 @@ export const getMovieSources = (imdb_id: string, tmdb_id: number | string): stri
     `https://vidsrc-embed.ru/embed/movie?${imdb_id ? `imdb=${imdb_id}` : `tmdb=${tmdb_id}`}&ds_lang=ar`, // S2: Arabic subs
     `https://vidsrc.to/embed/movie/${id}`, // S3
     `https://vidsrc.pro/embed/movie/${id}`, // S4: New Clean Generation
-    `https://moviesapi.club/movie/${tmdb_id}`, // S5: Premium Clean
+    `https://moviesapi.club/movie/${id}`, // S5: Premium Clean (User Request)
     `https://autoembed.to/movie/tmdb/${tmdb_id}`, // S6: Stable
   ];
 };
@@ -68,7 +68,7 @@ export const getTVSources = (
     `https://vidsrc-embed.ru/embed/tv?${imdb_id ? `imdb=${imdb_id}` : `tmdb=${tmdb_id}`}&season=${season}&episode=${episode}&ds_lang=ar`, // S2: Arabic subs
     `https://vidsrc.to/embed/tv/${id}/${season}/${episode}`, // S3
     `https://vidsrc.pro/embed/tv/${id}/${season}/${episode}`, // S4: New Clean Generation
-    `https://moviesapi.club/tv/${tmdb_id}-${season}-${episode}`, // S5: Premium Clean
+    `https://moviesapi.club/tv/${id}-${season}-${episode}`, // S5: Premium Clean (User Request)
     `https://autoembed.to/tv/tmdb/${tmdb_id}-${season}-${episode}`, // S6: Stable
   ];
 };
