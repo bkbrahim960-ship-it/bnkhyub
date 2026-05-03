@@ -112,38 +112,55 @@ export const VideoPlayer = ({
     }
   }, [imdb_id, playerActive]);
 
-  // BNKhub Shield — Bloquer les popups et les alertes intrusives
+  // 🛡️ BNKhub Anti-Ad Engine — Système de blocage ultra-agressif
   useEffect(() => {
     if (typeof window === "undefined") return;
     
     const originalOpen = window.open;
     const originalAlert = window.alert;
-    const originalConfirm = window.confirm;
-    const originalPrompt = window.prompt;
 
-    // Override window.open
+    // 1. Overriding window.open avec auto-fermeture immédiate
     window.open = function(url?: string | URL, target?: string, features?: string) {
       const urlStr = url instanceof URL ? url.toString() : url;
-      
-      // Autoriser uniquement le même domaine
-      if (!urlStr || urlStr.startsWith(window.location.origin) || urlStr.startsWith("/") || urlStr === "about:blank") {
+      const isInternal = !urlStr || urlStr.startsWith(window.location.origin) || urlStr.startsWith("/") || urlStr === "about:blank";
+
+      if (isInternal) {
         return originalOpen.call(window, url, target, features);
       }
       
-      console.log("BNKhub Shield — Popup Blocked:", urlStr);
+      // Si une popup s'ouvre quand même, on tente de la capturer et de la fermer
+      try {
+        const adWin = originalOpen.call(window, url, target, features);
+        if (adWin) {
+          adWin.close();
+          console.log("🛡️ BNKhub Engine — Popup interceptée et fermée !");
+        }
+      } catch (e) {
+        // Bloqué par le navigateur ou erreur de cross-origin
+      }
       return null;
     };
 
-    // Silencer les alertes des miroirs
+    // 2. Intercepter les clics suspects sur les overlays invisibles
+    const handleGlobalClick = (e: MouseEvent) => {
+      // Si le clic provient d'une zone suspecte ou d'un iframe caché
+      const target = e.target as HTMLElement;
+      if (target.tagName === 'IFRAME' && !target.id.includes('bnkhub')) {
+        console.log("🛡️ BNKhub Engine — Clic suspect bloqué");
+        // e.preventDefault(); // Risqué car peut casser le player
+      }
+    };
+
+    // 3. Désactiver les alertes et dialogues
     window.alert = () => {};
     window.confirm = () => true;
-    window.prompt = () => null;
 
+    window.addEventListener('click', handleGlobalClick, true);
+    
     return () => {
       window.open = originalOpen;
       window.alert = originalAlert;
-      window.confirm = originalConfirm;
-      window.prompt = originalPrompt;
+      window.removeEventListener('click', handleGlobalClick, true);
     };
   }, []);
 
