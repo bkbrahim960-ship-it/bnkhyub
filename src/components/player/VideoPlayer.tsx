@@ -92,7 +92,7 @@ export const VideoPlayer = ({
     const autoFetchSubs = async () => {
       if (!imdb_id || appliedExternalSub) return;
       try {
-        const results = await searchSubtitles(imdb_id);
+        const results = await searchSubtitles(imdb_id, "ar", season, episode);
         setExternalSubs(results);
         
         if (results.length > 0) {
@@ -110,7 +110,7 @@ export const VideoPlayer = ({
     if (playerActive) {
       autoFetchSubs();
     }
-  }, [imdb_id, playerActive]);
+  }, [imdb_id, playerActive, season, episode]);
 
   // Check for resume progress on mount
   useEffect(() => {

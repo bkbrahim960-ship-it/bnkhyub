@@ -17,10 +17,16 @@ export interface SubtitleResult {
   };
 }
 
-export const searchSubtitles = async (imdb_id: string, lang = "ar") => {
+export const searchSubtitles = async (imdb_id: string, lang = "ar", season?: number, episode?: number) => {
   try {
     const id = imdb_id.startsWith("tt") ? imdb_id.replace("tt", "") : imdb_id;
-    const response = await fetch(`${BASE_URL}/subtitles?imdb_id=${id}&languages=${lang}`, {
+    let url = `${BASE_URL}/subtitles?imdb_id=${id}&languages=${lang}`;
+    
+    if (season && episode) {
+      url = `${BASE_URL}/subtitles?parent_imdb_id=${id}&season_number=${season}&episode_number=${episode}&languages=${lang}`;
+    }
+
+    const response = await fetch(url, {
       headers: {
         "Api-Key": API_KEY,
         "Content-Type": "application/json",
