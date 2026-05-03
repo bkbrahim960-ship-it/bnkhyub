@@ -39,6 +39,12 @@ export const SubtitleFinder = ({ imdbId, title, type, season, episode }: Props) 
       url: `https://subdl.com/search?q=${imdbId || query}`,
       icon: <Download className="w-4 h-4" />,
       color: "hover:bg-green-500/20 hover:text-green-400"
+    },
+    {
+      name: "Substital",
+      url: `https://substital.com/`,
+      icon: <MessageSquare className="w-4 h-4 text-purple-400" />,
+      color: "hover:bg-purple-500/20 hover:text-purple-400"
     }
   ];
 
@@ -116,6 +122,10 @@ export const SubtitleFinder = ({ imdbId, title, type, season, episode }: Props) 
         <div className="flex items-center gap-2 text-[11px] text-muted-foreground bg-accent/5 px-4 py-2 rounded-full border border-accent/20">
           <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
           {t("sub_hint")}
+        </div>
+        <div className="flex items-center gap-2 text-[11px] text-muted-foreground bg-purple-500/5 px-4 py-2 rounded-full border border-purple-500/20">
+          <span className="w-1.5 h-1.5 rounded-full bg-purple-500 animate-pulse" />
+          {lang === 'ar' ? 'نصيحة: استخدم إضافة Substital لمتصفحك لدمج الترجمة بسهولة في أي مشغل.' : 'Conseil: Utilisez l\'extension Substital pour injecter facilement des sous-titres.'}
         </div>
       </div>
     </div>
