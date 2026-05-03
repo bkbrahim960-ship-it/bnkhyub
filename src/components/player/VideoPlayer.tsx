@@ -8,6 +8,7 @@ import { useEffect, useRef, useState, useMemo } from "react";
 import { getMovieSources, getTVSources, SOURCE_LABELS } from "@/services/player";
 import { AdsNoticeModal, hasSeenAdsNotice } from "./AdsNoticeModal";
 import { ResumeModal } from "./ResumeModal";
+import { SubtitleFinder } from "./SubtitleFinder";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
 import { getRecentHistory } from "@/services/watchHistory";
@@ -86,6 +87,7 @@ export const VideoPlayer = ({
   const [historyProgress, setHistoryProgress] = useState(0);
   const [hasResumed, setHasResumed] = useState(false);
   const [isWebFullscreen, setIsWebFullscreen] = useState(false);
+  const [showSubtitleFinder, setShowSubtitleFinder] = useState(false);
 
   // Auto-fetch Arabic subtitles on mount
   useEffect(() => {
@@ -436,6 +438,15 @@ export const VideoPlayer = ({
       )}
 
       <div className={`relative w-full aspect-video bg-black rounded-2xl overflow-hidden border border-white/10 shadow-2xl group/player transition-all duration-500 ${isWebFullscreen ? 'fixed inset-0 z-[1000] rounded-none !aspect-auto h-screen' : ''}`}>
+        {/* Floating Subtitle Button */}
+        <button 
+          onClick={() => setShowSubtitleFinder(true)}
+          className="absolute top-4 end-4 z-[70] flex items-center gap-2 px-4 py-2 rounded-full bg-accent/90 backdrop-blur-xl border border-accent/40 text-accent-foreground font-bold text-xs shadow-2xl hover:scale-105 active:scale-95 transition-all opacity-0 group-hover/player:opacity-100"
+        >
+          <Languages className="w-4 h-4" />
+          <span>الترجمة العربية</span>
+        </button>
+
         {/* Only Official Server UI remains here */}
 
         {/* Resume / Restart Modal */}
@@ -814,6 +825,17 @@ export const VideoPlayer = ({
         />
       </div>
 
+      {/* Subtitle Finder Modal */}
+      <SubtitleFinder 
+        open={showSubtitleFinder}
+        onClose={() => setShowSubtitleFinder(false)}
+        imdb_id={imdb_id || ""}
+        onSelect={(url) => {
+          setAppliedExternalSub(url);
+          setShowSubtitleFinder(false);
+          toast.success("تم تطبيق الترجمة بنجاح");
+        }}
+      />
     </div>
   );
 };
