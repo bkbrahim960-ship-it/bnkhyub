@@ -152,7 +152,7 @@ const Movie = () => {
         keywords={`${movie.title}, regarder ${movie.title}, film gratuit, BNKhub`}
       />
       {/* Cinematic Hero with Video Background */}
-      <section className="relative min-h-[75vh] md:min-h-[90vh] lg:min-h-[95vh] flex items-end pb-8 md:pb-16 lg:pb-24 overflow-hidden -mt-16 md:-mt-20 lg:-mt-24 pt-16 md:pt-20 lg:pt-24">
+      <section className="relative min-h-[70vh] md:min-h-[90vh] lg:min-h-[95vh] flex items-center md:items-end pb-12 md:pb-16 lg:pb-24 overflow-hidden -mt-16 md:-mt-20 lg:-mt-24 pt-20 md:pt-24">
         <VideoBackdrop 
           backdropPath={backdrop} 
           videoKey={trailer?.key} 
