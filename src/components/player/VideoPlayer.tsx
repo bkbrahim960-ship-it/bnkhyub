@@ -112,22 +112,38 @@ export const VideoPlayer = ({
     }
   }, [imdb_id, playerActive]);
 
-  // Bloquer les popups (window.open)
+  // BNKhub Shield — Bloquer les popups et les alertes intrusives
   useEffect(() => {
     if (typeof window === "undefined") return;
     
     const originalOpen = window.open;
-    window.open = function(url: string | URL | undefined, target?: string, features?: string) {
-      // Autoriser uniquement les fenêtres du même domaine (BNKhub)
-      if (typeof url === "string" && (url.startsWith(window.location.origin) || url.startsWith("/"))) {
+    const originalAlert = window.alert;
+    const originalConfirm = window.confirm;
+    const originalPrompt = window.prompt;
+
+    // Override window.open
+    window.open = function(url?: string | URL, target?: string, features?: string) {
+      const urlStr = url instanceof URL ? url.toString() : url;
+      
+      // Autoriser uniquement le même domaine
+      if (!urlStr || urlStr.startsWith(window.location.origin) || urlStr.startsWith("/") || urlStr === "about:blank") {
         return originalOpen.call(window, url, target, features);
       }
-      console.log("BNKhub Shield — Popup Blocked:", url);
+      
+      console.log("BNKhub Shield — Popup Blocked:", urlStr);
       return null;
     };
 
+    // Silencer les alertes des miroirs
+    window.alert = () => {};
+    window.confirm = () => true;
+    window.prompt = () => null;
+
     return () => {
       window.open = originalOpen;
+      window.alert = originalAlert;
+      window.confirm = originalConfirm;
+      window.prompt = originalPrompt;
     };
   }, []);
 
