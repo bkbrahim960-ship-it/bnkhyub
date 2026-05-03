@@ -4,7 +4,7 @@
  * Le timeout de 5s n'a été conservé que pour marquer visuellement une source
  * comme potentiellement indisponible, mais il NE bascule plus automatiquement.
  */
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useMemo } from "react";
 import { getMovieSources, getTVSources, SOURCE_LABELS } from "@/services/player";
 import { AdsNoticeModal, hasSeenAdsNotice } from "./AdsNoticeModal";
 import { ResumeModal } from "./ResumeModal";
@@ -138,10 +138,11 @@ export const VideoPlayer = ({
     checkHistory();
   }, [user, tmdb_id, type, season, episode, hasResumed]);
 
-  const baseSources =
+  const baseSources = useMemo(() => 
     type === "movie"
-      ? getMovieSources(imdb_id, tmdb_id)
-      : getTVSources(imdb_id, tmdb_id, season ?? 1, episode ?? 1);
+      ? getMovieSources(imdb_id || "", tmdb_id, appliedExternalSub || undefined)
+      : getTVSources(imdb_id || "", tmdb_id, season ?? 1, episode ?? 1, appliedExternalSub || undefined)
+  , [imdb_id, tmdb_id, type, season, episode, appliedExternalSub]);
 
   const [customSources, setCustomSources] = useState<string[]>([]);
   const [customLabels, setCustomLabels] = useState<string[]>([]);
