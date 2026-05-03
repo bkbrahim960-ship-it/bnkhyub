@@ -63,6 +63,7 @@ export const getMovieSources = (imdb_id: string, tmdb_id: number | string): stri
     `https://vidsrc.net/embed/movie/${id}`, // S15
     `https://vidsrc.xyz/embed/movie/${id}`, // S16
     `https://www.2embed.to/embed/imdb/movie?id=${id}`, // S17
+    `https://embedmaster.link/movie/${imdb_id && !imdb_id.startsWith('tt') ? 'tt'+imdb_id : (imdb_id || tmdb_id)}`, // S18: EmbedMaster
   ];
 };
 
@@ -92,6 +93,7 @@ export const getTVSources = (
     `https://vidsrc.net/embed/tv/${id}/${season}/${episode}`, // S15
     `https://vidsrc.xyz/embed/tv/${id}/${season}/${episode}`, // S16
     `https://www.2embed.to/embed/imdb/tv?id=${id}&s=${season}&e=${episode}`, // S17
+    `https://embedmaster.link/tv/${imdb_id && !imdb_id.startsWith('tt') ? 'tt'+imdb_id : (imdb_id || tmdb_id)}/${season}/${episode}`, // S18: EmbedMaster
   ];
 };
 
@@ -113,6 +115,7 @@ export const SOURCE_LABELS = [
   "S15 · vidsrc.net",
   "S16 · vidsrc.xyz",
   "S17 · 2embed",
+  "S18 · EmbedMaster",
 ];
 
 // ───── Nouveautés vidsrc-embed ─────

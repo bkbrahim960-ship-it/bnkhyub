@@ -841,7 +841,12 @@ export const VideoPlayer = ({
             src={sources[sourceIndex]}
             title="BNKhub player"
             {...(sourceIndex === 0 ? { sandbox: "allow-scripts allow-same-origin allow-forms allow-presentation" } : {})}
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
+            {...(sources[sourceIndex]?.includes('embedmaster.link') ? { 
+              sandbox: undefined,
+              allow: "autoplay *; fullscreen *; picture-in-picture *; encrypted-media *"
+            } : {
+              allow: "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
+            })}
             allowFullScreen
             referrerPolicy="no-referrer-when-downgrade"
             onLoad={handleLoad}
