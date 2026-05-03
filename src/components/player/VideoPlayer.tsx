@@ -8,11 +8,10 @@ import { useEffect, useRef, useState, useMemo } from "react";
 import { getMovieSources, getTVSources, SOURCE_LABELS } from "@/services/player";
 import { AdsNoticeModal, hasSeenAdsNotice } from "./AdsNoticeModal";
 import { ResumeModal } from "./ResumeModal";
-import { SubtitleFinder } from "./SubtitleFinder";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
 import { getRecentHistory, updateWatchHistory } from "@/services/watchHistory";
-import { Loader2, AlertCircle, RotateCw, Play, Settings, Lock, Unlock, FastForward, Languages, Captions, Monitor, Gauge, PictureInPicture as PipIcon, Maximize, Search, Download, ExternalLink } from "lucide-react";
+import { Loader2, AlertCircle, RotateCw, Play, Settings, Lock, Unlock, FastForward, Captions, Monitor, Gauge, PictureInPicture as PipIcon, Maximize, Search, Download, ExternalLink } from "lucide-react";
 import { searchSubtitles, getDownloadUrl, SubtitleResult } from "@/services/opensubtitles";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -65,35 +64,16 @@ export const VideoPlayer = ({
 
   const [isLocked, setIsLocked] = useState(false);
   const [isWebFullscreen, setIsWebFullscreen] = useState(false);
-  const [showSubtitleFinder, setShowSubtitleFinder] = useState(false);
-  const [reloadKey, setReloadKey] = useState(0);
-  const [appliedExternalSub, setAppliedExternalSub] = useState<string | null>(null);
-  const [externalSubs, setExternalSubs] = useState<SubtitleResult[]>([]);
 
   const { user } = useAuth();
   const [resumeModalOpen, setResumeModalOpen] = useState(false);
   const [historyProgress, setHistoryProgress] = useState(0);
   const [hasResumed, setHasResumed] = useState(false);
 
-  // Auto-fetch Arabic subtitles on mount
-  useEffect(() => {
-    const autoFetchSubs = async () => {
-      if (!imdb_id || appliedExternalSub) return;
-      try {
-        const results = await searchSubtitles(imdb_id, "ar", season, episode);
-        setExternalSubs(results);
-        if (results.length > 0) {
-          const url = await getDownloadUrl(results[0].attributes.file_id);
-          if (url) {
-            setAppliedExternalSub(url);
-          }
-        }
-      } catch (err) {
-        console.error("Auto-fetch subtitles failed:", err);
-      }
-    };
-    if (playerActive) autoFetchSubs();
-  }, [imdb_id, playerActive, season, episode]);
+    if (playerActive) {
+      // Auto-fetch disabled as requested to revert to original state
+    }
+  }, [imdb_id, playerActive]);
 
   // Check for resume progress
   useEffect(() => {
@@ -118,9 +98,9 @@ export const VideoPlayer = ({
 
   const baseSources = useMemo(() => 
     type === "movie"
-      ? getMovieSources(imdb_id || "", tmdb_id, appliedExternalSub || undefined)
-      : getTVSources(imdb_id || "", tmdb_id, season ?? 1, episode ?? 1, appliedExternalSub || undefined)
-  , [imdb_id, tmdb_id, type, season, episode, appliedExternalSub]);
+      ? getMovieSources(imdb_id || "", tmdb_id)
+      : getTVSources(imdb_id || "", tmdb_id, season ?? 1, episode ?? 1)
+  , [imdb_id, tmdb_id, type, season, episode]);
 
   const sources = customUrl ? [customUrl] : baseSources;
   const allLabels = customUrl ? ["Source Directe"] : SOURCE_LABELS;
@@ -130,7 +110,7 @@ export const VideoPlayer = ({
     setLoading(true);
     const timer = setTimeout(() => setLoading(false), 15000);
     return () => clearTimeout(timer);
-  }, [sourceIndex, playerActive, imdb_id, tmdb_id, season, episode, reloadKey]);
+  }, [sourceIndex, playerActive, imdb_id, tmdb_id, season, episode]);
 
   const handleLoad = () => setLoading(false);
 
@@ -148,15 +128,6 @@ export const VideoPlayer = ({
 
       <div className={`relative w-full aspect-video bg-black rounded-2xl overflow-hidden border border-white/10 shadow-2xl group/player transition-all duration-500 ${isWebFullscreen ? 'fixed inset-0 z-[1000] rounded-none !aspect-auto h-screen' : ''}`}>
         
-        {/* Floating Subtitle Button */}
-        <button 
-          onClick={() => setShowSubtitleFinder(true)}
-          className="absolute top-4 end-4 z-[70] flex items-center gap-2 px-4 py-2 rounded-full bg-accent/90 backdrop-blur-xl border border-accent/40 text-accent-foreground font-bold text-xs shadow-2xl hover:scale-105 active:scale-95 transition-all opacity-0 group-hover/player:opacity-100"
-        >
-          <Languages className="w-4 h-4" />
-          <span>الترجمة العربية</span>
-        </button>
-
         {/* Player Content */}
         {playerActive && (
           <div className="absolute inset-0 w-full h-full">
@@ -170,11 +141,10 @@ export const VideoPlayer = ({
                 onLoadedData={handleLoad}
               >
                 <source src={sources[sourceIndex]} type="application/x-mpegURL" />
-                {appliedExternalSub && <track src={appliedExternalSub} kind="subtitles" srcLang="ar" label="Arabe (Clean)" default />}
               </video>
             ) : (
               <iframe
-                key={`${sourceIndex}-${reloadKey}`}
+                key={sourceIndex}
                 src={sources[sourceIndex]}
                 title="BNKhub player"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
@@ -226,19 +196,6 @@ export const VideoPlayer = ({
         }} 
       />
 
-      <SubtitleFinder 
-        open={showSubtitleFinder}
-        onClose={() => setShowSubtitleFinder(false)}
-        imdb_id={imdb_id || ""}
-        season={season}
-        episode={episode}
-        onSelect={(url) => {
-          setAppliedExternalSub(url);
-          setReloadKey(prev => prev + 1);
-          setShowSubtitleFinder(false);
-          toast.success("تم تطبيق الترجمة بنجاح");
-        }}
-      />
     </div>
   );
 };
