@@ -38,9 +38,6 @@ export const getVidsrcEmbedUrl = (type: 'movie' | 'tv', imdb_id: string, tmdb_id
  * Main Source Fetchers
  */
 export const getMovieSources = (imdb_id: string, tmdb_id: number | string): string[] => {
-  const color = safeGetAccentHex();
-  const id = imdb_id || tmdb_id;
-  
   return [
     `https://vaplayer.ru/embed/movie/${imdb_id || tmdb_id}?primaryColor=${color.replace('#','')}&lang=ar&ds_lang=ar&autoplay=1`, // S1
     getVidsrcEmbedUrl('movie', imdb_id, tmdb_id), // S2
@@ -48,15 +45,12 @@ export const getMovieSources = (imdb_id: string, tmdb_id: number | string): stri
     `https://vidsrc.me/embed/movie?imdb=${imdb_id || id}`, // S4
     `https://vidsrc.io/embed/movie/${id}`, // S5
     `https://vidsrc.stream/embed/movie/${id}`, // S6
-    `https://vidsrc.do/embed/movie/${id}`, // S7
-    `https://vidsrc.bz/embed/movie/${id}`, // S8
-    `https://vidsrc.gd/embed/movie/${id}`, // S9
-    `https://vidsrc.mn/embed/movie/${id}`, // S10
-    `https://vidsrc.tw/embed/movie/${id}`, // S11
-    `https://vidsrc.pk/embed/movie/${id}`, // S12
-    `https://vid.skyy.cc/embed/movie/${id}`, // S13
-    `https://vidsrc-to.my/embed/movie/${id}`, // S14
-    `https://vidsrc.domains/embed/movie/${id}`, // S15
+    `https://vidsrc.tw/embed/movie/${id}`, // S7
+    `https://vidsrc.pm/embed/movie/${id}`, // S8
+    `https://vidsrc.net/embed/movie/${id}`, // S9
+    `https://vidsrc.xyz/embed/movie/${id}`, // S10
+    `https://vidsrc.cc/embed/movie/${id}`, // S11
+    `https://vidsrc.icu/embed/movie/${id}`, // S12
   ];
 };
 
@@ -76,15 +70,12 @@ export const getTVSources = (
     `https://vidsrc.me/embed/tv?imdb=${imdb_id || id}&season=${season}&episode=${episode}`, // S4
     `https://vidsrc.io/embed/tv/${id}/${season}/${episode}`, // S5
     `https://vidsrc.stream/embed/tv/${id}/${season}/${episode}`, // S6
-    `https://vidsrc.do/embed/tv/${id}/${season}/${episode}`, // S7
-    `https://vidsrc.bz/embed/tv/${id}/${season}/${episode}`, // S8
-    `https://vidsrc.gd/embed/tv/${id}/${season}/${episode}`, // S9
-    `https://vidsrc.mn/embed/tv/${id}/${season}/${episode}`, // S10
-    `https://vidsrc.tw/embed/tv/${id}/${season}/${episode}`, // S11
-    `https://vidsrc.pk/embed/tv/${id}/${season}/${episode}`, // S12
-    `https://vid.skyy.cc/embed/tv/${id}/${season}/${episode}`, // S13
-    `https://vidsrc-to.my/embed/tv/${id}/${season}/${episode}`, // S14
-    `https://vidsrc.domains/embed/tv/${id}/${season}/${episode}`, // S15
+    `https://vidsrc.tw/embed/tv/${id}/${season}/${episode}`, // S11 (Re-mapped to S7)
+    `https://vidsrc.pm/embed/tv/${id}/${season}/${episode}`, // S16 (Re-mapped to S8)
+    `https://vidsrc.net/embed/tv/${id}/${season}/${episode}`, // S17 (Re-mapped to S9)
+    `https://vidsrc.xyz/embed/tv/${id}/${season}/${episode}`, // S18 (Re-mapped to S10)
+    `https://vidsrc.cc/embed/tv/${id}/${season}/${episode}`, // S19 (Re-mapped to S11)
+    `https://vidsrc.icu/embed/tv/${id}/${season}/${episode}`, // S20 (Re-mapped to S12)
   ];
 };
 
@@ -95,13 +86,10 @@ export const SOURCE_LABELS = [
   "S4 · vidsrc.me",
   "S5 · vidsrc.io",
   "S6 · vidsrc.stream",
-  "S7 · vidsrc.do",
-  "S8 · vidsrc.bz",
-  "S9 · vidsrc.gd",
-  "S10 · vidsrc.mn",
-  "S11 · vidsrc.tw",
-  "S12 · vidsrc.pk",
-  "S13 · vid.skyy.cc",
-  "S14 · vidsrc-to.my",
-  "S15 · vidsrc.domains",
+  "S7 · vidsrc.tw",
+  "S8 · vidsrc.pm",
+  "S9 · vidsrc.net",
+  "S10 · vidsrc.xyz",
+  "S11 · vidsrc.cc",
+  "S12 · vidsrc.icu",
 ];

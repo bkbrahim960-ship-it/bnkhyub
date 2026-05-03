@@ -524,10 +524,13 @@ export const VideoPlayer = ({
         {/* Render iframe for other sources (non-m3u8, non-youtube) */}
         {playerActive && !sources[sourceIndex]?.includes(".m3u8") && !sources[sourceIndex]?.includes("youtube.com") && !sources[sourceIndex]?.includes("youtu.be") && (
           <iframe
-            key={sourceIndex}
-            src={sources[sourceIndex]}
-            {...(sourceIndex === 0 ? { sandbox: "allow-scripts allow-same-origin allow-forms allow-presentation" } : {})}
-            {...(sources[sourceIndex]?.includes('embedmaster.link') || sources[sourceIndex]?.includes('vidsrc-embed.ru') ? { 
+            {...(sourceIndex === 0 ? { 
+              sandbox: "allow-scripts allow-same-origin allow-forms allow-presentation",
+              title: "BNKhub Premium Server"
+            } : {
+              title: "BNKhub Mirror Server"
+            })}
+            {...(sources[sourceIndex]?.includes('embedmaster.link') || sources[sourceIndex]?.includes('vidsrc') ? { 
               sandbox: undefined,
               allow: "autoplay *; fullscreen *; picture-in-picture *; encrypted-media *"
             } : {
