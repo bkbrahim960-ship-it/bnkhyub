@@ -88,6 +88,7 @@ export const VideoPlayer = ({
   const [hasResumed, setHasResumed] = useState(false);
   const [isWebFullscreen, setIsWebFullscreen] = useState(false);
   const [showSubtitleFinder, setShowSubtitleFinder] = useState(false);
+  const [reloadKey, setReloadKey] = useState(0);
 
   // Auto-fetch Arabic subtitles on mount
   useEffect(() => {
@@ -770,7 +771,7 @@ export const VideoPlayer = ({
         {/* Render iframe for other sources (non-m3u8, non-youtube) */}
         {playerActive && !sources[sourceIndex]?.includes(".m3u8") && !sources[sourceIndex]?.includes("youtube.com") && !sources[sourceIndex]?.includes("youtu.be") && (
           <iframe
-            key={sourceIndex}
+            key={`${sourceIndex}-${reloadKey}`}
             src={sources[sourceIndex]}
             title="BNKhub player"
             {...(sourceIndex === 0 ? { sandbox: "allow-scripts allow-same-origin allow-forms allow-presentation" } : {})}
@@ -830,8 +831,11 @@ export const VideoPlayer = ({
         open={showSubtitleFinder}
         onClose={() => setShowSubtitleFinder(false)}
         imdb_id={imdb_id || ""}
+        season={season}
+        episode={episode}
         onSelect={(url) => {
           setAppliedExternalSub(url);
+          setReloadKey(prev => prev + 1);
           setShowSubtitleFinder(false);
           toast.success("تم تطبيق الترجمة بنجاح");
         }}
