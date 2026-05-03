@@ -122,21 +122,6 @@ export const SubtitleFinder = ({ imdbId, tmdbId, title, type, season, episode, o
     <div className="bg-surface-card/40 backdrop-blur-md border border-border/50 rounded-3xl p-6 md:p-8 mt-8 animate-fade-slide-up shadow-card-luxe overflow-hidden relative group">
       <div className="absolute -top-24 -end-24 w-48 h-48 bg-accent/10 blur-[80px] rounded-full" />
 
-      <div className="relative flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
-        <div className="flex items-center gap-4">
-          <div className="p-3 rounded-2xl bg-gradient-accent text-accent-foreground shadow-accent">
-            <Languages className="w-6 h-6" />
-          </div>
-          <div>
-            <h2 className="text-2xl font-display font-bold text-gradient-accent">{t("sub_title")}</h2>
-            <p className="text-sm text-muted-foreground">{t("sub_desc")}</p>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-2 text-[10px] font-mono text-muted-foreground bg-surface-primary/50 px-3 py-1.5 rounded-full border border-border/40">
-          ID: <span className="text-accent">{imdbId || "N/A"}</span> {tvSuffix}
-        </div>
-      </div>
 
       <div className="relative grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* AI Translation Engine */}
