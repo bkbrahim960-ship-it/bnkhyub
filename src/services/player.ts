@@ -56,7 +56,7 @@ export const getTVSources = (
 };
 
 export const SOURCE_LABELS = [
-  "S1 · VidAPI Premium",
+  "S1 · BNKhub serveur",
   "S2 · vidsrc-embed (Arabic)",
   "S3 · vidsrc.to",
 ];

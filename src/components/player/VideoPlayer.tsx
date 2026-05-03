@@ -490,8 +490,8 @@ export const VideoPlayer = ({
       <div className={`relative w-full aspect-video bg-black rounded-2xl overflow-hidden border border-white/10 shadow-2xl group/player transition-all duration-500 ${isWebFullscreen ? 'fixed inset-0 z-[1000] rounded-none !aspect-auto h-screen' : ''}`}>
         {/* Custom Overlays Removed as requested */}
         
-        {/* Brand Watermark */}
-        {playerActive && (
+        {/* Brand Watermark (Only for BNKhub Server S1) */}
+        {playerActive && sourceIndex === 0 && (
           <div className="absolute top-6 right-6 z-40 pointer-events-none select-none group-hover/player:opacity-100 opacity-40 transition-opacity duration-500">
             <div className="flex flex-col items-end">
               <span className="text-2xl md:text-3xl font-display font-black tracking-[0.2em] text-accent drop-shadow-[0_2px_10px_rgba(212,175,55,0.4)]">BNKHUB</span>
