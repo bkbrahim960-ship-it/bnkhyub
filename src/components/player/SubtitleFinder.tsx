@@ -88,7 +88,7 @@ export const SubtitleFinder = ({ imdbId, tmdbId, title, type, season, episode, o
       
       // Fetch from multiple sources in parallel
       const [osResults, ytsResults] = await Promise.all([
-        searchSubtitles(imdbId, "en", searchQuery),
+        searchSubtitles(imdbId, "en", searchQuery, tmdbId),
         // We'll update searchYTSSubtitles to be more flexible or use it as is if movie
         type === 'movie' && imdbId ? fetch(`https://yts-subs.com/api/v1/movie/${imdbId}`).then(r => r.json()).then(d => d.subtitles?.filter((s:any) => s.language === 'english') || []).catch(() => []) : Promise.resolve([])
       ]);

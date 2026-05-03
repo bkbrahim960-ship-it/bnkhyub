@@ -17,13 +17,15 @@ export interface SubtitleResult {
   };
 }
 
-export const searchSubtitles = async (imdb_id?: string, lang = "ar", query?: string) => {
+export const searchSubtitles = async (imdb_id?: string, lang = "ar", query?: string, tmdb_id?: string | number) => {
   try {
     let url = `${BASE_URL}/subtitles?languages=${lang}`;
     
-    if (imdb_id && imdb_id.trim() !== "") {
+    if (imdb_id && imdb_id.trim() !== "" && imdb_id !== "undefined") {
       const cleanId = imdb_id.startsWith("tt") ? imdb_id.replace("tt", "") : imdb_id;
       url += `&imdb_id=${cleanId}`;
+    } else if (tmdb_id && String(tmdb_id).trim() !== "" && tmdb_id !== "undefined") {
+      url += `&tmdb_id=${tmdb_id}`;
     } else if (query) {
       url += `&query=${encodeURIComponent(query)}`;
     } else {
