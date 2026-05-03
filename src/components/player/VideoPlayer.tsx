@@ -526,16 +526,15 @@ export const VideoPlayer = ({
           <iframe
             key={sourceIndex}
             src={sources[sourceIndex]}
-            title="BNKhub player"
             {...(sourceIndex === 0 ? { sandbox: "allow-scripts allow-same-origin allow-forms allow-presentation" } : {})}
-            {...(sources[sourceIndex]?.includes('embedmaster.link') ? { 
+            {...(sources[sourceIndex]?.includes('embedmaster.link') || sources[sourceIndex]?.includes('vidsrc-embed.ru') ? { 
               sandbox: undefined,
               allow: "autoplay *; fullscreen *; picture-in-picture *; encrypted-media *"
             } : {
               allow: "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
             })}
             allowFullScreen
-            referrerPolicy="no-referrer-when-downgrade"
+            referrerPolicy="no-referrer"
             onLoad={handleLoad}
             className="absolute inset-0 w-full h-full border-0 transition-opacity duration-700"
           />
