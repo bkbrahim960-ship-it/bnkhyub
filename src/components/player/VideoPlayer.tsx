@@ -533,12 +533,25 @@ export const VideoPlayer = ({
         
         {/* Permanent Brand Watermark (Only for BNKhub Server S1) */}
         {playerActive && sourceIndex === 0 && (
-          <div className="absolute top-4 right-5 z-50 pointer-events-none select-none">
-            <div className="flex flex-col items-end">
-              <span className="text-lg md:text-xl font-display font-black tracking-[0.2em] text-accent/60 drop-shadow-[0_2px_10px_rgba(212,175,55,0.4)]">BNKHUB</span>
-              <div className="h-0.5 w-8 bg-accent/40 rounded-full mt-0.5" />
+          <>
+            <div className="absolute top-4 right-5 z-50 pointer-events-none select-none">
+              <div className="flex flex-col items-end">
+                <span className="text-lg md:text-xl font-display font-black tracking-[0.2em] text-accent/60 drop-shadow-[0_2px_10px_rgba(212,175,55,0.4)]">BNKHUB</span>
+                <div className="h-0.5 w-8 bg-accent/40 rounded-full mt-0.5" />
+              </div>
             </div>
-          </div>
+
+            {/* Custom Fullscreen Overlay (Sits over the server's native button area) */}
+            <div className="absolute bottom-2 right-2 z-50 group-hover/player:opacity-100 opacity-0 transition-opacity duration-300 flex items-center gap-2">
+              <button 
+                onClick={toggleFullscreen}
+                className="bg-black/40 backdrop-blur-md border border-white/10 p-2.5 rounded-lg text-accent hover:bg-accent/20 transition-all shadow-xl active:scale-90"
+                title={isWebFullscreen ? "Réduire" : "Plein écran BNKhub"}
+              >
+                <Maximize className="w-5 h-5" />
+              </button>
+            </div>
+          </>
         )}
 
         {/* Lock Overlay Removed */}
