@@ -84,8 +84,10 @@ export const SubtitleFinder = ({ imdbId, tmdbId, title, type, season, episode, o
   const searchEnglishSubs = async () => {
     setIsSearchingEng(true);
     try {
-      const results = await searchSubtitles(imdbId, "en");
-      setEngSubs(results.slice(0, 5));
+      // Use title + tvSuffix as fallback query if IMDB ID fails
+      const searchQuery = `${title}${tvSuffix}`;
+      const results = await searchSubtitles(imdbId, "en", searchQuery);
+      setEngSubs(results.slice(0, 10));
     } catch (err) {
       console.error(err);
     } finally {
