@@ -4,7 +4,7 @@
  * Le timeout de 5s n'a été conservé que pour marquer visuellement une source
  * comme potentiellement indisponible, mais il NE bascule plus automatiquement.
  */
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, forwardRef, useImperativeHandle } from "react";
 import { getMovieSources, getTVSources, SOURCE_LABELS } from "@/services/player";
 import { AdsNoticeModal, hasSeenAdsNotice } from "./AdsNoticeModal";
 import { ResumeModal } from "./ResumeModal";
@@ -38,7 +38,11 @@ interface Props {
   customUrl?: string;
 }
 
-export const VideoPlayer = ({
+export interface VideoPlayerRef {
+  setSubtitle: (url: string) => void;
+}
+
+export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
   imdb_id,
   tmdb_id,
   type,
@@ -49,7 +53,7 @@ export const VideoPlayer = ({
   onSourceChange,
   onPlayStart,
   customUrl,
-}: Props) => {
+}, ref) => {
   const { t, lang } = useLanguage();
   const [sourceIndex, setSourceIndex] = useState(initialSourceIndex);
   const [loading, setLoading] = useState(true);
@@ -83,6 +87,14 @@ export const VideoPlayer = ({
   const [isSearchingSubs, setIsSearchingSubs] = useState(false);
   const [appliedExternalSub, setAppliedExternalSub] = useState<string | null>(null);
 
+  // Expose methods to parent
+  useImperativeHandle(ref, () => ({
+    setSubtitle: (url: string) => {
+      setAppliedExternalSub(url);
+      setPlayerActive(true);
+    }
+  }));
+
   // Resume Logic
   const { user } = useAuth();
   const [resumeModalOpen, setResumeModalOpen] = useState(false);
@@ -106,7 +118,7 @@ export const VideoPlayer = ({
         }
 
         // Also fetch from Wyzie
-        const wyzieResults = await searchWyzieSubtitles(tmdb_id || imdb_id);
+        const wyzieResults = await searchWyzieSubtitles(tmdb_id, imdb_id);
         setWyzieSubs(wyzieResults);
         
         // If no OpenSubtitles but we have Wyzie, apply first Wyzie
@@ -479,4 +491,4 @@ export const VideoPlayer = ({
       )}
     </div>
   );
-};
+});

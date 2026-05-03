@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState, useRef } from "react";
 import { useParams, Link, useSearchParams } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
-import { VideoPlayer } from "@/components/player/VideoPlayer";
+import { VideoPlayer, VideoPlayerRef } from "@/components/player/VideoPlayer";
+import { SubtitleFinder } from "@/components/player/SubtitleFinder";
 import { IMG, getSeriesDetails, getSeasonDetails, getSeriesRecommendations, TMDBSeries, TMDBSeason } from "@/services/tmdb";
 import { FavoriteButton } from "@/components/movie/FavoriteButton";
 import { ShareButtons } from "@/components/movie/ShareButtons";
@@ -45,6 +46,7 @@ const Series = () => {
   const [showTrailer, setShowTrailer] = useState(false);
   const [showNextEpisode, setShowNextEpisode] = useState(false);
   const playerRef = useRef<HTMLDivElement>(null);
+  const videoPlayerRef = useRef<VideoPlayerRef>(null);
 
   const resumeRequested = params.get("resume") === "1";
   const resumeSeason = Number(params.get("s")) || null;
@@ -273,6 +275,7 @@ const Series = () => {
           {playing && (
             <div className="mb-16 animate-scale-in">
               <VideoPlayer
+                ref={videoPlayerRef}
                 key={`${season}-${episode}`}
                 imdb_id={imdb}
                 tmdb_id={series.id}
@@ -283,6 +286,16 @@ const Series = () => {
                 initialSourceIndex={initialSourceIndex}
                 onPlayStart={(_i, label) => saveHistory(label)}
                 onSourceChange={(_i, label) => saveHistory(label)}
+              />
+              
+              <SubtitleFinder 
+                imdbId={imdb || ""} 
+                tmdbId={series.id} 
+                title={series.name} 
+                type="tv"
+                season={season}
+                episode={episode}
+                onSubtitleSelect={(url) => videoPlayerRef.current?.setSubtitle(url)}
               />
               {/* Next Episode Button */}
               {seasonData && episode < (seasonData.episodes?.length || 0) && (

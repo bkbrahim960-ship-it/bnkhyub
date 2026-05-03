@@ -12,9 +12,10 @@ interface Props {
   title: string;
   season?: number;
   episode?: number;
+  onSubtitleSelect?: (url: string) => void;
 }
 
-export const SubtitleFinder = ({ imdbId, title, type, season, episode }: Props) => {
+export const SubtitleFinder = ({ imdbId, tmdbId, title, type, season, episode, onSubtitleSelect }: Props) => {
   const { t } = useLanguage();
   const query = encodeURIComponent(title);
   const isTV = type === "tv";
@@ -96,9 +97,36 @@ export const SubtitleFinder = ({ imdbId, title, type, season, episode }: Props) 
           </div>
           <div className="pt-4">
              <button 
-               onClick={async () => {
-                 // Open Wyzie directly
-                 window.open(`https://sub.wyzie.io/search?id=${imdbId || tmdbId}&language=ar&key=wyzie-e9b346c2994496155d332268cbe0ff6a`, '_blank');
+               onClick={async (e) => {
+                 const btn = e.currentTarget;
+                 const originalContent = btn.innerHTML;
+                 btn.disabled = true;
+                 btn.innerHTML = '<div class="flex items-center gap-2"><div class="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></div><span class="text-[10px] font-bold">CHARGEMENT...</span></div>';
+                 
+                 try {
+                   const id = imdbId || tmdbId;
+                   const API_KEY = "wyzie-e9b346c2994496155d332268cbe0ff6a";
+                   const response = await fetch(`https://sub.wyzie.io/search?id=${id}&language=ar&key=${API_KEY}`);
+                   const data = await response.json();
+                   
+                   if (Array.isArray(data) && data.length > 0) {
+                     if (onSubtitleSelect) {
+                       onSubtitleSelect(data[0].url);
+                       // Smooth scroll to player
+                       window.scrollTo({ top: 0, behavior: 'smooth' });
+                     } else {
+                       window.open(data[0].url, '_blank');
+                     }
+                   } else {
+                     alert("Aucune traduction trouvée sur Wyzie pour ce contenu.");
+                   }
+                 } catch (err) {
+                   console.error(err);
+                   alert("Erreur lors de la recherche Wyzie.");
+                 } finally {
+                   btn.disabled = false;
+                   btn.innerHTML = originalContent;
+                 }
                }}
                className="w-full flex items-center justify-between p-4 rounded-2xl bg-accent/10 border border-accent/20 hover:bg-accent/20 transition-all group"
              >
@@ -106,9 +134,12 @@ export const SubtitleFinder = ({ imdbId, title, type, season, episode }: Props) 
                  <div className="p-2 rounded-lg bg-accent text-accent-foreground">
                    <Captions className="w-4 h-4" />
                  </div>
-                 <span className="text-xs font-bold uppercase tracking-widest text-white">Wyzie Premium Subs</span>
+                 <span className="text-xs font-bold uppercase tracking-widest text-white">Wyzie Auto-Inject</span>
                </div>
-               <ExternalLink className="w-4 h-4 text-accent/60 group-hover:translate-x-1 transition-transform" />
+               <div className="flex items-center gap-2">
+                 <span className="text-[9px] font-black bg-accent text-accent-foreground px-2 py-0.5 rounded-full animate-pulse">LIVE</span>
+                 <ExternalLink className="w-4 h-4 text-accent/60 group-hover:translate-x-1 transition-transform" />
+               </div>
              </button>
           </div>
         </div>

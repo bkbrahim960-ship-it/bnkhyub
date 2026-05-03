@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState, useRef } from "react";
 import { useParams, Link, useSearchParams } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
-import { VideoPlayer } from "@/components/player/VideoPlayer";
+import { VideoPlayer, VideoPlayerRef } from "@/components/player/VideoPlayer";
+import { SubtitleFinder } from "@/components/player/SubtitleFinder";
 import { MovieRow } from "@/components/movie/MovieRow";
 import { FavoriteButton } from "@/components/movie/FavoriteButton";
 import { ShareButtons } from "@/components/movie/ShareButtons";
@@ -38,7 +39,8 @@ const Movie = () => {
   const [playing, setPlaying] = useState(false);
   const [recommendations, setRecommendations] = useState<TMDBMovie[]>([]);
   const [showTrailer, setShowTrailer] = useState(false);
-  const playerRef = useRef<HTMLDivElement>(null);
+  const playerContainerRef = useRef<HTMLDivElement>(null);
+  const videoPlayerRef = useRef<VideoPlayerRef>(null);
 
   const resumeRequested = params.get("resume") === "1";
   const initialSourceIndex = useMemo(() => sourceIdToIndex(params.get("src")), [params]);
@@ -135,7 +137,7 @@ const Movie = () => {
   const startWatching = () => {
     setPlaying(true);
     setTimeout(() => {
-      playerRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+      playerContainerRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
     }, 100);
   };
 
@@ -235,10 +237,11 @@ const Movie = () => {
       <TrailerModal isOpen={showTrailer} onClose={() => setShowTrailer(false)} videoKey={trailer?.key} title={movie.title} />
 
       {/* Video Player Section */}
-      <div ref={playerRef} className="scroll-mt-24">
+      <div ref={playerContainerRef} className="scroll-mt-24">
         {playing && (
           <section className="container py-12 animate-scale-in">
             <VideoPlayer
+              ref={videoPlayerRef}
               imdb_id={imdb || ""}
               tmdb_id={movie.id}
               type="movie"
@@ -247,6 +250,14 @@ const Movie = () => {
               customUrl={(movie as any).video_url}
               onPlayStart={(_i, label) => saveHistory(label)}
               onSourceChange={(_i, label) => saveHistory(label)}
+            />
+            
+            <SubtitleFinder 
+              imdbId={imdb || ""} 
+              tmdbId={movie.id} 
+              title={movie.title} 
+              type="movie"
+              onSubtitleSelect={(url) => videoPlayerRef.current?.setSubtitle(url)}
             />
           </section>
         )}
