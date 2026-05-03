@@ -161,7 +161,7 @@ const Movie = () => {
           title={movie.title} 
         />
         
-        <div className="container absolute inset-x-0 bottom-0 z-10 pb-12 md:pb-16 lg:pb-24 grid lg:grid-cols-[300px_1fr] gap-4 md:gap-12 items-end">
+        <div className="container absolute inset-x-0 top-[55%] md:top-auto md:bottom-0 z-10 pb-12 md:pb-24 lg:pb-32 grid lg:grid-cols-[300px_1fr] gap-4 md:gap-12 items-end">
           <div className="hidden lg:block animate-fade-in group">
             <div className="relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl shadow-accent/20">
                <img src={poster} alt={movie.title} className="w-full transition-transform duration-700 group-hover:scale-110" />
@@ -183,7 +183,7 @@ const Movie = () => {
               ))}
             </div>
 
-            <h1 className="font-display text-2xl sm:text-3xl md:text-5xl lg:text-7xl font-bold mb-2 md:mb-4 text-white leading-tight">
+            <h1 className="font-display text-2xl sm:text-3xl md:text-6xl lg:text-8xl font-bold mb-2 md:mb-6 text-white leading-tight">
               {movie.title}
             </h1>
 
@@ -211,9 +211,9 @@ const Movie = () => {
               {!playing && (
                 <button
                   onClick={startWatching}
-                  className="inline-flex items-center gap-2 md:gap-3 bg-accent text-accent-foreground px-6 md:px-10 py-3 md:py-4 rounded-full font-bold shadow-glow hover:scale-105 active:scale-95 transition-all text-sm"
+                  className="inline-flex items-center gap-2 md:gap-4 bg-accent text-accent-foreground px-6 md:px-12 py-3 md:py-5 rounded-full font-bold shadow-glow hover:scale-105 active:scale-95 transition-all text-sm md:text-xl"
                 >
-                  <Play className="w-4 h-4 md:w-5 md:h-5 fill-current" /> {t("hero_watch")}
+                  <Play className="w-4 h-4 md:w-6 md:h-6 fill-current" /> {t("hero_watch")}
                 </button>
               )}
               {trailer && (
