@@ -197,16 +197,28 @@ const Movie = () => {
               {movie.overview}
             </p>
 
-            <div className="flex flex-wrap items-center gap-4">
+            <div className="flex flex-wrap items-center gap-3 md:gap-5">
               {!playing && (
                 <button
                   onClick={startWatching}
-                  className="inline-flex items-center gap-3 bg-accent text-accent-foreground px-8 py-4 rounded-full font-bold shadow-glow hover:scale-105 transition-all"
+                  className="inline-flex items-center gap-3 bg-accent text-accent-foreground px-8 py-4 rounded-full font-bold shadow-glow hover:scale-105 transition-all text-sm md:text-base"
                 >
                   <Play className="w-5 h-5 fill-current" /> {t("hero_watch")}
                 </button>
               )}
-              <FavoriteButton tmdbId={movie.id} mediaType="movie" title={movie.title} posterPath={movie.poster_path} className="px-6 py-4" />
+              {trailer && (
+                <button
+                  onClick={() => setShowTrailer(true)}
+                  className="inline-flex items-center gap-3 bg-white/5 hover:bg-white/10 border border-white/10 px-6 py-4 rounded-full font-bold transition-all text-sm"
+                >
+                  <Youtube className="w-5 h-5 text-red-500" /> {t("hero_trailer")}
+                </button>
+              )}
+              <FavoriteButton tmdbId={movie.id} mediaType="movie" title={movie.title} posterPath={movie.poster_path} className="px-5 py-4" />
+              <div className="flex items-center gap-3">
+                <RemotePairingButton />
+                <ShareButtons title={movie.title} />
+              </div>
             </div>
           </div>
         </div>
