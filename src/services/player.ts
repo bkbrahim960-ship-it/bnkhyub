@@ -49,6 +49,9 @@ export const getMovieSources = (imdb_id: string, tmdb_id: number | string): stri
     `https://vaplayer.ru/embed/movie/${imdb_id || tmdb_id}?primaryColor=${color.replace('#','')}&lang=ar&ds_lang=ar&autoplay=1`, // S1: Primary — Arabic subs auto-selected
     `https://vidsrc-embed.ru/embed/movie?${imdb_id ? `imdb=${imdb_id}` : `tmdb=${tmdb_id}`}&ds_lang=ar`, // S2: Arabic subs
     `https://vidsrc.to/embed/movie/${id}`, // S3
+    `https://vidsrc.pro/embed/movie/${id}`, // S4: New Clean Generation
+    `https://moviesapi.club/movie/${tmdb_id}`, // S5: Premium Clean
+    `https://autoembed.to/movie/tmdb/${tmdb_id}`, // S6: Stable
   ];
 };
 
@@ -64,6 +67,9 @@ export const getTVSources = (
     `https://vaplayer.ru/embed/tv/${imdb_id || tmdb_id}/${season}/${episode}?primaryColor=${color.replace('#','')}&lang=ar&ds_lang=ar&autoplay=1`, // S1: Primary — Arabic subs auto-selected
     `https://vidsrc-embed.ru/embed/tv?${imdb_id ? `imdb=${imdb_id}` : `tmdb=${tmdb_id}`}&season=${season}&episode=${episode}&ds_lang=ar`, // S2: Arabic subs
     `https://vidsrc.to/embed/tv/${id}/${season}/${episode}`, // S3
+    `https://vidsrc.pro/embed/tv/${id}/${season}/${episode}`, // S4: New Clean Generation
+    `https://moviesapi.club/tv/${tmdb_id}-${season}-${episode}`, // S5: Premium Clean
+    `https://autoembed.to/tv/tmdb/${tmdb_id}-${season}-${episode}`, // S6: Stable
   ];
 };
 
@@ -71,6 +77,9 @@ export const SOURCE_LABELS = [
   "S1 · VidAPI Premium",
   "S2 · vidsrc-embed (Arabic)",
   "S3 · vidsrc.to",
+  "S4 · vidsrc.pro (New Clean)",
+  "S5 · MoviesAPI (Premium)",
+  "S6 · AutoEmbed (Stable)",
 ];
 
 // ───── Nouveautés vidsrc-embed ─────
