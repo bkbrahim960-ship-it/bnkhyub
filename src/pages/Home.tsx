@@ -288,9 +288,15 @@ const Home = () => {
       <MovieHero items={hero} />
 
       <div className="relative -mt-20 z-10">
-        <BrandRow />
         <ContinueWatchingRow />
+        <BrandRow />
         <ForYouRow />
+        <DiscoverRow 
+          title={lang === "ar" ? "المنصات العلمية" : "Plateformes Scientifiques"} 
+          genres="99" 
+          type="movie" 
+          icon="🔬" 
+        />
 
         {kidsMode ? (
           <>

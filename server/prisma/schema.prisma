@@ -1,0 +1,23 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Subtitle {
+  id              Int      @id @default(autoincrement())
+  imdb_id         String   @unique
+  season          Int?
+  episode         Int?
+  source_lang     String
+  source_name     String
+  vtt_path        String?  // Relative path to local .vtt
+  model_used      String?  // ollama / libretranslate
+  status          String   @default("pending") // pending, processing, done, failed
+  error_message   String?
+  created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
+}

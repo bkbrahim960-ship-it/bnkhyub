@@ -89,7 +89,7 @@ export const MovieHero = ({ items }: Props) => {
               <img
                 src={img}
                 alt=""
-                className="w-full h-full object-cover object-top scale-105"
+                className="w-full h-full object-cover object-top md:scale-105"
                 loading={i === 0 ? "eager" : "lazy"}
               />
             )}
@@ -97,10 +97,10 @@ export const MovieHero = ({ items }: Props) => {
         );
       })}
 
-      {/* Video Trailer Background — Optimized for edge-to-edge coverage */}
+      {/* Video Trailer Background — Only on mobile as requested, removed from desktop fallback */}
       {currentTrailerKey && (
         <div
-          className={`absolute inset-0 z-[1] transition-opacity duration-1500 ease-in-out bg-black ${
+          className={`absolute inset-0 z-[1] transition-opacity duration-1500 ease-in-out bg-black md:hidden ${
             videoReady ? "opacity-100" : "opacity-0"
           }`}
         >
@@ -111,7 +111,7 @@ export const MovieHero = ({ items }: Props) => {
             key={`trailer-${movie.id}-${index}`}
             src={`https://www.youtube.com/embed/${currentTrailerKey}?autoplay=1&mute=1&controls=0&loop=1&playlist=${currentTrailerKey}&rel=0&showinfo=0&modestbranding=1&iv_load_policy=3&vq=hd1080&playsinline=1&disablekb=1&fs=0`}
             title="Trailer"
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 min-w-[350%] min-h-[105%] w-[350vw] h-[115vh] md:w-[150%] md:h-[150%] lg:w-[120%] lg:h-[120%] pointer-events-none z-[1] object-cover scale-110 md:scale-105"
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 min-w-[350%] min-h-[105%] w-[350vw] h-[115vh] pointer-events-none z-[1] object-cover scale-110"
             allow="autoplay; encrypted-media"
             style={{ border: 0 }}
           />
@@ -129,8 +129,8 @@ export const MovieHero = ({ items }: Props) => {
       {/* Extra bottom fade for readability — balanced to show more of the bottom edges */}
       <div className="absolute bottom-0 left-0 right-0 h-[35%] z-[4] bg-gradient-to-t from-background via-background/60 to-transparent" />
 
-      {/* Content */}
-      <div className={`relative z-10 h-full container flex items-end md:items-center pb-12 md:pb-0 transition-opacity duration-1000 ${videoReady ? "opacity-0 group-hover:opacity-100" : "opacity-100"}`}>
+      {/* Content — Positioned lower on mobile as requested (pb-10) */}
+      <div className={`relative z-10 h-full container flex items-end md:items-center pb-10 md:pb-0 transition-opacity duration-1000 ${videoReady ? "opacity-100" : "opacity-100"}`}>
         <div
           key={movie.id}
           className="max-w-2xl animate-fade-slide-up"

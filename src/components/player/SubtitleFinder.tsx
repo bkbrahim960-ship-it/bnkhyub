@@ -22,8 +22,9 @@ interface Props {
 export const SubtitleFinder = ({ imdbId, tmdbId, title, type, season, episode, onSubtitleSelect }: Props) => {
   const { t, lang } = useLanguage();
   const [isTranslating, setIsTranslating] = useState(false);
-  const [engSubs, setEngSubs] = useState<SubtitleResult[]>([]);
+  const [engSubs, setEngSubs] = useState<any[]>([]);
   const [isSearchingEng, setIsSearchingEng] = useState(false);
+  const BACKEND_URL = "http://localhost:4000";
 
   const query = encodeURIComponent(title);
   const isTV = type === "tv";
@@ -63,19 +64,29 @@ export const SubtitleFinder = ({ imdbId, tmdbId, title, type, season, episode, o
     { label: "Español", code: "spa", flag: "🇪🇸" },
   ];
 
-  const handleAiTranslate = async (subUrl: string) => {
+  const handleAiTranslate = async (subData: any) => {
     setIsTranslating(true);
     try {
-      toast.loading(lang === 'ar' ? "جاري الترجمة بالذكاء الاصطناعي..." : "Traduction IA en cours...", { id: 'ai-trans' });
-      const translatedUrl = await translateSubtitle(subUrl, 'ar');
-      if (onSubtitleSelect) {
-        onSubtitleSelect(translatedUrl);
+      toast.loading(lang === 'ar' ? "جاري الترجمة بالذكاء الاصطناعي المحلي (Ollama)..." : "Traduction AI locale en cours...", { id: 'ai-trans' });
+      
+      const response = await fetch(`${BACKEND_URL}/api/subtitles/translate`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ 
+          imdb_id: imdbId,
+          subtitle_url: subData.url
+        })
+      });
+      
+      const result = await response.json();
+      if (result.vtt_url && onSubtitleSelect) {
+        onSubtitleSelect(`${BACKEND_URL}${result.vtt_url}`);
         window.scrollTo({ top: 0, behavior: 'smooth' });
-        toast.success(lang === 'ar' ? "تمت الترجمة والحقن بنجاح!" : "Traduction et injection réussies !", { id: 'ai-trans' });
+        toast.success(lang === 'ar' ? "تمت الترجمة بنجاح!" : "Traduction réussie !", { id: 'ai-trans' });
       }
     } catch (err) {
       console.error(err);
-      toast.error(lang === 'ar' ? "فشلت الترجمة بالذكاء الاصطناعي." : "Échec de la traduction IA.", { id: 'ai-trans' });
+      toast.error(lang === 'ar' ? "فشلت الترجمة المحلية. تأكد من تشغيل Ollama." : "Échec. Vérifiez que Ollama est lancé.", { id: 'ai-trans' });
     } finally {
       setIsTranslating(false);
     }
@@ -84,35 +95,31 @@ export const SubtitleFinder = ({ imdbId, tmdbId, title, type, season, episode, o
   const searchEnglishSubs = async () => {
     setIsSearchingEng(true);
     try {
-      const searchQuery = `${title}${tvSuffix}`;
+      // Check local cache first
+      const checkRes = await fetch(`${BACKEND_URL}/api/subtitles/${imdbId}/status`);
+      const status = await checkRes.json();
       
-      // Fetch from multiple sources in parallel
-      const [osResults, ytsResults] = await Promise.all([
-        searchSubtitles(imdbId, "en", searchQuery, tmdbId),
-        // We'll update searchYTSSubtitles to be more flexible or use it as is if movie
-        type === 'movie' && imdbId ? fetch(`https://yts-subs.com/api/v1/movie/${imdbId}`).then(r => r.json()).then(d => d.subtitles?.filter((s:any) => s.language === 'english') || []).catch(() => []) : Promise.resolve([])
-      ]);
+      if (status.status === 'done' && status.vtt_url) {
+        if (onSubtitleSelect) onSubtitleSelect(`${BACKEND_URL}${status.vtt_url}`);
+        toast.success(lang === 'ar' ? "تم تحميل الترجمة من الكاش!" : "Chargé depuis le cache !");
+        return;
+      }
 
-      const formattedYts = ytsResults.map((s: any) => ({
-        id: `yts-${s.url}`,
-        attributes: {
-          release: `[YTS] ${s.release || title}`,
-          url: `https://yts-subs.com${s.url}`,
-          language: 'English',
-          display_name: s.release || title,
-          file_id: 0 // Not used for YTS
-        },
-        directUrl: `https://yts-subs.com${s.url}`
-      }));
-
-      const combined = [
-        ...osResults,
-        ...formattedYts
-      ];
-
-      setEngSubs(combined.slice(0, 15));
+      // Fetch from local server discovery engine
+      const response = await fetch(`${BACKEND_URL}/api/subtitles/fetch`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ imdb_id: imdbId, title: title })
+      });
+      const data = await response.json();
+      if (data.found) {
+        setEngSubs([{ id: 'free-1', attributes: { release: data.filename }, url: data.url }]);
+      } else {
+        toast.error(lang === 'ar' ? "لم يتم العثور على مصادر مجانية." : "Aucune source gratuite trouvée.");
+      }
     } catch (err) {
       console.error(err);
+      toast.error("Le serveur local (port 4000) n'est pas lancé.");
     } finally {
       setIsSearchingEng(false);
     }
