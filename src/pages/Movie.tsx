@@ -152,14 +152,14 @@ const Movie = () => {
         keywords={`${movie.title}, regarder ${movie.title}, film gratuit, BNKhub`}
       />
       {/* Cinematic Hero with Video Background */}
-      <section className="relative min-h-[70vh] md:min-h-[90vh] lg:min-h-[95vh] flex items-center md:items-end pb-12 md:pb-16 lg:pb-24 overflow-hidden -mt-16 md:-mt-20 lg:-mt-24 pt-20 md:pt-24">
+      <section className="relative min-h-[55vh] md:min-h-[90vh] lg:min-h-[95vh] flex items-end pb-4 md:pb-16 lg:pb-24 overflow-hidden -mt-0 md:-mt-20 lg:-mt-24 pt-0 md:pt-20 lg:pt-24">
         <VideoBackdrop 
           backdropPath={backdrop} 
           videoKey={trailer?.key} 
           title={movie.title} 
         />
         
-        <div className="container relative z-10 grid lg:grid-cols-[300px_1fr] gap-6 md:gap-12 items-end">
+        <div className="container relative z-10 grid lg:grid-cols-[300px_1fr] gap-4 md:gap-12 items-end mt-auto">
           <div className="hidden lg:block animate-fade-in group">
             <div className="relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl shadow-accent/20">
                <img src={poster} alt={movie.title} className="w-full transition-transform duration-700 group-hover:scale-110" />
