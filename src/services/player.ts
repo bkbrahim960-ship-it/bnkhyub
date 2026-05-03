@@ -49,23 +49,6 @@ export const getMovieSources = (imdb_id: string, tmdb_id: number | string): stri
     `https://vaplayer.ru/embed/movie/${imdb_id || tmdb_id}?primaryColor=${color.replace('#','')}&lang=ar&ds_lang=ar&autoplay=1`, // S1: Primary — Arabic subs auto-selected
     `https://vidsrc-embed.ru/embed/movie?${imdb_id ? `imdb=${imdb_id}` : `tmdb=${tmdb_id}`}&ds_lang=ar`, // S2: Arabic subs
     `https://vidsrc.to/embed/movie/${id}`, // S3
-    `https://vidlink.pro/movie/${tmdb_id}?primaryColor=${color}&autoSub=true`, // S4: Ad-Free
-    `https://embed.su/embed/movie/${tmdb_id || imdb_id}`, // S5: Clean
-    `https://superembed.stream/?video_id=${imdb_id || tmdb_id}&lang=ar`, // S6: SuperEmbed
-    `https://www.flixhq.to/embed/movie/${imdb_id || tmdb_id}`, // S7: FlixHQ
-    `https://autoembed.co/movie/tmdb/${tmdb_id}`,
-    `https://multiembed.mov/?video_id=${tmdb_id}`,
-    `https://vidlux.xyz/embed/movie/${tmdb_id}?color=${color}`,
-    `https://vidsrc.pro/embed/movie/${id}`, // New Clean Source
-    `https://moviesapi.club/movie/${tmdb_id}`, // Clean Alternative
-    `https://vidsrc.me/embed/movie/${id}`,
-    `https://vidsrc.icu/embed/movie/${id}`,
-    `https://vidsrc.net/embed/movie/${id}`,
-    `https://vidsrc.xyz/embed/movie/${id}`,
-    `https://www.2embed.cc/embed/${id}`,
-    `https://www.2embed.to/embed/imdb/movie?id=${id}`,
-    `https://player.embed-api.stream/?id=${tmdb_id}`,
-    `https://vidsrc.cc/v2/embed/movie/${tmdb_id}`,
   ];
 };
 
@@ -81,23 +64,6 @@ export const getTVSources = (
     `https://vaplayer.ru/embed/tv/${imdb_id || tmdb_id}/${season}/${episode}?primaryColor=${color.replace('#','')}&lang=ar&ds_lang=ar&autoplay=1`, // S1: Primary — Arabic subs auto-selected
     `https://vidsrc-embed.ru/embed/tv?${imdb_id ? `imdb=${imdb_id}` : `tmdb=${tmdb_id}`}&season=${season}&episode=${episode}&ds_lang=ar`, // S2: Arabic subs
     `https://vidsrc.to/embed/tv/${id}/${season}/${episode}`, // S3
-    `https://vidlink.pro/tv/${tmdb_id}/${season}/${episode}?primaryColor=${color}&autoSub=true`, // S4: Ad-Free
-    `https://embed.su/embed/tv/${tmdb_id || imdb_id}/${season}/${episode}`, // S5: Clean
-    `https://superembed.stream/?video_id=${imdb_id || tmdb_id}&s=${season}&e=${episode}&lang=ar`, // S6: SuperEmbed
-    `https://www.flixhq.to/embed/tv/${imdb_id || tmdb_id}/${season}/${episode}`, // S7: FlixHQ
-    `https://autoembed.co/tv/tmdb/${tmdb_id}-${season}-${episode}`,
-    `https://multiembed.mov/?video_id=${tmdb_id}&s=${season}&e=${episode}`,
-    `https://vidlux.xyz/embed/tv/${tmdb_id}/${season}/${episode}`,
-    `https://vidsrc.pro/embed/tv/${id}/${season}/${episode}`, // New Clean Source
-    `https://moviesapi.club/tv/${tmdb_id}-${season}-${episode}`, // Clean Alternative
-    `https://vidsrc.me/embed/tv/${id}/${season}/${episode}`,
-    `https://vidsrc.icu/embed/tv/${id}/${season}/${episode}`,
-    `https://vidsrc.net/embed/tv/${id}/${season}/${episode}`,
-    `https://vidsrc.xyz/embed/tv/${id}/${season}/${episode}`,
-    `https://www.2embed.cc/embed/${id}/${season}/${episode}`,
-    `https://www.2embed.to/embed/imdb/tv?id=${id}&s=${season}&e=${episode}`,
-    `https://player.embed-api.stream/?id=${tmdb_id}&s=${season}&e=${episode}`,
-    `https://vidsrc.cc/v2/embed/tv/${tmdb_id}/${season}/${episode}`,
   ];
 };
 
@@ -105,23 +71,6 @@ export const SOURCE_LABELS = [
   "S1 · VidAPI Premium",
   "S2 · vidsrc-embed (Arabic)",
   "S3 · vidsrc.to",
-  "S4 · VidLink (Ad-Free)",
-  "S5 · Embed.su (Clean)",
-  "S6 · SuperEmbed",
-  "S7 · FlixHQ",
-  "S8 · AutoEmbed",
-  "S9 · multiembed",
-  "S10 · vidlux",
-  "S11 · vidsrc.pro (Ultra Clean)",
-  "S12 · moviesapi (No Ads)",
-  "S13 · vidsrc.me",
-  "S14 · vidsrc.icu",
-  "S15 · vidsrc.net",
-  "S16 · vidsrc.xyz",
-  "S17 · 2embed.cc",
-  "S18 · 2embed.to",
-  "S19 · embed-api",
-  "S20 · vidsrc.cc",
 ];
 
 // ───── Nouveautés vidsrc-embed ─────
