@@ -84,10 +84,33 @@ export const SubtitleFinder = ({ imdbId, tmdbId, title, type, season, episode, o
   const searchEnglishSubs = async () => {
     setIsSearchingEng(true);
     try {
-      // Use title + tvSuffix as fallback query if IMDB ID fails
       const searchQuery = `${title}${tvSuffix}`;
-      const results = await searchSubtitles(imdbId, "en", searchQuery);
-      setEngSubs(results.slice(0, 10));
+      
+      // Fetch from multiple sources in parallel
+      const [osResults, ytsResults] = await Promise.all([
+        searchSubtitles(imdbId, "en", searchQuery),
+        // We'll update searchYTSSubtitles to be more flexible or use it as is if movie
+        type === 'movie' && imdbId ? fetch(`https://yts-subs.com/api/v1/movie/${imdbId}`).then(r => r.json()).then(d => d.subtitles?.filter((s:any) => s.language === 'english') || []).catch(() => []) : Promise.resolve([])
+      ]);
+
+      const formattedYts = ytsResults.map((s: any) => ({
+        id: `yts-${s.url}`,
+        attributes: {
+          release: `[YTS] ${s.release || title}`,
+          url: `https://yts-subs.com${s.url}`,
+          language: 'English',
+          display_name: s.release || title,
+          file_id: 0 // Not used for YTS
+        },
+        directUrl: `https://yts-subs.com${s.url}`
+      }));
+
+      const combined = [
+        ...osResults,
+        ...formattedYts
+      ];
+
+      setEngSubs(combined.slice(0, 15));
     } catch (err) {
       console.error(err);
     } finally {
@@ -164,7 +187,7 @@ export const SubtitleFinder = ({ imdbId, tmdbId, title, type, season, episode, o
                  <button
                     key={sub.id}
                     onClick={async () => {
-                      const url = await getDownloadUrl(sub.attributes.file_id);
+                      const url = (sub as any).directUrl || await getDownloadUrl(sub.attributes.file_id);
                       if (url) handleAiTranslate(url);
                     }}
                     className="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/5 hover:border-purple-500/40 hover:bg-white/10 transition-all text-left"
