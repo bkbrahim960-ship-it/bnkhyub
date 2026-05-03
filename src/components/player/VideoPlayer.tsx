@@ -435,64 +435,9 @@ export const VideoPlayer = ({
       )}
 
       <div className={`relative w-full aspect-video bg-black rounded-2xl overflow-hidden border border-white/10 shadow-2xl group/player transition-all duration-500 ${isWebFullscreen ? 'fixed inset-0 z-[1000] rounded-none !aspect-auto h-screen' : ''}`}>
-        {/* Web Fullscreen Toggle (for iOS) */}
-        <button 
-          onClick={() => setIsWebFullscreen(!isWebFullscreen)}
-          className={`absolute top-4 end-4 z-[70] p-3 rounded-full backdrop-blur-xl border border-white/10 text-white/70 hover:text-white transition-all shadow-2xl ${isWebFullscreen ? 'bg-accent text-accent-foreground' : 'bg-black/40 md:hidden'}`}
-          title="Web Fullscreen"
-        >
-          {isWebFullscreen ? <Minimize className="w-5 h-5" /> : <Maximize className="w-5 h-5" />}
-        </button>
-        {/* Unified Header Overlay */}
-        <div className={`absolute top-0 inset-x-0 z-20 p-4 flex items-center justify-between bg-gradient-to-b from-black/90 via-black/40 to-transparent transition-all duration-500 ${isLocked ? 'opacity-0 pointer-events-none' : 'opacity-0 group-hover/player:opacity-100'}`}>
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-accent/20 border border-accent/40 flex items-center justify-center">
-              <ShieldCheck className="w-4 h-4 text-accent" />
-            </div>
-            <div>
-              <p className="text-[10px] font-bold text-accent uppercase tracking-[0.2em]">{allLabels[sourceIndex] || SOURCE_LABELS[sourceIndex]}</p>
-              <h3 className="text-xs font-bold text-white/90 line-clamp-1">{title || "BNKhub Player"}</h3>
-            </div>
-          </div>
-          <div className="flex items-center gap-3">
-            {isPipAvailable && sources[sourceIndex]?.includes(".m3u8") && (
-              <button 
-                onClick={() => videoRef.current?.requestPictureInPicture()}
-                className="p-2 rounded-full bg-white/5 hover:bg-white/20 transition-colors text-white"
-                title="Picture in Picture"
-              >
-                <PipIcon className="w-4 h-4" />
-              </button>
-            )}
-            <button 
-              onClick={() => setShowSettings(!showSettings)}
-              className="p-2 rounded-full bg-white/5 hover:bg-white/20 transition-colors text-white"
-              title="Settings"
-            >
-              <Settings className={`w-4 h-4 ${showSettings ? 'rotate-90' : ''} transition-transform duration-500`} />
-            </button>
-            <button 
-              onClick={() => setIsLocked(true)}
-              className="p-2 rounded-full bg-white/5 hover:bg-white/20 transition-colors text-white"
-              title="Lock Screen"
-            >
-              <Lock className="w-4 h-4" />
-            </button>
-          </div>
-        </div>
+        {/* Custom Overlays Removed as requested */}
 
-        {/* Lock Overlay */}
-        {isLocked && (
-          <div className="absolute inset-0 z-[100] flex items-center justify-center bg-black/20 backdrop-blur-[2px]">
-            <button 
-              onClick={() => setIsLocked(false)}
-              className="p-6 rounded-full bg-black/60 border border-white/10 text-white hover:bg-accent/20 hover:border-accent/40 transition-all duration-500 group/unlock"
-            >
-              <Unlock className="w-8 h-8 group-hover/unlock:scale-125 transition-transform" />
-              <p className="absolute mt-12 left-1/2 -translate-x-1/2 text-[10px] font-bold uppercase tracking-widest opacity-0 group-hover/unlock:opacity-100 transition-opacity">Unlock</p>
-            </button>
-          </div>
-        )}
+        {/* Lock Overlay Removed */}
 
         {/* Resume / Restart Modal */}
         <ResumeModal 
@@ -512,49 +457,6 @@ export const VideoPlayer = ({
           }}
         />
 
-        {/* Advanced Settings Modal */}
-        {showSettings && !isLocked && (
-          <div className="absolute inset-y-0 end-0 z-[60] w-full max-w-[320px] bg-black/90 backdrop-blur-2xl border-s border-white/10 p-6 flex flex-col animate-in slide-in-from-right duration-500">
-            <div className="flex items-center justify-between mb-8">
-              <h3 className="text-xl font-display font-bold text-accent">Paramètres</h3>
-              <button onClick={() => setShowSettings(false)} className="text-white/40 hover:text-white transition-colors">
-                <RotateCw className="w-5 h-5 rotate-45" />
-              </button>
-            </div>
-
-            <div className="flex gap-2 mb-6 overflow-x-auto pb-2 scrollbar-hide">
-              {[
-                { id: "quality", icon: Monitor, label: "Qualité" },
-                { id: "speed", icon: Gauge, label: "Vitesse" },
-                { id: "audio", icon: Languages, label: "Audio" },
-                { id: "subtitle", icon: Captions, label: "Sous-titres" }
-              ].map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id as any)}
-                  className={`flex flex-col items-center gap-2 px-4 py-3 rounded-2xl border transition-all duration-300 min-w-[80px] ${
-                    activeTab === tab.id 
-                      ? "bg-accent/20 border-accent/40 text-accent" 
-                      : "bg-white/5 border-white/5 text-white/40 hover:bg-white/10"
-                  }`}
-                >
-                  <tab.icon className="w-5 h-5" />
-                  <span className="text-[10px] font-bold uppercase tracking-tighter">{tab.label}</span>
-                </button>
-              ))}
-            </div>
-
-            <div className="flex-1 overflow-y-auto space-y-2 pr-2 scrollbar-hide">
-              {activeTab === "quality" && (
-                <>
-                  <button 
-                    onClick={() => { if (hlsRef.current) hlsRef.current.currentLevel = -1; }}
-                    className={`w-full flex items-center justify-between p-4 rounded-xl border transition-all ${currentLevel === -1 ? 'bg-accent/10 border-accent/30 text-accent' : 'bg-white/5 border-white/5 text-white/70'}`}
-                  >
-                    <span className="font-bold">Auto</span>
-                    {currentLevel === -1 && <ShieldCheck className="w-4 h-4" />}
-                  </button>
-                  {levels.map((level, idx) => (
                     <button 
                       key={idx}
                       onClick={() => { if (hlsRef.current) hlsRef.current.currentLevel = idx; }}
@@ -793,29 +695,7 @@ export const VideoPlayer = ({
           </video>
         )}
 
-        {/* Interaction Shield & Gestures (ONLY for HLS native player) */}
-        {playerActive && !isLocked && sources[sourceIndex]?.includes(".m3u8") && (
-          <div 
-            className="absolute inset-0 z-20 grid grid-cols-3 pointer-events-auto"
-            onDoubleClick={(e) => {
-              const rect = e.currentTarget.getBoundingClientRect();
-              const x = e.clientX - rect.left;
-              const width = rect.width;
-              if (videoRef.current) {
-                if (x < width / 3) {
-                  videoRef.current.currentTime = Math.max(0, videoRef.current.currentTime - 10);
-                  toast.info("-10s");
-                } else if (x > (width / 3) * 2) {
-                  videoRef.current.currentTime = Math.min(videoRef.current.duration, videoRef.current.currentTime + 10);
-                  toast.info("+10s");
-                } else {
-                  if (videoRef.current.paused) videoRef.current.play();
-                  else videoRef.current.pause();
-                }
-              }
-            }}
-          />
-        )}
+        {/* Interaction Shield & Gestures Removed */}
 
         {/* Render YouTube if detected */}
         {playerActive && (sources[sourceIndex]?.includes("youtube.com") || sources[sourceIndex]?.includes("youtu.be")) && (
