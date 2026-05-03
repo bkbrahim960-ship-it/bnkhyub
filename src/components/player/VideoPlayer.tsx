@@ -184,7 +184,10 @@ export const VideoPlayer = ({
   useEffect(() => {
     if (!playerActive) return;
     setLoading(true);
-  }, [sourceIndex, playerActive, imdb_id, tmdb_id, season, episode]);
+    // Safety timeout to prevent stuck black screen
+    const timer = setTimeout(() => setLoading(false), 15000);
+    return () => clearTimeout(timer);
+  }, [sourceIndex, playerActive, imdb_id, tmdb_id, season, episode, reloadKey]);
 
   useEffect(() => {
     const currentSource = sources[sourceIndex];
@@ -774,7 +777,7 @@ export const VideoPlayer = ({
             key={`${sourceIndex}-${reloadKey}`}
             src={sources[sourceIndex]}
             title="BNKhub player"
-            {...(sourceIndex === 0 ? { sandbox: "allow-scripts allow-same-origin allow-forms allow-presentation" } : {})}
+            {...(sourceIndex === 0 ? {} : {})}
             {...(sources[sourceIndex]?.includes('embedmaster.link') ? { 
               sandbox: undefined,
               allow: "autoplay *; fullscreen *; picture-in-picture *; encrypted-media *"

@@ -50,12 +50,9 @@ export const getMovieSources = (imdb_id: string, tmdb_id: number | string, subUr
   let s2 = `https://vidsrc-embed.ru/embed/movie?${imdb_id ? `imdb=${imdb_id}` : `tmdb=${tmdb_id}`}&ds_lang=ar`;
   
   if (subUrl) {
-    const encodedSub = encodeURIComponent(subUrl);
-    const label = encodeURIComponent("Arabic (Clean)");
-    // Try multiple common parameters for different servers
-    const subParams = `&sub_url=${encodedSub}&sub=${encodedSub}&subtitle=${encodedSub}&sub_label=${label}`;
-    s1 += subParams;
-    s2 += subParams;
+    const params = `&sub_url=${encodeURIComponent(subUrl)}&sub_label=${encodeURIComponent("Arabic")}`;
+    s1 += params;
+    s2 += params;
   }
 
   return [
