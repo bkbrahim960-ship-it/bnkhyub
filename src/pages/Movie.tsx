@@ -161,76 +161,6 @@ const Movie = () => {
           title={movie.title} 
         />
         
-        <div className="container absolute inset-x-0 bottom-0 z-20 pb-20 md:pb-24 lg:pb-32 grid lg:grid-cols-[300px_1fr] gap-4 md:gap-12 items-end">
-          <div className="hidden lg:block animate-fade-in group">
-            <div className="relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl shadow-accent/20">
-               <img src={poster} alt={movie.title} className="w-full transition-transform duration-700 group-hover:scale-110" />
-               <div className="absolute inset-0 bg-gradient-to-t from-black/60 opacity-0 group-hover:opacity-100 transition-opacity" />
-            </div>
-          </div>
-
-          <div className="animate-fade-slide-up">
-            <Link to="/" className="inline-flex items-center gap-2 text-accent/80 hover:text-accent mb-3 md:mb-6 transition-colors group">
-              <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform rtl:rotate-180" />
-              <span className="text-xs font-bold uppercase tracking-widest">{t("nav_home")}</span>
-            </Link>
-
-            <div className="flex flex-wrap gap-1.5 md:gap-2 mb-3 md:mb-6">
-              {movie.genres?.slice(0, 4).map(g => (
-                <span key={g.id} className="px-2 md:px-3 py-0.5 md:py-1 rounded-full bg-accent/10 border border-accent/20 text-[9px] md:text-[10px] font-bold uppercase tracking-widest text-accent">
-                  {g.name}
-                </span>
-              ))}
-            </div>
-
-            <h1 className="font-display text-2xl sm:text-3xl md:text-6xl lg:text-8xl font-bold mb-2 md:mb-6 text-white leading-tight">
-              {movie.title}
-            </h1>
-
-            {movie.tagline && (
-              <p className="text-sm md:text-xl text-accent/90 italic mb-4 md:mb-8 font-decorative">{movie.tagline}</p>
-            )}
-
-            <div className="flex flex-wrap items-center gap-3 md:gap-6 mb-4 md:mb-10 text-white/70 text-sm md:text-base font-medium">
-              <div className="flex items-center gap-2 md:gap-3 px-3 md:px-4 py-1.5 md:py-2 rounded-2xl bg-white/5 border border-white/10">
-                <Star className="w-4 h-4 md:w-5 md:h-5 text-accent fill-accent" />
-                <span className="text-base md:text-xl font-black text-white">{movie.vote_average.toFixed(1)}</span>
-              </div>
-              <span className="flex items-center gap-1.5"><Calendar className="w-3.5 h-3.5 md:w-4 md:h-4 text-accent" /> {year}</span>
-              <span className="flex items-center gap-1.5"><Clock className="w-3.5 h-3.5 md:w-4 md:h-4 text-accent" /> {runtime}</span>
-              {movie.original_language && (
-                <span className="hidden sm:flex items-center gap-1.5 uppercase"><Globe2 className="w-3.5 h-3.5 md:w-4 md:h-4 text-accent" /> {movie.original_language}</span>
-              )}
-            </div>
-
-            <p className="text-sm md:text-lg text-white/60 max-w-3xl leading-relaxed mb-6 md:mb-12 line-clamp-2 md:line-clamp-3 lg:line-clamp-none">
-              {movie.overview}
-            </p>
-
-            <div className="flex flex-wrap items-center gap-3 md:gap-5">
-              {!playing && (
-                <button
-                  onClick={startWatching}
-                  className="inline-flex items-center gap-2 md:gap-4 bg-accent text-accent-foreground px-6 md:px-12 py-3 md:py-5 rounded-full font-bold shadow-glow hover:scale-105 active:scale-95 transition-all text-sm md:text-xl"
-                >
-                  <Play className="w-4 h-4 md:w-6 md:h-6 fill-current" /> {t("hero_watch")}
-                </button>
-              )}
-              {trailer && (
-                <button
-                  onClick={() => setShowTrailer(true)}
-                  className="inline-flex items-center gap-2 md:gap-3 bg-white/5 hover:bg-white/10 border border-white/10 px-6 md:px-10 py-3 md:py-4 rounded-full font-bold transition-all text-sm"
-                >
-                  <Youtube className="w-4 h-4 md:w-5 md:h-5 text-red-500" /> {t("hero_trailer")}
-                </button>
-              )}
-              <FavoriteButton tmdbId={movie.id} mediaType="movie" title={movie.title} posterPath={movie.poster_path} className="px-4 md:px-6 py-3 md:py-4" />
-              <div className="hidden sm:flex gap-3">
-                <RemotePairingButton />
-                <ShareButtons title={movie.title} />
-              </div>
-            </div>
-          </div>
         </div>
       </section>
 
@@ -263,59 +193,45 @@ const Movie = () => {
         )}
       </div>
 
-      {/* DETAILED INFO SECTION */}
-      <section className="container py-8">
-        <div className="grid lg:grid-cols-[1fr_350px] gap-16">
-          <div className="space-y-16">
-            {/* Cast */}
-            {cast.length > 0 && (
-              <div>
-                <h2 className="font-display text-3xl mb-8 flex items-center gap-3">
-                  <span className="w-8 h-1 bg-accent rounded-full" />
-                  Distribution
-                </h2>
-                <div className="grid grid-cols-4 sm:grid-cols-3 md:grid-cols-5 gap-3 sm:gap-6">
-                  {cast.map(person => (
-                    <Link key={person.id} to={`/person/${person.id}`} className="group">
-                      <div className="aspect-[2/3] rounded-2xl overflow-hidden mb-3 bg-surface-card border border-border group-hover:border-accent/40 transition-all">
-                        {person.profile_path ? (
-                          <img 
-                            src={IMG.profile(person.profile_path)} 
-                            alt={person.name} 
-                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                          />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center bg-accent/5">
-                            <span className="text-accent/40 text-2xl font-black">{person.name[0]}</span>
-                          </div>
-                        )}
-                      </div>
-                      <h4 className="font-bold text-[10px] sm:text-sm text-foreground line-clamp-1 group-hover:text-accent transition-colors">{person.name}</h4>
-                      <p className="text-[9px] sm:text-xs text-muted-foreground line-clamp-1">{person.character}</p>
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            )}
-
-
-          </div>
-
-          {/* Sidebar Info */}
-          <div className="space-y-10">
-
-
-
-          </div>
-        </div>
-      </section>
-
       {/* Recommendations */}
       {recommendations.length > 0 && (
         <div className="py-20 bg-gradient-to-b from-transparent to-black/40">
           <MovieRow title={lang === "ar" ? "أفلام مشابهة" : "Vous pourriez aussi aimer"} items={recommendations} />
         </div>
       )}
+
+      {/* DISTRIBUTION MOVED TO BOTTOM */}
+      <section className="container py-20 border-t border-white/5">
+        {cast.length > 0 && (
+          <div>
+            <h2 className="font-display text-3xl mb-8 flex items-center gap-3">
+              <span className="w-8 h-1 bg-accent rounded-full" />
+              Distribution
+            </h2>
+            <div className="grid grid-cols-4 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-6 gap-4 sm:gap-6">
+              {cast.map(person => (
+                <Link key={person.id} to={`/person/${person.id}`} className="group">
+                  <div className="aspect-[2/3] rounded-2xl overflow-hidden mb-3 bg-surface-card border border-border group-hover:border-accent/40 transition-all">
+                    {person.profile_path ? (
+                      <img 
+                        src={IMG.profile(person.profile_path)} 
+                        alt={person.name} 
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center bg-accent/5">
+                        <span className="text-accent/40 text-2xl font-black">{person.name[0]}</span>
+                      </div>
+                    )}
+                  </div>
+                  <h4 className="font-bold text-[10px] sm:text-sm text-foreground line-clamp-1 group-hover:text-accent transition-colors">{person.name}</h4>
+                  <p className="text-[9px] sm:text-xs text-muted-foreground line-clamp-1">{person.character}</p>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
+      </section>
     </Layout>
   );
 };
