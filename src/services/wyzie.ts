@@ -36,9 +36,15 @@ export const searchWyzieSubtitles = async (tmdbId: string | number, imdbId?: str
     data = await fetchFromWyzie(imdbId);
   }
 
-  return data.map((sub: any) => ({
-    url: sub.url,
-    lang: sub.language || language,
-    label: sub.release || sub.display || `${language.toUpperCase()} (Wyzie)`,
-  }));
+  return data.map((sub: any) => {
+    let finalUrl = sub.url;
+    if (finalUrl.includes('sub.wyzie.io') && !finalUrl.includes('key=')) {
+      finalUrl += `&key=${API_KEY}`;
+    }
+    return {
+      url: finalUrl,
+      lang: sub.language || language,
+      label: sub.release || sub.display || `${language.toUpperCase()} (Wyzie)`,
+    };
+  });
 };

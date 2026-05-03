@@ -111,11 +111,20 @@ export const SubtitleFinder = ({ imdbId, tmdbId, title, type, season, episode, o
                    
                    if (Array.isArray(data) && data.length > 0) {
                      if (onSubtitleSelect) {
-                       onSubtitleSelect(data[0].url);
+                       let subUrl = data[0].url;
+                       // Ensure key is appended to Wyzie download URL
+                       if (subUrl.includes('sub.wyzie.io') && !subUrl.includes('key=')) {
+                         subUrl += `&key=${API_KEY}`;
+                       }
+                       onSubtitleSelect(subUrl);
                        // Smooth scroll to player
                        window.scrollTo({ top: 0, behavior: 'smooth' });
                      } else {
-                       window.open(data[0].url, '_blank');
+                       let subUrl = data[0].url;
+                       if (subUrl.includes('sub.wyzie.io') && !subUrl.includes('key=')) {
+                         subUrl += `&key=${API_KEY}`;
+                       }
+                       window.open(subUrl, '_blank');
                      }
                    } else {
                      alert("Aucune traduction trouvée sur Wyzie pour ce contenu.");
