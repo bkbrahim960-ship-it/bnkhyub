@@ -36,6 +36,7 @@ export const getMovieSources = (imdb_id: string, tmdb_id: number | string): stri
     `https://vaplayer.ru/embed/movie/${imdb_id || tmdb_id}?primaryColor=${color.replace('#','')}&lang=ar&ds_lang=ar&autoplay=1`, // S1: Primary
     getVidsrcEmbedUrl('movie', imdb_id, tmdb_id), // S2
     `https://embed.filmu.in/movie/${id}`, // S3: Filmu
+    `https://superflixapi.life/api/movie/${tmdb_id}`, // S4: Superflix
   ];
 };
 
@@ -52,6 +53,7 @@ export const getTVSources = (
     `https://vaplayer.ru/embed/tv/${imdb_id || tmdb_id}/${season}/${episode}?primaryColor=${color.replace('#','')}&lang=ar&ds_lang=ar&autoplay=1`, // S1: Primary
     getVidsrcEmbedUrl('tv', imdb_id, tmdb_id, season, episode), // S2
     `https://embed.filmu.in/tv/${id}/${season}/${episode}`, // S3: Filmu
+    `https://superflixapi.life/api/tv/${tmdb_id}/${season}/${episode}`, // S4: Superflix
   ];
 };
 
@@ -59,4 +61,5 @@ export const SOURCE_LABELS = [
   "S1 · BNKhub serveur",
   "S2 · vidsrc-embed (Arabic)",
   "S3 · Filmu (Premium)",
+  "S4 · Superflix (Global)",
 ];
