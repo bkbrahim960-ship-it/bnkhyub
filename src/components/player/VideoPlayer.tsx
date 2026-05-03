@@ -428,8 +428,37 @@ export const VideoPlayer = ({
     };
 
     window.addEventListener("keydown", handleRemote);
-    return () => window.removeEventListener("keydown", handleRemote);
+    
+    const handleFsChange = () => {
+      setIsWebFullscreen(!!document.fullscreenElement);
+    };
+    document.addEventListener('fullscreenchange', handleFsChange);
+    document.addEventListener('webkitfullscreenchange', handleFsChange);
+
+    return () => {
+      window.removeEventListener("keydown", handleRemote);
+      document.removeEventListener('fullscreenchange', handleFsChange);
+      document.removeEventListener('webkitfullscreenchange', handleFsChange);
+    };
   }, [sourceIndex, sources.length, playerActive, adsOpen]);
+
+  const toggleFullscreen = () => {
+    if (!containerRef.current) return;
+    
+    if (!document.fullscreenElement) {
+      if (containerRef.current.requestFullscreen) {
+        containerRef.current.requestFullscreen();
+      } else if ((containerRef.current as any).webkitRequestFullscreen) {
+        (containerRef.current as any).webkitRequestFullscreen();
+      }
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      } else if ((document as any).webkitExitFullscreen) {
+        (document as any).webkitExitFullscreen();
+      }
+    }
+  };
 
   // VidAPI Event Listener (Auto-next, Progress)
   useEffect(() => {
@@ -492,11 +521,19 @@ export const VideoPlayer = ({
         
         {/* Brand Watermark (Only for BNKhub Server S1) */}
         {playerActive && sourceIndex === 0 && (
-          <div className="absolute top-6 right-6 z-40 pointer-events-none select-none group-hover/player:opacity-100 opacity-40 transition-opacity duration-500">
+          <div className="absolute top-6 right-6 z-40 flex flex-col items-end pointer-events-none select-none group-hover/player:opacity-100 opacity-40 transition-opacity duration-500">
             <div className="flex flex-col items-end">
-              <span className="text-2xl md:text-3xl font-display font-black tracking-[0.2em] text-accent drop-shadow-[0_2px_10px_rgba(212,175,55,0.4)]">BNKHUB</span>
-              <div className="h-0.5 w-12 bg-gradient-to-r from-transparent to-accent rounded-full mt-1" />
+              <span className="text-2xl md:text-4xl font-display font-black tracking-[0.2em] text-accent drop-shadow-[0_2px_20px_rgba(212,175,55,0.6)]">BNKHUB</span>
+              <div className="h-1 w-16 bg-gradient-to-r from-transparent to-accent rounded-full mt-1" />
             </div>
+            {/* Custom Fullscreen Trigger to ensure watermark stays on top */}
+            <button 
+              onClick={toggleFullscreen}
+              className="mt-4 pointer-events-auto bg-black/40 backdrop-blur-md border border-white/10 p-3 rounded-full text-accent hover:scale-110 active:scale-95 transition-all shadow-xl"
+              title={isWebFullscreen ? "Réduire" : "Plein écran BNKhub"}
+            >
+              <Maximize className="w-5 h-5" />
+            </button>
           </div>
         )}
 
