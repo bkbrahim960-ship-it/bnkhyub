@@ -201,8 +201,6 @@ const Series = () => {
           videoKey={trailer?.key} 
           title={series.name} 
         />
-        
-        />
       </section>
 
       {/* NEW ORGANIZED INFO BLOCK */}
@@ -456,9 +454,6 @@ const Series = () => {
           </div>
         )}
       </section>
-    </Layout>
-  );
-};
     </Layout>
   );
 };

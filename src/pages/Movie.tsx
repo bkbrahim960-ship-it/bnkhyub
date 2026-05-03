@@ -160,7 +160,55 @@ const Movie = () => {
           videoKey={trailer?.key} 
           title={movie.title} 
         />
-        
+      </section>
+
+      {/* NEW ORGANIZED INFO BLOCK */}
+      <section className="container -mt-32 relative z-20 pb-12">
+        <div className="grid lg:grid-cols-[300px_1fr] gap-8 md:gap-12 items-end">
+          <div className="hidden lg:block animate-fade-in group">
+            <div className="relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl shadow-accent/20">
+               <img src={poster} alt={movie.title} className="w-full transition-transform duration-700 group-hover:scale-110" />
+            </div>
+          </div>
+
+          <div className="animate-fade-slide-up">
+            <div className="flex flex-wrap gap-2 mb-4">
+              {movie.genres?.slice(0, 3).map(g => (
+                <span key={g.id} className="px-3 py-1 rounded-full bg-accent/10 border border-accent/20 text-[10px] font-bold uppercase tracking-widest text-accent">
+                  {g.name}
+                </span>
+              ))}
+            </div>
+
+            <h1 className="font-display text-3xl md:text-6xl lg:text-7xl font-bold mb-4 text-white">
+              {movie.title}
+            </h1>
+
+            <div className="flex flex-wrap items-center gap-4 mb-6 text-white/70 text-sm">
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/5 border border-white/10">
+                <Star className="w-4 h-4 text-accent fill-accent" />
+                <span className="font-black text-white">{movie.vote_average.toFixed(1)}</span>
+              </div>
+              <span>{year}</span>
+              <span>{runtime}</span>
+            </div>
+
+            <p className="text-white/60 text-base md:text-lg max-w-3xl leading-relaxed mb-8 line-clamp-3">
+              {movie.overview}
+            </p>
+
+            <div className="flex flex-wrap items-center gap-4">
+              {!playing && (
+                <button
+                  onClick={startWatching}
+                  className="inline-flex items-center gap-3 bg-accent text-accent-foreground px-8 py-4 rounded-full font-bold shadow-glow hover:scale-105 transition-all"
+                >
+                  <Play className="w-5 h-5 fill-current" /> {t("hero_watch")}
+                </button>
+              )}
+              <FavoriteButton tmdbId={movie.id} mediaType="movie" title={movie.title} posterPath={movie.poster_path} className="px-6 py-4" />
+            </div>
+          </div>
         </div>
       </section>
 
