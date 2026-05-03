@@ -94,6 +94,23 @@ export const SubtitleFinder = ({ imdbId, title, type, season, episode }: Props) 
               </a>
             ))}
           </div>
+          <div className="pt-4">
+             <button 
+               onClick={async () => {
+                 // Open Wyzie directly
+                 window.open(`https://sub.wyzie.io/search?id=${imdbId || tmdbId}&language=ar&key=wyzie-e9b346c2994496155d332268cbe0ff6a`, '_blank');
+               }}
+               className="w-full flex items-center justify-between p-4 rounded-2xl bg-accent/10 border border-accent/20 hover:bg-accent/20 transition-all group"
+             >
+               <div className="flex items-center gap-3">
+                 <div className="p-2 rounded-lg bg-accent text-accent-foreground">
+                   <Captions className="w-4 h-4" />
+                 </div>
+                 <span className="text-xs font-bold uppercase tracking-widest text-white">Wyzie Premium Subs</span>
+               </div>
+               <ExternalLink className="w-4 h-4 text-accent/60 group-hover:translate-x-1 transition-transform" />
+             </button>
+          </div>
         </div>
 
         {/* Global Providers */}

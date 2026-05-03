@@ -13,6 +13,7 @@ import { useAuth } from "@/context/AuthContext";
 import { getRecentHistory } from "@/services/watchHistory";
 import { Loader2, AlertCircle, RotateCw, ShieldCheck, Play, Settings, Lock, Unlock, FastForward, Languages, Captions, Monitor, Gauge, PictureInPicture as PipIcon, Maximize, Search, Download, ExternalLink, X, Check } from "lucide-react";
 import { searchSubtitles, getDownloadUrl, SubtitleResult } from "@/services/opensubtitles";
+import { searchWyzieSubtitles, WyzieSubtitle } from "@/services/wyzie";
 import { searchYTSSubtitles } from "@/services/yts_subtitles";
 import { searchSubscene } from "@/services/subscene";
 import { supabase } from "@/integrations/supabase/client";
@@ -76,6 +77,7 @@ export const VideoPlayer = ({
 
   // External Subtitles
   const [externalSubs, setExternalSubs] = useState<SubtitleResult[]>([]);
+  const [wyzieSubs, setWyzieSubs] = useState<WyzieSubtitle[]>([]);
   const [ytsSubs, setYtsSubs] = useState<any[]>([]);
   const [subsceneResults, setSubsceneResults] = useState<any[]>([]);
   const [isSearchingSubs, setIsSearchingSubs] = useState(false);
@@ -101,6 +103,15 @@ export const VideoPlayer = ({
           if (url) {
             setAppliedExternalSub(url);
           }
+        }
+
+        // Also fetch from Wyzie
+        const wyzieResults = await searchWyzieSubtitles(tmdb_id || imdb_id);
+        setWyzieSubs(wyzieResults);
+        
+        // If no OpenSubtitles but we have Wyzie, apply first Wyzie
+        if (results.length === 0 && wyzieResults.length > 0) {
+          setAppliedExternalSub(wyzieResults[0].url);
         }
       } catch (err) {
         console.error("Auto-sub error:", err);
@@ -408,22 +419,43 @@ export const VideoPlayer = ({
                 {activeTab === "subtitle" && (
                   <div className="space-y-4">
                     <p className="text-[10px] font-black text-white/20 uppercase tracking-[0.3em] px-2">Subtitles Found</p>
-                    {externalSubs.length > 0 ? (
-                      externalSubs.map((sub, idx) => (
-                        <button 
-                          key={idx}
-                          onClick={async () => {
-                            const url = await getDownloadUrl(sub.attributes.file_id);
-                            if (url) setAppliedExternalSub(url);
-                            setShowSettings(false);
-                          }}
-                          className="w-full flex items-center justify-between px-5 py-4 rounded-2xl text-[11px] font-bold transition-all bg-white/5 text-white/50 hover:bg-white/10 hover:text-white border border-transparent hover:border-white/5"
-                        >
-                          <span className="truncate max-w-[220px]">{sub.attributes.release}</span>
-                          <Check className="w-3 h-3 text-accent opacity-0 group-hover:opacity-100" />
-                        </button>
-                      ))
-                    ) : (
+                    {/* OpenSubtitles Results */}
+                    {externalSubs.length > 0 && externalSubs.map((sub, idx) => (
+                      <button 
+                        key={`os-${idx}`}
+                        onClick={async () => {
+                          const url = await getDownloadUrl(sub.attributes.file_id);
+                          if (url) setAppliedExternalSub(url);
+                          setShowSettings(false);
+                        }}
+                        className={`w-full flex items-center justify-between px-5 py-4 rounded-2xl text-[11px] font-bold transition-all border ${appliedExternalSub?.includes(sub.attributes.file_id) ? 'bg-accent/20 border-accent/40 text-accent' : 'bg-white/5 text-white/50 hover:bg-white/10 hover:text-white border-transparent'}`}
+                      >
+                        <span className="truncate max-w-[220px]">{sub.attributes.release}</span>
+                        {appliedExternalSub?.includes(sub.attributes.file_id) && <Check className="w-3 h-3 text-accent" />}
+                      </button>
+                    ))}
+
+                    {/* Wyzie Results */}
+                    {wyzieSubs.length > 0 && (
+                      <>
+                        <p className="text-[10px] font-black text-white/20 uppercase tracking-[0.3em] px-2 pt-4">Wyzie Premium Subs</p>
+                        {wyzieSubs.map((sub, idx) => (
+                          <button 
+                            key={`wyzie-${idx}`}
+                            onClick={() => {
+                              setAppliedExternalSub(sub.url);
+                              setShowSettings(false);
+                            }}
+                            className={`w-full flex items-center justify-between px-5 py-4 rounded-2xl text-[11px] font-bold transition-all border ${appliedExternalSub === sub.url ? 'bg-accent/20 border-accent/40 text-accent' : 'bg-white/5 text-white/50 hover:bg-white/10 hover:text-white border-transparent'}`}
+                          >
+                            <span className="truncate max-w-[220px]">{sub.label}</span>
+                            {appliedExternalSub === sub.url && <Check className="w-3 h-3 text-accent" />}
+                          </button>
+                        ))}
+                      </>
+                    )}
+
+                    {externalSubs.length === 0 && wyzieSubs.length === 0 && (
                       <div className="text-center py-12 bg-white/5 rounded-3xl border border-dashed border-white/10">
                         <Loader2 className="w-6 h-6 text-accent/20 animate-spin mx-auto mb-3" />
                         <p className="text-[10px] font-black text-white/20 uppercase tracking-widest">Searching or none found</p>
