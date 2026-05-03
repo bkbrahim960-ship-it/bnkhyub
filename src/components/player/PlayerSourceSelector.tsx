@@ -2,7 +2,9 @@ import {
   Server, 
   ChevronDown,
   Check,
-  Loader2
+  Loader2,
+  Captions,
+  Settings
 } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { 
@@ -24,12 +26,16 @@ interface Source {
 interface Props {
   sources: Source[];
   onSelect: (index: number) => void;
+  onToggleSettings?: () => void;
+  onToggleSubtitles?: () => void;
   isLoading?: boolean;
 }
 
 export const PlayerSourceSelector = ({ 
   sources, 
   onSelect, 
+  onToggleSettings,
+  onToggleSubtitles,
   isLoading 
 }: Props) => {
   const { lang } = useLanguage();
@@ -48,23 +54,30 @@ export const PlayerSourceSelector = ({
   }
 
   return (
-    <div className="w-full mt-6 flex justify-center animate-in fade-in slide-in-from-bottom-4 duration-1000">
-      <div className="flex items-center gap-4">
-        {/* Large Centered Server Selector without background */}
+    <div className="w-full mt-6 flex flex-col items-center gap-6 animate-in fade-in slide-in-from-bottom-4 duration-1000">
+      <div className="flex flex-wrap items-center justify-center gap-4">
+        {/* Settings Button */}
+        <button 
+          onClick={onToggleSettings}
+          className="p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-accent/40 hover:bg-white/10 transition-all group"
+          aria-label="Settings"
+        >
+          <Settings className="w-6 h-6 text-white/40 group-hover:text-accent transition-colors" />
+        </button>
+
+        {/* Large Centered Server Selector */}
         <div className="flex items-center gap-3">
-          <div className="hidden md:flex items-center gap-2 px-4 py-2 rounded-2xl bg-accent/5 border border-accent/10 text-accent">
-            <Server className="w-5 h-5" />
-            <span className="text-xs font-black uppercase tracking-[0.3em]">{isAr ? "السيرفر" : "SERVER"}</span>
-          </div>
-          
           <Popover>
             <PopoverTrigger asChild>
-              <button className="flex items-center gap-6 px-8 py-4 rounded-[2rem] bg-white/5 border border-white/10 hover:border-accent/40 hover:bg-white/10 transition-all group min-w-[240px] shadow-2xl">
-                <span className="text-lg font-black text-white group-hover:text-accent transition-colors">{currentSource?.name}</span>
+              <button className="flex items-center gap-6 px-8 py-4 rounded-[2rem] bg-white/5 border border-white/10 hover:border-accent/40 hover:bg-white/10 transition-all group min-w-[260px] shadow-2xl">
+                <div className="flex items-center gap-3">
+                  <Server className="w-5 h-5 text-accent/40 group-hover:text-accent transition-colors" />
+                  <span className="text-lg font-black text-white group-hover:text-accent transition-colors">{currentSource?.name}</span>
+                </div>
                 <ChevronDown className="w-5 h-5 text-white/20 group-hover:text-accent group-hover:rotate-180 transition-all duration-500" />
               </button>
             </PopoverTrigger>
-            <PopoverContent className="w-72 p-3 bg-black/95 backdrop-blur-3xl border-white/10 shadow-[0_30px_60px_rgba(0,0,0,0.8)] rounded-[2rem]">
+            <PopoverContent className="w-72 p-3 bg-black/95 backdrop-blur-3xl border-white/10 shadow-[0_30px_60px_rgba(0,0,0,0.8)] rounded-[2rem] z-[600]">
               <div className="max-h-80 overflow-y-auto custom-scrollbar flex flex-col gap-2">
                 {sources.map((s, idx) => (
                   <button
@@ -87,6 +100,16 @@ export const PlayerSourceSelector = ({
             </PopoverContent>
           </Popover>
         </div>
+
+        {/* Subtitles Button */}
+        <button 
+          onClick={onToggleSubtitles}
+          className="p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-accent/40 hover:bg-white/10 transition-all group relative"
+          aria-label="Subtitles"
+        >
+          <Captions className="w-6 h-6 text-white/40 group-hover:text-accent transition-colors" />
+          <span className="absolute -top-1 -right-1 w-2 h-2 bg-accent rounded-full animate-pulse shadow-glow-sm" />
+        </button>
       </div>
     </div>
   );
