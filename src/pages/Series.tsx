@@ -159,7 +159,7 @@ const Series = () => {
     (v) => v.type === "Trailer" && v.site === "YouTube"
   ) || series.videos?.results.find((v) => v.site === "YouTube");
 
-  const saveHistory = (sourceLabel: string) => {
+  const saveHistory = (sourceLabel: string, progress?: number, duration?: number) => {
     if (!user) return;
     const sid = sourceLabel.split(" ")[0];
     upsertWatchEntry(user.id, {
@@ -171,6 +171,8 @@ const Series = () => {
       season_number: season,
       episode_number: episode,
       source_id: sid,
+      progress_seconds: progress,
+      duration_seconds: duration,
     }).catch(() => {});
   };
 
@@ -280,6 +282,15 @@ const Series = () => {
                 initialSourceIndex={initialSourceIndex}
                 onPlayStart={(_i, label) => saveHistory(label)}
                 onSourceChange={(_i, label) => saveHistory(label)}
+                onProgress={(seconds, duration) => {
+                  const label = SOURCE_LABELS[initialSourceIndex] || "S1";
+                  saveHistory(label, seconds, duration);
+                }}
+                onCompleted={() => {
+                  if (seasonData && episode < (seasonData.episodes?.length || 0)) {
+                    setShowNextEpisode(true);
+                  }
+                }}
               />
               
               <SubtitleFinder 

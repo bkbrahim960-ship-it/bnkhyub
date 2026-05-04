@@ -28,12 +28,13 @@ export const getVidsrcEmbedUrl = (type: 'movie' | 'tv', imdb_id: string, tmdb_id
 /**
  * Main Source Fetchers
  */
-export const getMovieSources = (imdb_id: string, tmdb_id: number | string): string[] => {
+export const getMovieSources = (imdb_id: string, tmdb_id: number | string, resumeAt?: number): string[] => {
   const color = safeGetAccentHex();
   const id = imdb_id || tmdb_id;
+  const resumeParam = resumeAt ? `&resumeAt=${resumeAt}` : '';
   
   return [
-    `https://vaplayer.ru/embed/movie/${imdb_id || tmdb_id}?primaryColor=${color.replace('#','')}&lang=ar&ds_lang=ar&autoplay=1`, // S1: Primary
+    `https://vaplayer.ru/embed/movie/${imdb_id || tmdb_id}?primaryColor=${color.replace('#','')}&lang=ar&ds_lang=ar&autoplay=1${resumeParam}`, // S1: Primary
     getVidsrcEmbedUrl('movie', imdb_id, tmdb_id), // S2
     `https://embed.filmu.in/movie/${id}`, // S3: Filmu
   ];
@@ -44,12 +45,14 @@ export const getTVSources = (
   tmdb_id: number | string,
   season: number,
   episode: number,
+  resumeAt?: number,
 ): string[] => {
   const color = safeGetAccentHex();
   const id = imdb_id || tmdb_id;
+  const resumeParam = resumeAt ? `&resumeAt=${resumeAt}` : '';
   
   return [
-    `https://vaplayer.ru/embed/tv/${imdb_id || tmdb_id}/${season}/${episode}?primaryColor=${color.replace('#','')}&lang=ar&ds_lang=ar&autoplay=1`, // S1: Primary
+    `https://vaplayer.ru/embed/tv/${imdb_id || tmdb_id}/${season}/${episode}?primaryColor=${color.replace('#','')}&lang=ar&ds_lang=ar&autoplay=1${resumeParam}`, // S1: Primary
     getVidsrcEmbedUrl('tv', imdb_id, tmdb_id, season, episode), // S2
     `https://embed.filmu.in/tv/${id}/${season}/${episode}`, // S3: Filmu
   ];

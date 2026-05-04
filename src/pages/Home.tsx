@@ -13,6 +13,7 @@ import { BrandRow } from "@/components/movie/BrandRow";
 import { ContinueWatchingRow } from "@/components/movie/ContinueWatchingRow";
 import { ForYouRow } from "@/components/movie/ForYouRow";
 import { DiscoverRow } from "@/components/movie/DiscoverRow";
+import { VidAPILatestRow } from "@/components/movie/VidAPILatestRow";
 import { SEO } from "@/components/SEO";
 import { useLanguage } from "@/context/LanguageContext";
 import { useSettings } from "@/context/SettingsContext";
@@ -289,6 +290,15 @@ const Home = () => {
 
       <div className="relative mt-4 md:-mt-12 z-10">
         <ContinueWatchingRow />
+        
+        {/* VidAPI Latest Content — MOVED TO TOP */}
+        {!kidsMode && (
+          <>
+            <VidAPILatestRow type="movie" title={lang === "ar" ? "أحدث أفلام BNKhub" : "Nouveautés Films BNKhub"} />
+            <VidAPILatestRow type="tv" title={lang === "ar" ? "أحدث مسلسلات BNKhub" : "Dernières Séries BNKhub"} />
+          </>
+        )}
+
         <BrandRow />
         <ForYouRow />
         <DiscoverRow 

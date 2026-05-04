@@ -121,7 +121,7 @@ const Movie = () => {
     (v) => v.type === "Trailer" && v.site === "YouTube"
   ) || movie.videos?.results.find((v) => v.site === "YouTube");
 
-  const saveHistory = (sourceLabel: string) => {
+  const saveHistory = (sourceLabel: string, progress?: number, duration?: number) => {
     if (!user) return;
     const sid = sourceLabel.split(" ")[0];
     upsertWatchEntry(user.id, {
@@ -131,6 +131,8 @@ const Movie = () => {
       poster_path: movie.poster_path,
       backdrop_path: movie.backdrop_path,
       source_id: sid,
+      progress_seconds: progress,
+      duration_seconds: duration,
     }).catch(() => {});
   };
 
@@ -240,6 +242,10 @@ const Movie = () => {
               customUrl={(movie as any).video_url}
               onPlayStart={(_i, label) => saveHistory(label)}
               onSourceChange={(_i, label) => saveHistory(label)}
+              onProgress={(seconds, duration) => {
+                const label = SOURCE_LABELS[initialSourceIndex] || "S1";
+                saveHistory(label, seconds, duration);
+              }}
             />
             
             <SubtitleFinder 

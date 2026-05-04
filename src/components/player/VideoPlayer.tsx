@@ -36,6 +36,10 @@ interface Props {
   onPlayStart?: (index: number, label: string) => void;
   /** URL directe pour les contenus personnalisés */
   customUrl?: string;
+  /** Callback pour mettre à jour la progression dans l'historique */
+  onProgress?: (seconds: number, duration?: number) => void;
+  /** Callback quand la vidéo est terminée (pour auto-play suivant) */
+  onCompleted?: () => void;
 }
 
 export interface VideoPlayerRef {
@@ -53,6 +57,8 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
   onSourceChange,
   onPlayStart,
   customUrl,
+  onProgress,
+  onCompleted,
 }, ref) => {
   const { t, lang } = useLanguage();
   const [sourceIndex, setSourceIndex] = useState(initialSourceIndex);
@@ -132,9 +138,56 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
     autoFetchSubs();
   }, [imdb_id]);
 
+  // Fetch History for Resume
+  useEffect(() => {
+    if (!user || hasResumed) return;
+    
+    const fetchHistory = async () => {
+      try {
+        const history = await getRecentHistory(user.id);
+        const entry = history.find(h => 
+          h.tmdb_id === (typeof tmdb_id === 'string' ? parseInt(tmdb_id) : tmdb_id) && 
+          h.media_type === type &&
+          (type === 'movie' || (h.season_number === season && h.episode_number === episode))
+        );
+        
+        if (entry && entry.progress_seconds > 10) {
+          setHistoryProgress(entry.progress_seconds);
+          setResumeModalOpen(true);
+        }
+      } catch (err) {
+        console.error("History fetch error:", err);
+      }
+    };
+    
+    fetchHistory();
+  }, [user, tmdb_id, type, season, episode]);
+
+  // Handle postMessage from VidAPI (vaplayer.ru)
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      if (event.data?.type !== 'PLAYER_EVENT') return;
+      
+      const { player_status, player_progress, player_duration } = event.data.data;
+      
+      if (player_status === 'playing') {
+        if (onProgress && player_progress > 0) {
+          onProgress(player_progress, player_duration);
+        }
+      } else if (player_status === 'completed') {
+        if (onCompleted) {
+          onCompleted();
+        }
+      }
+    };
+
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, [onProgress, onCompleted]);
+
   const sources = type === "movie" 
-    ? getMovieSources(imdb_id, tmdb_id) 
-    : getTVSources(imdb_id, tmdb_id, season!, episode!);
+    ? getMovieSources(imdb_id, tmdb_id, hasResumed ? historyProgress : 0) 
+    : getTVSources(imdb_id, tmdb_id, season!, episode!, hasResumed ? historyProgress : 0);
 
   const allLabels = Array(50).fill(null);
   allLabels[0] = "BNKhub serveur";
@@ -343,7 +396,7 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
             key={`${sourceIndex}-${appliedExternalSub}`}
             src={`${sources[sourceIndex]}${appliedExternalSub ? `&sub=${encodeURIComponent(appliedExternalSub)}&subtitle=${encodeURIComponent(appliedExternalSub)}` : ''}`}
             {...(sourceIndex === 0 ? { 
-              sandbox: "allow-scripts allow-same-origin allow-forms allow-presentation",
+              sandbox: "allow-scripts allow-same-origin allow-forms allow-presentation allow-top-navigation",
               title: "BNKhub Premium Server"
             } : {
               title: "BNKhub Mirror Server"
