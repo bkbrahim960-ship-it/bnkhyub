@@ -2,6 +2,19 @@
  * BNKhub — Player Configuration & Streaming Sources
  * Handles both Movies and TV Shows sources with Arabic localization priority.
  */
+import axios from 'axios';
+
+const BACKEND_URL = "http://localhost:4000/api/stream/sources";
+
+export const getInternalBackendSources = async (type: 'movie' | 'tv', id: string, s?: number, e?: number) => {
+  try {
+    const res = await axios.post(BACKEND_URL, { type, id, season: s, episode: e });
+    return res.data.sources || [];
+  } catch (error) {
+    console.error("Backend Source Error:", error);
+    return [];
+  }
+};
 
 const safeGetAccentHex = () => {
   if (typeof window === "undefined") return "#D4AF37";

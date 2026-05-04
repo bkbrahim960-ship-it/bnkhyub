@@ -101,6 +101,19 @@ app.get('/api/subtitles/:imdb_id/status', async (req, res) => {
   });
 });
 
+import { getInternalSources } from './services/discovery/videoScrapers';
+
+// Stream Sources Endpoint
+app.post('/api/stream/sources', async (req, res) => {
+  const { type, id, season, episode } = req.body;
+  try {
+    const sources = await getInternalSources(type, id, season, episode);
+    res.json({ sources });
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch internal sources" });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`🚀 BNKhub Free Subtitle Server running on port ${PORT}`);
 });

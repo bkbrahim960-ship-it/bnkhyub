@@ -5,7 +5,7 @@
  * comme potentiellement indisponible, mais il NE bascule plus automatiquement.
  */
 import React, { useEffect, useRef, useState, forwardRef, useImperativeHandle } from "react";
-import { getMovieSources, getTVSources, SOURCE_LABELS } from "@/services/player";
+import { getMovieSources, getTVSources, SOURCE_LABELS, getInternalBackendSources } from "@/services/player";
 import { AdsNoticeModal, hasSeenAdsNotice } from "./AdsNoticeModal";
 import { ResumeModal } from "./ResumeModal";
 import { useLanguage } from "@/context/LanguageContext";
@@ -92,6 +92,9 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
   const [subsceneResults, setSubsceneResults] = useState<any[]>([]);
   const [isSearchingSubs, setIsSearchingSubs] = useState(false);
   const [appliedExternalSub, setAppliedExternalSub] = useState<string | null>(null);
+
+  // Internal Backend Sources
+  const [internalSources, setInternalSources] = useState<any[]>([]);
 
   // Expose methods to parent
   useImperativeHandle(ref, () => ({
@@ -189,6 +192,23 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
     ? getMovieSources(imdb_id, tmdb_id, hasResumed ? historyProgress : 0) 
     : getTVSources(imdb_id, tmdb_id, season!, episode!, hasResumed ? historyProgress : 0);
 
+  // Combine with internal sources
+  const allSources = [...sources, ...internalSources.filter(s => s.url).map(s => s.url)];
+
+  useEffect(() => {
+    const fetchInternal = async () => {
+      console.log("Fetching internal sources for:", tmdb_id);
+      const results = await getInternalBackendSources(type, String(tmdb_id), season, episode);
+      console.log("Internal sources found:", results);
+      if (results && results.length > 0) {
+        setInternalSources(results);
+      } else {
+        setInternalSources([]);
+      }
+    };
+    fetchInternal();
+  }, [type, tmdb_id, season, episode]);
+
   const allLabels = Array(50).fill(null);
   allLabels[0] = "BNKhub serveur";
 
@@ -206,9 +226,9 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
     newSlow[sourceIndex] = false;
     setSlow(newSlow);
     
-    const current = sources[sourceIndex];
+    const current = allSources[sourceIndex];
     setSourceIndex(-1);
-    setTimeout(() => setSourceIndex(sources.indexOf(current)), 10);
+    setTimeout(() => setSourceIndex(allSources.indexOf(current)), 10);
   };
 
   const selectSource = (index: number) => {
@@ -216,7 +236,7 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
     setLoading(true);
     setSourceIndex(index);
     if (onSourceChange) {
-      onSourceChange(index, allLabels[index] || SOURCE_LABELS[index]);
+      onSourceChange(index, allLabels[index] || SOURCE_LABELS[index] || `Internal S${index - 6}`);
     }
   };
 
@@ -351,7 +371,7 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
         )}
 
         {/* Video Element for HLS */}
-        {sources[sourceIndex]?.includes(".m3u8") && (
+        {allSources[sourceIndex]?.includes(".m3u8") && (
           <video
             ref={videoRef}
             className={`absolute inset-0 w-full h-full object-contain bg-black transition-opacity duration-300 ${playerActive ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
@@ -374,13 +394,13 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
         )}
 
         {/* YouTube Iframe */}
-        {playerActive && (sources[sourceIndex]?.includes("youtube.com") || sources[sourceIndex]?.includes("youtu.be")) && (
+        {playerActive && (allSources[sourceIndex]?.includes("youtube.com") || allSources[sourceIndex]?.includes("youtu.be")) && (
           <iframe
             key={`yt-${sourceIndex}`}
             src={`https://www.youtube.com/embed/${
-              sources[sourceIndex].includes("v=") 
-                ? sources[sourceIndex].split("v=")[1].split("&")[0] 
-                : sources[sourceIndex].split("/").pop()
+              allSources[sourceIndex].includes("v=") 
+                ? allSources[sourceIndex].split("v=")[1].split("&")[0] 
+                : allSources[sourceIndex].split("/").pop()
             }?autoplay=1&rel=0&modestbranding=1&showinfo=0&iv_load_policy=3`}
             title="YouTube Video"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
@@ -391,10 +411,10 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
         )}
 
         {/* Standard Iframe */}
-        {playerActive && !sources[sourceIndex]?.includes(".m3u8") && !sources[sourceIndex]?.includes("youtube.com") && !sources[sourceIndex]?.includes("youtu.be") && (
+        {playerActive && !allSources[sourceIndex]?.includes(".m3u8") && !allSources[sourceIndex]?.includes("youtube.com") && !allSources[sourceIndex]?.includes("youtu.be") && (
           <iframe
             key={`${sourceIndex}-${appliedExternalSub}`}
-            src={`${sources[sourceIndex]}${appliedExternalSub ? `&sub=${encodeURIComponent(appliedExternalSub)}&subtitle=${encodeURIComponent(appliedExternalSub)}` : ''}`}
+            src={`${allSources[sourceIndex]}${appliedExternalSub ? `&sub=${encodeURIComponent(appliedExternalSub)}&subtitle=${encodeURIComponent(appliedExternalSub)}` : ''}`}
             {...([0, 2, 4, 5, 6].includes(sourceIndex) ? { 
               sandbox: "allow-scripts allow-same-origin allow-forms allow-presentation allow-top-navigation-by-user-activation",
               title: SOURCE_LABELS[sourceIndex]
@@ -402,7 +422,7 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
               title: "BNKhub Mirror Server"
             })}
 
-            {...(sources[sourceIndex]?.includes('embedmaster.link') || sources[sourceIndex]?.includes('vidsrc') ? { 
+            {...(allSources[sourceIndex]?.includes('embedmaster.link') || allSources[sourceIndex]?.includes('vidsrc') ? { 
               sandbox: undefined,
               allow: "autoplay *; fullscreen *; picture-in-picture *; encrypted-media *"
             } : {
@@ -427,18 +447,30 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
       {/* Sélecteur de source avancé */}
       <div className="mt-5">
         <PlayerSourceSelector 
-          sources={sources.map((src, idx) => {
-            const isDirect = src.includes(".m3u8") || src.includes(".mp4") || src.includes("youtube");
-            return {
-              id: idx,
-              name: allLabels[idx] || SOURCE_LABELS[idx] || `Source ${idx + 1}`,
-              quality: isDirect ? "1080p" : "Auto",
-              speed: isDirect ? "50" : "30",
-              uptime: "99",
-              hasAds: !isDirect,
-              selected: idx === sourceIndex
-            };
-          })}
+          sources={[
+            ...sources.map((src, idx) => {
+              const isDirect = src.includes(".m3u8") || src.includes(".mp4") || src.includes("youtube");
+              return {
+                id: idx,
+                name: allLabels[idx] || SOURCE_LABELS[idx] || `Source ${idx + 1}`,
+                quality: isDirect ? "1080p" : "Auto",
+                speed: isDirect ? "50" : "30",
+                uptime: "99",
+                hasAds: !isDirect,
+                selected: idx === sourceIndex
+              };
+            }),
+            ...internalSources.map((s, idx) => ({
+              id: sources.length + idx,
+              name: s.provider || `Internal S${idx + 1}`,
+              quality: s.quality || "1080p",
+              speed: "90",
+              uptime: "100",
+              hasAds: false,
+              selected: sourceIndex === (sources.length + idx),
+              loading: s.loading
+            }))
+          ]}
           onSelect={selectSource}
           onToggleSettings={() => { setActiveTab("speed"); setShowSettings(true); }}
           onToggleSubtitles={() => { setActiveTab("subtitle"); setShowSettings(true); }}
