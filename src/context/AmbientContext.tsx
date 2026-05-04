@@ -48,11 +48,11 @@ export const AmbientBackground: React.FC = () => {
           loop
           muted
           playsInline
-          className="absolute inset-0 w-full h-full object-cover opacity-30 scale-110 blur-[2px] transition-opacity duration-1000 ease-in-out"
+          className="absolute inset-0 w-full h-full object-cover opacity-30 scale-110 transition-opacity duration-1000 ease-in-out"
         />
       ) : ambientImage ? (
         <div 
-          className="absolute inset-0 opacity-20 scale-125 blur-[120px] transition-all duration-1000 ease-in-out"
+          className="absolute inset-0 opacity-20 scale-125 transition-all duration-1000 ease-in-out"
           style={{ 
             backgroundImage: `url(${ambientImage})`,
             backgroundSize: 'cover',

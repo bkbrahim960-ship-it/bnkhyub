@@ -317,7 +317,7 @@
     left: -25vmax;
     background: radial-gradient(circle at center, var(--ambient-color, transparent) 0%, transparent 70%);
     opacity: 0.15; /* Subtle */
-    filter: blur(80px);
+    filter: none;
     transition: background 2s ease;
     will-change: background;
   }
