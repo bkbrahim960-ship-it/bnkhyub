@@ -36,7 +36,8 @@ export const getMovieSources = (imdb_id: string, tmdb_id: number | string, resum
   return [
     `https://vaplayer.ru/embed/movie/${imdb_id || tmdb_id}?primaryColor=${color.replace('#','')}&lang=ar&ds_lang=ar&autoplay=1${resumeParam}`, // S1: Primary
     getVidsrcEmbedUrl('movie', imdb_id, tmdb_id), // S2
-    `https://embed.filmu.in/movie/${id}`, // S3: Filmu
+    `https://vidapi.xyz/embed/movie/${imdb_id || tmdb_id}`, // S3: VidAPI.xyz
+    `https://embed.filmu.in/movie/${id}`, // S4: Filmu
   ];
 };
 
@@ -54,12 +55,14 @@ export const getTVSources = (
   return [
     `https://vaplayer.ru/embed/tv/${imdb_id || tmdb_id}/${season}/${episode}?primaryColor=${color.replace('#','')}&lang=ar&ds_lang=ar&autoplay=1${resumeParam}`, // S1: Primary
     getVidsrcEmbedUrl('tv', imdb_id, tmdb_id, season, episode), // S2
-    `https://embed.filmu.in/tv/${id}/${season}/${episode}`, // S3: Filmu
+    `https://vidapi.xyz/embed/tv/${imdb_id || tmdb_id}/${season}/${episode}`, // S3: VidAPI.xyz
+    `https://embed.filmu.in/tv/${id}/${season}/${episode}`, // S4: Filmu
   ];
 };
 
 export const SOURCE_LABELS = [
   "S1 · BNKhub serveur",
   "S2 · vidsrc-embed (Arabic)",
-  "S3 · Filmu (Premium)",
+  "S3 · VidAPI.xyz (Global)",
+  "S4 · Filmu (Premium)",
 ];
