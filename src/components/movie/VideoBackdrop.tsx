@@ -55,15 +55,11 @@ export const VideoBackdrop = ({ backdropPath, videoKey, title }: Props) => {
         </div>
       )}
 
-      {/* Cinematic Overlays — Balanced for text readability while showing more video */}
-      <div className="absolute inset-0 z-[2] bg-gradient-to-t from-background via-background/20 to-transparent" />
-      <div className="absolute inset-0 z-[2] bg-gradient-to-r from-background via-background/10 to-transparent" />
+      {/* Cinematic Overlays — Minimal to ensure video clarity */}
+      <div className="absolute inset-0 z-[2] bg-gradient-to-t from-background via-transparent to-transparent" />
       
-      {/* Subtle edge masking to prevent sharp cuts while keeping video visibility */}
-      <div className="absolute inset-0 z-[3] pointer-events-none shadow-[inset_0_0_150px_rgba(0,0,0,0.6)]" />
-      
-      {/* Bottom fade for content readability — further reduced to avoid covering buttons */}
-      <div className="absolute bottom-0 left-0 right-0 h-[15%] z-[4] bg-gradient-to-t from-background to-transparent" />
+      {/* Bottom fade for content readability — very subtle */}
+      <div className="absolute bottom-0 left-0 right-0 h-[10%] z-[4] bg-gradient-to-t from-background to-transparent" />
     </div>
   );
 };

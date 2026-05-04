@@ -65,7 +65,7 @@ export const AmbientBackground: React.FC = () => {
           style={{ background: `radial-gradient(circle at center, ${ambientColor} 0%, transparent 70%)` }} 
         />
       )}
-      <div className="absolute inset-0 bg-black/60" />
+      <div className="absolute inset-0 bg-black/20" />
     </div>
   );
 };
