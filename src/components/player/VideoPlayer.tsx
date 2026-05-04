@@ -395,12 +395,8 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
           <iframe
             key={`${sourceIndex}-${appliedExternalSub}`}
             src={`${sources[sourceIndex]}${appliedExternalSub ? `&sub=${encodeURIComponent(appliedExternalSub)}&subtitle=${encodeURIComponent(appliedExternalSub)}` : ''}`}
-            {...((sourceIndex === 0 || sourceIndex === 2) ? { 
-              sandbox: "allow-scripts allow-same-origin allow-forms allow-presentation allow-top-navigation",
-              title: sourceIndex === 0 ? "BNKhub Premium Server" : "VidAPI.xyz Server"
-            } : {
-              title: "BNKhub Mirror Server"
-            })}
+            title={sourceIndex === 0 ? "BNKhub Premium Server" : sourceIndex === 2 ? "VidAPI.xyz Server" : "BNKhub Mirror Server"}
+
             {...(sources[sourceIndex]?.includes('embedmaster.link') || sources[sourceIndex]?.includes('vidsrc') ? { 
               sandbox: undefined,
               allow: "autoplay *; fullscreen *; picture-in-picture *; encrypted-media *"
