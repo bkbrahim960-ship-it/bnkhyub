@@ -19,7 +19,7 @@ export const VideoBackdrop = ({ backdropPath, videoKey, title }: Props) => {
     
     const timer = setTimeout(() => {
       setIsVideoReady(true);
-    }, 800); 
+    }, 100); 
 
     return () => clearTimeout(timer);
   }, [videoKey]);
