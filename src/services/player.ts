@@ -49,12 +49,6 @@ export const getMovieSources = (imdb_id: string, tmdb_id: number | string, resum
   return [
     `https://vaplayer.ru/embed/movie/${imdb_id || tmdb_id}?primaryColor=${color.replace('#','')}&lang=ar&ds_lang=ar&autoplay=1${resumeParam}`, // S1: Primary
     getVidsrcEmbedUrl('movie', imdb_id, tmdb_id), // S2
-    `https://vidapi.xyz/embed/movie/${imdb_id || tmdb_id}`, // S3: VidAPI.xyz
-    `https://vidsrc.to/embed/movie/${id}`, // S4: Vidsrc.to
-    `https://embed.su/embed/movie/${id}`, // S5: Embed.su
-    `https://autoembed.to/movie/tmdb/${tmdb_id}`, // S6: AutoEmbed
-    `https://vidsrc.xyz/embed/movie?tmdb=${tmdb_id}`, // S7: Vidsrc.xyz
-    `https://www.superembed.stream/movie/${tmdb_id}`, // S8: SuperEmbed
   ];
 };
 
@@ -72,22 +66,10 @@ export const getTVSources = (
   return [
     `https://vaplayer.ru/embed/tv/${imdb_id || tmdb_id}/${season}/${episode}?primaryColor=${color.replace('#','')}&lang=ar&ds_lang=ar&autoplay=1${resumeParam}`, // S1: Primary
     getVidsrcEmbedUrl('tv', imdb_id, tmdb_id, season, episode), // S2
-    `https://vidapi.xyz/embed/tv/${imdb_id || tmdb_id}/${season}/${episode}`, // S3: VidAPI.xyz
-    `https://vidsrc.to/embed/tv/${id}/${season}/${episode}`, // S4: Vidsrc.to
-    `https://embed.su/embed/tv/${id}/${season}/${episode}`, // S5: Embed.su
-    `https://autoembed.to/tv/tmdb/${tmdb_id}/${season}/${episode}`, // S6: AutoEmbed
-    `https://vidsrc.xyz/embed/tv?tmdb=${tmdb_id}&season=${season}&episode=${episode}`, // S7: Vidsrc.xyz
-    `https://www.superembed.stream/tv/${tmdb_id}/${season}/${episode}`, // S8: SuperEmbed
   ];
 };
 
 export const SOURCE_LABELS = [
   "S1 · BNKhub serveur",
   "S2 · vidsrc-embed (Arabic)",
-  "S3 · VidAPI.xyz (Global)",
-  "S4 · Vidsrc.to (Fast)",
-  "S5 · Embed.su (4K/Sandbox)",
-  "S6 · AutoEmbed (Clean/Sandbox)",
-  "S7 · Vidsrc.xyz (New)",
-  "S8 · SuperEmbed (Mirror)",
 ];
