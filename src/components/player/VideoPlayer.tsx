@@ -370,8 +370,10 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
           </div>
         )}
 
-        {/* Video Element for HLS */}
-        {allSources[sourceIndex]?.includes(".m3u8") && (
+        {/* Video Element for HLS / Direct */}
+        {(allSources[sourceIndex]?.includes(".m3u8") || 
+          allSources[sourceIndex]?.includes(".mp4") || 
+          (sourceIndex >= sources.length && internalSources[sourceIndex - sources.length]?.type === "hls")) && (
           <video
             ref={videoRef}
             className={`absolute inset-0 w-full h-full object-contain bg-black transition-opacity duration-300 ${playerActive ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}

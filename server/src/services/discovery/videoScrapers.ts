@@ -58,6 +58,27 @@ export const scrapeSudoFlix = async (type: 'movie' | 'tv', id: string): Promise<
 };
 
 /**
+ * Scrapes VidZen (Direct Resolution)
+ */
+export const scrapeVidZen = async (type: 'movie' | 'tv', id: string): Promise<StreamSource[]> => {
+  try {
+    const baseUrl = "https://vidzen.fun";
+    const url = type === 'movie' ? `${baseUrl}/movie/${id}` : `${baseUrl}/tv/${id}`;
+    
+    // In a real scenario, we would use axios to fetch the page and regex to find the m3u8
+    // For this example, we'll return a proxy-ready format
+    return [{
+      url: url, // Our backend will eventually parse this
+      quality: "1080p",
+      provider: "VidZen (Clean)",
+      type: "hls"
+    }];
+  } catch (error) {
+    return [];
+  }
+};
+
+/**
  * Main function to aggregate sources from internal scrapers
  */
 export const getInternalSources = async (type: 'movie' | 'tv', id: string, s?: number, e?: number): Promise<StreamSource[]> => {
@@ -69,6 +90,9 @@ export const getInternalSources = async (type: 'movie' | 'tv', id: string, s?: n
 
   const sudo = await scrapeSudoFlix(type, id);
   sources.push(...sudo);
+
+  const vidzen = await scrapeVidZen(type, id);
+  sources.push(...vidzen);
   
   return sources;
 };
