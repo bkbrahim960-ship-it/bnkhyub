@@ -114,6 +114,15 @@ app.post('/api/stream/sources', async (req, res) => {
   }
 });
 
+// Sudo-flix API Endpoints (Mock/Placeholder for integration)
+app.get('/api/sudo-flix/movies', (req, res) => res.json({ message: "Sudo-flix Movies List" }));
+app.get('/api/sudo-flix/series', (req, res) => res.json({ message: "Sudo-flix Series List" }));
+app.get('/api/sudo-flix/search', (req, res) => res.json({ message: "Sudo-flix Search Result" }));
+app.get('/api/sudo-flix/stream', (req, res) => {
+  const { id } = req.query;
+  res.json({ url: `https://vidsrc.to/embed/movie/${id}`, provider: "Sudo-flix Proxy" });
+});
+
 app.listen(PORT, () => {
   console.log(`🚀 BNKhub Free Subtitle Server running on port ${PORT}`);
 });

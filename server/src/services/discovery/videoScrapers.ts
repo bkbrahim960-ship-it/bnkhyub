@@ -38,6 +38,26 @@ export const scrapeVidsrcIcu = async (type: 'movie' | 'tv', id: string, s?: numb
 };
 
 /**
+ * Scrapes Sudo-flix (Self-hosted API)
+ */
+export const scrapeSudoFlix = async (type: 'movie' | 'tv', id: string): Promise<StreamSource[]> => {
+  try {
+    // This assumes the sudo-flix API is running on localhost or a known URL
+    // For this implementation, we point to the /api/stream endpoint
+    const url = `http://localhost:4000/api/sudo-flix/stream?id=${id}`;
+    
+    return [{
+      url: url,
+      quality: "Auto",
+      provider: "Sudo-flix (Internal)",
+      type: "hls"
+    }];
+  } catch (error) {
+    return [];
+  }
+};
+
+/**
  * Main function to aggregate sources from internal scrapers
  */
 export const getInternalSources = async (type: 'movie' | 'tv', id: string, s?: number, e?: number): Promise<StreamSource[]> => {
@@ -46,6 +66,9 @@ export const getInternalSources = async (type: 'movie' | 'tv', id: string, s?: n
   // Try multiple providers
   const vidsrc = await scrapeVidsrcIcu(type, id, s, e);
   sources.push(...vidsrc);
+
+  const sudo = await scrapeSudoFlix(type, id);
+  sources.push(...sudo);
   
   return sources;
 };
