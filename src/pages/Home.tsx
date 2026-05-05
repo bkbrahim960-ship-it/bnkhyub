@@ -291,15 +291,6 @@ const Home = () => {
       <div className="relative mt-4 md:-mt-12 z-10">
         <ContinueWatchingRow />
         
-        {/* VidAPI Latest Content — MOVED TO TOP */}
-        {!kidsMode && (
-          <>
-            <VidAPILatestRow type="movie" title={lang === "ar" ? "أحدث أفلام BNKhub" : "Nouveautés Films BNKhub"} />
-            <VidAPILatestRow type="tv" title={lang === "ar" ? "أحدث مسلسلات BNKhub" : "Dernières Séries BNKhub"} />
-          </>
-        )}
-
-        <BrandRow />
         <ForYouRow />
         <DiscoverRow 
           title={lang === "ar" ? "المنصات العلمية" : "Plateformes Scientifiques"} 
