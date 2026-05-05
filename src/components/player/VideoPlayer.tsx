@@ -449,30 +449,18 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
       {/* Sélecteur de source avancé */}
       <div className="mt-5">
         <PlayerSourceSelector 
-          sources={[
-            ...sources.map((src, idx) => {
-              const isDirect = src.includes(".m3u8") || src.includes(".mp4") || src.includes("youtube");
-              return {
-                id: idx,
-                name: allLabels[idx] || SOURCE_LABELS[idx] || `Source ${idx + 1}`,
-                quality: isDirect ? "1080p" : "Auto",
-                speed: isDirect ? "50" : "30",
-                uptime: "99",
-                hasAds: !isDirect,
-                selected: idx === sourceIndex
-              };
-            }),
-            ...internalSources.map((s, idx) => ({
-              id: sources.length + idx,
-              name: s.provider || `Internal S${idx + 1}`,
-              quality: s.quality || "1080p",
-              speed: "90",
-              uptime: "100",
-              hasAds: false,
-              selected: sourceIndex === (sources.length + idx),
-              loading: s.loading
-            }))
-          ]}
+          sources={sources.map((src, idx) => {
+            const isDirect = src.includes(".m3u8") || src.includes(".mp4") || src.includes("youtube");
+            return {
+              id: idx,
+              name: allLabels[idx] || SOURCE_LABELS[idx] || `Source ${idx + 1}`,
+              quality: isDirect ? "1080p" : "Auto",
+              speed: isDirect ? "50" : "30",
+              uptime: "99",
+              hasAds: !isDirect,
+              selected: idx === sourceIndex
+            };
+          })}
           onSelect={selectSource}
           onToggleSettings={() => { setActiveTab("speed"); setShowSettings(true); }}
           onToggleSubtitles={() => { setActiveTab("subtitle"); setShowSettings(true); }}
