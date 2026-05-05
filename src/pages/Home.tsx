@@ -288,7 +288,7 @@ const Home = () => {
       />
       <MovieHero items={hero} />
 
-      <div className="relative mt-4 md:-mt-12 z-10">
+      <div className="relative mt-8 md:-mt-12 z-30">
         <ContinueWatchingRow />
         
         <ForYouRow />

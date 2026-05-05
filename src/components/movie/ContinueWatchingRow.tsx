@@ -49,8 +49,6 @@ export const ContinueWatchingRow = () => {
   }, [user]);
 
   if (!user) return null;
-  if (loading) return null;
-  if (items.length === 0) return null;
 
   const scroll = (dir: 1 | -1) => {
     const el = scrollRef.current;
@@ -67,8 +65,25 @@ export const ContinueWatchingRow = () => {
     }
   };
 
+  if (loading) {
+    return (
+      <section className="relative py-4">
+        <div className="container mb-5">
+           <div className="h-8 w-48 bg-white/10 rounded-lg animate-pulse" />
+        </div>
+        <div className="container flex gap-4 overflow-x-auto scrollbar-hide">
+          {[1, 2, 3].map(i => (
+            <div key={i} className="shrink-0 w-[280px] aspect-video bg-white/5 rounded-2xl animate-pulse" />
+          ))}
+        </div>
+      </section>
+    );
+  }
+
+  if (items.length === 0) return null;
+
   return (
-    <section className="relative py-4 group/row">
+    <section className="relative py-4 group/row z-30">
       <div className="container flex items-end justify-between mb-5">
         <h2 className="font-display text-2xl md:text-3xl">
           <span className="text-gradient-accent">{t("section_continue")}</span>
