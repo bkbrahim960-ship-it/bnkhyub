@@ -50,9 +50,6 @@ export const getMovieSources = (imdb_id: string, tmdb_id: number | string, resum
     `https://vaplayer.ru/embed/movie/${imdb_id || tmdb_id}?primaryColor=${color.replace('#','')}&lang=ar&ds_lang=ar&autoplay=1${resumeParam}`, // S1: Primary
     getVidsrcEmbedUrl('movie', imdb_id, tmdb_id), // S2
     `https://vidzen.fun/movie/${id}`, // S3: VidZen
-    `https://vidnest.fun/movie/${id}`, // S4: VidNest
-    `https://moviehub.dev/watch/movie/${id}`, // S5: MovieHub
-    `https://streamsrc.cc/watch/movie/tmdbid=${tmdb_id}`, // S6: Streamsrc
   ];
 };
 
@@ -71,9 +68,6 @@ export const getTVSources = (
     `https://vaplayer.ru/embed/tv/${imdb_id || tmdb_id}/${season}/${episode}?primaryColor=${color.replace('#','')}&lang=ar&ds_lang=ar&autoplay=1${resumeParam}`, // S1: Primary
     getVidsrcEmbedUrl('tv', imdb_id, tmdb_id, season, episode), // S2
     `https://vidzen.fun/tv/${id}`, // S3: VidZen
-    `https://vidnest.fun/tv/${id}`, // S4: VidNest
-    `https://moviehub.dev/watch/series/${id}`, // S5: MovieHub
-    `https://streamsrc.cc/watch/series/tmdbid=${tmdb_id}`, // S6: Streamsrc
   ];
 };
 
@@ -81,7 +75,4 @@ export const SOURCE_LABELS = [
   "S1 · BNKhub serveur",
   "S2 · vidsrc-embed (Arabic)",
   "S3 · VidZen (Global)",
-  "S4 · VidNest (Global)",
-  "S5 · MovieHub (Dev)",
-  "S6 · Streamsrc (TMDB)",
 ];

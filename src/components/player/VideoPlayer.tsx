@@ -415,7 +415,7 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
           <iframe
             key={`${sourceIndex}-${appliedExternalSub}`}
             src={`${allSources[sourceIndex]}${appliedExternalSub ? `&sub=${encodeURIComponent(appliedExternalSub)}&subtitle=${encodeURIComponent(appliedExternalSub)}` : ''}`}
-            {...(sourceIndex === 0 ? { 
+            {...([0, 2].includes(sourceIndex) ? { 
               sandbox: "allow-scripts allow-same-origin allow-forms allow-presentation allow-top-navigation-by-user-activation",
               title: SOURCE_LABELS[sourceIndex]
             } : {
