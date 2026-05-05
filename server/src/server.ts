@@ -1,7 +1,7 @@
-import express from 'express';
-import cors from 'cors';
-import morgan from 'morgan';
-import dotenv from 'dotenv';
+import * as express from 'express';
+import * as cors from 'cors';
+import * as morgan from 'morgan';
+import * as dotenv from 'dotenv';
 import { Queue, Worker } from 'bullmq';
 import { PrismaClient } from '@prisma/client';
 import { searchOpenSubtitlesFree } from './services/discovery/subtitleScrapers';
@@ -42,7 +42,7 @@ app.post('/api/subtitles/fetch', async (req, res) => {
   }
 });
 
-import path from 'path';
+import * as path from 'path';
 import axios from 'axios';
 import { srtToVtt, saveSubtitleLocally } from './utils/subtitleUtils';
 
