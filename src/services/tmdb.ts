@@ -8,12 +8,12 @@ const API_KEY = import.meta.env.VITE_TMDB_API_KEY || "b4324b67a08420e0a1d85a6c90
 const BASE = "https://api.themoviedb.org/3";
 
 export const IMG = {
-  poster: (p?: string | null, size: "w342" | "w500" | "w780" = "w500") => {
+  poster: (p?: string | null, size: "w185" | "w342" | "w500" | "w780" = "w342") => {
     if (!p) return null;
     if (p.startsWith("http")) return p;
     return `https://image.tmdb.org/t/p/${size}${p}`;
   },
-  backdrop: (p?: string | null, size: "w780" | "w1280" | "original" = "original") => {
+  backdrop: (p?: string | null, size: "w780" | "w1280" | "original" = "w780") => {
     if (!p) return null;
     if (p.startsWith("http")) return p;
     return `https://image.tmdb.org/t/p/${size}${p}`;

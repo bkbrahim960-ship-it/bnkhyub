@@ -36,7 +36,7 @@ export const MovieHero = ({ items }: Props) => {
     <section className="relative h-[65vh] md:h-[92vh] min-h-[400px] md:min-h-[560px] w-full overflow-hidden group">
       {/* Static Backdrops */}
       {pool.map((m, i) => {
-        const img = IMG.backdrop(m.backdrop_path, "original");
+        const img = IMG.backdrop(m.backdrop_path, "w1280");
         return (
           <div
             key={m.id}
@@ -50,6 +50,7 @@ export const MovieHero = ({ items }: Props) => {
                 alt=""
                 className="w-full h-full object-cover object-top"
                 loading={i === 0 ? "eager" : "lazy"}
+                decoding="async"
               />
             )}
           </div>

@@ -57,6 +57,7 @@ export const MovieCard = memo(({ id, title, posterPath, year, rating, type = "mo
             src={poster}
             alt={title}
             loading="lazy"
+            decoding="async"
             onLoad={() => setLoaded(true)}
             className={`w-full h-full object-cover transition-[transform,opacity] duration-150 ease-out ${
               loaded ? "opacity-100" : "opacity-0"
