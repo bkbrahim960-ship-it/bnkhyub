@@ -1,3 +1,4 @@
+
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -169,3 +170,4 @@ const App = () => {
 };
 
 export default App;
+// Re-trigger build 2026-05-07
