@@ -163,11 +163,11 @@ export default function Auth() {
                     alt={m.title || m.name} 
                     className="w-full h-full object-cover"
                   />
-                  <div className="absolute top-3 left-3">
+                  <div className="absolute top-0 left-0 p-1">
                     <img 
                       src="/logo.png" 
                       alt="BNKhub" 
-                      className="w-14 md:w-20 lg:w-24 h-auto opacity-90 drop-shadow-[0_4px_12px_rgba(0,0,0,0.7)]"
+                      className="w-6 md:w-8 h-auto opacity-85"
                     />
                   </div>
                 </div>
