@@ -341,10 +341,10 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
         
         {/* Permanent Brand Watermark (Only for BNKhub Server S1) */}
         {playerActive && sourceIndex === 0 && (
-          <div className="absolute top-4 right-5 z-50 pointer-events-none select-none">
+          <div className="absolute top-4 right-5 z-50 pointer-events-none select-none opacity-40">
             <div className="flex flex-col items-end">
-              <span className="text-lg md:text-xl font-display font-black tracking-[0.2em] text-accent/60 drop-shadow-[0_2px_10px_rgba(212,175,55,0.4)]">BNKHUB</span>
-              <div className="h-0.5 w-8 bg-accent/40 rounded-full mt-0.5" />
+              <img src="/logo.png" alt="BNKhub" className="h-8 md:h-12 w-auto object-contain drop-shadow-[0_2px_10px_rgba(var(--accent-rgb),0.4)]" />
+              <div className="h-0.5 w-full bg-accent/40 rounded-full mt-1" />
             </div>
           </div>
         )}

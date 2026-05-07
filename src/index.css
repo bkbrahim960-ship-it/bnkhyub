@@ -100,12 +100,25 @@
 
   /* KIDS MODE THEME OVERRIDE */
   [data-kids="true"] {
-    --accent-h: 199;
-    --accent-s: 89%;
-    --accent-l: 48%;
+    --bg-primary: 0 0% 100%;            /* Pure White Background */
+    --bg-secondary: 0 0% 98%;
+    --bg-card: 0 0% 100%;
+    --foreground: 220 20% 10%;          /* Dark text for white background */
+    
+    --accent-h: 210;
+    --accent-s: 100%;
+    --accent-l: 50%;                    /* Bright Blue Accent */
     --accent: var(--accent-h) var(--accent-s) var(--accent-l);
-    --accent-light: 199 95% 65%;
-    --accent-dark: 199 90% 35%;
+    --accent-light: 210 95% 65%;
+    --accent-dark: 210 90% 35%;
+  }
+
+  [data-kids="true"] header {
+    background-color: hsl(var(--accent)) !important;
+  }
+  
+  [data-kids="true"] .section-title {
+    color: hsl(var(--accent));
   }
 
 
