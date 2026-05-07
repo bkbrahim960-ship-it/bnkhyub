@@ -39,40 +39,24 @@ export const Footer = () => {
           </div>
         </div>
 
-        {/* Advertising • Partnerships • Business */}
+        {/* Advertising & Partnerships */}
         <div className="mt-12 pt-8 border-t border-white/5">
-          <div
-            className="relative max-w-3xl mx-auto text-center space-y-5 p-6 md:p-8 rounded-2xl bg-gradient-to-br from-accent/5 via-white/[0.02] to-accent/5 border border-accent/10 overflow-hidden"
-            dir="rtl"
-          >
-            {/* Decorative glow */}
-            <div className="pointer-events-none absolute -top-20 -right-20 w-60 h-60 bg-accent/10 rounded-full blur-3xl" />
-            <div className="pointer-events-none absolute -bottom-20 -left-20 w-60 h-60 bg-accent/10 rounded-full blur-3xl" />
-
-            <div className="relative space-y-2">
-              <span className="inline-block text-[10px] md:text-xs uppercase tracking-[0.3em] text-accent/80 font-bold">
-                Business · Partnerships · Ads
-              </span>
-              <h4 className="font-display text-foreground text-xl md:text-2xl font-bold tracking-wide">
-                الإعلانات • الشراكات • الأعمال
-              </h4>
-            </div>
-
-            <p className="relative text-sm md:text-base text-muted-foreground leading-loose">
-              للإعلانات المميزة، الشراكات التجارية، الرعايات، أو أي استفسارات متعلقة بالأعمال،
-              يُرجى التواصل مع فريقنا عبر البريد الإلكتروني الرسمي التالي:
+          <div className="max-w-2xl mx-auto text-center space-y-4">
+            <h4 className="font-display text-foreground text-lg md:text-xl tracking-wider">
+              الإعلانات والشراكات
+            </h4>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              هل تريد الوصول إلى جمهورنا والترويج لمنتجك أو خدمتك؟ نوفّر مساحات إعلانية مختارة لأصحاب العلامات التجارية والمشاريع الجادة.
             </p>
-
-            <div className="relative flex justify-center">
-              <a
-                href="mailto:bnkhub.ads@gmail.com"
-                className="inline-flex items-center gap-3 px-7 py-3.5 rounded-xl bg-accent/10 border border-accent/30 text-accent hover:bg-accent/20 hover:border-accent/60 hover:shadow-[0_0_30px_-5px_rgba(var(--accent-rgb),0.5)] transition-all duration-300 text-sm md:text-base font-bold tracking-wide"
-                dir="ltr"
-              >
-                <span className="text-lg">📧</span>
-                bnkhub.ads@gmail.com
-              </a>
-            </div>
+            <p className="text-sm text-muted-foreground">
+              للاستفسار عن التفاصيل والأسعار، تواصل معنا عبر:
+            </p>
+            <a 
+              href="mailto:bnkhub.ads@gmail.com" 
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-accent/10 border border-accent/20 text-accent hover:bg-accent/20 hover:border-accent/40 transition-all duration-300 text-sm font-bold tracking-wide"
+            >
+              📧 bnkhub.ads@gmail.com
+            </a>
           </div>
         </div>
 
