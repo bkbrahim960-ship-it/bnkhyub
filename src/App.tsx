@@ -103,7 +103,6 @@ const AppContent = () => (
     <ThemeProvider>
       <AmbientProvider>
         <div className="relative min-h-screen bg-background">
-          <AmbientBackground />
           <div className="relative z-10">
             <SettingsProvider>
               <LanguageProvider>

@@ -37,8 +37,8 @@
 
     --accent-light: 312 80% 65%;
     --accent-dark: 312 75% 35%;
-    --accent-glow: var(--accent-h) var(--accent-s) var(--accent-l) / 0.25;
-    --accent-border: var(--accent-h) var(--accent-s) var(--accent-l) / 0.4;
+    --accent-glow: transparent;
+    --accent-border: var(--accent-h) var(--accent-s) var(--accent-l) / 0.2;
 
     /* Primary = accent (pour les composants shadcn) */
     --primary: var(--accent);
@@ -248,27 +248,7 @@
   50% { box-shadow: 0 0 12px 2px hsl(var(--accent) / 0.3); }
 }
   /* ─────── ATMOSPHERIC LIGHTING ─────── */
-  .dynamic-bg-container {
-    position: fixed;
-    inset: 0;
-    z-index: -100; /* Deepest layer */
-    overflow: hidden;
-    pointer-events: none;
-    background: transparent;
-  }
 
-  .ambient-glow {
-    position: absolute;
-    width: 150vmax;
-    height: 150vmax;
-    top: -25vmax;
-    left: -25vmax;
-    background: radial-gradient(circle at center, hsla(var(--accent-h), var(--accent-s), var(--accent-l), 0.2) 0%, transparent 60%);
-    opacity: 0.8; /* Increased prominence over black */
-    filter: blur(80px);
-    transition: background 2s ease;
-    will-change: background;
-  }
 
   .content-overlay {
     position: relative;
