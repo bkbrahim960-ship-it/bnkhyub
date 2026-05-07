@@ -215,7 +215,7 @@ const Home = () => {
   useEffect(() => {
     const hasSeen = localStorage.getItem("hasSeenLanding");
     if (!hasSeen) {
-      navigate("/auth");
+      navigate("/landing");
     }
   }, [navigate]);
 

@@ -128,6 +128,7 @@ const AppContent = () => (
                         <Route path="/profile" element={<Profile />} />
                         <Route path="/my-list" element={<MyList />} />
                         <Route path="/admin" element={<Admin />} />
+                        <Route path="/landing" element={<Landing />} />
 
                         <Route path="/remote" element={<Remote />} />
                         <Route path="/person/:id" element={<Person />} />

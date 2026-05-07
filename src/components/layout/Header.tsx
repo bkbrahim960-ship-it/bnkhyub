@@ -36,7 +36,7 @@ export const Header = () => {
     { to: "/channels", label: t("nav_channels") },
     { to: "/coming-soon", label: lang === "ar" ? "قريباً" : "Bientôt" },
     { to: "/search", label: t("nav_search") },
-    { to: user ? "/profile" : "/auth", label: t("nav_profile") },
+    { to: user ? "/profile" : "/landing", label: t("nav_profile") },
   ];
 
   if (user?.email === "bkbrahim960@gmail.com") {
