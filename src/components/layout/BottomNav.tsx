@@ -1,5 +1,5 @@
 import { NavLink, Link } from "react-router-dom";
-import { Home, Film, Tv, Search, Heart, Monitor, User as UserIcon } from "lucide-react";
+import { Home, Film, Tv, Search, Heart, Monitor, User as UserIcon, Baby } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
 import { useSettings } from "@/context/SettingsContext";
@@ -8,6 +8,7 @@ import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
 export const BottomNav = () => {
   const { t } = useLanguage();
   const { user } = useAuth();
+  const { kidsMode, toggleKidsMode } = useSettings();
 
 
   return (
@@ -38,20 +39,18 @@ export const BottomNav = () => {
             <LanguageSwitcher />
           </div>
 
-          {/* Search Button */}
-          <NavLink
-            to="/search"
-            className={({ isActive }) =>
-              `p-2 md:p-3 rounded-full transition-all duration-500 hover:scale-110 active:scale-95 border ${
-                isActive 
-                  ? "text-accent bg-accent/20 shadow-glow-accent border-accent/40" 
-                  : "text-white/60 hover:text-white hover:bg-white/5 border-transparent"
-              }`
-            }
-            aria-label={t("nav_search")}
+          {/* Kids Mode Toggle */}
+          <button
+            onClick={toggleKidsMode}
+            className={`p-2 md:p-3 rounded-full transition-all duration-500 hover:scale-110 active:scale-95 border ${
+              kidsMode 
+                ? "text-sky-400 bg-sky-400/20 shadow-[0_0_20px_rgba(56,189,248,0.4)] border-sky-400/40" 
+                : "text-white/60 hover:text-white hover:bg-white/5 border-transparent"
+            }`}
+            aria-label="Kids Mode"
           >
-            <Search className="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8" />
-          </NavLink>
+            <Baby className="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8" />
+          </button>
         </div>
     </div>
   );

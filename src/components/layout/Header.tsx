@@ -43,7 +43,7 @@ export const Header = () => {
     navLinks.push({ to: "/admin", label: t("nav_admin") });
   }
 
-  const headerBg = kidsMode 
+  const headerBg = kidsMode
     ? (scrolled ? "bg-white/40 backdrop-blur-3xl border-b border-sky-200" : "bg-gradient-to-b from-white/60 to-transparent")
     : (scrolled ? "bg-black/20 backdrop-blur-3xl border-b border-white/5" : "bg-gradient-to-b from-black/80 to-transparent");
 
@@ -54,9 +54,9 @@ export const Header = () => {
       <div className="w-full px-4 md:px-10 lg:px-16 flex items-center justify-between h-16 md:h-20 lg:h-24">
         {/* Massive & Centered Logo PNG */}
         <Link to="/" className="flex items-center group shrink-0 relative z-[110]">
-          <img 
-            src="/logo.png" 
-            alt="BNKhub" 
+          <img
+            src="/logo.png"
+            alt="BNKhub"
             className="h-28 md:h-40 lg:h-48 w-auto object-contain transition-transform duration-300 group-hover:scale-105 drop-shadow-[0_0_30px_rgba(var(--accent-rgb),0.5)] -ml-4 md:-ml-8"
           />
         </Link>
@@ -106,16 +106,16 @@ export const Header = () => {
             <PopoverContent className="w-[320px] md:w-[380px] bg-surface-card/95 backdrop-blur-2xl border-white/5 p-0 overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-300">
               <div className="p-5 border-b border-white/5 flex items-center justify-between bg-gradient-to-r from-accent/10 to-transparent">
                 <h4 className="text-sm font-black uppercase tracking-widest text-accent flex items-center gap-2">
-                   <Bell className="w-4 h-4" />
-                   {t("profile_notifications")}
+                  <Bell className="w-4 h-4" />
+                  {t("profile_notifications")}
                 </h4>
                 <span className="text-[10px] bg-accent/20 text-accent px-2 py-0.5 rounded-full font-bold">3 Nouveaux</span>
               </div>
-              
+
               <div className="max-h-[400px] overflow-y-auto scrollbar-hide py-2">
                 {/* Notification: New Movie */}
-                <Link 
-                  to="/movie/76600" 
+                <Link
+                  to="/movie/76600"
                   className="flex items-start gap-4 p-4 hover:bg-white/5 transition-all group"
                 >
                   <div className="w-12 h-16 rounded-lg overflow-hidden shrink-0 border border-white/10 group-hover:border-accent/40 transition-colors">
@@ -132,8 +132,8 @@ export const Header = () => {
                 </Link>
 
                 {/* Notification: New Episode */}
-                <Link 
-                  to="/series/1396" 
+                <Link
+                  to="/series/1396"
                   className="flex items-start gap-4 p-4 hover:bg-white/5 transition-all group"
                 >
                   <div className="w-12 h-16 rounded-lg overflow-hidden shrink-0 border border-white/10 group-hover:border-accent/40 transition-colors">
@@ -150,8 +150,8 @@ export const Header = () => {
                 </Link>
 
                 {/* Notification: Remote Control */}
-                <Link 
-                  to="/remote" 
+                <Link
+                  to="/remote"
                   className="flex items-start gap-4 p-4 hover:bg-white/5 transition-all group"
                 >
                   <div className="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center shrink-0 border border-accent/20 group-hover:bg-accent/20 transition-colors">
