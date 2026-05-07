@@ -208,6 +208,27 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
     fetchInternal();
   }, [type, tmdb_id, season, episode]);
 
+  // BNKhub Private Engine (safe, non-blocking)
+  useEffect(() => {
+    const tryResolve = async () => {
+      try {
+        const { resolveProductionStream } = await import("@/services/resolver");
+        const result = await resolveProductionStream(String(tmdb_id), type, season, episode);
+        if (result.success && result.url) {
+          // Append as an additional internal source - does NOT touch existing sources
+          setInternalSources(prev => [
+            ...prev, 
+            { url: result.url, provider: "BNKhub Private Engine", type: result.type || "iframe" }
+          ]);
+          console.log("💎 BNKhub Private Engine: Source added");
+        }
+      } catch {
+        // Silent fail - player works exactly as before
+      }
+    };
+    if (tmdb_id) tryResolve();
+  }, [tmdb_id, type, season, episode]);
+
   const allLabels = Array(50).fill(null);
   allLabels[0] = "BNKhub serveur";
 
