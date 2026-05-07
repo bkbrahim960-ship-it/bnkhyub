@@ -4,16 +4,10 @@
  */
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 
-export type ThemeName = "gold" | "red" | "blue" | "purple" | "green" | "silver" | "oled";
+export type ThemeName = "purple";
 
 export const THEMES: Record<ThemeName, { label: string; swatch: string }> = {
-  gold:   { label: "Or Classique",  swatch: "#D4A843" },
-  red:    { label: "Rouge Cinéma",  swatch: "#E53935" },
-  blue:   { label: "Bleu Océan",    swatch: "#1565C0" },
   purple: { label: "Violet Royal",  swatch: "#7B1FA2" },
-  green:  { label: "Vert Émeraude", swatch: "#1B8A5A" },
-  silver: { label: "Argent Platine",swatch: "#9E9E9E" },
-  oled:   { label: "OLED Black",    swatch: "#000000" },
 };
 
 interface ThemeCtx {
@@ -26,9 +20,9 @@ const STORAGE = "bnkhub_theme";
 
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   const [theme, setThemeState] = useState<ThemeName>(() => {
-    if (typeof window === "undefined") return "gold";
+    if (typeof window === "undefined") return "purple";
     const saved = localStorage.getItem(STORAGE) as ThemeName | null;
-    return saved && saved in THEMES ? saved : "gold";
+    return saved && saved in THEMES ? saved : "purple";
   });
 
   useEffect(() => {

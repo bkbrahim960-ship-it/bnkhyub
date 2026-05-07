@@ -13,7 +13,7 @@
 @layer base {
   :root {
     /* Surfaces sombres luxueuses */
-    --bg-primary: 240 13% 3%;         /* #070709 */
+    --bg-primary: 260 45% 4%;         /* #070709-tinted */
     --bg-secondary: 240 15% 7%;       /* #0E0E14 */
     --bg-card: 240 14% 9%;            /* #13131A */
     --bg-elevated: 240 14% 13%;       /* #1C1C26 */
@@ -28,21 +28,21 @@
     --popover: var(--bg-elevated);
     --popover-foreground: 60 20% 95%;
 
-    /* ACCENT — défini par le thème actif (défaut : or classique) */
-    --accent-h: 43;
-    --accent-s: 62%;
-    --accent-l: 55%;
+    /* ACCENT — BNR Purple (#C124A0) */
+    --accent-h: 312;
+    --accent-s: 69%;
+    --accent-l: 45%;
     --accent: var(--accent-h) var(--accent-s) var(--accent-l);
-    --accent-foreground: 240 13% 3%;
+    --accent-foreground: 0 0% 100%;
 
-    --accent-light: 43 82% 68%;
-    --accent-dark: 33 54% 41%;
+    --accent-light: 312 80% 65%;
+    --accent-dark: 312 75% 35%;
     --accent-glow: var(--accent-h) var(--accent-s) var(--accent-l) / 0.15;
     --accent-border: var(--accent-h) var(--accent-s) var(--accent-l) / 0.3;
 
     /* Primary = accent (pour les composants shadcn) */
     --primary: var(--accent);
-    --primary-foreground: var(--accent-foreground);
+    --primary-foreground: var(--primary-foreground);
 
     --secondary: 240 14% 13%;
     --secondary-foreground: 60 20% 95%;
@@ -94,88 +94,13 @@
     --sidebar-ring: var(--accent);
   }
 
-  /* ─────── 6 THÈMES ─────── */
-  [data-theme="gold"] {
-    --accent-h: 43; --accent-s: 62%; --accent-l: 55%;
-    --accent-light: 43 82% 68%; --accent-dark: 33 54% 41%;
-    --bg-primary: 240 13% 3%;
-  }
-  [data-theme="red"] {
-    --accent-h: 2; --accent-s: 77%; --accent-l: 55%;
-    --accent-light: 4 100% 68%; --accent-dark: 0 74% 42%;
-    --bg-primary: 330 20% 3%;
-  }
-  [data-theme="blue"] {
-    --accent-h: 212; --accent-s: 80%; --accent-l: 42%;
-    --accent-light: 207 90% 61%; --accent-dark: 215 92% 34%;
-    --bg-primary: 220 45% 4%;
-  }
-  [data-theme="purple"] {
-    --accent-h: 288; --accent-s: 68%; --accent-l: 38%;
-    --accent-light: 291 46% 70%; --accent-dark: 277 85% 31%;
-    --bg-primary: 260 45% 4%;
-  }
-  [data-theme="green"] {
-    --accent-h: 152; --accent-s: 67%; --accent-l: 32%;
-    --accent-light: 157 63% 58%; --accent-dark: 153 72% 19%;
-    --bg-primary: 140 33% 3%;
-  }
-  [data-theme="silver"] {
-    --accent-h: 0; --accent-s: 0%; --accent-l: 62%;
-    --accent-light: 0 0% 96%; --accent-dark: 0 0% 38%;
-    --bg-primary: 0 0% 3%;
-  }
-  [data-theme="oled"] {
-    --accent-h: 43; --accent-s: 62%; --accent-l: 55%;
-    --accent-light: 43 82% 68%; --accent-dark: 33 54% 41%;
-    --bg-primary: 0 0% 0%;
-    --bg-secondary: 0 0% 2%;
-    --bg-card: 0 0% 4%;
-    --bg-elevated: 0 0% 6%;
+  [data-theme] {
+    --accent-h: 312; --accent-s: 69%; --accent-l: 45%;
+    --accent-light: 312 80% 65%; --accent-dark: 312 75% 35%;
+    --bg-primary: 312 45% 4%;
   }
 
-  /* ─────── KIDS MODE THEME ─────── */
-  [data-kids="true"] {
-    --bg-primary: 205 60% 92%;       /* Softer Pastel Sky Blue (not too bright) */
-    --bg-secondary: 205 50% 86%;     /* Muted blue */
-    --bg-card: 0 0% 100%;             /* Pure white for cards */
-    --bg-elevated: 205 40% 80%;
-    
-    --background: var(--bg-primary);
-    --foreground: 215 50% 15%;         /* Very dark navy text */
-    
-    --card: var(--bg-card);
-    --card-foreground: 215 50% 15%;
-    
-    --popover: var(--bg-elevated);
-    --popover-foreground: 215 50% 15%;
 
-    --accent-h: 205; --accent-s: 80%; --accent-l: 45%; /* Solid Blue */
-    --accent-light: 205 80% 60%;
-    --accent-dark: 205 80% 35%;
-    --accent: var(--accent-h) var(--accent-s) var(--accent-l);
-    --accent-foreground: 0 0% 100%;
-    
-    --muted: 205 20% 85%;
-    --muted-foreground: 215 20% 40%;
-    
-    --border: 205 30% 75%;
-    --input: 205 30% 75%;
-    --ring: var(--accent);
-
-    /* Softer Gradients */
-    --gradient-accent: linear-gradient(135deg, #2E8BC0, #4895EF); 
-    --gradient-hero: linear-gradient(
-      180deg,
-      transparent 0%,
-      hsl(var(--bg-primary) / 0.3) 40%,
-      hsl(var(--bg-primary)) 100%
-    );
-
-    /* Subtle shadows, no heavy glow */
-    --shadow-accent: 0 4px 12px rgba(0, 0, 0, 0.05);
-    --shadow-glow: 0 0 15px rgba(46, 139, 192, 0.1);
-  }
 
   .theme-icon {
     /* Conversion intelligente de la couleur d'icône vers le accent color */

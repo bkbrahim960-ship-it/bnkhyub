@@ -1,15 +1,14 @@
 import { NavLink, Link } from "react-router-dom";
-import { Home, Film, Tv, Search, Heart, Monitor, User as UserIcon, Baby } from "lucide-react";
+import { Home, Film, Tv, Search, Heart, Monitor, User as UserIcon } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
 import { useSettings } from "@/context/SettingsContext";
-import { ColorSwitcher } from "@/components/ui/ColorSwitcher";
 import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
 
 export const BottomNav = () => {
   const { t } = useLanguage();
   const { user } = useAuth();
-  const { kidsMode, setKidsMode } = useSettings();
+
 
   return (
     <div className="fixed bottom-4 md:bottom-8 inset-x-4 z-50 pointer-events-none">
@@ -32,31 +31,27 @@ export const BottomNav = () => {
             )}
           </NavLink>
 
-          {/* Kids Mode Toggle */}
-          <button
-            onClick={() => setKidsMode(!kidsMode)}
-            className={`relative p-2 md:p-3 rounded-full transition-all duration-500 hover:scale-110 active:scale-95 border ${
-              kidsMode
-                ? "text-sky-400 bg-sky-500/20 shadow-[0_0_15px_rgba(14,165,233,0.3)] border-sky-400/40"
-                : "text-white/60 hover:text-white hover:bg-white/5 border-transparent"
-            }`}
-            aria-label="Kids Mode"
-          >
-            <Baby className="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8" />
-            {kidsMode && (
-              <span className="absolute -top-1 -end-1 px-1 py-0.5 rounded bg-sky-500 text-white text-[6px] font-black uppercase">Kids</span>
-            )}
-          </button>
+
 
           {/* Language Switcher */}
           <div className="scale-75 sm:scale-90 md:scale-100 hover:scale-110 transition-transform duration-500">
             <LanguageSwitcher />
           </div>
 
-          {/* Color Switcher */}
-          <div className="scale-75 sm:scale-90 md:scale-100 hover:scale-110 transition-transform duration-500">
-            <ColorSwitcher />
-          </div>
+          {/* Search Button */}
+          <NavLink
+            to="/search"
+            className={({ isActive }) =>
+              `p-2 md:p-3 rounded-full transition-all duration-500 hover:scale-110 active:scale-95 border ${
+                isActive 
+                  ? "text-accent bg-accent/20 shadow-glow-accent border-accent/40" 
+                  : "text-white/60 hover:text-white hover:bg-white/5 border-transparent"
+              }`
+            }
+            aria-label={t("nav_search")}
+          >
+            <Search className="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8" />
+          </NavLink>
         </div>
     </div>
   );

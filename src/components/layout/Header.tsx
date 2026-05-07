@@ -11,7 +11,6 @@ import {
 } from "@/components/ui/popover";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
-import { ColorSwitcher } from "@/components/ui/ColorSwitcher";
 import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
 import { InstallButton } from "@/components/pwa/InstallButton";
 import { useSettings } from "@/context/SettingsContext";
@@ -53,16 +52,13 @@ export const Header = () => {
       className={`fixed top-0 inset-x-0 z-[100] transition-all duration-500 ease-luxe pt-safe ${headerBg}`}
     >
       <div className="w-full px-4 md:px-10 lg:px-16 flex items-center justify-between h-16 md:h-20 lg:h-24">
-        {/* Logo */}
+        {/* Logo PNG */}
         <Link to="/" className="flex items-center group shrink-0">
-          <div className="flex flex-col leading-none">
-            <span className="font-display font-bold text-2xl xs:text-3xl md:text-4xl lg:text-5xl tracking-tighter transition-colors group-hover:text-accent">
-              BNK<span className="text-accent group-hover:text-foreground transition-colors">hub</span>
-            </span>
-            <span className="hidden sm:block font-decorative text-[8px] md:text-[10px] lg:text-[12px] text-muted-foreground tracking-[0.2em] uppercase opacity-60">
-              {t("tagline")}
-            </span>
-          </div>
+          <img 
+            src="/logo.png" 
+            alt="BNKhub" 
+            className="h-10 md:h-12 lg:h-14 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+          />
         </Link>
 
         {/* Nav desktop & TV */}
@@ -214,7 +210,19 @@ export const Header = () => {
               </NavLink>
             ))}
             <div className="mt-3 pt-3 border-t border-border">
-              <ColorSwitcher compact />
+              <NavLink
+                to="/search"
+                onClick={() => setMobileOpen(false)}
+                className={({ isActive }) =>
+                  `py-3 px-3 rounded-lg text-sm font-medium ${isActive ? "bg-accent/10 text-accent" : "text-foreground/80"
+                  }`
+                }
+              >
+                <div className="flex items-center gap-3">
+                  <Search className="w-5 h-5" />
+                  {t("nav_search")}
+                </div>
+              </NavLink>
             </div>
           </nav>
         </div>

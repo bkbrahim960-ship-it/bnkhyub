@@ -47,30 +47,17 @@ export const SplashScreen = ({ onFinish }: { onFinish: () => void }) => {
           />
 
           {/* Logo Icon */}
-          <div className="relative w-32 h-32 md:w-36 md:h-36 rounded-full overflow-hidden border-4 border-black shadow-2xl bg-black animate-scale-in">
+          <div className="relative w-48 h-48 md:w-56 md:h-56 flex items-center justify-center">
             <img
-              src="/icon.png"
+              src="/logo.png"
               alt="BNKhub"
-              className="w-full h-full object-cover"
+              className="w-full h-auto object-contain animate-scale-in relative z-10 drop-shadow-[0_0_30px_rgba(var(--accent-rgb),0.4)]"
             />
           </div>
         </div>
 
         {/* Brand Name with Luxe Shimmer */}
         <div className="text-center space-y-6">
-          <h1
-            className="text-4xl md:text-5xl font-black tracking-[0.4em] uppercase"
-            style={{
-              background: "linear-gradient(90deg, #fff, var(--accent), #fff)",
-              backgroundSize: "200% auto",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              animation: "splash-shimmer 3s linear infinite",
-            }}
-          >
-            BNKhub
-          </h1>
-
           {/* Credit Text (French) */}
           <div className="space-y-2 animate-fade-in" style={{ animationDelay: '800ms' }}>
              <p className="text-white/40 text-[10px] md:text-xs uppercase tracking-[0.5em] font-medium">
@@ -106,6 +93,14 @@ export const SplashScreen = ({ onFinish }: { onFinish: () => void }) => {
         }
         .animate-scale-in {
           animation: scale-in 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        @keyframes splash-fade-up {
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes splash-pop-in {
+          0% { opacity: 0; transform: scale(0.5); }
+          100% { opacity: 1; transform: scale(1); }
         }
         @keyframes scale-in {
           from { transform: scale(0.5); opacity: 0; }

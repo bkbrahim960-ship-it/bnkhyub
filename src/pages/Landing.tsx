@@ -88,22 +88,13 @@ export const Landing = () => {
 
       {/* Content */}
       <main className="relative z-10 flex-1 flex flex-col container max-w-6xl mx-auto px-6 py-12">
-        {/* Header Logo */}
-        <div className={`flex items-center gap-4 mb-16 transition-all duration-1000 transform ${isVisible ? "translate-y-0 opacity-100" : "-translate-y-10 opacity-0"}`}>
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-accent/20 to-accent/5 backdrop-blur-2xl border border-accent/30 flex items-center justify-center shadow-glow overflow-hidden">
-            <img 
-              src="/icon.png" 
-              alt="Logo"
-              style={{ 
-                filter: `drop-shadow(0 0 12px hsl(var(--accent) / 0.6))`,
-              }}
-              className="w-full h-full object-cover animate-pulse-glow"
-            />
-          </div>
-          <div>
-            <h1 className="text-4xl font-bold tracking-tighter">BNK<span className="text-accent">hub</span></h1>
-            <p className="text-[11px] uppercase tracking-[0.4em] text-accent/60 font-semibold">{t("tagline")}</p>
-          </div>
+        {/* Main Logo PNG */}
+        <div className={`mb-16 transition-all duration-1000 transform ${isVisible ? "translate-y-0 opacity-100" : "-translate-y-10 opacity-0"}`}>
+          <img 
+            src="/logo.png" 
+            alt="BNKhub Logo" 
+            className="h-20 md:h-28 w-auto object-contain drop-shadow-[0_0_20px_rgba(var(--accent-rgb),0.5)]"
+          />
         </div>
 
         {/* Hero Section */}
