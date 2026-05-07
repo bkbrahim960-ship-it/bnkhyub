@@ -98,6 +98,16 @@
     --bg-primary: 0 0% 0%;
   }
 
+  /* KIDS MODE THEME OVERRIDE */
+  [data-kids="true"] {
+    --accent-h: 199;
+    --accent-s: 89%;
+    --accent-l: 48%;
+    --accent: var(--accent-h) var(--accent-s) var(--accent-l);
+    --accent-light: 199 95% 65%;
+    --accent-dark: 199 90% 35%;
+  }
+
 
 
   .theme-icon {

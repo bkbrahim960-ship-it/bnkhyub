@@ -3,6 +3,7 @@ import { createContext, useContext, useEffect, useState, ReactNode } from "react
 interface SettingsCtx {
   kidsMode: boolean;
   setKidsMode: (val: boolean) => void;
+  toggleKidsMode: () => void;
 }
 
 const Ctx = createContext<SettingsCtx | null>(null);
@@ -26,6 +27,11 @@ export const SettingsProvider = ({ children }: { children: ReactNode }) => {
     localStorage.setItem(STORAGE, JSON.stringify({ kidsMode: val }));
   };
 
+  const toggleKidsMode = () => {
+    const next = !kidsMode;
+    setKidsMode(next);
+  };
+
   useEffect(() => {
     if (kidsMode) {
       document.documentElement.setAttribute("data-kids", "true");
@@ -35,7 +41,7 @@ export const SettingsProvider = ({ children }: { children: ReactNode }) => {
   }, [kidsMode]);
 
   return (
-    <Ctx.Provider value={{ kidsMode, setKidsMode }}>
+    <Ctx.Provider value={{ kidsMode, setKidsMode, toggleKidsMode }}>
       {children}
     </Ctx.Provider>
   );
