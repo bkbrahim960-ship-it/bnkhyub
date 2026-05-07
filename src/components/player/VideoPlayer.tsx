@@ -17,7 +17,7 @@ import { searchWyzieSubtitles, WyzieSubtitle } from "@/services/wyzie";
 import { toast } from "sonner";
 import Hls from "hls.js";
 import { PlayerSourceSelector } from "./PlayerSourceSelector";
-import { resolveProductionStream } from "@/services/resolver";
+
 
 interface Props {
   imdb_id: string;
@@ -59,7 +59,7 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
   onCompleted,
 }, ref) => {
   const { t, lang } = useLanguage();
-  const [sourceIndex, setSourceIndex] = useState(-1); // Start with -1 to trigger auto-selection
+  const [sourceIndex, setSourceIndex] = useState(initialSourceIndex);
   const [loading, setLoading] = useState(true);
   const [slow, setSlow] = useState<boolean[]>(Array(50).fill(false));
   const [adsOpen, setAdsOpen] = useState(!hasSeenAdsNotice());
@@ -93,7 +93,7 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
 
   // Internal Backend Sources
   const [internalSources, setInternalSources] = useState<any[]>([]);
-  const [privateEngineSource, setPrivateEngineSource] = useState<string | null>(null);
+
 
   // Expose methods to parent
   useImperativeHandle(ref, () => ({
@@ -192,11 +192,7 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
     : getTVSources(imdb_id, tmdb_id, season!, episode!, hasResumed ? historyProgress : 0);
 
   // Combine with internal sources
-  const allSources = [
-    privateEngineData?.url || "", 
-    ...sources, 
-    ...internalSources.filter(s => s.url).map(s => s.url)
-  ];
+  const allSources = [...sources, ...internalSources.filter(s => s.url).map(s => s.url)];
 
   useEffect(() => {
     const fetchInternal = async () => {
@@ -212,43 +208,8 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
     fetchInternal();
   }, [type, tmdb_id, season, episode]);
 
-  // BNKhub Production Engine Resolver
-  const [privateEngineData, setPrivateEngineData] = useState<{url: string, type: string} | null>(null);
-
-  useEffect(() => {
-    const resolvePrivateSource = async () => {
-      try {
-        const result = await resolveProductionStream(String(tmdb_id), type, season, episode);
-        if (result.success && result.url) {
-          setPrivateEngineData({ url: result.url, type: result.type });
-          // If we haven't selected a source yet, or we were on the loading state, select this one
-          if (sourceIndex === -1 || sourceIndex === 0) {
-            setSourceIndex(0);
-          }
-          console.log("💎 BNKhub Production Engine: Active");
-        }
-      } catch (err) {
-        console.log("🛡️ BNKhub Security: Handshaking...");
-        if (sourceIndex === -1) setSourceIndex(1); // Fallback to Server 1
-      }
-    };
-    if (tmdb_id) resolvePrivateSource();
-  }, [tmdb_id, type, season, episode]);
-
-  // Initial Source Selection Guard
-  useEffect(() => {
-    if (sourceIndex === -1) {
-      // If private engine is not ready after 2s, default to server 1
-      const timer = setTimeout(() => {
-        if (sourceIndex === -1) setSourceIndex(1);
-      }, 2000);
-      return () => clearTimeout(timer);
-    }
-  }, [sourceIndex]);
-
   const allLabels = Array(50).fill(null);
-  allLabels[0] = "BNKhub Private Engine (Ultra HD)";
-  allLabels[1] = "BNKhub serveur secondaire";
+  allLabels[0] = "BNKhub serveur";
 
   const handleLoad = () => {
     setLoading(false);
@@ -377,8 +338,8 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
 
       <div ref={containerRef} className={`relative w-full aspect-video bg-black rounded-2xl overflow-hidden border border-white/10 shadow-2xl group/player transition-all duration-500 ${isWebFullscreen ? 'fixed inset-0 z-[1000] rounded-none !aspect-auto h-screen' : ''}`}>
         
-        {/* Permanent Brand Watermark (Production Engine Overlay) */}
-        {playerActive && (sourceIndex === 0 || (privateEngineData && allSources[sourceIndex] === privateEngineData.url)) && (
+        {/* Permanent Brand Watermark */}
+        {playerActive && sourceIndex === 0 && (
           <div className="absolute top-4 right-5 z-50 pointer-events-none select-none opacity-40">
             <div className="flex flex-col items-end">
               <img src="/logo.png" alt="BNKhub" className="h-8 md:h-12 w-auto object-contain drop-shadow-[0_2px_10px_rgba(var(--accent-rgb),0.4)]" />
@@ -392,15 +353,7 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
             <div className="absolute -top-24 -start-24 w-64 h-64 bg-accent/10 blur-[100px] rounded-full animate-pulse" />
             <div className="relative z-10 animate-in fade-in zoom-in duration-1000">
               <button 
-                onClick={() => { 
-                  setAdsOpen(false); 
-                  // Selection guard: If no source selected yet, try to pick one
-                  if (sourceIndex === -1) {
-                    if (privateEngineData?.url) setSourceIndex(0);
-                    else setSourceIndex(1);
-                  }
-                  setPlayerActive(true); 
-                }}
+                onClick={() => { setAdsOpen(false); setPlayerActive(true); }}
                 className="group relative"
               >
                 <div className="absolute inset-0 bg-accent blur-2xl opacity-20 group-hover:opacity-40 transition-opacity" />
