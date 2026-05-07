@@ -143,8 +143,17 @@
   }
 
   h1, h2, h3, h4 {
-    font-family: "Playfair Display", Georgia, serif;
-    letter-spacing: -0.01em;
+    font-family: "Anton", sans-serif;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+
+  /* Cinematic Section Titles */
+  .section-title {
+    font-family: "Anton", sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    @apply text-2xl md:text-4xl font-normal;
   }
 
   ::selection {
@@ -182,8 +191,9 @@
 
   .border-accent-subtle { border-color: hsl(var(--accent) / 0.3); }
 
-  .font-display    { font-family: "Playfair Display", Georgia, serif; }
-  .font-decorative { font-family: "Cormorant Garamond", Georgia, serif; }
+  .font-anton       { font-family: "Anton", sans-serif; }
+  .font-display     { font-family: "Anton", sans-serif; }
+  .font-decorative  { font-family: "Cormorant Garamond", Georgia, serif; }
   .font-body       { font-family: "Outfit", system-ui, sans-serif; }
   .font-arabic     { font-family: "Cairo", system-ui, sans-serif; }
 
