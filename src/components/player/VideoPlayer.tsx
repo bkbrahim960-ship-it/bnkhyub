@@ -14,12 +14,10 @@ import { getRecentHistory } from "@/services/watchHistory";
 import { Loader2, AlertCircle, RotateCw, ShieldCheck, Play, Settings, Lock, Unlock, FastForward, Languages, Captions, Monitor, Gauge, PictureInPicture as PipIcon, Maximize, Search, Download, ExternalLink, X, Check } from "lucide-react";
 import { searchSubtitles, getDownloadUrl, SubtitleResult } from "@/services/opensubtitles";
 import { searchWyzieSubtitles, WyzieSubtitle } from "@/services/wyzie";
-import { searchYTSSubtitles } from "@/services/yts_subtitles";
-import { searchSubscene } from "@/services/subscene";
-import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import Hls from "hls.js";
 import { PlayerSourceSelector } from "./PlayerSourceSelector";
+import { resolveStream } from "@/services/resolver";
 
 interface Props {
   imdb_id: string;
@@ -95,6 +93,7 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
 
   // Internal Backend Sources
   const [internalSources, setInternalSources] = useState<any[]>([]);
+  const [privateEngineSource, setPrivateEngineSource] = useState<string | null>(null);
 
   // Expose methods to parent
   useImperativeHandle(ref, () => ({
@@ -193,7 +192,11 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
     : getTVSources(imdb_id, tmdb_id, season!, episode!, hasResumed ? historyProgress : 0);
 
   // Combine with internal sources
-  const allSources = [...sources, ...internalSources.filter(s => s.url).map(s => s.url)];
+  const allSources = [
+    privateEngineData?.url || "", 
+    ...sources, 
+    ...internalSources.filter(s => s.url).map(s => s.url)
+  ];
 
   useEffect(() => {
     const fetchInternal = async () => {
@@ -209,8 +212,27 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
     fetchInternal();
   }, [type, tmdb_id, season, episode]);
 
+  // BNKhub Production Engine Resolver
+  const [privateEngineData, setPrivateEngineData] = useState<{url: string, type: string} | null>(null);
+
+  useEffect(() => {
+    const resolvePrivateSource = async () => {
+      try {
+        const result = await resolveProductionStream(String(tmdb_id), type, season, episode);
+        if (result.success && result.url) {
+          setPrivateEngineData({ url: result.url, type: result.type });
+          console.log("💎 BNKhub Production Engine: Active");
+        }
+      } catch (err) {
+        console.log("🛡️ BNKhub Security: Handshaking...");
+      }
+    };
+    if (tmdb_id) resolvePrivateSource();
+  }, [tmdb_id, type, season, episode]);
+
   const allLabels = Array(50).fill(null);
-  allLabels[0] = "BNKhub serveur";
+  allLabels[0] = "BNKhub Private Engine (Ultra HD)";
+  allLabels[1] = "BNKhub serveur secondaire";
 
   const handleLoad = () => {
     setLoading(false);
@@ -339,8 +361,8 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
 
       <div ref={containerRef} className={`relative w-full aspect-video bg-black rounded-2xl overflow-hidden border border-white/10 shadow-2xl group/player transition-all duration-500 ${isWebFullscreen ? 'fixed inset-0 z-[1000] rounded-none !aspect-auto h-screen' : ''}`}>
         
-        {/* Permanent Brand Watermark (Only for BNKhub Server S1) */}
-        {playerActive && sourceIndex === 0 && (
+        {/* Permanent Brand Watermark (Production Engine Overlay) */}
+        {playerActive && (sourceIndex === 0 || (privateEngineData && allSources[sourceIndex] === privateEngineData.url)) && (
           <div className="absolute top-4 right-5 z-50 pointer-events-none select-none opacity-40">
             <div className="flex flex-col items-end">
               <img src="/logo.png" alt="BNKhub" className="h-8 md:h-12 w-auto object-contain drop-shadow-[0_2px_10px_rgba(var(--accent-rgb),0.4)]" />
