@@ -52,12 +52,12 @@ export const Header = () => {
       className={`fixed top-0 inset-x-0 z-[100] transition-all duration-500 ease-luxe pt-safe ${headerBg}`}
     >
       <div className="w-full px-4 md:px-10 lg:px-16 flex items-center justify-between h-16 md:h-20 lg:h-24">
-        {/* Truly Massive & Dominant Logo PNG */}
+        {/* Massive & Centered Logo PNG */}
         <Link to="/" className="flex items-center group shrink-0 relative z-[110]">
           <img 
             src="/logo.png" 
             alt="BNKhub" 
-            className="h-28 md:h-40 lg:h-48 w-auto object-contain transition-transform duration-300 group-hover:scale-105 drop-shadow-[0_0_30px_rgba(var(--accent-rgb),0.5)] -mt-10 md:-mt-16 lg:-mt-20 -ml-4 md:-ml-8"
+            className="h-28 md:h-40 lg:h-48 w-auto object-contain transition-transform duration-300 group-hover:scale-105 drop-shadow-[0_0_30px_rgba(var(--accent-rgb),0.5)] -ml-4 md:-ml-8"
           />
         </Link>
 
