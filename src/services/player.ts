@@ -4,11 +4,11 @@
  */
 import axios from 'axios';
 
-const BACKEND_URL = "http://localhost:4000/api/stream/sources";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:4000/api/stream/sources";
 
-export const getInternalBackendSources = async (type: 'movie' | 'tv', id: string, s?: number, e?: number) => {
+export const getInternalBackendSources = async (type: 'movie' | 'tv', id: string, query?: string, s?: number, e?: number) => {
   try {
-    const res = await axios.post(BACKEND_URL, { type, id, season: s, episode: e });
+    const res = await axios.post(BACKEND_URL, { type, id: query || id, season: s, episode: e });
     return res.data.sources || [];
   } catch (error) {
     console.error("Backend Source Error:", error);

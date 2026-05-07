@@ -197,7 +197,7 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
   useEffect(() => {
     const fetchInternal = async () => {
       console.log("Fetching internal sources for:", tmdb_id);
-      const results = await getInternalBackendSources(type, String(tmdb_id), season, episode);
+      const results = await getInternalBackendSources(type, String(tmdb_id), title, season, episode);
       console.log("Internal sources found:", results);
       if (results && results.length > 0) {
         setInternalSources(results);
