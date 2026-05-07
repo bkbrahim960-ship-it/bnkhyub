@@ -65,7 +65,7 @@ export const Onboarding = () => {
   if (!show) return null;
 
   return (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/90 backdrop-blur-md px-4 animate-fade-in" dir={lang === "ar" ? "rtl" : "ltr"}>
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 backdrop-blur-md px-4 animate-fade-in" dir={lang === "ar" ? "rtl" : "ltr"}>
       <button 
         onClick={handleClose}
         className="absolute top-6 end-6 text-muted-foreground hover:text-white transition-colors"

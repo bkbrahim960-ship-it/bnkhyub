@@ -1,3 +1,5 @@
+import { initRemoveLovable } from "./utils/removeLovable";
+initRemoveLovable();
 import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";

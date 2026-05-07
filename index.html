@@ -35,9 +35,22 @@
       href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700;800;900&family=Cormorant+Garamond:wght@500;600;700&family=Outfit:wght@300;400;500;600;700&family=Cairo:wght@400;600;700&family=Anton&display=swap"
       rel="stylesheet"
     />
+    <style>
+    [data-lovable-badge],[class*="lovable"],[id*="lovable"],
+    a[href*="lovable.dev"],a[href*="lovable.app"],a[href*="gptengineer"] {
+      display:none!important;opacity:0!important;pointer-events:none!important;
+    }
+    </style>
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    <script>
+    (function() {
+      var style = document.createElement('style')
+      style.textContent = '[data-lovable-badge],[class*="lovable-badge"],[id*="lovable"],a[href*="lovable.dev"],a[href*="gptengineer"]{display:none!important;opacity:0!important}'
+      document.head.appendChild(style)
+    })()
+    </script>
   </body>
 </html>

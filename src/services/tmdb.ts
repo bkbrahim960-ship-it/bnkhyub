@@ -123,8 +123,8 @@ export const getNowPlaying = (lang = "fr-FR", page = 1) =>
 export const getTopRatedMovies = (lang = "fr-FR", page = 1) =>
   fetchTMDB<{ results: TMDBMovie[] }>("/movie/top_rated", { language: lang, page: String(page) });
 
-export const getTrendingMovies = (lang = "fr-FR") =>
-  fetchTMDB<{ results: TMDBMovie[] }>("/trending/movie/week", { language: lang });
+export const getTrendingMovies = (lang = "fr-FR", page = 1) =>
+  fetchTMDB<{ results: TMDBMovie[] }>("/trending/movie/week", { language: lang, page: String(page) });
 
 export const getMovieDetails = (id: number | string, lang = "fr-FR") =>
   fetchTMDB<TMDBMovie>(`/movie/${id}`, { language: lang, append_to_response: "videos,credits,similar,external_ids" });

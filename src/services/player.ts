@@ -34,7 +34,7 @@ const hslToHex = (h: number, s: number, l: number): string => {
       .toString(16)
       .padStart(2, "0");
   };
-  return `${f(0)}${f(8)}${f(4)}`.toUpperCase();
+  return `#${f(0)}${f(8)}${f(4)}`.toUpperCase();
 };
 
 /** Read a CSS variable expressed as `H S% L%` and return HEX (no #) */
@@ -43,7 +43,7 @@ const readCssHsl = (varName: string, fallback: string): string => {
   try {
     const raw = getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
     if (!raw) return fallback;
-    if (raw.startsWith("#")) return raw.replace("#", "").toUpperCase();
+    if (raw.startsWith("#")) return raw.toUpperCase();
     // Expected format: "312 69% 45%" (with possible commas / extra spaces)
     const parts = raw.replace(/,/g, " ").split(/\s+/).filter(Boolean);
     if (parts.length < 3) return fallback;
@@ -65,22 +65,52 @@ interface PlayerTheme {
 }
 
 /** Builds the live theme palette used to skin the embedded VidAPI player */
-const getPlayerTheme = (): PlayerTheme => ({
-  primary: readCssHsl("--accent", "C124A0"),       // BNR Purple by default
-  secondary: readCssHsl("--bg-card", "050505"),    // Sleek dark surface
-  icon: readCssHsl("--foreground", "F5F5F0"),      // Off-white icons
-  font: readCssHsl("--foreground", "F5F5F0"),
-});
+const getPlayerTheme = (): PlayerTheme => {
+  if (typeof window === "undefined") {
+    return {
+      primary: "#C124A0",
+      secondary: "#050505",
+      icon: "#F5F5F0",
+      font: "#F5F5F0",
+    };
+  }
+  
+  const style = getComputedStyle(document.documentElement);
+  const h = parseFloat(style.getPropertyValue("--accent-h").trim());
+  const s = parseFloat(style.getPropertyValue("--accent-s").trim());
+  const l = parseFloat(style.getPropertyValue("--accent-l").trim());
+  
+  let primaryHex = "#C124A0"; // fallback
+  if (!Number.isNaN(h) && !Number.isNaN(s) && !Number.isNaN(l)) {
+    primaryHex = hslToHex(h, s, l);
+  }
+
+  return {
+    primary: primaryHex,
+    secondary: readCssHsl("--bg-card", "#050505"),    // Sleek dark surface
+    icon: readCssHsl("--foreground", "#F5F5F0"),      // Off-white icons
+    font: readCssHsl("--foreground", "#F5F5F0"),
+  };
+};
 
 /** Builds the VidAPI/vaplayer customization query string */
 const buildVidApiThemeParams = (): string => {
   const theme = getPlayerTheme();
+  
+  // Some players need the # encoded, some need it without. 
+  // We provide variations to ensure it catches on any vidapi/vaplayer version.
+  const hex = theme.primary;
+  const hexNoHash = theme.primary.replace("#", "");
+
   const params = new URLSearchParams({
     // Visual customization (matches BNKhub site theme)
-    primarycolor: theme.primary,
-    secondarycolor: theme.secondary,
-    iconcolor: theme.icon,
-    fontcolor: theme.font,
+    color: hex, // Many players use `color=%23C124A0`
+    colors: hex, 
+    primaryColor: hex,
+    primarycolor: hexNoHash, // Original used no hash
+    secondarycolor: theme.secondary.replace("#", ""),
+    iconcolor: theme.icon.replace("#", ""),
+    fontcolor: theme.font.replace("#", ""),
     // Hide skin/color pickers in the player UI for a clean branded look
     hideprimarycolor: "true",
     hidesecondarycolor: "true",
@@ -103,11 +133,12 @@ export const getVidsrcEmbedUrl = (type: 'movie' | 'tv', imdb_id: string, tmdb_id
   const base = "https://vidsrc-embed.ru/embed";
   const idParam = imdb_id ? `imdb=${imdb_id}` : `tmdb=${tmdb_id}`;
   const lang = "ar";
+  const themeParams = buildVidApiThemeParams(); // apply same theme to vidsrc
   
   if (type === 'movie') {
-    return `${base}/movie?${idParam}&ds_lang=${lang}`;
+    return `${base}/movie?${idParam}&ds_lang=${lang}&${themeParams}`;
   }
-  return `${base}/tv?${idParam}&season=${season}&episode=${episode}&ds_lang=${lang}`;
+  return `${base}/tv?${idParam}&season=${season}&episode=${episode}&ds_lang=${lang}&${themeParams}`;
 };
 
 /**
@@ -121,7 +152,7 @@ export const getMovieSources = (imdb_id: string, tmdb_id: number | string, resum
   return [
     `https://vaplayer.ru/embed/movie/${imdb_id || tmdb_id}?${themeParams}${resumeParam}`, // S1: Primary (themed)
     getVidsrcEmbedUrl('movie', imdb_id, tmdb_id), // S2
-    `https://vidzen.fun/movie/${id}`, // S3: VidZen
+    `https://vidzen.fun/movie/${id}?${themeParams}`, // S3: VidZen
   ];
 };
 
@@ -139,7 +170,7 @@ export const getTVSources = (
   return [
     `https://vaplayer.ru/embed/tv/${imdb_id || tmdb_id}/${season}/${episode}?${themeParams}${resumeParam}`, // S1: Primary (themed)
     getVidsrcEmbedUrl('tv', imdb_id, tmdb_id, season, episode), // S2
-    `https://vidzen.fun/tv/${id}`, // S3: VidZen
+    `https://vidzen.fun/tv/${id}?${themeParams}`, // S3: VidZen
   ];
 };
 

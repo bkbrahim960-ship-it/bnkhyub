@@ -318,6 +318,19 @@
   100% { transform: translateY(0) scale(1); }
 }
 
+/* Auth modal animations */
+@keyframes authModalFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes authModalSlideUp {
+  from { opacity: 0; transform: translateY(24px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+.animate-modal-in {
+  animation: authModalSlideUp 0.35s cubic-bezier(0.25,0.46,0.45,0.94);
+}
+
 .shimmer-gold {
   background: linear-gradient(
     90deg,
@@ -407,6 +420,57 @@ a:focus-visible, button:focus-visible {
     animation: none !important;
     background: hsl(var(--bg-elevated)) !important;
   }
+}
+
+/* ============================================
+SUPPRESSION WATERMARK LOVABLE — OBLIGATOIRE
+============================================ */
+[data-lovable-badge],
+[class*="lovable-badge"],
+[class*="lovable_badge"],
+[id*="lovable-badge"],
+[id*="lovable_badge"],
+a[href*="lovable.dev"],
+a[href*="lovable.app"],
+a[href*="gptengineer.app"],
+div[class*="powered-by"],
+div[class*="poweredBy"],
+span[class*="powered-by"],
+div[data-testid*="lovable"],
+#lovable-badge,
+.lovable-badge,
+[aria-label*="Lovable"],
+[aria-label*="lovable"],
+div[class*="lovable-toast"],
+div[class*="LovableToast"],
+button[class*="lovable"],
+a[class*="lovable"],
+.lovable-watermark,
+.lovable-branding,
+[data-lovable],
+[data-gptengineer] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  position: absolute !important;
+  width: 0 !important;
+  height: 0 !important;
+  overflow: hidden !important;
+  clip: rect(0,0,0,0) !important;
+  z-index: -9999 !important;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  width: 200px;
+  height: 60px;
+  background: var(--bg-primary, #070709);
+  z-index: 999998;
+  pointer-events: none;
 }
 
 /* Smooth Scrolling */
