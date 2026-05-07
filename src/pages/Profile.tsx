@@ -73,6 +73,14 @@ const ProfilePage = () => {
   const onFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file || !user) return;
+
+    // Instant local preview
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setAvatarUrl(reader.result as string);
+    };
+    reader.readAsDataURL(file);
+
     setUploading(true);
     try {
       const url = await uploadAvatar(user.id, file);

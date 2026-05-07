@@ -434,8 +434,8 @@ export default function Auth() {
             <div>
               <h4 className="text-white font-bold mb-4">Juridique</h4>
               <ul className="space-y-2">
-                <li><a href="#" className="hover:text-white">Confidentialité</a></li>
-                <li><a href="#" className="hover:text-white">Conditions</a></li>
+                <li><Link to="/privacy" className="hover:text-white">Confidentialité</Link></li>
+                <li><Link to="/terms" className="hover:text-white">Conditions</Link></li>
               </ul>
             </div>
           </div>
@@ -445,25 +445,32 @@ export default function Auth() {
 
       {/* Auth Modal */}
       {showModal && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-black/90 backdrop-blur-md" onClick={() => setShowModal(false)} />
+        <div className="fixed inset-0 z-[100] flex items-center justify-center sm:p-4 animate-in fade-in duration-300">
+          <div className="absolute inset-0 bg-black/95 backdrop-blur-xl sm:bg-black/80" onClick={() => setShowModal(false)} />
           
-          <div className="relative w-full max-w-md bg-[#0a0a0a] border border-white/10 rounded-2xl p-8 shadow-2xl animate-modal-in">
-            <button onClick={() => setShowModal(false)} className="absolute top-4 right-4 p-2 text-gray-400 hover:text-white rounded-full hover:bg-white/10">
-              <X className="w-5 h-5" />
+          <div className="relative w-full h-full sm:h-auto sm:max-w-md bg-[#070709] border-y sm:border border-white/10 sm:rounded-3xl p-8 sm:p-10 shadow-2xl animate-in zoom-in-95 slide-in-from-bottom-10 duration-500 overflow-y-auto">
+            <button 
+              onClick={() => setShowModal(false)} 
+              className="absolute top-6 right-6 p-2 text-gray-400 hover:text-white rounded-full bg-white/5 hover:bg-white/10 transition-colors z-50"
+            >
+              <X className="w-6 h-6" />
             </button>
             
-            <h2 className="font-bold text-3xl mb-2" style={{ fontFamily: 'Anton, sans-serif' }}>
-              {mode === "signin" ? "SE CONNECTER" : "CRÉER UN COMPTE"}
-            </h2>
-            <p className="text-sm text-gray-400 mb-8">
-              Sauvegardez vos favoris et continuez la lecture sur n'importe quel appareil.
-            </p>
+            <div className="flex flex-col items-center text-center mb-8">
+              <img src="/logo.png" alt="BNKhub" className="h-20 w-auto mb-6" />
+              <h2 className="font-bold text-3xl md:text-4xl tracking-tighter uppercase mb-2">
+                {mode === "signin" ? "Bon retour !" : "Créer un compte"}
+              </h2>
+              <p className="text-gray-400 text-sm md:text-base">
+                {mode === "signin" 
+                  ? "Connectez-vous pour continuer votre expérience." 
+                  : "Rejoignez-nous gratuitement et commencez à regarder."}
+              </p>
+            </div>
 
             <button
               onClick={google}
               disabled={busy}
-              className="w-full flex items-center justify-center gap-3 bg-white text-black font-bold py-3.5 rounded-xl hover:bg-gray-200 transition-all disabled:opacity-60 mb-4"
             >
               <svg width="18" height="18" viewBox="0 0 24 24">
                 <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.27-4.74 3.27-8.1Z"/>

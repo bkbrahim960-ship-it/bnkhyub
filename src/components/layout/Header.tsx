@@ -33,7 +33,7 @@ export const Header = () => {
     { to: "/", label: t("nav_home") },
     { to: "/movies", label: t("nav_movies") },
     { to: "/series", label: t("nav_series") },
-    { to: "/channels", label: t("nav_channels") },
+    { to: "/my-list", label: lang === "ar" ? "قائمتي" : "Ma Liste" },
     { to: "/coming-soon", label: lang === "ar" ? "قريباً" : "Bientôt" },
     { to: "/search", label: t("nav_search") },
     { to: user ? "/profile" : "/landing", label: t("nav_profile") },

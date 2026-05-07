@@ -26,16 +26,23 @@ export const Footer = () => {
           </div>
 
           <nav className="text-sm text-muted-foreground space-y-2">
-            <h4 className="font-display text-foreground text-base mb-3">Navigation</h4>
+            <h4 className="font-display text-foreground text-base mb-3 uppercase tracking-widest">{t("nav_navigation") || "Navigation"}</h4>
             <Link to="/" className="block hover:text-accent transition-colors">{t("nav_home")}</Link>
             <Link to="/movies" className="block hover:text-accent transition-colors">{t("nav_movies")}</Link>
             <Link to="/series" className="block hover:text-accent transition-colors">{t("nav_series")}</Link>
-            <Link to="/search" className="block hover:text-accent transition-colors">{t("nav_search")}</Link>
+            <Link to="/my-list" className="block hover:text-accent transition-colors">{t("nav_my_list") || "Ma Liste"}</Link>
+          </nav>
+
+          <nav className="text-sm text-muted-foreground space-y-2">
+            <h4 className="font-display text-foreground text-base mb-3 uppercase tracking-widest">Juridique</h4>
+            <Link to="/privacy" className="block hover:text-accent transition-colors">Confidentialité</Link>
+            <Link to="/terms" className="block hover:text-accent transition-colors">Conditions d'Utilisation</Link>
+            <Link to="/help" className="block hover:text-accent transition-colors">Centre d'aide</Link>
           </nav>
 
           <div className="text-sm text-muted-foreground space-y-2">
-            <h4 className="font-display text-foreground text-base mb-3">BNKhub</h4>
-            <p>Le Cinéma du Monde, Sans Limites.</p>
+            <h4 className="font-display text-foreground text-base mb-3 uppercase tracking-widest">BNKhub</h4>
+            <p className="leading-relaxed">Le Cinéma du Monde, Sans Limites. Votre plateforme premium de streaming gratuite.</p>
           </div>
         </div>
 
