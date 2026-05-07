@@ -12,7 +12,7 @@ interface AmbientContextType {
 const AmbientContext = createContext<AmbientContextType | undefined>(undefined);
 
 export const AmbientProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [ambientColor, setAmbientColor] = useState("transparent");
+  const [ambientColor, setAmbientColor] = useState("hsla(312, 69%, 45%, 0.4)");
   const [ambientImage, setAmbientImage] = useState<string | null>(null);
   const [ambientVideo, setAmbientVideo] = useState<string | null>(null);
 

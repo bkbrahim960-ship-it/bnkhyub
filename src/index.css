@@ -13,10 +13,10 @@
 @layer base {
   :root {
     /* Surfaces sombres luxueuses */
-    --bg-primary: 260 45% 4%;         /* #070709-tinted */
-    --bg-secondary: 240 15% 7%;       /* #0E0E14 */
-    --bg-card: 240 14% 9%;            /* #13131A */
-    --bg-elevated: 240 14% 13%;       /* #1C1C26 */
+    --bg-primary: 0 0% 0%;            /* #000000 Pure Black */
+    --bg-secondary: 0 0% 2%;          /* Near black */
+    --bg-card: 0 0% 3%;               /* Sleek surface */
+    --bg-elevated: 0 0% 5%;           /* Slight elevation */
 
     /* Tokens shadcn — mappés à nos surfaces */
     --background: var(--bg-primary);
@@ -37,8 +37,8 @@
 
     --accent-light: 312 80% 65%;
     --accent-dark: 312 75% 35%;
-    --accent-glow: var(--accent-h) var(--accent-s) var(--accent-l) / 0.15;
-    --accent-border: var(--accent-h) var(--accent-s) var(--accent-l) / 0.3;
+    --accent-glow: var(--accent-h) var(--accent-s) var(--accent-l) / 0.25;
+    --accent-border: var(--accent-h) var(--accent-s) var(--accent-l) / 0.4;
 
     /* Primary = accent (pour les composants shadcn) */
     --primary: var(--accent);
@@ -263,9 +263,9 @@
     height: 150vmax;
     top: -25vmax;
     left: -25vmax;
-    background: radial-gradient(circle at center, var(--ambient-color, transparent) 0%, transparent 70%);
-    opacity: 0.15; /* Subtle */
-    filter: none;
+    background: radial-gradient(circle at center, hsla(var(--accent-h), var(--accent-s), var(--accent-l), 0.2) 0%, transparent 60%);
+    opacity: 0.8; /* Increased prominence over black */
+    filter: blur(80px);
     transition: background 2s ease;
     will-change: background;
   }

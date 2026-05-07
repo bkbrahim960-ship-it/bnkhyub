@@ -112,7 +112,6 @@ const AppContent = () => (
                     <Toaster />
                     <Sonner />
                     <SEO />
-                    <Onboarding />
                     <BrowserRouter>
                       <SiteVisitTracker />
                       <TVNavigationActivator />
@@ -129,7 +128,7 @@ const AppContent = () => (
                         <Route path="/profile" element={<Profile />} />
                         <Route path="/my-list" element={<MyList />} />
                         <Route path="/admin" element={<Admin />} />
-                        <Route path="/welcome" element={<Landing />} />
+
                         <Route path="/remote" element={<Remote />} />
                         <Route path="/person/:id" element={<Person />} />
                         <Route path="/coming-soon" element={<ComingSoon />} />
