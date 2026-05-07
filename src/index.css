@@ -14,9 +14,9 @@
   :root {
     /* Surfaces sombres luxueuses */
     --bg-primary: 0 0% 0%;            /* #000000 Pure Black */
-    --bg-secondary: 0 0% 2%;          /* Near black */
-    --bg-card: 0 0% 3%;               /* Sleek surface */
-    --bg-elevated: 0 0% 5%;           /* Slight elevation */
+    --bg-secondary: 0 0% 1%;          /* Near black */
+    --bg-card: 0 0% 2%;               /* Sleek surface */
+    --bg-elevated: 0 0% 3%;           /* Slight elevation */
 
     /* Tokens shadcn — mappés à nos surfaces */
     --background: var(--bg-primary);
@@ -95,9 +95,7 @@
   }
 
   [data-theme] {
-    --accent-h: 312; --accent-s: 69%; --accent-l: 45%;
-    --accent-light: 312 80% 65%; --accent-dark: 312 75% 35%;
-    --bg-primary: 312 45% 4%;
+    --bg-primary: 0 0% 0%;
   }
 
 
