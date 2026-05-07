@@ -39,6 +39,27 @@ export const Footer = () => {
           </div>
         </div>
 
+        {/* Advertising & Partnerships */}
+        <div className="mt-12 pt-8 border-t border-white/5">
+          <div className="max-w-2xl mx-auto text-center space-y-4">
+            <h4 className="font-display text-foreground text-lg md:text-xl tracking-wider">
+              الإعلانات والشراكات
+            </h4>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              هل تريد الوصول إلى جمهورنا والترويج لمنتجك أو خدمتك؟ نوفّر مساحات إعلانية مختارة لأصحاب العلامات التجارية والمشاريع الجادة.
+            </p>
+            <p className="text-sm text-muted-foreground">
+              للاستفسار عن التفاصيل والأسعار، تواصل معنا عبر:
+            </p>
+            <a 
+              href="mailto:bnkhub.ads@gmail.com" 
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-accent/10 border border-accent/20 text-accent hover:bg-accent/20 hover:border-accent/40 transition-all duration-300 text-sm font-bold tracking-wide"
+            >
+              📧 bnkhub.ads@gmail.com
+            </a>
+          </div>
+        </div>
+
         {/* Signature designer — obligatoire */}
         <div className="mt-12 pt-8 border-t border-white/5 flex flex-col items-center gap-4">
           <p className="text-[11px] uppercase tracking-[0.4em] text-white/50 font-bold">
