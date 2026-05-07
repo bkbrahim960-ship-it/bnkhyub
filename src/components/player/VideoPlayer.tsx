@@ -17,7 +17,7 @@ import { searchWyzieSubtitles, WyzieSubtitle } from "@/services/wyzie";
 import { toast } from "sonner";
 import Hls from "hls.js";
 import { PlayerSourceSelector } from "./PlayerSourceSelector";
-import { resolveStream } from "@/services/resolver";
+import { resolveProductionStream } from "@/services/resolver";
 
 interface Props {
   imdb_id: string;
