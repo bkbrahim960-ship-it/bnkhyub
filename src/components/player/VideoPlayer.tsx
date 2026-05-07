@@ -59,7 +59,7 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
   onCompleted,
 }, ref) => {
   const { t, lang } = useLanguage();
-  const [sourceIndex, setSourceIndex] = useState(initialSourceIndex);
+  const [sourceIndex, setSourceIndex] = useState(-1); // Start with -1 to trigger auto-selection
   const [loading, setLoading] = useState(true);
   const [slow, setSlow] = useState<boolean[]>(Array(50).fill(false));
   const [adsOpen, setAdsOpen] = useState(!hasSeenAdsNotice());
@@ -221,14 +221,30 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
         const result = await resolveProductionStream(String(tmdb_id), type, season, episode);
         if (result.success && result.url) {
           setPrivateEngineData({ url: result.url, type: result.type });
+          // If we haven't selected a source yet, or we were on the loading state, select this one
+          if (sourceIndex === -1 || sourceIndex === 0) {
+            setSourceIndex(0);
+          }
           console.log("💎 BNKhub Production Engine: Active");
         }
       } catch (err) {
         console.log("🛡️ BNKhub Security: Handshaking...");
+        if (sourceIndex === -1) setSourceIndex(1); // Fallback to Server 1
       }
     };
     if (tmdb_id) resolvePrivateSource();
   }, [tmdb_id, type, season, episode]);
+
+  // Initial Source Selection Guard
+  useEffect(() => {
+    if (sourceIndex === -1) {
+      // If private engine is not ready after 2s, default to server 1
+      const timer = setTimeout(() => {
+        if (sourceIndex === -1) setSourceIndex(1);
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [sourceIndex]);
 
   const allLabels = Array(50).fill(null);
   allLabels[0] = "BNKhub Private Engine (Ultra HD)";
@@ -376,7 +392,15 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
             <div className="absolute -top-24 -start-24 w-64 h-64 bg-accent/10 blur-[100px] rounded-full animate-pulse" />
             <div className="relative z-10 animate-in fade-in zoom-in duration-1000">
               <button 
-                onClick={() => { setAdsOpen(false); setPlayerActive(true); }}
+                onClick={() => { 
+                  setAdsOpen(false); 
+                  // Selection guard: If no source selected yet, try to pick one
+                  if (sourceIndex === -1) {
+                    if (privateEngineData?.url) setSourceIndex(0);
+                    else setSourceIndex(1);
+                  }
+                  setPlayerActive(true); 
+                }}
                 className="group relative"
               >
                 <div className="absolute inset-0 bg-accent blur-2xl opacity-20 group-hover:opacity-40 transition-opacity" />
