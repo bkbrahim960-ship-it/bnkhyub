@@ -49,7 +49,7 @@ export const MovieCard = memo(({ id, title, posterPath, year, rating, type = "mo
       className={`group relative block shrink-0 w-[120px] sm:w-[170px] md:w-[190px] lg:w-[210px] transition-all duration-500 hover:-translate-y-3 focus:z-[100] hover:z-[50] ${className}`}
     >
 
-      <div className="relative aspect-[2/3] rounded-2xl overflow-hidden bg-[#0a0a0a] border border-white/5 group-hover:border-accent/50 group-hover:shadow-[0_25px_50px_-12px_rgba(0,0,0,0.8),0_0_30px_hsl(var(--accent)/0.3)] transition-all duration-500 ease-luxe">
+       <div className="relative aspect-[2/3] rounded-2xl overflow-hidden bg-gradient-to-br from-[#0a0a0a] via-[#1a1a2e] to-[#0a0a0a] border border-white/10 group-hover:border-accent/100 group-hover:shadow-[0_30px_60px_-15px_rgba(0,0,0,0.9),0_0_40px_hsl(var(--accent)/0.4)] transition-all duration-700 ease-luxe backdrop-blur-sm">
         {!loaded && <div className="absolute inset-0 shimmer-gold" />}
         
         {poster ? (

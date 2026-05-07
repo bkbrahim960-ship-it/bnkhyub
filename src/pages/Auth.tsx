@@ -330,7 +330,7 @@ export default function Auth() {
       </section>
 
       {/* Kid-Friendly Fun */}
-      <section className="py-24 px-6 md:px-12 bg-gradient-b-b-[#0a0a0a] to-black">
+      <section className="py-24 px-6 md:px-12 bg-gradient-to-b-[#0a0a0a] to-black">
         <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-16 items-center">
           <div className="order-2 md:order-1 grid grid-cols-2 gap-4">
              <div className="relative">
@@ -402,7 +402,7 @@ export default function Auth() {
       </section>
 
       {/* Ready to get started */}
-      <section className="py-24 px-6 md:px-12 text-center bg-gradient-to-t from-[#C124A0]/10 to-b-b-black">
+      <section className="py-24 px-6 md:px-12 text-center bg-gradient-to-t from-[#C124A0]/10 to-black">
         <h2 className="text-4xl md:text-5xl font-bold mb-8" style={{ fontFamily: 'Anton, sans-serif' }}>
           PRÊT À COMMENCER ?
         </h2>

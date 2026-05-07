@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, useRef } from "react";
-import { useParams, Link, useSearchParams } from "react-router-dom";
+import { useParams, Link, useSearchParams, useNavigate } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { VideoPlayer, VideoPlayerRef } from "@/components/player/VideoPlayer";
 import { SubtitleFinder } from "@/components/player/SubtitleFinder";
@@ -10,6 +10,7 @@ import { ShareButtons } from "@/components/movie/ShareButtons";
 import { TrailerModal } from "@/components/movie/TrailerModal";
 
 import { VideoBackdrop } from "@/components/movie/VideoBackdrop";
+import { LoginPrompt } from "@/components/LoginPrompt";
 import { IMG, getMovieDetails, getMovieRecommendations, TMDBMovie } from "@/services/tmdb";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
@@ -39,8 +40,10 @@ const Movie = () => {
   const [playing, setPlaying] = useState(false);
   const [recommendations, setRecommendations] = useState<TMDBMovie[]>([]);
   const [showTrailer, setShowTrailer] = useState(false);
+  const [showLoginPrompt, setShowLoginPrompt] = useState(false);
   const playerContainerRef = useRef<HTMLDivElement>(null);
   const videoPlayerRef = useRef<VideoPlayerRef>(null);
+  const navigate = useNavigate();
 
   const resumeRequested = params.get("resume") === "1";
   const initialSourceIndex = useMemo(() => sourceIdToIndex(params.get("src")), [params]);
@@ -136,11 +139,20 @@ const Movie = () => {
     }).catch(() => {});
   };
 
-  const startWatching = () => {
+  const confirmWatch = () => {
+    setShowLoginPrompt(false);
     setPlaying(true);
     setTimeout(() => {
       playerContainerRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
     }, 100);
+  };
+
+  const startWatching = () => {
+    if (!user) {
+      setShowLoginPrompt(true);
+      return;
+    }
+    confirmWatch();
   };
 
   const director = movie.credits?.crew.find(c => c.job === 'Director')?.name;
@@ -155,6 +167,16 @@ const Movie = () => {
         type="video.movie"
         keywords={`${movie.title}, regarder ${movie.title}, film gratuit, BNKhub`}
       />
+      {showLoginPrompt && (
+        <LoginPrompt 
+          title={lang === 'ar' ? 'تسجيل الدخول مفضل' : 'Connexion recommandée'}
+          description={lang === 'ar' 
+            ? 'يفضل تسجيل الدخول لحفظ معلومات الأفلام والمسلسلات الخاصة بك ومزامنتها.' 
+            : 'Il est recommandé de se connecter pour sauvegarder l\'historique de vos films et séries.'}
+          onLogin={() => navigate('/auth')}
+          onWatch={confirmWatch}
+        />
+      )}
       {/* Cinematic Hero with Video Background */}
       <section className="relative min-h-[45vh] md:min-h-[90vh] lg:min-h-[95vh] flex items-end pb-24 md:pb-16 lg:pb-24 overflow-hidden pt-0 md:pt-20 lg:pt-24">
         <VideoBackdrop 

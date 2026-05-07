@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, useRef } from "react";
-import { useParams, Link, useSearchParams } from "react-router-dom";
+import { useParams, Link, useSearchParams, useNavigate } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { VideoPlayer, VideoPlayerRef } from "@/components/player/VideoPlayer";
 import { SubtitleFinder } from "@/components/player/SubtitleFinder";
@@ -11,6 +11,8 @@ import { MovieRow } from "@/components/movie/MovieRow";
 import { TrailerModal } from "@/components/movie/TrailerModal";
 
 import { VideoBackdrop } from "@/components/movie/VideoBackdrop";
+import { LoginPrompt } from "@/components/LoginPrompt";
+import { EpisodeModal } from "@/components/movie/EpisodeModal";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
 import { tmdbLang } from "@/services/i18n";
@@ -44,7 +46,11 @@ const Series = () => {
   const [seasonLoading, setSeasonLoading] = useState(false);
   const [recommendations, setRecommendations] = useState<any[]>([]);
   const [showTrailer, setShowTrailer] = useState(false);
+  const [showLoginPrompt, setShowLoginPrompt] = useState(false);
+  const [selectedEpisode, setSelectedEpisode] = useState<number>(0);
   const [showNextEpisode, setShowNextEpisode] = useState(false);
+  const [showEpisodeModal, setShowEpisodeModal] = useState(false);
+  const navigate = useNavigate();
   const playerRef = useRef<HTMLDivElement>(null);
   const videoPlayerRef = useRef<VideoPlayerRef>(null);
 
@@ -176,12 +182,42 @@ const Series = () => {
     }).catch(() => {});
   };
 
-  const handleEpisodeClick = (epNum: number) => {
+  const playEpisodeDirectly = (epNum: number) => {
+    setSelectedEpisode(epNum);
+    if (!user) {
+      setShowLoginPrompt(true);
+      return;
+    }
     setEpisode(epNum);
     setPlaying(true);
     setTimeout(() => {
       playerRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
     }, 100);
+  };
+
+  const handleEpisodeClick = (epNum: number) => {
+    setSelectedEpisode(epNum);
+    setShowEpisodeModal(true);
+  };
+
+  const confirmWatch = () => {
+    setShowLoginPrompt(false);
+    setShowEpisodeModal(false);
+    if (selectedEpisode) {
+      setEpisode(selectedEpisode);
+      setPlaying(true);
+      setTimeout(() => {
+        playerRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+      }, 100);
+    }
+  };
+
+  const startWatchingEpisode = () => {
+    if (!user) {
+      setShowLoginPrompt(true);
+      return;
+    }
+    confirmWatch();
   };
 
   const cast = (series as any).credits?.cast.slice(0, 10) || [];
@@ -196,6 +232,31 @@ const Series = () => {
         type="video.tv_show"
         keywords={`${series.name}, regarder ${series.name}, serie gratuite, BNKhub`}
       />
+
+      {showLoginPrompt && (
+        <LoginPrompt 
+          title={lang === 'ar' ? 'تسجيل الدخول مفضل' : 'Connexion recommandée'}
+          description={lang === 'ar' 
+            ? 'يفضل تسجيل الدخول لحفظ معلومات الأفلام والمسلسلات الخاصة بك ومزامنتها.' 
+            : 'Il est recommandé de se connecter pour sauvegarder l\'historique de vos films et séries.'}
+          onLogin={() => navigate('/auth')}
+          onWatch={confirmWatch}
+        />
+      )}
+
+      {showEpisodeModal && seasonData && selectedEpisode > 0 && (
+        <EpisodeModal
+          isOpen={showEpisodeModal}
+          onClose={() => setShowEpisodeModal(false)}
+          onPlay={startWatchingEpisode}
+          onTrailer={trailer ? () => setShowTrailer(true) : undefined}
+          episode={seasonData.episodes.find(e => e.episode_number === selectedEpisode) || seasonData.episodes[0]}
+          seriesTitle={series.name}
+          seasonNumber={season}
+          backdropFallback={backdrop}
+        />
+      )}
+
       {/* Cinematic Hero with Video Background */}
       <section className="relative min-h-[45vh] md:min-h-[85vh] lg:min-h-[90vh] flex items-end pb-24 md:pb-14 lg:pb-20 overflow-hidden pt-0 md:pt-20 lg:pt-24">
         <VideoBackdrop 
