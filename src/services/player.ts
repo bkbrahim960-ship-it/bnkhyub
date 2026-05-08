@@ -3,6 +3,7 @@
  * Handles both Movies and TV Shows sources with Arabic localization priority.
  */
 import axios from 'axios';
+import { KABYLE_CONTENT } from './customContent';
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:4000/api/stream/sources";
 
@@ -145,6 +146,11 @@ export const getVidsrcEmbedUrl = (type: 'movie' | 'tv', imdb_id: string, tmdb_id
  * Main Source Fetchers
  */
 export const getMovieSources = (imdb_id: string, tmdb_id: number | string, resumeAt?: number): string[] => {
+  if (typeof tmdb_id === 'string' && tmdb_id.startsWith('m-')) {
+    const custom = KABYLE_CONTENT.find(c => c.id === tmdb_id);
+    if (custom && custom.video_url) return [custom.video_url];
+  }
+
   const themeParams = buildVidApiThemeParams();
   const id = imdb_id || tmdb_id;
   const resumeParam = resumeAt ? `&resumeAt=${resumeAt}` : '';
@@ -163,6 +169,14 @@ export const getTVSources = (
   episode: number,
   resumeAt?: number,
 ): string[] => {
+  if (typeof tmdb_id === 'string' && tmdb_id.startsWith('s-')) {
+    const custom = KABYLE_CONTENT.find(c => c.id === tmdb_id);
+    if (custom && custom.episodes) {
+      const ep = custom.episodes.find(e => e.id === episode);
+      if (ep && ep.videoUrl) return [ep.videoUrl];
+    }
+  }
+
   const themeParams = buildVidApiThemeParams();
   const id = imdb_id || tmdb_id;
   const resumeParam = resumeAt ? `&resumeAt=${resumeAt}` : '';

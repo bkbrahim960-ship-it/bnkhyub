@@ -17,10 +17,10 @@ import { useLanguage } from "@/context/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
 import { tmdbLang } from "@/services/i18n";
 import { SEO } from "@/components/SEO";
-import { upsertWatchEntry } from "@/services/watchHistory";
+import { upsertWatchEntry, getSeriesHistory, WatchHistoryEntry } from "@/services/watchHistory";
 import { KABYLE_CONTENT } from "@/services/customContent";
 import { SOURCE_LABELS } from "@/services/player";
-import { Play, Star, Calendar, ArrowLeft, Youtube, ChevronRight, Clock, Info } from "lucide-react";
+import { Play, Star, Calendar, ArrowLeft, Youtube, ChevronRight, Clock, Info, Check } from "lucide-react";
 import { useAmbient } from "@/context/AmbientContext";
 import { RemotePairingButton } from "@/components/movie/RemotePairingButton";
 import { NextEpisodeOverlay } from "@/components/player/NextEpisodeOverlay";
@@ -50,6 +50,7 @@ const Series = () => {
   const [selectedEpisode, setSelectedEpisode] = useState<number>(0);
   const [showNextEpisode, setShowNextEpisode] = useState(false);
   const [showEpisodeModal, setShowEpisodeModal] = useState(false);
+  const [seriesHistory, setSeriesHistory] = useState<WatchHistoryEntry[]>([]);
   const navigate = useNavigate();
   const playerRef = useRef<HTMLDivElement>(null);
   const videoPlayerRef = useRef<VideoPlayerRef>(null);
@@ -112,6 +113,12 @@ const Series = () => {
       .then((r) => setRecommendations(r.results.filter((s: any) => s.poster_path)))
       .catch(() => {});
   }, [id, lang]);
+
+  useEffect(() => {
+    if (user && series) {
+      getSeriesHistory(user.id, series.id).then(setSeriesHistory).catch(() => {});
+    }
+  }, [user, series]);
 
   useEffect(() => {
     if (!series || !season) return;
@@ -486,11 +493,22 @@ const Series = () => {
                 </div>
                 
                 {/* Active Indicator */}
-                {episode === ep.episode_number && playing && (
-                  <div className="absolute top-2 right-2 px-2 py-1 rounded bg-accent text-accent-foreground text-[8px] font-bold animate-pulse">
+                {episode === ep.episode_number && playing ? (
+                  <div className="absolute top-2 right-2 px-2 py-1 rounded bg-accent text-accent-foreground text-[8px] font-bold animate-pulse z-10">
                     LECTURE
                   </div>
-                )}
+                ) : (() => {
+                  const hist = seriesHistory.find(h => h.season_number === season && h.episode_number === ep.episode_number);
+                  const isWatched = hist && hist.duration_seconds && (hist.progress_seconds / hist.duration_seconds > 0.85);
+                  if (isWatched) {
+                    return (
+                      <div className="absolute top-2 right-2 px-2 py-1 rounded bg-green-500/80 text-white text-[10px] font-bold flex items-center gap-1 backdrop-blur-sm z-10">
+                        <Check className="w-3 h-3" /> {lang === 'ar' ? 'تمت المشاهدة' : 'Visionné'}
+                      </div>
+                    );
+                  }
+                  return null;
+                })()}
               </button>
             ))}
           </div>

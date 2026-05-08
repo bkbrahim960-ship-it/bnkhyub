@@ -33,7 +33,7 @@ export interface UpsertWatchInput {
   duration_seconds?: number | null;
 }
 
-const MAX_HISTORY_ITEMS = 5;
+const MAX_HISTORY_ITEMS = 500;
 
 /** Enregistre / met à jour une entrée d'historique pour l'utilisateur courant. */
 export const upsertWatchEntry = async (
@@ -93,6 +93,19 @@ export const getRecentHistory = async (
     .eq("user_id", userId)
     .order("watched_at", { ascending: false })
     .limit(limit);
+  if (error) throw error;
+  return (data ?? []) as WatchHistoryEntry[];
+};
+
+export const getSeriesHistory = async (
+  userId: string,
+  tmdbId: number,
+): Promise<WatchHistoryEntry[]> => {
+  const { data, error } = await supabase
+    .from("watch_history")
+    .select("*")
+    .eq("user_id", userId)
+    .eq("tmdb_id", tmdbId);
   if (error) throw error;
   return (data ?? []) as WatchHistoryEntry[];
 };

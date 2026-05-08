@@ -69,6 +69,19 @@ export const KABYLE_CONTENT: CustomMediaItem[] = [
     keywords: ['kabyle', 'animation', 'hmimi', 'lyes', 'doublage']
   },
   {
+    id: 'm-amechah-new',
+    title: 'Amecḥaḥ',
+    overview: 'D asaru n uḍsa n teqbaylit yettmeslayen ɣef yiwen n umechaḥ i iḥemmlen idrimen aṭas.',
+    poster_path: 'https://i.ytimg.com/vi/xJTRs4u-FgU/hq720.jpg',
+    category: 'Uḍsa • Akalas',
+    release_date: '2010',
+    vote_average: 4.8,
+    isDubbed: false,
+    video_url: 'https://www.youtube.com/embed/xJTRs4u-FgU',
+    media_type: 'movie',
+    keywords: ['kabyle', 'amechah']
+  },
+  {
     id: 'm-uccen-d-wayziw',
     title: 'Uccen d Wayziw',
     overview: 'Tamast n wuccen d tabaquzt. Yiwen n usaru i d-yettawin ɣef tkerkas d wayen i d-sseglayent.',
