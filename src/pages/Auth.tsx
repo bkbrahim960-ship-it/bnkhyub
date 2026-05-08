@@ -129,19 +129,19 @@ export default function Auth() {
 
   return (
     <div className={`min-h-screen bg-black text-white ${isRTL ? "font-arabic" : "font-body"}`} dir={isRTL ? "rtl" : "ltr"}>
-      
+
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 z-50 px-6 py-6 flex items-center justify-between bg-gradient-to-b from-black/90 to-transparent">
         <Link to="/" onClick={() => localStorage.setItem("hasSeenLanding", "true")} className="flex items-center group shrink-0 relative z-[110]">
-          <img 
-            src="/logo.png" 
-            alt="BNKhub" 
+          <img
+            src="/logo.png"
+            alt="BNKhub"
             className="h-28 md:h-40 lg:h-48 w-auto object-contain transition-transform duration-300 group-hover:scale-105 drop-shadow-[0_0_30px_rgba(var(--accent-rgb),0.5)]"
           />
         </Link>
         <div className="flex items-center gap-4">
           <LanguageSwitcher />
-          <button 
+          <button
             onClick={() => openAuth("signin")}
             className="px-6 py-2 rounded-full bg-white text-black font-bold hover:bg-gray-200 transition-all"
           >
@@ -158,15 +158,15 @@ export default function Auth() {
             {trending.map((m, i) => (
               m.poster_path && (
                 <div key={i} className="aspect-[2/3] relative overflow-hidden rounded-lg">
-                  <img 
-                    src={IMG.poster(m.poster_path, "w500")} 
-                    alt={m.title || m.name} 
+                  <img
+                    src={IMG.poster(m.poster_path, "w500")}
+                    alt={m.title || m.name}
                     className="w-full h-full object-cover"
                   />
                   <div className="absolute top-0 left-0 p-1">
-                    <img 
-                      src="/logo.png" 
-                      alt="BNKhub" 
+                    <img
+                      src="/logo.png"
+                      alt="BNKhub"
                       className="w-6 md:w-8 h-auto opacity-85"
                     />
                   </div>
@@ -184,26 +184,26 @@ export default function Auth() {
               <span className="text-sm font-medium">Sans abonnement • 100% Gratuit</span>
             </div>
           </div>
-          
+
           <h1 className="text-5xl md:text-7xl lg:text-8xl font-black mb-6 leading-tight" style={{ fontFamily: 'Anton, sans-serif' }}>
             LE CINÉMA<br />
             <span className="text-[#C124A0]">DU MONDE</span><br />
             SANS LIMITES
           </h1>
-          
+
           <p className="text-xl text-gray-300 mb-8 max-w-xl">
             Découvrez des milliers de films et séries en qualité Ultra HD, gratuitement et sans abonnement.
           </p>
-          
+
           <div className="flex flex-col sm:flex-row gap-4">
-            <button 
+            <button
               onClick={() => openAuth("signup")}
               className="inline-flex items-center justify-center gap-3 bg-[#C124A0] text-white font-bold text-lg px-10 py-4 rounded-full hover:bg-[#D93AB0] hover:scale-105 transition-all duration-300 shadow-[0_0_30px_rgba(193,36,160,0.4)]"
             >
               Commencer maintenant
             </button>
-            <Link 
-              to="/" 
+            <Link
+              to="/"
               onClick={() => localStorage.setItem("hasSeenLanding", "true")}
               className="inline-flex items-center justify-center gap-3 px-10 py-4 rounded-full border-2 border-white/30 text-white font-bold text-lg hover:bg-white/10 hover:scale-105 transition-all duration-300"
             >
@@ -222,15 +222,15 @@ export default function Auth() {
           {trending.slice(0, 6).map((m, i) => (
             m.poster_path && (
               <div key={i} className="aspect-[2/3] rounded-xl overflow-hidden relative group cursor-pointer">
-                <img 
-                  src={IMG.poster(m.poster_path, "w500")} 
-                  alt={m.title || m.name} 
+                <img
+                  src={IMG.poster(m.poster_path, "w500")}
+                  alt={m.title || m.name}
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                 />
                 <div className="absolute top-3 right-3">
-                  <img 
-                    src="/logo.png" 
-                    alt="BNKhub" 
+                  <img
+                    src="/logo.png"
+                    alt="BNKhub"
                     className="w-10 md:w-12 h-auto opacity-90 drop-shadow-[0_2px_6px_rgba(0,0,0,0.7)]"
                   />
                 </div>
@@ -259,7 +259,7 @@ export default function Auth() {
             <p className="text-gray-400 text-lg mb-8">
               Regardez sur tous vos appareils, en simultané, avec une qualité exceptionnelle.
             </p>
-            <button 
+            <button
               onClick={() => openAuth("signup")}
               className="inline-flex items-center justify-center gap-3 bg-[#C124A0] text-white font-bold px-8 py-4 rounded-full hover:bg-[#D93AB0] hover:scale-105 transition-all duration-300"
             >
@@ -268,21 +268,21 @@ export default function Auth() {
           </div>
           <div className="relative">
             <div className="absolute inset-0 bg-[#C124A0]/20 blur-[100px] rounded-full" />
-            <img 
-              src={trending[0]?.backdrop_path ? `https://image.tmdb.org/t/p/w1280${trending[0].backdrop_path}` : 'https://images.unsplash.com/photo-1603302576837-37561b2e2302?q=80&w=1200&auto=format&fit=crop'} 
-              alt="Devices" 
+            <img
+              src={trending[0]?.backdrop_path ? `https://image.tmdb.org/t/p/w1280${trending[0].backdrop_path}` : 'https://images.unsplash.com/photo-1603302576837-37561b2e2302?q=80&w=1200&auto=format&fit=crop'}
+              alt="Devices"
               className="relative z-10 w-full h-auto rounded-2xl border border-white/10 object-cover aspect-video"
             />
             <div className="absolute -right-8 top-1/4 w-40 md:w-48 aspect-[2/3] rounded-lg overflow-hidden border-2 border-[#C124A0] shadow-2xl rotate-6">
-              <img 
-                src={trending[0]?.poster_path ? IMG.poster(trending[0].poster_path, "w342") : ''} 
-                alt="" 
+              <img
+                src={trending[0]?.poster_path ? IMG.poster(trending[0].poster_path, "w342") : ''}
+                alt=""
                 className="w-full h-full object-cover"
               />
               <div className="absolute top-2 left-2">
-                <img 
-                  src="/logo.png" 
-                  alt="BNKhub" 
+                <img
+                  src="/logo.png"
+                  alt="BNKhub"
                   className="w-10 md:w-12 h-auto opacity-90 drop-shadow-[0_2px_6px_rgba(0,0,0,0.6)]"
                 />
               </div>
@@ -306,15 +306,15 @@ export default function Auth() {
                 {i + 1}
               </span>
               <div className="relative aspect-[2/3] ml-8 md:ml-12">
-                <img 
-                  src={m.poster_path ? IMG.poster(m.poster_path, "w500") : ''} 
-                  alt={m.title || m.name} 
+                <img
+                  src={m.poster_path ? IMG.poster(m.poster_path, "w500") : ''}
+                  alt={m.title || m.name}
                   className="w-full h-full object-cover rounded-xl shadow-2xl group-hover:scale-105 transition-transform duration-300"
                 />
                 <div className="absolute top-3 left-3">
-                  <img 
-                    src="/logo.png" 
-                    alt="BNKhub" 
+                  <img
+                    src="/logo.png"
+                    alt="BNKhub"
                     className="w-10 md:w-14 h-auto opacity-90 drop-shadow-[0_2px_8px_rgba(0,0,0,0.7)]"
                   />
                 </div>
@@ -333,34 +333,34 @@ export default function Auth() {
       <section className="py-24 px-6 md:px-12 bg-gradient-to-b-[#0a0a0a] to-black">
         <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-16 items-center">
           <div className="order-2 md:order-1 grid grid-cols-2 gap-4">
-             <div className="relative">
-               <img 
-                 src="https://image.tmdb.org/t/p/w500/qA5kPYZA7FkVvqcEfJRoOy4kpHg.jpg" 
-                 className="w-full rounded-2xl border border-white/10" 
-                 alt=""
-               />
-               <div className="absolute top-3 left-3">
-                 <img 
-                   src="/logo.png" 
-                   alt="BNKhub" 
-                   className="w-10 md:w-14 h-auto opacity-90 drop-shadow-[0_2px_8px_rgba(0,0,0,0.7)]"
-                 />
-               </div>
-             </div>
-             <div className="relative mt-8">
-               <img 
-                 src="https://image.tmdb.org/t/p/w500/7WsyChQLEftFiDOVTGkv3hFpyyt.jpg" 
-                 className="w-full rounded-2xl border border-white/10" 
-                 alt=""
-               />
-               <div className="absolute top-3 left-3">
-                 <img 
-                   src="/logo.png" 
-                   alt="BNKhub" 
-                   className="w-10 md:w-14 h-auto opacity-90 drop-shadow-[0_2px_8px_rgba(0,0,0,0.7)]"
-                 />
-               </div>
-             </div>
+            <div className="relative">
+              <img
+                src="https://image.tmdb.org/t/p/w500/qA5kPYZA7FkVvqcEfJRoOy4kpHg.jpg"
+                className="w-full rounded-2xl border border-white/10"
+                alt=""
+              />
+              <div className="absolute top-3 left-3">
+                <img
+                  src="/logo.png"
+                  alt="BNKhub"
+                  className="w-10 md:w-14 h-auto opacity-90 drop-shadow-[0_2px_8px_rgba(0,0,0,0.7)]"
+                />
+              </div>
+            </div>
+            <div className="relative mt-8">
+              <img
+                src="https://image.tmdb.org/t/p/w500/7WsyChQLEftFiDOVTGkv3hFpyyt.jpg"
+                className="w-full rounded-2xl border border-white/10"
+                alt=""
+              />
+              <div className="absolute top-3 left-3">
+                <img
+                  src="/logo.png"
+                  alt="BNKhub"
+                  className="w-10 md:w-14 h-auto opacity-90 drop-shadow-[0_2px_8px_rgba(0,0,0,0.7)]"
+                />
+              </div>
+            </div>
           </div>
           <div className="order-1 md:order-2">
             <h2 className="text-4xl md:text-5xl font-bold mb-6" style={{ fontFamily: 'Anton, sans-serif' }}>
@@ -370,7 +370,7 @@ export default function Auth() {
             <p className="text-gray-400 text-lg mb-8">
               Découvrez une sélection de contenu à la fois sûr et amusant pour toute la famille.
             </p>
-            <button 
+            <button
               onClick={() => openAuth("signup")}
               className="inline-flex items-center justify-center gap-3 bg-[#C124A0] text-white font-bold px-8 py-4 rounded-full hover:bg-[#D93AB0] hover:scale-105 transition-all duration-300"
             >
@@ -406,7 +406,7 @@ export default function Auth() {
         <h2 className="text-4xl md:text-5xl font-bold mb-8" style={{ fontFamily: 'Anton, sans-serif' }}>
           PRÊT À COMMENCER ?
         </h2>
-        <button 
+        <button
           onClick={() => openAuth("signup")}
           className="inline-flex items-center justify-center gap-3 bg-[#C124A0] text-white font-bold text-lg px-12 py-5 rounded-full hover:bg-[#D93AB0] hover:scale-105 transition-all duration-300 shadow-[0_0_40px_rgba(193,36,160,0.5)]"
         >
@@ -447,23 +447,23 @@ export default function Auth() {
       {showModal && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center sm:p-4 animate-in fade-in duration-300">
           <div className="absolute inset-0 bg-black/95 backdrop-blur-xl sm:bg-black/80" onClick={() => setShowModal(false)} />
-          
+
           <div className="relative w-full h-full sm:h-auto sm:max-w-md bg-[#070709] border-y sm:border border-white/10 sm:rounded-3xl p-8 sm:p-10 shadow-2xl animate-in zoom-in-95 slide-in-from-bottom-10 duration-500 overflow-y-auto">
-            <button 
-              onClick={() => setShowModal(false)} 
+            <button
+              onClick={() => setShowModal(false)}
               className="absolute top-6 right-6 p-2 text-gray-400 hover:text-white rounded-full bg-white/5 hover:bg-white/10 transition-colors z-50"
             >
               <X className="w-6 h-6" />
             </button>
-            
+
             <div className="flex flex-col items-center text-center mb-8">
               <img src="/logo.png" alt="BNKhub" className="h-20 w-auto mb-6" />
               <h2 className="font-bold text-3xl md:text-4xl tracking-tighter uppercase mb-2">
                 {mode === "signin" ? "Bon retour !" : "Créer un compte"}
               </h2>
               <p className="text-gray-400 text-sm md:text-base">
-                {mode === "signin" 
-                  ? "Connectez-vous pour continuer votre expérience." 
+                {mode === "signin"
+                  ? "Connectez-vous pour continuer votre expérience."
                   : "Rejoignez-nous gratuitement et commencez à regarder."}
               </p>
             </div>
@@ -473,10 +473,10 @@ export default function Auth() {
               disabled={busy}
             >
               <svg width="18" height="18" viewBox="0 0 24 24">
-                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.27-4.74 3.27-8.1Z"/>
-                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.99.67-2.26 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84A11 11 0 0 0 12 23Z"/>
-                <path fill="#FBBC05" d="M5.84 14.1A6.6 6.6 0 0 1 5.5 12c0-.73.13-1.44.34-2.1V7.06H2.18A11 11 0 0 0 1 12c0 1.78.43 3.46 1.18 4.94l3.66-2.84Z"/>
-                <path fill="#EA4335" d="M12 5.38c1.62 0 3.07.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84C6.71 7.3 9.14 5.38 12 5.38Z"/>
+                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.27-4.74 3.27-8.1Z" />
+                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.99.67-2.26 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84A11 11 0 0 0 12 23Z" />
+                <path fill="#FBBC05" d="M5.84 14.1A6.6 6.6 0 0 1 5.5 12c0-.73.13-1.44.34-2.1V7.06H2.18A11 11 0 0 0 1 12c0 1.78.43 3.46 1.18 4.94l3.66-2.84Z" />
+                <path fill="#EA4335" d="M12 5.38c1.62 0 3.07.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84C6.71 7.3 9.14 5.38 12 5.38Z" />
               </svg>
               Continuer avec Google
             </button>

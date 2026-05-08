@@ -120,6 +120,12 @@ const buildVidApiThemeParams = (): string => {
     // Localization & playback
     lang: "ar",
     ds_lang: "ar",
+    sub: "ar",
+    sub_lang: "ar",
+    subtitle: "ar",
+    default_sub: "ar",
+    cc_lang_pref: "ar",
+    cc_load_policy: "1",
     autoplay: "1",
     poster: "true",
     title: "true",
