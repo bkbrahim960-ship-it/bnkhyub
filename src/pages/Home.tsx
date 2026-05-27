@@ -194,10 +194,10 @@ const KabyleCinemaRow = () => {
             <MovieCard 
               id={item.id}
               title={item.title}
-              posterPath={item.poster_path}
-              year="Kabyle"
-              rating={item.vote_average}
-              type={item.media_type as any}
+              posterPath={item.thumbnail}
+              year={item.year || "Kabyle"}
+              rating={item.rating}
+              type="movie"
             />
           </div>
         ))}

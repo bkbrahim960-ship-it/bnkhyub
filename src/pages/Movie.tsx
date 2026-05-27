@@ -114,11 +114,13 @@ const Movie = () => {
     );
   }
 
-  const year = movie.release_date?.slice(0, 4);
+  const year = movie.release_date?.slice(0, 4) || (movie as any).year || "";
   const runtime = movie.runtime ? `${Math.floor(movie.runtime / 60)}h ${movie.runtime % 60}min` : null;
   const imdb = movie.imdb_id || (movie as any).external_ids?.imdb_id || "";
-  const backdrop = IMG.backdrop(movie.backdrop_path, "original");
-  const poster = IMG.poster(movie.poster_path, "w500");
+  const backdrop = movie.backdrop_path ? IMG.backdrop(movie.backdrop_path, "original") : ((movie as any).thumbnail || "");
+  const poster = movie.poster_path ? IMG.poster(movie.poster_path, "w500") : ((movie as any).thumbnail || "");
+  const rating = movie.vote_average || (movie as any).rating || 0;
+  const overview = movie.overview || (movie as any).description || "";
   
   const trailer = movie.videos?.results.find(
     (v) => v.type === "Trailer" && v.site === "YouTube"
@@ -198,14 +200,14 @@ const Movie = () => {
             <div className="flex flex-wrap items-center gap-4 mb-6 text-white/70 text-sm">
               <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/5 border border-white/10">
                 <Star className="w-4 h-4 text-accent fill-accent" />
-                <span className="font-black text-white">{movie.vote_average.toFixed(1)}</span>
+                <span className="font-black text-white">{rating.toFixed(1)}</span>
               </div>
               <span>{year}</span>
               <span>{runtime}</span>
             </div>
 
             <p className="text-white/60 text-base md:text-lg max-w-3xl leading-relaxed mb-8 line-clamp-3">
-              {movie.overview}
+              {overview}
             </p>
 
             <div className="flex flex-wrap items-center gap-3 md:gap-5">
@@ -248,7 +250,7 @@ const Movie = () => {
               type="movie"
               title={movie.title}
               initialSourceIndex={initialSourceIndex}
-              customUrl={(movie as any).video_url}
+              customUrl={(movie as any).video_url || (movie as any).videoUrl}
               onPlayStart={(_i, label) => saveHistory(label)}
               onSourceChange={(_i, label) => saveHistory(label)}
               onProgress={(seconds, duration) => {
