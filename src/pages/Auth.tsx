@@ -109,22 +109,13 @@ export default function Auth() {
     <div className={`min-h-screen bg-black text-white ${isRTL ? "font-arabic" : "font-body"}`} dir={isRTL ? "rtl" : "ltr"}>
 
       {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 px-6 py-6 flex items-center justify-between bg-gradient-to-b from-black/90 to-transparent">
-        <Link to="/" onClick={() => localStorage.setItem("hasSeenLanding", "true")} className="flex items-center group shrink-0 relative z-[110]">
+      <header className="fixed top-0 left-0 right-0 z-50 px-6 py-6 flex items-center justify-center bg-gradient-to-b from-black/90 to-transparent pointer-events-none">
+        <div className="flex items-center group shrink-0 relative z-[110] pointer-events-auto">
           <img
             src="/logo.png"
             alt="BNKhub"
             className="h-28 md:h-40 lg:h-48 w-auto object-contain transition-transform duration-300 group-hover:scale-105 drop-shadow-[0_0_30px_rgba(var(--accent-rgb),0.5)]"
           />
-        </Link>
-        <div className="flex items-center gap-4">
-          <LanguageSwitcher />
-          <button
-            onClick={() => openAuth("signin")}
-            className="px-6 py-2 rounded-full bg-white text-black font-bold hover:bg-gray-200 transition-all"
-          >
-            Se connecter
-          </button>
         </div>
       </header>
 
