@@ -264,12 +264,17 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
 
   const toggleFullscreen = () => {
     if (!containerRef.current) return;
-    if (!document.fullscreenElement) {
-      containerRef.current.requestFullscreen().catch(err => {
-        console.error(`Error attempting to enable full-screen mode: ${err.message}`);
-      });
+    const el = containerRef.current as any;
+    const doc = document as any;
+    if (!doc.fullscreenElement && !doc.webkitFullscreenElement) {
+      if (el.requestFullscreen) {
+        el.requestFullscreen().catch(() => {});
+      } else if (el.webkitRequestFullscreen) {
+        el.webkitRequestFullscreen();
+      }
     } else {
-      document.exitFullscreen();
+      if (doc.exitFullscreen) doc.exitFullscreen();
+      else if (doc.webkitExitFullscreen) doc.webkitExitFullscreen();
     }
   };
 
@@ -307,17 +312,6 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
     
     const handleFsChange = () => {
       const fsElem = document.fullscreenElement || (document as any).webkitFullscreenElement;
-      
-      // 🛡️ Branding Guard: Redirection active vers le conteneur
-      if (fsElem && fsElem.tagName === 'IFRAME' && containerRef.current) {
-        if (containerRef.current !== fsElem) {
-          containerRef.current.requestFullscreen().catch(() => {
-            // Fallback si la redirection est bloquée
-            console.log("🛡️ BNKhub Engine — Redirection bloquée par le navigateur");
-          });
-        }
-      }
-      
       setIsWebFullscreen(!!fsElem);
     };
     document.addEventListener('fullscreenchange', handleFsChange);
@@ -440,19 +434,13 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
             key={`${sourceIndex}-${appliedExternalSub}`}
             src={`${allSources[sourceIndex]}${appliedExternalSub ? `&sub=${encodeURIComponent(appliedExternalSub)}&subtitle=${encodeURIComponent(appliedExternalSub)}` : ''}`}
             {...((sourceIndex === 0 && !customUrl) ? { 
-              sandbox: "allow-scripts allow-same-origin allow-forms allow-presentation allow-top-navigation-by-user-activation",
+              sandbox: "allow-scripts allow-same-origin allow-forms allow-presentation allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation",
               title: SOURCE_LABELS[sourceIndex]
             } : {
               sandbox: undefined,
               title: customUrl ? "Serveur Kabyle" : (sourceIndex < sources.length ? "BNKhub Mirror Server" : (internalSources[sourceIndex - sources.length]?.provider || "Internal Server"))
             })}
-
-            {...(allSources[sourceIndex]?.includes('embedmaster.link') || allSources[sourceIndex]?.includes('vidsrc') ? { 
-              sandbox: undefined,
-              allow: "autoplay *; fullscreen *; picture-in-picture *; encrypted-media *"
-            } : {
-              allow: "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
-            })}
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen; display-capture; screen-wake-lock"
             allowFullScreen
             referrerPolicy="no-referrer"
             onLoad={handleLoad}
