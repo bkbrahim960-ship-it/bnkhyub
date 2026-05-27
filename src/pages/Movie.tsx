@@ -214,21 +214,22 @@ const Movie = () => {
               {!playing && (
                 <button
                   onClick={startWatching}
-                  className="inline-flex items-center gap-3 bg-accent text-accent-foreground px-8 py-4 rounded-full font-bold shadow-glow hover:scale-105 transition-all text-sm md:text-base"
+                  className="inline-flex items-center gap-3 bg-accent text-accent-foreground px-8 py-4 rounded-full font-bold shadow-glow hover:scale-105 transition-all text-sm md:text-base shrink-0"
                 >
                   <Play className="w-5 h-5 fill-current" /> {t("hero_watch")}
                 </button>
               )}
-              {trailer && (
-                <button
-                  onClick={() => setShowTrailer(true)}
-                  className="inline-flex items-center gap-3 bg-white/5 hover:bg-white/10 border border-white/10 px-6 py-4 rounded-full font-bold transition-all text-sm"
-                >
-                  <Youtube className="w-5 h-5 text-red-500" /> {t("hero_trailer")}
-                </button>
-              )}
-              <FavoriteButton tmdbId={movie.id} mediaType="movie" title={movie.title} posterPath={movie.poster_path} className="px-5 py-4" />
-              <div className="flex items-center gap-3">
+              
+              <div className="flex items-center gap-4 md:gap-6 flex-wrap">
+                {trailer && (
+                  <button
+                    onClick={() => setShowTrailer(true)}
+                    className="inline-flex items-center gap-2 text-white/70 hover:text-white hover:scale-105 transition-all text-sm font-medium"
+                  >
+                    <Youtube className="w-5 h-5 text-red-500" /> {t("hero_trailer")}
+                  </button>
+                )}
+                <FavoriteButton tmdbId={movie.id} mediaType="movie" title={movie.title} posterPath={movie.poster_path} />
                 <RemotePairingButton />
                 <ShareButtons title={movie.title} />
               </div>

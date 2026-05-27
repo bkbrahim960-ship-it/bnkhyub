@@ -54,10 +54,10 @@ export const FavoriteButton = ({ tmdbId, mediaType, title, posterPath, backdropP
     <button
       onClick={toggle}
       disabled={loading}
-      className={`group/fav inline-flex items-center gap-2 px-4 py-2.5 rounded-full border transition-all duration-300 ${
+      className={`group/fav inline-flex items-center gap-2 transition-all duration-300 text-sm font-medium ${
         fav
-          ? "bg-red-500/15 border-red-500/50 text-red-400 hover:bg-red-500/25"
-          : "bg-surface-card border-border text-muted-foreground hover:border-accent-subtle hover:text-accent"
+          ? "text-red-400 hover:text-red-300 hover:scale-105"
+          : "text-white/70 hover:text-white hover:scale-105"
       } ${className}`}
       title={fav ? "Retirer des favoris" : "Ajouter aux favoris"}
     >
@@ -66,7 +66,7 @@ export const FavoriteButton = ({ tmdbId, mediaType, title, posterPath, backdropP
           fav ? "fill-red-400 scale-110" : "group-hover/fav:scale-110"
         }`}
       />
-      <span className="text-sm font-medium">{fav ? "Favori" : "Ma liste"}</span>
+      <span>{fav ? "Favori" : "Ma liste"}</span>
     </button>
   );
 };

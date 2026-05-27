@@ -60,10 +60,10 @@ export const ShareButtons = ({ title, url, className = "" }: Props) => {
     <div className={`relative ${className}`}>
       <button
         onClick={() => setOpen(!open)}
-        className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full border border-border bg-surface-card text-muted-foreground hover:border-accent-subtle hover:text-accent transition-all duration-300"
+        className="inline-flex items-center gap-2 text-white/70 hover:text-white hover:scale-105 transition-all duration-300 text-sm font-medium"
       >
         <Share2 className="w-4 h-4" />
-        <span className="text-sm font-medium">Partager</span>
+        <span>Partager</span>
       </button>
 
       {open && (

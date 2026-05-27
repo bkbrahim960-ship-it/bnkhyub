@@ -22,14 +22,13 @@ export const RemotePairingButton = () => {
     <Dialog>
       <DialogTrigger asChild>
         <button
-          className="group relative flex items-center gap-2 bg-accent/20 hover:bg-accent/30 border border-accent/40 px-6 py-4 rounded-full transition-all duration-500 hover:scale-105 active:scale-95 animate-pulse-glow"
+          className="group relative flex items-center gap-2 text-white/70 hover:text-white transition-all duration-300 hover:scale-105 text-sm font-medium"
           title={lang === "ar" ? "ربط الريموت" : "Pair Remote"}
         >
-          <Tablet className="w-5 h-5 text-accent animate-bounce-subtle" />
-          <span className="text-xs font-bold uppercase tracking-widest text-accent">
+          <Tablet className="w-4 h-4" />
+          <span>
             {lang === "ar" ? "الريموت" : "Remote"}
           </span>
-          <span className="absolute -top-1 -right-1 w-3 h-3 bg-accent rounded-full animate-ping" />
         </button>
       </DialogTrigger>
       <DialogContent className="bg-surface-elevated/95 backdrop-blur-2xl border-accent/20 max-w-sm rounded-3xl">
