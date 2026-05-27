@@ -152,7 +152,7 @@
 
   /* Optimize blurs for performance on mobile */
   @media (max-width: 768px) {
-    .backdrop-blur-xl, .backdrop-blur-md, .backdrop-blur-2xl, .backdrop-blur-sm {
+    .backdrop-blur-xl, .backdrop-blur-lg, .backdrop-blur-md, .backdrop-blur-2xl, .backdrop-blur-3xl, .backdrop-blur-sm, .backdrop-blur {
       backdrop-filter: none !important;
       -webkit-backdrop-filter: none !important;
       background-color: rgba(0, 0, 0, 0.8) !important;
