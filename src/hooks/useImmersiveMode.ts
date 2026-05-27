@@ -1,14 +1,23 @@
 import { useState, useEffect } from "react";
 
 /**
- * Returns `true` when the device is in landscape orientation.
- * Bars should be hidden in landscape and shown in portrait.
+ * Returns `true` when the device is in landscape orientation ON MOBILE ONLY.
+ * Desktop always returns false (bars always visible).
  */
 export const useImmersiveMode = () => {
-  const [isLandscape, setIsLandscape] = useState(false);
+  const [hidden, setHidden] = useState(false);
 
   useEffect(() => {
-    const check = () => setIsLandscape(window.innerWidth > window.innerHeight);
+    const isMobile = () => 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
+    const check = () => {
+      if (!isMobile()) {
+        setHidden(false);
+        return;
+      }
+      setHidden(window.innerWidth > window.innerHeight);
+    };
+
     check();
     window.addEventListener("resize", check, { passive: true });
     window.addEventListener("orientationchange", check);
@@ -18,5 +27,5 @@ export const useImmersiveMode = () => {
     };
   }, []);
 
-  return isLandscape;
+  return hidden;
 };
