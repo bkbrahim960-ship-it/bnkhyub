@@ -5,7 +5,6 @@ import { ReactNode } from "react";
 import { Header } from "./Header";
 import { BottomNav } from "./BottomNav";
 import { InstallModal } from "@/components/pwa/InstallModal";
-import { AICopilot } from "@/components/ui/AICopilot";
 
 export const Layout = ({ children }: { children: ReactNode }) => {
   return (
@@ -14,7 +13,6 @@ export const Layout = ({ children }: { children: ReactNode }) => {
       <main className="flex-1 pb-24 md:pb-32">{children}</main>
       <BottomNav />
       <InstallModal />
-      <AICopilot />
     </div>
   );
 };
