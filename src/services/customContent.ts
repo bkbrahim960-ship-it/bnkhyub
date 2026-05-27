@@ -1,3 +1,4 @@
+export const KABYLE_CONTENT = [
 {
   id: 'm-hmimi-lyes',
     title: 'Ḥmimi d Lyes',
@@ -84,7 +85,7 @@
             year: '2009',
               rating: 4.5,
                 isDubbed: false,
-                  videoUrl: <iframe src="https://luluvid.com/e/ftbi9zs1g70i" scrolling = "no" frameborder = "0" width = "640" height = "360" allowfullscreen = "true" webkitallowfullscreen = "true" mozallowfullscreen = "true" > </iframe>
+                  videoUrl: 'https://luluvid.com/e/ftbi9zs1g70i'
 },
 {
   id: 'm-iferfucen',
@@ -382,3 +383,29 @@ export const MOCK_ISEFRA: IsefraItem[] = [
     content: `Abrid n tidet d azewwar\nWigad i d-yeṭṭfen deg-s ur nheddar\nLukan d netta i d ṣṣwab\nTili nufa-d lberr deg imsar`,
     meaning: 'The path of truth is heavy. Those who hold it do not speak in vain.'
   }
+];
+
+export const searchCustomContent = (query: string): any[] => {
+  const q = query.toLowerCase().trim();
+  if (!q) return [];
+  
+  const movies = KABYLE_CONTENT.filter(item => 
+    item.title.toLowerCase().includes(q) || 
+    (item.description && item.description.toLowerCase().includes(q)) ||
+    (item.category && item.category.toLowerCase().includes(q))
+  ).map(item => ({
+    ...item,
+    media_type: "movie"
+  }));
+  
+  const series = MOCK_SERIES.filter(item => 
+    item.title.toLowerCase().includes(q) || 
+    (item.description && item.description.toLowerCase().includes(q)) ||
+    (item.category && item.category.toLowerCase().includes(q))
+  ).map(item => ({
+    ...item,
+    media_type: "tv"
+  }));
+  
+  return [...movies, ...series];
+};

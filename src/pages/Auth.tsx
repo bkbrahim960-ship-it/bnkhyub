@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/context/AuthContext";
 import { useLanguage } from "@/context/LanguageContext";
 import { toast } from "sonner";
@@ -71,19 +70,7 @@ export default function Auth() {
   };
 
   const google = async () => {
-    setBusy(true);
-    try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: "google",
-        options: {
-          redirectTo: window.location.origin,
-        },
-      });
-      if (error) throw error;
-    } catch (err: any) {
-      toast.error(err?.message ?? "Erreur Google");
-      setBusy(false);
-    }
+    toast.error("Google Auth non supporté en mode local");
   };
 
   const openAuth = (selectedMode: Mode) => {
