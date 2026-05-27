@@ -176,7 +176,7 @@ export default function Auth() {
           <div className="flex flex-col sm:flex-row gap-4">
             <button
               onClick={() => openAuth("signup")}
-              className="inline-flex items-center justify-center gap-3 bg-[#C124A0] text-white font-bold text-lg px-10 py-4 rounded-full hover:bg-[#D93AB0] hover:scale-105 transition-all duration-300 shadow-[0_0_30px_rgba(193,36,160,0.4)]"
+              className="inline-flex items-center justify-center gap-3 bg-white text-black font-bold text-lg px-10 py-4 rounded-full hover:bg-gray-200 hover:scale-105 transition-all duration-300 shadow-[0_0_30px_rgba(255,255,255,0.3)]"
             >
               Commencer maintenant
             </button>
@@ -239,7 +239,7 @@ export default function Auth() {
             </p>
             <button
               onClick={() => openAuth("signup")}
-              className="inline-flex items-center justify-center gap-3 bg-[#C124A0] text-white font-bold px-8 py-4 rounded-full hover:bg-[#D93AB0] hover:scale-105 transition-all duration-300"
+              className="inline-flex items-center justify-center gap-3 bg-white text-black font-bold px-8 py-4 rounded-full hover:bg-gray-200 hover:scale-105 transition-all duration-300"
             >
               Commencer maintenant
             </button>
@@ -350,7 +350,7 @@ export default function Auth() {
             </p>
             <button
               onClick={() => openAuth("signup")}
-              className="inline-flex items-center justify-center gap-3 bg-[#C124A0] text-white font-bold px-8 py-4 rounded-full hover:bg-[#D93AB0] hover:scale-105 transition-all duration-300"
+              className="inline-flex items-center justify-center gap-3 bg-white text-black font-bold px-8 py-4 rounded-full hover:bg-gray-200 hover:scale-105 transition-all duration-300"
             >
               Commencer maintenant
             </button>
@@ -386,7 +386,7 @@ export default function Auth() {
         </h2>
         <button
           onClick={() => openAuth("signup")}
-          className="inline-flex items-center justify-center gap-3 bg-[#C124A0] text-white font-bold text-lg px-12 py-5 rounded-full hover:bg-[#D93AB0] hover:scale-105 transition-all duration-300 shadow-[0_0_40px_rgba(193,36,160,0.5)]"
+          className="inline-flex items-center justify-center gap-3 bg-white text-black font-bold text-lg px-12 py-5 rounded-full hover:bg-gray-200 hover:scale-105 transition-all duration-300 shadow-[0_0_40px_rgba(255,255,255,0.4)]"
         >
           Commencer maintenant
         </button>
