@@ -13,7 +13,7 @@ export const BottomNav = () => {
   const [isVisible, setIsVisible] = useState(true);
   const lastScrollY = useRef(0);
   const [avatarId, setAvatarId] = useState("red");
-  const immersiveHidden = useImmersiveMode(10000);
+  const immersiveHidden = useImmersiveMode();
 
   useEffect(() => {
     let ticking = false;

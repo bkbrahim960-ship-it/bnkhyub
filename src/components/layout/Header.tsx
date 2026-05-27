@@ -22,7 +22,7 @@ export const Header = () => {
   const { kidsMode } = useSettings();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const immersiveHidden = useImmersiveMode(10000);
+  const immersiveHidden = useImmersiveMode();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
