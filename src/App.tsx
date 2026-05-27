@@ -25,6 +25,7 @@ import ComingSoon from "./pages/ComingSoon";
 import NotFound from "./pages/NotFound.tsx";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
+import Faq from "./pages/Faq";
 
 import { AmbientProvider, AmbientBackground } from "@/context/AmbientContext";
 import { useTVNavigation } from "@/hooks/useTVNavigation";
@@ -133,6 +134,7 @@ const AppContent = () => (
                         <Route path="/landing" element={<Landing />} />
                         <Route path="/privacy" element={<Privacy />} />
                         <Route path="/terms" element={<Terms />} />
+                        <Route path="/faq" element={<Faq />} />
 
                         <Route path="/remote" element={<Remote />} />
                         <Route path="/person/:id" element={<Person />} />

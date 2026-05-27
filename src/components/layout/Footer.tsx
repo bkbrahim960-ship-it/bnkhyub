@@ -37,7 +37,7 @@ export const Footer = () => {
             <h4 className="font-display text-foreground text-base mb-3 uppercase tracking-widest">Juridique</h4>
             <Link to="/privacy" className="block hover:text-accent transition-colors">Confidentialité</Link>
             <Link to="/terms" className="block hover:text-accent transition-colors">Conditions d'Utilisation</Link>
-            <Link to="/help" className="block hover:text-accent transition-colors">Centre d'aide</Link>
+            <Link to="/faq" className="block hover:text-accent transition-colors">FAQ</Link>
           </nav>
 
           <div className="text-sm text-muted-foreground space-y-2">

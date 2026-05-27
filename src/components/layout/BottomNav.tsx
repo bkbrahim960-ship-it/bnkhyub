@@ -1,57 +1,91 @@
-import { NavLink, Link } from "react-router-dom";
-import { Home, Film, Tv, Search, Heart, Monitor, User as UserIcon, Baby } from "lucide-react";
-import { useLanguage } from "@/context/LanguageContext";
+import { useState, useEffect } from "react";
+import { NavLink } from "react-router-dom";
+import { Baby } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { useSettings } from "@/context/SettingsContext";
 import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
+import { NETFLIX_AVATARS, SmileSVG } from "@/pages/Profile";
 
 export const BottomNav = () => {
-  const { t } = useLanguage();
   const { user } = useAuth();
   const { kidsMode, toggleKidsMode } = useSettings();
+  const [isVisible, setIsVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
+  const [avatarId, setAvatarId] = useState("red");
 
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      if (currentScrollY > lastScrollY && currentScrollY > 50) {
+        setIsVisible(false);
+      } else {
+        setIsVisible(true);
+      }
+      setLastScrollY(currentScrollY);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [lastScrollY]);
+
+  useEffect(() => {
+    const loadAvatar = () => {
+      const saved = localStorage.getItem("bnkhub_avatar");
+      if (saved) setAvatarId(saved);
+    };
+    loadAvatar();
+
+    window.addEventListener("bnkhub_avatar_updated", loadAvatar);
+    return () => window.removeEventListener("bnkhub_avatar_updated", loadAvatar);
+  }, []);
+
+  const avatarColor = NETFLIX_AVATARS.find(a => a.id === avatarId)?.color || '#E50914';
 
   return (
-    <div className="fixed bottom-4 md:bottom-8 inset-x-4 z-50 pointer-events-none">
-        {/* Compact Navigation Bar */}
-        <div className="mx-auto flex items-center justify-around gap-4 sm:gap-8 md:gap-12 p-1.5 md:p-2.5 rounded-full bg-black/60 backdrop-blur-3xl border border-white/10 shadow-2xl w-fit px-6 sm:px-10 md:px-14 pointer-events-auto">
-          {/* Profile Button */}
-          <NavLink
-            to={user ? "/profile" : "/auth"}
-            className={({ isActive }) =>
-              `relative p-2 md:p-3 rounded-full transition-all duration-500 hover:scale-110 active:scale-95 ${
-                isActive 
-                  ? "text-accent bg-accent/20 shadow-glow-accent border border-accent/40" 
-                  : "text-white/60 hover:text-white hover:bg-white/5 border border-transparent"
-              }`
-            }
-          >
-            <UserIcon className="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8" />
-            {user && (
-              <span className="absolute top-2 right-2 w-2 h-2 bg-green-500 rounded-full border border-black shadow-glow-sm animate-pulse" />
-            )}
-          </NavLink>
+    <div 
+      className={`fixed bottom-4 md:bottom-8 inset-x-4 z-50 pointer-events-none transition-all duration-300 ease-out transform-gpu will-change-transform ${
+        isVisible ? "translate-y-0 opacity-100" : "translate-y-28 opacity-0"
+      }`}
+    >
+      <div className="mx-auto flex items-center justify-around gap-4 sm:gap-8 md:gap-12 p-1.5 md:p-2.5 rounded-full bg-black/60 backdrop-blur-3xl border border-white/10 shadow-2xl w-fit px-6 sm:px-10 md:px-14 pointer-events-auto">
+        
+        {/* Profile Avatar Button */}
+        <NavLink
+          to={user ? "/profile" : "/auth"}
+          className={({ isActive }) =>
+            `relative w-10 h-10 md:w-12 md:h-12 rounded-full overflow-hidden transition-all duration-500 transform-gpu hover:scale-110 active:scale-95 ${
+              isActive 
+                ? "ring-2 ring-accent ring-offset-1 ring-offset-black/60 shadow-glow" 
+                : "opacity-80 hover:opacity-100"
+            }`
+          }
+          style={{ backgroundColor: avatarColor }}
+        >
+          <SmileSVG />
+          {user && (
+            <span className="absolute top-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-black/80 shadow-glow-sm animate-pulse" />
+          )}
+        </NavLink>
 
-
-
-          {/* Language Switcher */}
-          <div className="scale-75 sm:scale-90 md:scale-100 hover:scale-110 transition-transform duration-500">
-            <LanguageSwitcher />
-          </div>
-
-          {/* Kids Mode Toggle */}
-          <button
-            onClick={toggleKidsMode}
-            className={`p-2 md:p-3 rounded-full transition-all duration-500 hover:scale-110 active:scale-95 border ${
-              kidsMode 
-                ? "text-sky-400 bg-sky-400/20 shadow-[0_0_20px_rgba(56,189,248,0.4)] border-sky-400/40" 
-                : "text-white/60 hover:text-white hover:bg-white/5 border-transparent"
-            }`}
-            aria-label="Kids Mode"
-          >
-            <Baby className="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8" />
-          </button>
+        {/* Language Switcher */}
+        <div className="scale-75 sm:scale-90 md:scale-100 hover:scale-110 transition-transform duration-500 transform-gpu">
+          <LanguageSwitcher />
         </div>
+
+        {/* Kids Mode Toggle */}
+        <button
+          onClick={toggleKidsMode}
+          className={`p-2 md:p-3 rounded-full transition-all duration-500 transform-gpu hover:scale-110 active:scale-95 border ${
+            kidsMode 
+              ? "text-sky-400 bg-sky-400/20 shadow-[0_0_20px_rgba(56,189,248,0.4)] border-sky-400/40" 
+              : "text-white/60 hover:text-white hover:bg-white/5 border-transparent"
+          }`}
+          aria-label="Kids Mode"
+        >
+          <Baby className="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8" />
+        </button>
+
+      </div>
     </div>
   );
 };
