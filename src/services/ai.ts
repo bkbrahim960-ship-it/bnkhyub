@@ -15,7 +15,7 @@ export const getAIRecommendations = async (prompt: string, lang: string): Promis
     throw new Error("Gemini API key is missing");
   }
 
-  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+  const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
   
   const systemPrompt = `You are a helpful AI movie and TV show recommendation assistant for a streaming platform called BNKhub.
 The user is speaking in ${lang === "ar" ? "Arabic" : "French"}.
