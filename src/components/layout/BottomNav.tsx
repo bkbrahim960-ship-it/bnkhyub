@@ -5,6 +5,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useSettings } from "@/context/SettingsContext";
 import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
 import { NETFLIX_AVATARS, SmileSVG } from "@/pages/Profile";
+import { useImmersiveMode } from "@/hooks/useImmersiveMode";
 
 export const BottomNav = () => {
   const { user } = useAuth();
@@ -12,6 +13,7 @@ export const BottomNav = () => {
   const [isVisible, setIsVisible] = useState(true);
   const lastScrollY = useRef(0);
   const [avatarId, setAvatarId] = useState("red");
+  const immersiveHidden = useImmersiveMode(10000);
 
   useEffect(() => {
     let ticking = false;
@@ -50,8 +52,8 @@ export const BottomNav = () => {
 
   return (
     <div 
-      className={`fixed bottom-4 md:bottom-8 inset-x-4 z-50 pointer-events-none transition-all duration-300 ease-out transform-gpu will-change-transform ${
-        isVisible ? "translate-y-0 opacity-100" : "translate-y-28 opacity-0"
+      className={`fixed bottom-4 md:bottom-8 inset-x-4 z-50 pointer-events-none transition-all duration-500 ease-out transform-gpu will-change-transform ${
+        (isVisible && !immersiveHidden) ? "translate-y-0 opacity-100" : "translate-y-28 opacity-0 pointer-events-none"
       }`}
     >
       <div className="mx-auto flex items-center justify-around gap-4 sm:gap-8 md:gap-12 p-1.5 md:p-2.5 rounded-full bg-black/60 backdrop-blur-3xl border border-white/10 shadow-2xl w-fit px-6 sm:px-10 md:px-14 pointer-events-auto">

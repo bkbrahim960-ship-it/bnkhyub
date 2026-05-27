@@ -14,6 +14,7 @@ import { useAuth } from "@/context/AuthContext";
 import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
 import { InstallButton } from "@/components/pwa/InstallButton";
 import { useSettings } from "@/context/SettingsContext";
+import { useImmersiveMode } from "@/hooks/useImmersiveMode";
 
 export const Header = () => {
   const { lang, t } = useLanguage();
@@ -21,6 +22,7 @@ export const Header = () => {
   const { kidsMode } = useSettings();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const immersiveHidden = useImmersiveMode(10000);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -49,7 +51,7 @@ export const Header = () => {
 
   return (
     <header
-      className={`fixed top-0 inset-x-0 z-[100] transition-all duration-500 ease-luxe pt-safe ${headerBg}`}
+      className={`fixed top-0 inset-x-0 z-[100] transition-all duration-500 ease-luxe pt-safe ${headerBg} ${immersiveHidden ? '-translate-y-full opacity-0 pointer-events-none' : 'translate-y-0 opacity-100'}`}
     >
       <div className="w-full px-4 md:px-10 lg:px-16 flex items-center justify-between h-16 md:h-20 lg:h-24">
         {/* Massive & Perfectly Centered Logo PNG - Slightly Lowered */}
