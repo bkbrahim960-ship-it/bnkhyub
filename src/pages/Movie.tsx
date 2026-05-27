@@ -150,6 +150,10 @@ const Movie = () => {
   };
 
   const startWatching = () => {
+    if (!user) {
+      setShowLoginPrompt(true);
+      return;
+    }
     confirmWatch();
   };
 
@@ -165,7 +169,15 @@ const Movie = () => {
         type="video.movie"
         keywords={`${movie.title}, regarder ${movie.title}, film gratuit, BNKhub`}
       />
-      {/* Login prompt removed - users can watch without registration */}
+      
+      {showLoginPrompt && (
+        <LoginPrompt
+          title={lang === "ar" ? "سجل لتجربة أفضل!" : "Connectez-vous pour une meilleure expérience!"}
+          description={lang === "ar" ? "سجل حسابك مجاناً لتتمكن من حفظ تقدمك في المشاهدة، واستئناف الأفلام من حيث توقفت، وإضافة ما يعجبك إلى مفضلتك." : "Créez un compte gratuit pour sauvegarder votre progression de visionnage, reprendre les films là où vous vous êtes arrêté et enregistrer vos favoris."}
+          onLogin={() => navigate("/auth")}
+          onWatch={confirmWatch}
+        />
+      )}
       {/* Cinematic Hero with Video Background */}
       <section className="relative min-h-[45vh] md:min-h-[90vh] lg:min-h-[95vh] flex items-end pb-24 md:pb-16 lg:pb-24 overflow-hidden pt-0 md:pt-20 lg:pt-24">
         <VideoBackdrop 

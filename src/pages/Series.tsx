@@ -220,6 +220,10 @@ const Series = () => {
   };
 
   const startWatchingEpisode = () => {
+    if (!user) {
+      setShowLoginPrompt(true);
+      return;
+    }
     confirmWatch();
   };
 
@@ -236,7 +240,14 @@ const Series = () => {
         keywords={`${series.name}, regarder ${series.name}, serie gratuite, BNKhub`}
       />
 
-      {/* Login prompt removed - users can watch without registration */}
+      {showLoginPrompt && (
+        <LoginPrompt
+          title={lang === "ar" ? "سجل لتجربة أفضل!" : "Connectez-vous pour une meilleure expérience!"}
+          description={lang === "ar" ? "سجل حسابك مجاناً لتتمكن من حفظ تقدمك في المشاهدة، واستئناف المسلسلات من حيث توقفت، وإضافة ما يعجبك إلى مفضلتك." : "Créez un compte gratuit pour sauvegarder votre progression de visionnage, reprendre les séries là où vous vous êtes arrêté et enregistrer vos favoris."}
+          onLogin={() => navigate("/auth")}
+          onWatch={confirmWatch}
+        />
+      )}
 
       {showEpisodeModal && seasonData && selectedEpisode > 0 && (
         <EpisodeModal
