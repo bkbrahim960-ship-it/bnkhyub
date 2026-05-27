@@ -32,8 +32,8 @@ export const MovieRow = memo(({ title, items, type = "movie", loading }: Props) 
   return (
     <section className="relative py-4 group/row">
       <div className="container flex items-end justify-between mb-5">
-        <h2 className="font-display text-2xl md:text-3xl">
-          <span className="text-gradient-accent">{title}</span>
+        <h2 className="font-display text-2xl md:text-3xl font-bold text-white">
+          {title}
         </h2>
         <div className="hidden md:flex gap-2 opacity-0 group-hover/row:opacity-100 transition-opacity duration-300">
           <button
