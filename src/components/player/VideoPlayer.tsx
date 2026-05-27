@@ -433,13 +433,8 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
           <iframe
             key={`${sourceIndex}-${appliedExternalSub}`}
             src={`${allSources[sourceIndex]}${appliedExternalSub ? `&sub=${encodeURIComponent(appliedExternalSub)}&subtitle=${encodeURIComponent(appliedExternalSub)}` : ''}`}
-            {...((sourceIndex === 0 && !customUrl) ? { 
-              sandbox: "allow-scripts allow-same-origin allow-forms allow-presentation allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation",
-              title: SOURCE_LABELS[sourceIndex]
-            } : {
-              sandbox: undefined,
-              title: customUrl ? "Serveur Kabyle" : (sourceIndex < sources.length ? "BNKhub Mirror Server" : (internalSources[sourceIndex - sources.length]?.provider || "Internal Server"))
-            })}
+            sandbox="allow-scripts allow-same-origin allow-forms allow-presentation allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation"
+            title={customUrl ? "Serveur Kabyle" : (allLabels[sourceIndex] || SOURCE_LABELS[sourceIndex] || (sourceIndex < sources.length ? "BNKhub Mirror Server" : (internalSources[sourceIndex - sources.length]?.provider || "Internal Server")))}
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen; display-capture; screen-wake-lock"
             allowFullScreen
             referrerPolicy="no-referrer"
