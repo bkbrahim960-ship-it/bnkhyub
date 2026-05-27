@@ -131,28 +131,28 @@ export default function Auth() {
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center overflow-hidden">
         {/* Background Posters Grid */}
-        <div className="absolute inset-0 z-0 opacity-50">
-          <div className="grid grid-cols-3 md:grid-cols-6 lg:grid-cols-8 gap-2 p-6 transform -rotate-3 scale-125">
-            {trending.map((m, i) => (
+        <div className="absolute inset-0 z-0">
+          <div className="grid grid-cols-4 md:grid-cols-8 lg:grid-cols-12 gap-2 p-6 transform -rotate-3 scale-150">
+            {[...trending, ...trending].map((m, i) => (
               m.poster_path && (
                 <div key={i} className="aspect-[2/3] relative overflow-hidden rounded-lg">
                   <img
                     src={IMG.poster(m.poster_path, "w500")}
                     alt={m.title || m.name}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover opacity-70"
                   />
                   <div className="absolute top-0 left-0 p-1">
                     <img
                       src="/logo.png"
                       alt="BNKhub"
-                      className="w-6 md:w-8 h-auto opacity-85"
+                      className="w-4 md:w-6 h-auto opacity-70"
                     />
                   </div>
                 </div>
               )
             ))}
           </div>
-          <div className="absolute inset-0 bg-gradient-to-r from-black via-black/40 to-black" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/40 to-black/80" />
         </div>
 
         <div className="relative z-10 px-6 md:px-12 max-w-4xl">
