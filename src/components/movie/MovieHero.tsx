@@ -1,6 +1,6 @@
 /**
  * BNKhub — Hero rotatif de la page d'accueil (auto-rotate 8s).
- * Affiche uniquement des images statiques (Video Background removed as requested).
+ * Supports both static backdrops and video backgrounds with autoplay.
  */
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
@@ -32,6 +32,11 @@ export const MovieHero = ({ items }: Props) => {
 
   const movie = pool[index];
 
+  // Find trailer for video background
+  const trailer = movie.videos?.results.find(
+    (v) => v.type === "Trailer" && v.site === "YouTube"
+  ) || movie.videos?.results.find((v) => v.site === "YouTube");
+
   return (
     <section className="relative h-[65vh] md:h-[92vh] min-h-[400px] md:min-h-[560px] w-full overflow-hidden group">
       {/* Static Backdrops */}
@@ -57,9 +62,22 @@ export const MovieHero = ({ items }: Props) => {
         );
       })}
 
+      {/* Video Backdrop with Autoplay */}
+      {trailer?.key && (
+        <div className="absolute inset-0 z-[1]">
+          <iframe
+            src={`https://www.youtube.com/embed/${trailer.key}?autoplay=1&mute=1&controls=0&loop=1&playlist=${trailer.key}&rel=0&showinfo=0&modestbranding=1&iv_load_policy=3&vq=hd1080&playsinline=1&disablekb=1&fs=0&enablejsapi=1`}
+            title="Trailer"
+            className="absolute inset-0 w-full h-full object-cover object-top"
+            allow="autoplay; encrypted-media; fullscreen"
+            style={{ border: 0 }}
+          />
+        </div>
+      )}
+
       {/* Overlays */}
       <div className="absolute inset-0 z-[2] grain opacity-20" />
-      <div className={`absolute inset-0 z-[2] bg-gradient-to-t ${kidsMode ? 'from-background via-background/40' : 'from-surface-primary via-surface-primary/50'} to-transparent`} />
+      <div className={`absolute inset-0 z-[3] bg-gradient-to-t ${kidsMode ? 'from-background via-background/40' : 'from-surface-primary via-surface-primary/50'} to-transparent`} />
       
       {/* Content — Positioned low and clear on mobile (pb-32) */}
       <div className="absolute inset-x-0 bottom-0 z-20 container pb-24 md:pb-32 lg:pb-40">

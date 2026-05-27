@@ -1,58 +1,88 @@
 /**
  * BNKhub — Contexte d'authentification.
- * Synchronise session Supabase, écoute onAuthStateChange, expose signIn/signOut.
+ * Uses localStorage to provide fully functional local authentication.
  */
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
-import type { Session, User } from "@supabase/supabase-js";
-import { supabase } from "@/integrations/supabase/client";
+
+interface User {
+  id: string;
+  email: string;
+  user_metadata?: { username?: string };
+}
 
 interface AuthCtx {
   user: User | null;
-  session: Session | null;
   loading: boolean;
   signOut: () => Promise<void>;
+  signIn: (email: string, password: string) => Promise<void>;
+  signUp: (email: string, password: string, username?: string) => Promise<void>;
 }
 
 const Ctx = createContext<AuthCtx | null>(null);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!supabase || !supabase.auth) {
-      console.warn("AuthContext: Supabase client not found.");
-      setLoading(false);
-      return;
+    // Check session on load
+    const savedSession = localStorage.getItem("bnkhub_session");
+    if (savedSession) {
+      try {
+        const u = JSON.parse(savedSession);
+        setUser(u);
+      } catch (e) {
+        console.error("Failed to parse session", e);
+      }
     }
-
-    const { data: sub } = supabase.auth.onAuthStateChange((event, sess) => {
-      console.log("Auth Event:", event, sess?.user?.email);
-      setSession(sess);
-      setUser(sess?.user ?? null);
-      setLoading(false);
-    });
-
-    // Forcer la lecture de la session (utile après retour OAuth)
-    const checkSession = async () => {
-      const { data } = await supabase.auth.getSession();
-      setSession(data.session);
-      setUser(data.session?.user ?? null);
-      setLoading(false);
-    };
-    
-    checkSession();
-
-    return () => sub.subscription.unsubscribe();
+    setLoading(false);
   }, []);
 
+  const signUp = async (email: string, password: string, username?: string) => {
+    // Mock signup
+    const usersStr = localStorage.getItem("bnkhub_users") || "[]";
+    const users = JSON.parse(usersStr);
+    
+    if (users.find((u: any) => u.email === email)) {
+      throw new Error("Un compte existe déjà avec cette adresse e-mail.");
+    }
+
+    const newUser = {
+      id: crypto.randomUUID(),
+      email,
+      password, // In a real app this would be hashed
+      user_metadata: { username: username || email.split("@")[0] }
+    };
+
+    users.push(newUser);
+    localStorage.setItem("bnkhub_users", JSON.stringify(users));
+
+    const sessionUser = { id: newUser.id, email: newUser.email, user_metadata: newUser.user_metadata };
+    localStorage.setItem("bnkhub_session", JSON.stringify(sessionUser));
+    setUser(sessionUser);
+  };
+
+  const signIn = async (email: string, password: string) => {
+    const usersStr = localStorage.getItem("bnkhub_users") || "[]";
+    const users = JSON.parse(usersStr);
+    
+    const u = users.find((u: any) => u.email === email && u.password === password);
+    if (!u) {
+      throw new Error("E-mail ou mot de passe incorrect.");
+    }
+
+    const sessionUser = { id: u.id, email: u.email, user_metadata: u.user_metadata };
+    localStorage.setItem("bnkhub_session", JSON.stringify(sessionUser));
+    setUser(sessionUser);
+  };
+
   const signOut = async () => {
-    await supabase.auth.signOut();
+    localStorage.removeItem("bnkhub_session");
+    setUser(null);
   };
 
   return (
-    <Ctx.Provider value={{ user, session, loading, signOut }}>
+    <Ctx.Provider value={{ user, loading, signOut, signIn, signUp }}>
       {children}
     </Ctx.Provider>
   );

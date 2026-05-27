@@ -1,8 +1,7 @@
 /**
  * BNKhub — Service Historique de lecture (Continuer à regarder).
- * Upsert par (user_id, tmdb_id, media_type, season, episode).
+ * Uses localStorage to store watch history locally.
  */
-import { supabase } from "@/integrations/supabase/client";
 
 export interface WatchHistoryEntry {
   id: string;
@@ -35,12 +34,28 @@ export interface UpsertWatchInput {
 
 const MAX_HISTORY_ITEMS = 500;
 
+const getLocalHistory = (): WatchHistoryEntry[] => {
+  const data = localStorage.getItem("bnkhub_watch_history");
+  return data ? JSON.parse(data) : [];
+};
+
+const saveLocalHistory = (history: WatchHistoryEntry[]) => {
+  localStorage.setItem("bnkhub_watch_history", JSON.stringify(history));
+};
+
 /** Enregistre / met à jour une entrée d'historique pour l'utilisateur courant. */
 export const upsertWatchEntry = async (
   userId: string,
   input: UpsertWatchInput,
 ): Promise<void> => {
-  const row = {
+  let history = getLocalHistory();
+
+  const existingIndex = history.findIndex(
+    h => h.user_id === userId && h.tmdb_id === input.tmdb_id && h.media_type === input.media_type && h.season_number === (input.season_number ?? null) && h.episode_number === (input.episode_number ?? null)
+  );
+
+  const row: WatchHistoryEntry = {
+    id: existingIndex >= 0 ? history[existingIndex].id : crypto.randomUUID(),
     user_id: userId,
     tmdb_id: input.tmdb_id,
     media_type: input.media_type,
@@ -55,66 +70,46 @@ export const upsertWatchEntry = async (
     watched_at: new Date().toISOString(),
   };
 
-  const { error } = await supabase
-    .from("watch_history")
-    .upsert(row, {
-      onConflict: "user_id,tmdb_id,media_type,season_number,episode_number",
-    });
-  if (error) throw error;
-
-  // Clean up: keep only the latest MAX_HISTORY_ITEMS entries
-  try {
-    const { data: allEntries } = await supabase
-      .from("watch_history")
-      .select("id, watched_at")
-      .eq("user_id", userId)
-      .order("watched_at", { ascending: false });
-
-    if (allEntries && allEntries.length > MAX_HISTORY_ITEMS) {
-      const toDelete = allEntries.slice(MAX_HISTORY_ITEMS).map((e) => e.id);
-      await supabase
-        .from("watch_history")
-        .delete()
-        .eq("user_id", userId)
-        .in("id", toDelete);
-    }
-  } catch {
-    // Cleanup errors are non-critical, ignore
+  if (existingIndex >= 0) {
+    history[existingIndex] = row;
+  } else {
+    history.push(row);
   }
+
+  // Sort and keep limit
+  history.sort((a, b) => new Date(b.watched_at).getTime() - new Date(a.watched_at).getTime());
+  
+  const userHistory = history.filter(h => h.user_id === userId);
+  if (userHistory.length > MAX_HISTORY_ITEMS) {
+    const toKeep = new Set(userHistory.slice(0, MAX_HISTORY_ITEMS).map(h => h.id));
+    history = history.filter(h => h.user_id !== userId || toKeep.has(h.id));
+  }
+
+  saveLocalHistory(history);
 };
 
 export const getRecentHistory = async (
   userId: string,
   limit = MAX_HISTORY_ITEMS,
 ): Promise<WatchHistoryEntry[]> => {
-  const { data, error } = await supabase
-    .from("watch_history")
-    .select("*")
-    .eq("user_id", userId)
-    .order("watched_at", { ascending: false })
-    .limit(limit);
-  if (error) throw error;
-  return (data ?? []) as WatchHistoryEntry[];
+  const history = getLocalHistory();
+  return history
+    .filter(h => h.user_id === userId)
+    .sort((a, b) => new Date(b.watched_at).getTime() - new Date(a.watched_at).getTime())
+    .slice(0, limit);
 };
 
 export const getSeriesHistory = async (
   userId: string,
   tmdbId: number,
 ): Promise<WatchHistoryEntry[]> => {
-  const { data, error } = await supabase
-    .from("watch_history")
-    .select("*")
-    .eq("user_id", userId)
-    .eq("tmdb_id", tmdbId);
-  if (error) throw error;
-  return (data ?? []) as WatchHistoryEntry[];
+  const history = getLocalHistory();
+  return history.filter(h => h.user_id === userId && h.tmdb_id === tmdbId);
 };
 
 export const deleteHistoryEntry = async (userId: string, id: string): Promise<void> => {
-  const { error } = await supabase
-    .from("watch_history")
-    .delete()
-    .eq("user_id", userId)
-    .eq("id", id);
-  if (error) throw error;
+  const history = getLocalHistory();
+  const filtered = history.filter(h => !(h.user_id === userId && h.id === id));
+  saveLocalHistory(filtered);
 };
+

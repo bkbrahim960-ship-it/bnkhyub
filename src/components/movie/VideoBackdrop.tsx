@@ -42,14 +42,11 @@ export const VideoBackdrop = ({ backdropPath, videoKey, title }: Props) => {
             isVideoReady ? "opacity-100" : "opacity-0"
           }`}
         >
-          {/* Shield to prevent interaction and hide YouTube UI */}
-          <div className="absolute inset-0 z-[2]" />
-          
           <iframe
-            src={`https://www.youtube.com/embed/${videoKey}?autoplay=1&mute=1&controls=0&loop=1&playlist=${videoKey}&rel=0&showinfo=0&modestbranding=1&iv_load_policy=3&vq=hd1080&playsinline=1&disablekb=1&fs=0`}
+            src={`https://www.youtube.com/embed/${videoKey}?autoplay=1&mute=1&controls=0&loop=1&playlist=${videoKey}&rel=0&showinfo=0&modestbranding=1&iv_load_policy=3&vq=hd1080&playsinline=1&disablekb=1&fs=0&enablejsapi=1`}
             title="Trailer"
             className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[115%] h-[115%] md:w-[140%] md:h-[140%] lg:w-[125%] lg:h-[125%] pointer-events-none z-[1] object-cover scale-110"
-            allow="autoplay; encrypted-media"
+            allow="autoplay; encrypted-media; fullscreen"
             style={{ border: 0 }}
           />
         </div>

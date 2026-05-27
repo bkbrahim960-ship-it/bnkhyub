@@ -1,8 +1,7 @@
 /**
  * BNKhub — Favorites Service (My List).
- * Manages user's favorite movies and series via Supabase.
+ * Uses localStorage to store favorites locally.
  */
-import { supabase } from "@/integrations/supabase/client";
 
 export interface FavoriteEntry {
   id: string;
@@ -23,21 +22,41 @@ export interface AddFavoriteInput {
   backdrop_path?: string | null;
 }
 
+const getLocalFavorites = (): FavoriteEntry[] => {
+  const data = localStorage.getItem("bnkhub_favorites");
+  return data ? JSON.parse(data) : [];
+};
+
+const saveLocalFavorites = (favorites: FavoriteEntry[]) => {
+  localStorage.setItem("bnkhub_favorites", JSON.stringify(favorites));
+};
+
 /** Add a movie/series to user's favorites */
 export const addFavorite = async (userId: string, input: AddFavoriteInput): Promise<void> => {
-  const { error } = await supabase.from("favorites").upsert(
-    {
-      user_id: userId,
-      tmdb_id: input.tmdb_id,
-      media_type: input.media_type,
-      title: input.title,
-      poster_path: input.poster_path ?? null,
-      backdrop_path: input.backdrop_path ?? null,
-      added_at: new Date().toISOString(),
-    },
-    { onConflict: "user_id,tmdb_id,media_type" }
+  const favorites = getLocalFavorites();
+  
+  const existingIndex = favorites.findIndex(
+    f => f.user_id === userId && f.tmdb_id === input.tmdb_id && f.media_type === input.media_type
   );
-  if (error) throw error;
+
+  const newEntry: FavoriteEntry = {
+    id: crypto.randomUUID(),
+    user_id: userId,
+    tmdb_id: input.tmdb_id,
+    media_type: input.media_type,
+    title: input.title,
+    poster_path: input.poster_path ?? null,
+    backdrop_path: input.backdrop_path ?? null,
+    added_at: new Date().toISOString(),
+  };
+
+  if (existingIndex >= 0) {
+    favorites[existingIndex] = newEntry;
+  } else {
+    favorites.push(newEntry);
+  }
+
+  saveLocalFavorites(favorites);
 };
 
 /** Remove a movie/series from user's favorites */
@@ -46,13 +65,11 @@ export const removeFavorite = async (
   tmdbId: number,
   mediaType: "movie" | "tv"
 ): Promise<void> => {
-  const { error } = await supabase
-    .from("favorites")
-    .delete()
-    .eq("user_id", userId)
-    .eq("tmdb_id", tmdbId)
-    .eq("media_type", mediaType);
-  if (error) throw error;
+  const favorites = getLocalFavorites();
+  const filtered = favorites.filter(
+    f => !(f.user_id === userId && f.tmdb_id === tmdbId && f.media_type === mediaType)
+  );
+  saveLocalFavorites(filtered);
 };
 
 /** Check if a movie/series is in user's favorites */
@@ -61,15 +78,10 @@ export const isFavorite = async (
   tmdbId: number,
   mediaType: "movie" | "tv"
 ): Promise<boolean> => {
-  const { data, error } = await supabase
-    .from("favorites")
-    .select("id")
-    .eq("user_id", userId)
-    .eq("tmdb_id", tmdbId)
-    .eq("media_type", mediaType)
-    .maybeSingle();
-  if (error) return false;
-  return !!data;
+  const favorites = getLocalFavorites();
+  return favorites.some(
+    f => f.user_id === userId && f.tmdb_id === tmdbId && f.media_type === mediaType
+  );
 };
 
 /** Get all user favorites */
@@ -77,12 +89,11 @@ export const getUserFavorites = async (
   userId: string,
   limit = 50
 ): Promise<FavoriteEntry[]> => {
-  const { data, error } = await supabase
-    .from("favorites")
-    .select("*")
-    .eq("user_id", userId)
-    .order("added_at", { ascending: false })
-    .limit(limit);
-  if (error) throw error;
-  return (data ?? []) as FavoriteEntry[];
+  const favorites = getLocalFavorites();
+  const userFavs = favorites
+    .filter(f => f.user_id === userId)
+    .sort((a, b) => new Date(b.added_at).getTime() - new Date(a.added_at).getTime())
+    .slice(0, limit);
+  return userFavs;
 };
+

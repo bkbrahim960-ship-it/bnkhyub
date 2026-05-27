@@ -18,7 +18,7 @@ type Mode = "signin" | "signup";
 
 export default function Auth() {
   const navigate = useNavigate();
-  const { user, loading: authLoading } = useAuth();
+  const { user, loading: authLoading, signIn, signUp } = useAuth();
   const { lang, setLang, t } = useLanguage();
   const isRTL = lang === "ar";
 
@@ -55,20 +55,11 @@ export default function Auth() {
     setBusy(true);
     try {
       if (mode === "signup") {
-        const { error } = await supabase.auth.signUp({
-          email,
-          password,
-          options: {
-            emailRedirectTo: `${window.location.origin}/`,
-            data: { username: username || email.split("@")[0] },
-          },
-        });
-        if (error) throw error;
+        await signUp(email, password, username);
         toast.success("Compte créé, vous êtes connecté !");
         setShowModal(false);
       } else {
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
-        if (error) throw error;
+        await signIn(email, password);
         toast.success("Connexion réussie");
         setShowModal(false);
       }
