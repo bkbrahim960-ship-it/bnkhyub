@@ -187,9 +187,11 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
     return () => window.removeEventListener('message', handleMessage);
   }, [onProgress, onCompleted]);
 
-  const sources = type === "movie" 
+  const defaultSources = type === "movie" 
     ? getMovieSources(imdb_id, tmdb_id, hasResumed ? historyProgress : 0) 
     : getTVSources(imdb_id, tmdb_id, season!, episode!, hasResumed ? historyProgress : 0);
+
+  const sources = customUrl ? [customUrl] : defaultSources;
 
   // Combine with internal sources
   const allSources = [...sources, ...internalSources.filter(s => s.url).map(s => s.url)];
@@ -230,7 +232,7 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
   }, [tmdb_id, type, season, episode]);
 
   const allLabels = Array(50).fill(null);
-  allLabels[0] = "BNKhub serveur";
+  allLabels[0] = customUrl ? "Serveur Kabyle" : "BNKhub serveur";
 
   const handleLoad = () => {
     setLoading(false);
@@ -437,11 +439,12 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
           <iframe
             key={`${sourceIndex}-${appliedExternalSub}`}
             src={`${allSources[sourceIndex]}${appliedExternalSub ? `&sub=${encodeURIComponent(appliedExternalSub)}&subtitle=${encodeURIComponent(appliedExternalSub)}` : ''}`}
-            {...(sourceIndex === 0 ? { 
+            {...((sourceIndex === 0 && !customUrl) ? { 
               sandbox: "allow-scripts allow-same-origin allow-forms allow-presentation allow-top-navigation-by-user-activation",
               title: SOURCE_LABELS[sourceIndex]
             } : {
-              title: sourceIndex < sources.length ? "BNKhub Mirror Server" : (internalSources[sourceIndex - sources.length]?.provider || "Internal Server")
+              sandbox: undefined,
+              title: customUrl ? "Serveur Kabyle" : (sourceIndex < sources.length ? "BNKhub Mirror Server" : (internalSources[sourceIndex - sources.length]?.provider || "Internal Server"))
             })}
 
             {...(allSources[sourceIndex]?.includes('embedmaster.link') || allSources[sourceIndex]?.includes('vidsrc') ? { 
