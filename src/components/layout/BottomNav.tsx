@@ -35,9 +35,6 @@ export const BottomNav = () => {
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
-  }, []);
-
   return (
     <div 
       className={`fixed bottom-4 md:bottom-8 inset-x-4 z-50 pointer-events-none transition-all duration-500 ease-out transform-gpu will-change-transform ${
