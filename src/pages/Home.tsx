@@ -18,6 +18,7 @@ import { SEO } from "@/components/SEO";
 import { useLanguage } from "@/context/LanguageContext";
 import { useSettings } from "@/context/SettingsContext";
 import { tmdbLang } from "@/services/i18n";
+import { AdBanner } from "@/components/ui/AdBanner";
 import {
   getPopularMovies,
   getTopRatedMovies,
@@ -289,6 +290,7 @@ const Home = () => {
       <MovieHero items={hero} />
 
       <div className="relative mt-8 md:-mt-12 z-30">
+        <AdBanner />
         <ContinueWatchingRow />
         
         <ForYouRow />
