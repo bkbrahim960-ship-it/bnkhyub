@@ -49,10 +49,36 @@ export const Header = () => {
     ? (scrolled ? "bg-white/40 backdrop-blur-3xl border-b border-sky-200" : "bg-gradient-to-b from-white/60 to-transparent")
     : (scrolled ? "bg-black/20 backdrop-blur-3xl border-b border-white/5" : "bg-gradient-to-b from-black/80 to-transparent");
 
+  const announcementText = lang === "ar"
+    ? "🤝 للتعاونات الإعلانية والتجارية تواصل معنا عبر البريد الإلكتروني: bnkhub.ads@gmail.com ✉️"
+    : lang === "fr"
+    ? "🤝 Pour les collaborations commerciales et publicitaires, contactez-nous par e-mail : bnkhub.ads@gmail.com ✉️"
+    : lang === "es"
+    ? "🤝 Para colaboraciones commerciales y publicitarias, contáctenos por correo electrónico: bnkhub.ads@gmail.com ✉️"
+    : "🤝 For advertising and commercial collaborations, contact us via email: bnkhub.ads@gmail.com ✉️";
+
   return (
     <header
       className={`fixed top-0 inset-x-0 z-[100] transition-all duration-500 ease-luxe pt-safe ${headerBg} ${immersiveHidden ? '-translate-y-full opacity-0 pointer-events-none' : 'translate-y-0 opacity-100'}`}
     >
+      {/* Announcement Bar */}
+      <a
+        href="mailto:bnkhub.ads@gmail.com"
+        dir="ltr"
+        className={`block w-full py-2 text-[10px] sm:text-xs font-bold select-none overflow-hidden relative border-b transition-all duration-300 ${
+          kidsMode
+            ? "bg-sky-500/10 border-sky-200/30 text-sky-800 hover:text-sky-950 hover:bg-sky-500/20"
+            : "bg-accent/10 border-accent/20 text-white/90 hover:text-accent-light hover:bg-accent/20"
+        }`}
+      >
+        <div className="flex w-max animate-marquee whitespace-nowrap gap-12">
+          <span>{announcementText}</span>
+          <span>{announcementText}</span>
+          <span>{announcementText}</span>
+          <span>{announcementText}</span>
+        </div>
+      </a>
+
       <div className="w-full px-4 md:px-10 lg:px-16 flex items-center justify-between h-16 md:h-20 lg:h-24">
         {/* Massive & Perfectly Centered Logo PNG - Slightly Lowered */}
         <Link to="/" className="flex items-center group shrink-0 relative z-[110]">
