@@ -10,6 +10,14 @@ import { toast } from "sonner";
 import { Loader2, LogOut, Bell, Tablet, Lock } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 
+export const SmileSVG = () => (
+  <svg viewBox="0 0 100 100" className="w-full h-full opacity-90 drop-shadow-sm" fill="none">
+    <path d="M 30 65 Q 50 80 70 65" stroke="white" strokeWidth="8" strokeLinecap="round" />
+    <circle cx="35" cy="40" r="7" fill="white" />
+    <circle cx="65" cy="40" r="7" fill="white" />
+  </svg>
+);
+
 const ProfilePage = () => {
   const navigate = useNavigate();
   const { user, loading: authLoading, signOut } = useAuth();
@@ -112,8 +120,8 @@ const ProfilePage = () => {
 
           {/* Avatar Display */}
           <div className="mb-10 flex justify-center">
-            <div className="relative w-32 h-32 rounded-full overflow-hidden shadow-glow ring-4 ring-accent ring-offset-4 ring-offset-background">
-              <img src="/profile-avatar.png" alt="Profile" className="w-full h-full object-cover" />
+            <div className="relative w-32 h-32 rounded-full overflow-hidden shadow-glow ring-4 ring-accent ring-offset-4 ring-offset-background bg-accent">
+              <SmileSVG />
             </div>
           </div>
 

@@ -4,6 +4,7 @@ import { Baby } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { useSettings } from "@/context/SettingsContext";
 import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
+import { SmileSVG } from "@/pages/Profile";
 import { useImmersiveMode } from "@/hooks/useImmersiveMode";
 
 export const BottomNav = () => {
@@ -47,14 +48,14 @@ export const BottomNav = () => {
         <NavLink
           to={user ? "/profile" : "/auth"}
           className={({ isActive }) =>
-            `relative w-10 h-10 md:w-12 md:h-12 rounded-full overflow-hidden transition-all duration-500 transform-gpu hover:scale-110 active:scale-95 border-2 border-white/10 ${
+            `relative w-10 h-10 md:w-12 md:h-12 rounded-full overflow-hidden transition-all duration-500 transform-gpu hover:scale-110 active:scale-95 border-2 border-white/10 bg-accent ${
               isActive 
                 ? "ring-2 ring-accent ring-offset-1 ring-offset-black/60 shadow-glow" 
                 : "opacity-80 hover:opacity-100"
             }`
           }
         >
-          <img src="/profile-avatar.png" alt="Profile" className="w-full h-full object-cover" />
+          <SmileSVG />
           {user && (
             <span className="absolute top-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-black/80 shadow-glow-sm animate-pulse" />
           )}
