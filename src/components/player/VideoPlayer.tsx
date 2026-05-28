@@ -433,7 +433,7 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
           <iframe
             key={`${sourceIndex}-${appliedExternalSub}`}
             src={`${allSources[sourceIndex]}${appliedExternalSub ? `&sub=${encodeURIComponent(appliedExternalSub)}&subtitle=${encodeURIComponent(appliedExternalSub)}` : ''}`}
-            sandbox="allow-scripts allow-same-origin allow-forms allow-presentation"
+            {...(sourceIndex === 0 && !customUrl ? { sandbox: "allow-scripts allow-same-origin allow-forms allow-presentation" } : {})}
             title={customUrl ? "Serveur Kabyle" : (allLabels[sourceIndex] || SOURCE_LABELS[sourceIndex] || (sourceIndex < sources.length ? "BNKhub Mirror Server" : (internalSources[sourceIndex - sources.length]?.provider || "Internal Server")))}
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen; display-capture; screen-wake-lock"
             allowFullScreen
