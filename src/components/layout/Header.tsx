@@ -49,44 +49,10 @@ export const Header = () => {
     ? (scrolled ? "bg-white/40 backdrop-blur-3xl border-b border-sky-200" : "bg-gradient-to-b from-white/60 to-transparent")
     : (scrolled ? "bg-black/20 backdrop-blur-3xl border-b border-white/5" : "bg-gradient-to-b from-black/80 to-transparent");
 
-  const announcementText = lang === "ar"
-    ? "للتعاونات والإعلانات تواصل معنا عبر البريد الإلكتروني"
-    : lang === "fr"
-    ? "Pour les collaborations et publicités, contactez-nous par e-mail"
-    : lang === "es"
-    ? "Para colaboraciones y publicidad, contáctenos por correo electrónico"
-    : "For collaborations & advertising, contact us via email";
-
-  const announcementEmail = "bnkhub.ads@gmail.com";
-
   return (
     <header
       className={`fixed top-0 inset-x-0 z-[100] transition-all duration-500 ease-luxe pt-safe ${headerBg} ${immersiveHidden ? '-translate-y-full opacity-0 pointer-events-none' : 'translate-y-0 opacity-100'}`}
     >
-      {/* Announcement Bar */}
-      <a
-        href={`mailto:${announcementEmail}`}
-        dir="ltr"
-        className={`block w-full py-1.5 select-none overflow-hidden relative border-b transition-all duration-300 ${
-          kidsMode
-            ? "border-sky-200/20 hover:border-sky-300/40"
-            : "border-white/[0.06] hover:border-white/[0.12]"
-        }`}
-      >
-        <div className="flex w-max animate-marquee whitespace-nowrap gap-16">
-          {[...Array(4)].map((_, i) => (
-            <span key={i} className={`text-[11px] sm:text-xs tracking-wide ${
-              kidsMode ? "text-sky-700/70" : "text-white/50"
-            }`}>
-              {announcementText}{" "}
-              <span className={`font-semibold ${
-                kidsMode ? "text-sky-800" : "text-white/80"
-              }`}>{announcementEmail}</span>
-              <span className="mx-6 opacity-30">—</span>
-            </span>
-          ))}
-        </div>
-      </a>
 
       <div className="w-full px-4 md:px-10 lg:px-16 flex items-center justify-between h-16 md:h-20 lg:h-24">
         {/* Massive & Perfectly Centered Logo PNG - Slightly Lowered */}
