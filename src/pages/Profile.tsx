@@ -3,31 +3,12 @@ import { Link, useNavigate } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { useAuth } from "@/context/AuthContext";
 import { useLanguage } from "@/context/LanguageContext";
-import { getMyProfile, updateMyProfile, Profile } from "@/services/profile";
+import { getMyProfile } from "@/services/profile";
 import { useSettings } from "@/context/SettingsContext";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import { Loader2, LogOut, Bell, Tablet, Lock } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
-
-export const NETFLIX_AVATARS = [
-  { id: 'red', color: '#E50914' },
-  { id: 'blue', color: '#54B4E4' },
-  { id: 'green', color: '#46D369' },
-  { id: 'yellow', color: '#F3B415' },
-  { id: 'purple', color: '#7E30E1' },
-  { id: 'orange', color: '#F29727' },
-  { id: 'pink', color: '#E91E63' },
-  { id: 'teal', color: '#00A896' },
-];
-
-export const SmileSVG = () => (
-  <svg viewBox="0 0 100 100" className="w-full h-full opacity-90 drop-shadow-sm" fill="none">
-    <path d="M 30 65 Q 50 80 70 65" stroke="white" strokeWidth="8" strokeLinecap="round" />
-    <circle cx="35" cy="40" r="7" fill="white" />
-    <circle cx="65" cy="40" r="7" fill="white" />
-  </svg>
-);
 
 const ProfilePage = () => {
   const navigate = useNavigate();
@@ -36,7 +17,6 @@ const ProfilePage = () => {
   const { kidsMode, setKidsMode } = useSettings();
 
   const [username, setUsername] = useState("");
-  const [selectedAvatarId, setSelectedAvatarId] = useState("red");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -46,23 +26,12 @@ const ProfilePage = () => {
     }
     if (!user) return;
 
-    // Load local avatar preference instantly
-    const localAvatar = localStorage.getItem("bnkhub_avatar");
-    if (localAvatar && NETFLIX_AVATARS.some(a => a.id === localAvatar)) {
-      setSelectedAvatarId(localAvatar);
-    }
-
     const timeout = setTimeout(() => setLoading(false), 5000);
 
     getMyProfile(user.id)
       .then((p) => {
         if (p) {
           setUsername(p.username ?? "");
-          // If profile has an avatar set that matches our IDs, use it, else keep local/default
-          if (p.avatar_url && NETFLIX_AVATARS.some(a => a.id === p.avatar_url)) {
-            setSelectedAvatarId(p.avatar_url);
-            localStorage.setItem("bnkhub_avatar", p.avatar_url);
-          }
         }
       })
       .catch(() => {})
@@ -73,22 +42,6 @@ const ProfilePage = () => {
 
     return () => clearTimeout(timeout);
   }, [user, authLoading]);
-
-  const handleAvatarSelect = async (id: string) => {
-    setSelectedAvatarId(id);
-    localStorage.setItem("bnkhub_avatar", id);
-    // Dispatch custom event to update BottomNav instantly
-    window.dispatchEvent(new Event("bnkhub_avatar_updated"));
-    
-    if (user) {
-      try {
-        await updateMyProfile(user.id, { avatar_url: id });
-        toast.success(lang === "ar" ? "تم تحديث الصورة" : "Avatar updated");
-      } catch (err: any) {
-        // Silently fail if offline, we have local storage
-      }
-    }
-  };
 
   const handleSignOut = async () => {
     await signOut();
@@ -157,26 +110,10 @@ const ProfilePage = () => {
             </button>
           </div>
 
-          {/* Avatars Grid */}
-          <div className="mb-10">
-            <p className="text-xs uppercase tracking-widest text-muted-foreground mb-4">
-              {lang === "ar" ? "اختر صورة البروفايل" : "Choose Profile Avatar"}
-            </p>
-            <div className="grid grid-cols-4 sm:grid-cols-4 gap-4">
-              {NETFLIX_AVATARS.map((avatar) => (
-                <button
-                  key={avatar.id}
-                  onClick={() => handleAvatarSelect(avatar.id)}
-                  className={`relative aspect-square rounded-xl overflow-hidden transition-all duration-300 transform-gpu hover:scale-105 ${
-                    selectedAvatarId === avatar.id
-                      ? "ring-4 ring-accent ring-offset-2 ring-offset-background scale-105 shadow-glow"
-                      : "opacity-70 hover:opacity-100"
-                  }`}
-                  style={{ backgroundColor: avatar.color }}
-                >
-                  <SmileSVG />
-                </button>
-              ))}
+          {/* Avatar Display */}
+          <div className="mb-10 flex justify-center">
+            <div className="relative w-32 h-32 rounded-full overflow-hidden shadow-glow ring-4 ring-accent ring-offset-4 ring-offset-background">
+              <img src="/profile-avatar.png" alt="Profile" className="w-full h-full object-cover" />
             </div>
           </div>
 
