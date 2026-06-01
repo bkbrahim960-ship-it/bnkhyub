@@ -4,7 +4,7 @@
  */
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Play, Info } from "lucide-react";
+import { Play, Info, ChevronLeft, ChevronRight } from "lucide-react";
 import { IMG, TMDBMovie } from "@/services/tmdb";
 import { useLanguage } from "@/context/LanguageContext";
 import { useSettings } from "@/context/SettingsContext";
@@ -18,6 +18,7 @@ export const MovieHero = ({ items }: Props) => {
   const { t } = useLanguage();
   const { kidsMode } = useSettings();
   const [index, setIndex] = useState(0);
+  const [lastRefresh, setLastRefresh] = useState<number>(Date.now());
   const pool = items.slice(0, 6);
 
   // Auto-rotate
@@ -27,11 +28,31 @@ export const MovieHero = ({ items }: Props) => {
     return () => clearInterval(id);
   }, [pool.length]);
 
+  // Auto-refresh every 10 minutes
+  useEffect(() => {
+    const refreshInterval = setInterval(() => {
+      if (Date.now() - lastRefresh > 10 * 60 * 1000) {
+        setLastRefresh(Date.now());
+        window.location.reload();
+      }
+    }, 60000);
+    return () => clearInterval(refreshInterval);
+  }, [lastRefresh]);
+
+  const goToPrev = () => {
+    setIndex((i) => (i - 1 + pool.length) % pool.length);
+  };
+
+  const goToNext = () => {
+    setIndex((i) => (i + 1) % pool.length);
+  };
+
   if (pool.length === 0) {
     return <div className="h-[65vh] md:h-[92vh] bg-surface-secondary shimmer-gold" />;
   }
 
   const movie = pool[index];
+  const isTV = !!(movie as any).name;
 
   // Find trailer for video background
   const trailer = movie.videos?.results.find(
@@ -80,17 +101,35 @@ export const MovieHero = ({ items }: Props) => {
       <div className="absolute inset-0 z-[2] grain opacity-20" />
       <div className={`absolute inset-0 z-[3] bg-gradient-to-t ${kidsMode ? 'from-background via-background/40' : 'from-surface-primary via-surface-primary/50'} to-transparent`} />
       
+      {/* Navigation Arrows */}
+      {pool.length > 1 && (
+        <>
+          <button
+            onClick={goToPrev}
+            className="absolute left-4 top-1/2 -translate-y-1/2 z-[15] w-12 h-12 rounded-full bg-surface-elevated/60 backdrop-blur border border-border flex items-center justify-center text-foreground hover:bg-surface-elevated hover:scale-110 transition-all duration-300"
+          >
+            <ChevronLeft className="w-6 h-6" />
+          </button>
+          <button
+            onClick={goToNext}
+            className="absolute right-4 top-1/2 -translate-y-1/2 z-[15] w-12 h-12 rounded-full bg-surface-elevated/60 backdrop-blur border border-border flex items-center justify-center text-foreground hover:bg-surface-elevated hover:scale-110 transition-all duration-300"
+          >
+            <ChevronRight className="w-6 h-6" />
+          </button>
+        </>
+      )}
+
       {/* Content — Positioned low and clear on mobile (pb-32) */}
       <div className="absolute inset-x-0 bottom-0 z-20 container pb-24 md:pb-32 lg:pb-40">
         <div key={movie.id} className="max-w-2xl md:max-w-4xl animate-fade-slide-up">
           <span className="inline-block px-3 py-1 mb-3 text-[10px] md:text-sm uppercase tracking-[0.2em] rounded-full border border-accent-subtle text-accent bg-accent/5 backdrop-blur">
-            ★ {movie.vote_average.toFixed(1)}  ·  {movie.release_date?.slice(0, 4)}
+            ★ {movie.vote_average.toFixed(1)}  ·  {(movie.release_date || (movie as any).first_air_date)?.slice(0, 4)}
           </span>
 
           <div className="mb-4 md:mb-8">
             <MovieLogo 
               id={movie.id} 
-              type={(movie as any).name ? "tv" : "movie"} 
+              type={isTV ? "tv" : "movie"} 
               title={movie.title || (movie as any).name} 
               className="h-24 md:h-36 lg:h-48 max-w-md md:max-w-xl" 
               textClassName="text-4xl md:text-7xl lg:text-8xl text-gradient-accent" 
@@ -103,14 +142,14 @@ export const MovieHero = ({ items }: Props) => {
 
           <div className="flex items-center gap-4">
             <Link
-              to={`/movie/${movie.id}`}
+              to={isTV ? `/series/${movie.id}` : `/movie/${movie.id}`}
               className="inline-flex items-center gap-3 bg-gradient-accent text-accent-foreground font-bold px-7 md:px-10 py-3.5 md:py-5 rounded-full shadow-accent hover:scale-[1.05] active:scale-[0.98] transition-all duration-300 text-sm md:text-lg"
             >
               <Play className="w-5 h-5 md:w-6 md:h-6 fill-current" />
               {t("hero_watch")}
             </Link>
             <Link
-              to={`/movie/${movie.id}`}
+              to={isTV ? `/series/${movie.id}` : `/movie/${movie.id}`}
               className="inline-flex items-center gap-3 px-6 md:px-8 py-3.5 md:py-5 rounded-full border border-border bg-surface-elevated/60 backdrop-blur hover:bg-surface-elevated transition-all text-sm md:text-lg"
             >
               <Info className="w-5 h-5 md:w-6 md:h-6" />

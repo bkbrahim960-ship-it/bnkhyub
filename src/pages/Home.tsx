@@ -28,6 +28,8 @@ import {
   getNowPlaying,
   discoverMovies,
   discoverSeries,
+  getMovieDetails,
+  getSeriesDetails,
   TMDBMovie,
   TMDBSeries,
 } from "@/services/tmdb";
@@ -220,7 +222,7 @@ const Home = () => {
     }
   }, [navigate]);
 
-  const [hero, setHero] = useState<TMDBMovie[]>([]);
+  const [hero, setHero] = useState<any[]>([]);
   const [popular, setPopular] = useState<TMDBMovie[]>([]);
   const [trending, setTrending] = useState<TMDBMovie[]>([]);
   const [topRated, setTopRated] = useState<TMDBMovie[]>([]);
@@ -234,6 +236,14 @@ const Home = () => {
   useEffect(() => {
     let canceled = false;
     setLoading(true);
+
+    const heroIds = [
+      { id: 71446, type: "tv" }, // Money Heist
+      { id: 126732, type: "tv" }, // FROM
+      { id: 1028679, type: "tv" }, // NEMESIS
+      { id: 94997, type: "tv" }, // House of the Dragon
+      { id: 201667, type: "tv" } // Berlin
+    ];
 
     if (kidsMode) {
       // Kids mode: animation (16) + family (10751)
@@ -263,10 +273,15 @@ const Home = () => {
         getPopularSeries(tl).catch(() => ({ results: [] })),
         getTopRatedSeries(tl).catch(() => ({ results: [] })),
         getNowPlaying(tl).catch(() => ({ results: [] })),
-      ]).then(([tr, pop, top, tv, topTV, np]) => {
+        ...heroIds.map(item => 
+          item.type === "tv" 
+            ? getSeriesDetails(item.id, tl).catch(() => null) 
+            : getMovieDetails(item.id, tl).catch(() => null)
+        )
+      ]).then(([tr, pop, top, tv, topTV, np, ...heroResults]) => {
         if (canceled) return;
         setTrending(tr.results);
-        setHero(tr.results.filter((m: any) => m.backdrop_path));
+        setHero(heroResults.filter((item): item is any => item !== null && item.backdrop_path));
         setPopular(pop.results);
         setTopRated(top.results);
         setPopularTV(tv.results);
@@ -290,7 +305,6 @@ const Home = () => {
       <MovieHero items={hero} />
 
       <div className="relative mt-8 md:-mt-12 z-30">
-        <AdBanner />
         <ContinueWatchingRow />
         
         <ForYouRow />
@@ -317,6 +331,7 @@ const Home = () => {
             <DiscoverRow title={lang === "ar" ? "💡 أفلام الخيال العلمي" : "💡 Science-Fiction"} genres="878" type="movie" icon="🚀" />
             
             <MovieRow title={t("section_popular")} items={popular} loading={loading} />
+            <AdBanner />
             
             {/* M3U Custom Rows (Premium Content) */}
             {supabaseM3ULists.slice(0, 3).map((list) => (
