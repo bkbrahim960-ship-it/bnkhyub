@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { IMG } from "@/services/tmdb";
 
 interface Props {
@@ -15,7 +15,30 @@ export const MovieLogo = ({ id, type, title, className = "h-20 md:h-32", textCla
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const [isVisible, setIsVisible] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "200px" } // Fetch slightly before it enters the screen
+    );
+
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!isVisible) return;
+    
     let mounted = true;
     setLoading(true);
     const fetchLogo = async () => {
@@ -42,11 +65,12 @@ export const MovieLogo = ({ id, type, title, className = "h-20 md:h-32", textCla
     };
     fetchLogo();
     return () => { mounted = false; };
-  }, [id, type]);
+  }, [id, type, isVisible]);
 
   if (logoUrl) {
     return (
       <img 
+        ref={containerRef}
         src={logoUrl} 
         alt={title} 
         className={`object-contain object-left ${className} drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)] filter brightness-110 contrast-125 transition-all duration-700`}
@@ -58,7 +82,7 @@ export const MovieLogo = ({ id, type, title, className = "h-20 md:h-32", textCla
 
   // Fallback to text if no logo exists or still loading
   return (
-    <h1 className={`font-display font-bold leading-[1.1] ${textClassName} ${loading ? "opacity-50" : "opacity-100"} transition-opacity duration-500`}>
+    <h1 ref={containerRef} className={`font-display font-bold leading-[1.1] ${textClassName} ${loading ? "opacity-50" : "opacity-100"} transition-opacity duration-500`}>
       <span className="text-white drop-shadow-2xl">{title}</span>
     </h1>
   );

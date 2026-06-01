@@ -6,6 +6,7 @@ import { useAmbient } from "@/context/AmbientContext";
 import { useSettings } from "@/context/SettingsContext";
 import { useLanguage } from "@/context/LanguageContext";
 import { FavoriteButton } from "./FavoriteButton";
+import { MovieLogo } from "@/components/ui/MovieLogo";
 
 interface Props {
   id: string | number;
@@ -118,18 +119,30 @@ export const MovieCard = memo(({ id, title, posterPath, year, rating, type = "mo
                 {type === 'movie' ? (lang === 'ar' ? 'تشغيل' : 'Lecture') : (lang === 'ar' ? 'حلقات' : 'Épisodes')}
               </span>
             </div>
-            <h3 className="text-white font-display font-black text-sm md:text-lg leading-tight line-clamp-2 drop-shadow-2xl">
-              {title}
-            </h3>
+            <div className="h-8 md:h-12 w-[90%] mt-1">
+              <MovieLogo 
+                id={Number(id)} 
+                type={type} 
+                title={title} 
+                className="h-full w-full object-contain object-left" 
+                textClassName="text-white font-display font-black text-sm md:text-lg leading-tight line-clamp-2 drop-shadow-2xl" 
+              />
+            </div>
           </div>
         </div>
       </div>
 
       {/* External Info (Visible when not hovered) */}
       <div className="mt-3 px-1 group-hover:opacity-0 group-hover:translate-y-2 transition-all duration-500">
-        <h3 className="font-body font-bold text-xs sm:text-sm text-foreground/90 line-clamp-1 mb-1">
-          {title}
-        </h3>
+        <div className="h-5 sm:h-7 w-full mb-1.5 flex items-center">
+          <MovieLogo 
+            id={Number(id)} 
+            type={type} 
+            title={title} 
+            className="h-full max-w-[80%] object-contain object-left" 
+            textClassName="font-body font-bold text-xs sm:text-sm text-foreground/90 line-clamp-1" 
+          />
+        </div>
         <div className="flex items-center gap-2">
           {year && (
             <span className="text-[9px] px-1.5 py-0.5 rounded bg-white/5 border border-white/5 text-muted-foreground font-bold tracking-wider">
