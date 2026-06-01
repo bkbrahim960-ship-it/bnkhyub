@@ -355,7 +355,7 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
 
       <div 
         ref={containerRef} 
-        className={`relative w-full ${allSources[sourceIndex]?.includes("drive.google.com") ? "aspect-[4/3] md:aspect-[16/10] rounded-lg" : "aspect-video rounded-2xl"} bg-black overflow-hidden border border-white/10 shadow-2xl group/player transition-all duration-500 ${isWebFullscreen ? 'fixed inset-0 z-[1000] rounded-none !aspect-auto h-screen' : ''}`}
+        className={`relative w-full ${allSources[sourceIndex]?.includes("drive.google.com") ? "aspect-square sm:aspect-[4/3] md:aspect-[16/10] rounded-lg" : "aspect-video rounded-2xl"} bg-black overflow-hidden border border-white/10 shadow-2xl group/player transition-all duration-500 ${isWebFullscreen ? 'fixed inset-0 z-[1000] rounded-none !aspect-auto h-screen' : ''}`}
       >
         
         {/* Permanent Brand Watermark */}
@@ -452,6 +452,7 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
             allowTransparency
             frameBorder="0"
             scrolling="no"
+            {...(allSources[sourceIndex]?.includes("vidapi") ? { sandbox: "allow-same-origin allow-scripts allow-forms" } : {})}
             onLoad={handleLoad}
             className="absolute inset-0 w-full h-full border-0 transition-opacity duration-700"
           />
