@@ -242,29 +242,29 @@ const Movie = () => {
               </button>
             )}
 
-            {/* Secondary Icon Buttons (All same size, modern) */}
+            {/* Secondary Icon Buttons (Modern & Clean) */}
             <div className="flex items-center gap-3">
               {trailer && (
                 <button
                   onClick={() => setShowTrailer(true)}
-                  className="flex items-center justify-center w-12 h-12 rounded-2xl bg-white/10 border border-white/20 text-white hover:bg-white/20 hover:scale-105 transition-all"
+                  className="flex items-center justify-center w-12 h-12 rounded-full bg-white/5 hover:bg-accent/20 text-white hover:text-accent hover:scale-110 transition-all"
                   title={t("hero_trailer")}
                 >
-                  <Youtube className="w-5 h-5 text-red-500" />
+                  <Youtube className="w-6 h-6" />
                 </button>
               )}
 
-              <div className="flex items-center justify-center w-12 h-12 rounded-2xl bg-white/10 border border-white/20">
+              <button className="flex items-center justify-center w-12 h-12 rounded-full bg-white/5 hover:bg-accent/20 text-white hover:text-accent hover:scale-110 transition-all">
                 <FavoriteButton tmdbId={movie.id} mediaType="movie" title={movie.title} posterPath={movie.poster_path} />
-              </div>
+              </button>
 
-              <div className="flex items-center justify-center w-12 h-12 rounded-2xl bg-white/10 border border-white/20">
+              <button className="flex items-center justify-center w-12 h-12 rounded-full bg-white/5 hover:bg-accent/20 text-white hover:text-accent hover:scale-110 transition-all">
                 <RemotePairingButton />
-              </div>
+              </button>
 
-              <div className="flex items-center justify-center w-12 h-12 rounded-2xl bg-white/10 border border-white/20">
+              <button className="flex items-center justify-center w-12 h-12 rounded-full bg-white/5 hover:bg-accent/20 text-white hover:text-accent hover:scale-110 transition-all">
                 <ShareButtons title={movie.title} />
-              </div>
+              </button>
             </div>
           </div>
         </div>
