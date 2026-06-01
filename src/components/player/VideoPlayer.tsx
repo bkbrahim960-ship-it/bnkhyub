@@ -368,18 +368,7 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
           </div>
         )}
 
-        {/* Fullscreen Button for Google Drive */}
-        {playerActive && allSources[sourceIndex]?.includes("drive.google.com") && (
-          <div className="absolute top-4 left-1/2 -translate-x-1/2 z-50">
-            <button 
-              onClick={toggleFullscreen}
-              className="bg-black/60 hover:bg-accent/80 text-white px-6 py-3 rounded-full backdrop-blur-md transition-all shadow-xl flex items-center gap-3 border border-white/20 animate-pulse"
-            >
-              <Maximize className="w-6 h-6" />
-              <span className="font-bold text-lg">تكبير الشاشة</span>
-            </button>
-          </div>
-        )}
+
 
         {!playerActive && (
           <div className="absolute inset-0 flex flex-col items-center justify-center bg-surface-card/40 backdrop-blur-3xl z-30 p-12 text-center overflow-hidden">
@@ -465,7 +454,7 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
             allowTransparency
             frameBorder="0"
             scrolling="no"
-            {...(allSources[sourceIndex]?.includes("vidapi") ? { sandbox: "allow-same-origin allow-scripts allow-forms" } : {})}
+            {...((allSources[sourceIndex]?.includes("vidapi") || allSources[sourceIndex]?.includes("vaplayer.ru")) ? { sandbox: "allow-same-origin allow-scripts allow-forms" } : {})}
             onLoad={handleLoad}
             className="absolute inset-0 w-full h-full border-0 transition-opacity duration-700"
           />
