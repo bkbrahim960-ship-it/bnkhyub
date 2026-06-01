@@ -280,6 +280,8 @@ const Home = () => {
         )
       ]).then(([tr, pop, top, tv, topTV, np, ...heroResults]) => {
         if (canceled) return;
+        console.log("Hero results (raw):", heroResults);
+        console.log("Hero results (filtered):", heroResults.filter((item): item is any => item !== null && item.backdrop_path));
         setTrending(tr.results);
         setHero(heroResults.filter((item): item is any => item !== null && item.backdrop_path));
         setPopular(pop.results);

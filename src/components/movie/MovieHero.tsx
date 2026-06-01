@@ -5,23 +5,22 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Play, Info } from "lucide-react";
-import { IMG, TMDBMovie } from "@/services/tmdb";
+import { IMG, TMDBMovie, TMDBSeries } from "@/services/tmdb";
 import { useLanguage } from "@/context/LanguageContext";
 import { useSettings } from "@/context/SettingsContext";
 import { MovieLogo } from "@/components/ui/MovieLogo";
 
 interface Props {
-  items: TMDBMovie[];
+  items: (TMDBMovie | TMDBSeries)[];
 }
 
 export const MovieHero = ({ items }: Props) => {
   const { t } = useLanguage();
   const { kidsMode } = useSettings();
   const [index, setIndex] = useState(0);
-  const [lastRefresh, setLastRefresh] = useState<number>(Date.now());
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
-  const pool = items.slice(0, 6);
+  const pool = items; // Show all items, no slicing
   
   const MIN_SWIPE_DISTANCE = 50; // Minimum distance for swipe to register
 
@@ -52,17 +51,6 @@ export const MovieHero = ({ items }: Props) => {
     const id = setInterval(() => setIndex((i) => (i + 1) % pool.length), 8000);
     return () => clearInterval(id);
   }, [pool.length]);
-
-  // Auto-refresh every 10 minutes
-  useEffect(() => {
-    const refreshInterval = setInterval(() => {
-      if (Date.now() - lastRefresh > 10 * 60 * 1000) {
-        setLastRefresh(Date.now());
-        window.location.reload();
-      }
-    }, 60000);
-    return () => clearInterval(refreshInterval);
-  }, [lastRefresh]);
 
 
 
