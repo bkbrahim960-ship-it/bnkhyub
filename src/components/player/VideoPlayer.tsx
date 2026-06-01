@@ -432,11 +432,13 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
         {playerActive && !allSources[sourceIndex]?.includes(".m3u8") && !allSources[sourceIndex]?.includes(".mp4") && !allSources[sourceIndex]?.includes("youtube.com") && !allSources[sourceIndex]?.includes("youtu.be") && (
           <iframe
             key={`${sourceIndex}-${appliedExternalSub}`}
-            src={`${allSources[sourceIndex]}${appliedExternalSub ? `&sub=${encodeURIComponent(appliedExternalSub)}&subtitle=${encodeURIComponent(appliedExternalSub)}` : ''}`}
-            {...(sourceIndex === 0 && !customUrl ? { sandbox: "allow-scripts allow-same-origin allow-forms allow-presentation allow-top-navigation-by-user-activation" } : {})}
+            src={allSources[sourceIndex]}
             title={customUrl ? "Serveur Kabyle" : (allLabels[sourceIndex] || SOURCE_LABELS[sourceIndex] || (sourceIndex < sources.length ? "BNKhub Mirror Server" : (internalSources[sourceIndex - sources.length]?.provider || "Internal Server")))}
-            allow="autoplay *; fullscreen *; picture-in-picture *; encrypted-media *; clipboard-write; gyroscope; accelerometer; web-share; display-capture; screen-wake-lock"
+            allow="autoplay; fullscreen; picture-in-picture; encrypted-media; clipboard-write; gyroscope; accelerometer; web-share; display-capture; screen-wake-lock"
             allowFullScreen
+            allowTransparency
+            frameBorder="0"
+            scrolling="no"
             onLoad={handleLoad}
             className="absolute inset-0 w-full h-full border-0 transition-opacity duration-700"
           />
