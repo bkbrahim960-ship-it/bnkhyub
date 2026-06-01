@@ -33,6 +33,11 @@ export const MovieHero = ({ items }: Props) => {
 
   const movie = pool[index];
 
+  // Find trailer for video background
+  const trailer = movie.videos?.results.find(
+    (v) => v.type === "Trailer" && v.site === "YouTube"
+  ) || movie.videos?.results.find((v) => v.site === "YouTube");
+
   return (
     <section className="relative h-[65vh] md:h-[92vh] min-h-[400px] md:min-h-[560px] w-full overflow-hidden group">
       {/* Static Backdrops */}
@@ -49,7 +54,7 @@ export const MovieHero = ({ items }: Props) => {
               <img
                 src={img}
                 alt=""
-                className="w-full h-full object-contain object-center"
+                className="w-full h-full object-cover object-top"
                 loading={i === 0 ? "eager" : "lazy"}
                 decoding="async"
               />
@@ -58,43 +63,57 @@ export const MovieHero = ({ items }: Props) => {
         );
       })}
 
+      {/* Video Backdrop with Autoplay */}
+      {trailer?.key && (
+        <div className="absolute inset-0 z-[1]">
+          <iframe
+            src={`https://www.youtube.com/embed/${trailer.key}?autoplay=1&mute=1&controls=0&loop=1&playlist=${trailer.key}&rel=0&showinfo=0&modestbranding=1&iv_load_policy=3&vq=hd1080&playsinline=1&disablekb=1&fs=0&enablejsapi=1`}
+            title="Trailer"
+            className="absolute inset-0 w-full h-full object-cover object-top"
+            allow="autoplay; encrypted-media; fullscreen"
+            style={{ border: 0 }}
+          />
+        </div>
+      )}
+
       {/* Overlays */}
       <div className="absolute inset-0 z-[2] grain opacity-20" />
       <div className={`absolute inset-0 z-[3] bg-gradient-to-t ${kidsMode ? 'from-background via-background/40' : 'from-surface-primary via-surface-primary/50'} to-transparent`} />
       
-      {/* Content — Adjusted position */}
-      <div className="absolute inset-x-0 bottom-0 z-20 container pb-12 md:pb-24 lg:pb-32">
+      {/* Content — Positioned low and clear on mobile (pb-32) */}
+      <div className="absolute inset-x-0 bottom-0 z-20 container pb-24 md:pb-32 lg:pb-40">
         <div key={movie.id} className="max-w-2xl md:max-w-4xl animate-fade-slide-up">
           <span className="inline-block px-3 py-1 mb-3 text-[10px] md:text-sm uppercase tracking-[0.2em] rounded-full border border-accent-subtle text-accent bg-accent/5 backdrop-blur">
             ★ {movie.vote_average.toFixed(1)}  ·  {movie.release_date?.slice(0, 4)}
           </span>
 
-          <div className="mb-4 md:mb-6">
+          <div className="mb-4 md:mb-8">
             <MovieLogo 
               id={movie.id} 
               type={(movie as any).name ? "tv" : "movie"} 
               title={movie.title || (movie as any).name} 
-              className="h-16 sm:h-20 md:h-28 lg:h-40 max-w-full" 
+              className="h-24 md:h-36 lg:h-48 max-w-md md:max-w-xl" 
+              textClassName="text-4xl md:text-7xl lg:text-8xl text-gradient-accent" 
             />
           </div>
 
-          <p className="text-foreground/90 text-sm md:text-lg leading-relaxed max-w-2xl mb-6 md:mb-8 line-clamp-2 md:line-clamp-3 font-medium">
+          <p className="text-foreground/90 text-sm md:text-xl leading-relaxed max-w-2xl mb-6 md:mb-12 line-clamp-2 md:line-clamp-none font-medium">
             {movie.overview}
           </p>
 
-          <div className="flex items-center gap-3 flex-wrap">
+          <div className="flex items-center gap-4">
             <Link
               to={`/movie/${movie.id}`}
-              className="inline-flex items-center justify-center gap-2 bg-accent text-accent-foreground font-bold px-6 py-3.5 rounded-2xl shadow-glow hover:scale-105 transition-all text-sm md:text-base w-full sm:w-auto"
+              className="inline-flex items-center gap-3 bg-gradient-accent text-accent-foreground font-bold px-7 md:px-10 py-3.5 md:py-5 rounded-full shadow-accent hover:scale-[1.05] active:scale-[0.98] transition-all duration-300 text-sm md:text-lg"
             >
-              <Play className="w-5 h-5 fill-current" />
+              <Play className="w-5 h-5 md:w-6 md:h-6 fill-current" />
               {t("hero_watch")}
             </Link>
             <Link
               to={`/movie/${movie.id}`}
-              className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl border border-white/20 bg-white/10 hover:bg-white/20 transition-all text-sm md:text-base w-full sm:w-auto"
+              className="inline-flex items-center gap-3 px-6 md:px-8 py-3.5 md:py-5 rounded-full border border-border bg-surface-elevated/60 backdrop-blur hover:bg-surface-elevated transition-all text-sm md:text-lg"
             >
-              <Info className="w-5 h-5" />
+              <Info className="w-5 h-5 md:w-6 md:h-6" />
               {t("hero_info")}
             </Link>
           </div>
