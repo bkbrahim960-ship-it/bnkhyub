@@ -280,10 +280,21 @@ const Home = () => {
         )
       ]).then(([tr, pop, top, tv, topTV, np, ...heroResults]) => {
         if (canceled) return;
-        console.log("Hero results (raw):", heroResults);
-        console.log("Hero results (filtered):", heroResults.filter((item): item is any => item !== null && item.backdrop_path));
         setTrending(tr.results);
-        setHero(heroResults.filter((item): item is any => item !== null && item.backdrop_path));
+        
+        // Combine specific hero picks with trending items to have a larger list in the carousel
+        const validHeroPicks = heroResults.filter((item): item is any => item !== null && item.backdrop_path);
+        const validTrending = tr.results.filter((item: any) => item && item.backdrop_path).slice(0, 10);
+        
+        // Remove duplicates
+        const combinedHero = [...validHeroPicks];
+        validTrending.forEach(tItem => {
+          if (!combinedHero.find(h => h.id === tItem.id)) {
+            combinedHero.push(tItem);
+          }
+        });
+        
+        setHero(combinedHero);
         setPopular(pop.results);
         setTopRated(top.results);
         setPopularTV(tv.results);

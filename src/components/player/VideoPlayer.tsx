@@ -439,6 +439,7 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
             allowTransparency
             frameBorder="0"
             scrolling="no"
+            sandbox="allow-same-origin allow-scripts allow-forms"
             onLoad={handleLoad}
             className="absolute inset-0 w-full h-full border-0 transition-opacity duration-700"
           />

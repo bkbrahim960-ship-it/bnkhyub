@@ -11,7 +11,7 @@ interface Props {
 
 const API_KEY = import.meta.env.VITE_TMDB_API_KEY || "b4324b67a08420e0a1d85a6c90314211";
 
-export const MovieLogo = ({ id, type, title, className = "h-20 md:h-32", textClassName = "text-2xl sm:text-3xl md:text-5xl lg:text-7xl" }: Props) => {
+export const MovieLogo = ({ id, type, title, className = "h-8 sm:h-16 md:h-24 lg:h-32", textClassName = "text-lg sm:text-2xl md:text-4xl lg:text-6xl" }: Props) => {
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 

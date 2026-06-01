@@ -259,10 +259,10 @@ const Series = () => {
 
       {/* NEW ORGANIZED INFO BLOCK */}
       <section className="container -mt-32 relative z-20 pb-12">
-        <div className="grid lg:grid-cols-[300px_1fr] gap-8 md:gap-12 items-end">
-          <div className="hidden lg:block animate-fade-in group">
-            <div className="relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl shadow-accent/20">
-               <img src={poster} alt={series.name} className="w-full transition-transform duration-700 group-hover:scale-110" />
+        <div className="grid lg:grid-cols-[300px_1fr] gap-6 md:gap-12 items-end">
+          <div className="animate-fade-in group flex justify-center lg:block">
+            <div className="relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl shadow-accent/20 w-32 sm:w-48 lg:w-full">
+               <img src={poster} alt={series.name} className="w-full" />
             </div>
           </div>
 
@@ -282,7 +282,7 @@ const Series = () => {
                 id={series.id} 
                 type="tv" 
                 title={series.name} 
-                className="h-16 sm:h-20 md:h-28 lg:h-40 max-w-full" 
+                className="h-10 sm:h-16 md:h-28 lg:h-40 max-w-full" 
               />
             </div>
 
