@@ -4,7 +4,7 @@
  */
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Play, Info, ChevronLeft, ChevronRight } from "lucide-react";
+import { Play, Info } from "lucide-react";
 import { IMG, TMDBMovie } from "@/services/tmdb";
 import { useLanguage } from "@/context/LanguageContext";
 import { useSettings } from "@/context/SettingsContext";
@@ -39,13 +39,7 @@ export const MovieHero = ({ items }: Props) => {
     return () => clearInterval(refreshInterval);
   }, [lastRefresh]);
 
-  const goToPrev = () => {
-    setIndex((i) => (i - 1 + pool.length) % pool.length);
-  };
 
-  const goToNext = () => {
-    setIndex((i) => (i + 1) % pool.length);
-  };
 
   if (pool.length === 0) {
     return <div className="h-[65vh] md:h-[92vh] bg-surface-secondary shimmer-gold" />;
@@ -90,23 +84,7 @@ export const MovieHero = ({ items }: Props) => {
       <div className="absolute inset-0 z-[2] grain opacity-20" />
       <div className={`absolute inset-0 z-[3] bg-gradient-to-t ${kidsMode ? 'from-background via-background/40' : 'from-surface-primary via-surface-primary/50'} to-transparent`} />
       
-      {/* Navigation Arrows */}
-      {pool.length > 1 && (
-        <>
-          <button
-            onClick={goToPrev}
-            className="absolute left-4 top-1/2 -translate-y-1/2 z-[15] w-12 h-12 rounded-full bg-surface-elevated/60 backdrop-blur border border-border flex items-center justify-center text-foreground hover:bg-surface-elevated hover:scale-110 transition-all duration-300"
-          >
-            <ChevronLeft className="w-6 h-6" />
-          </button>
-          <button
-            onClick={goToNext}
-            className="absolute right-4 top-1/2 -translate-y-1/2 z-[15] w-12 h-12 rounded-full bg-surface-elevated/60 backdrop-blur border border-border flex items-center justify-center text-foreground hover:bg-surface-elevated hover:scale-110 transition-all duration-300"
-          >
-            <ChevronRight className="w-6 h-6" />
-          </button>
-        </>
-      )}
+
 
       {/* Content — Positioned low and clear on mobile (pb-32) */}
       <div className="absolute inset-x-0 bottom-0 z-20 container pb-24 md:pb-32 lg:pb-40">
