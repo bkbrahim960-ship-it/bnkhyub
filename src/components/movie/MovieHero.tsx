@@ -82,19 +82,19 @@ export const MovieHero = ({ items }: Props) => {
             {movie.overview}
           </p>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3 flex-wrap">
             <Link
               to={`/movie/${movie.id}`}
-              className="inline-flex items-center gap-3 bg-gradient-accent text-accent-foreground font-bold px-7 md:px-10 py-3.5 md:py-5 rounded-full shadow-accent hover:scale-[1.05] active:scale-[0.98] transition-all duration-300 text-sm md:text-lg"
+              className="inline-flex items-center justify-center gap-2 bg-accent text-accent-foreground font-bold px-6 py-3.5 rounded-2xl shadow-glow hover:scale-105 transition-all text-sm md:text-base w-full sm:w-auto"
             >
-              <Play className="w-5 h-5 md:w-6 md:h-6 fill-current" />
+              <Play className="w-5 h-5 fill-current" />
               {t("hero_watch")}
             </Link>
             <Link
               to={`/movie/${movie.id}`}
-              className="inline-flex items-center gap-3 px-6 md:px-8 py-3.5 md:py-5 rounded-full border border-border bg-surface-elevated/60 backdrop-blur hover:bg-surface-elevated transition-all text-sm md:text-lg"
+              className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl border border-white/20 bg-white/10 hover:bg-white/20 transition-all text-sm md:text-base w-full sm:w-auto"
             >
-              <Info className="w-5 h-5 md:w-6 md:h-6" />
+              <Info className="w-5 h-5" />
               {t("hero_info")}
             </Link>
           </div>
