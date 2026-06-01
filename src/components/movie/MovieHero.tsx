@@ -8,6 +8,7 @@ import { Play, Info } from "lucide-react";
 import { IMG, TMDBMovie } from "@/services/tmdb";
 import { useLanguage } from "@/context/LanguageContext";
 import { useSettings } from "@/context/SettingsContext";
+import { MovieLogo } from "@/components/ui/MovieLogo";
 
 interface Props {
   items: TMDBMovie[];
@@ -86,9 +87,15 @@ export const MovieHero = ({ items }: Props) => {
             ★ {movie.vote_average.toFixed(1)}  ·  {movie.release_date?.slice(0, 4)}
           </span>
 
-          <h1 className="font-display text-3xl md:text-7xl lg:text-8xl font-bold leading-[1.05] mb-4 md:mb-8">
-            <span className="text-gradient-accent">{movie.title}</span>
-          </h1>
+          <div className="mb-4 md:mb-8">
+            <MovieLogo 
+              id={movie.id} 
+              type={(movie as any).name ? "tv" : "movie"} 
+              title={movie.title || (movie as any).name} 
+              className="h-24 md:h-36 lg:h-48 max-w-md md:max-w-xl" 
+              textClassName="text-4xl md:text-7xl lg:text-8xl text-gradient-accent" 
+            />
+          </div>
 
           <p className="text-foreground/90 text-sm md:text-xl leading-relaxed max-w-2xl mb-6 md:mb-12 line-clamp-2 md:line-clamp-none font-medium">
             {movie.overview}

@@ -24,6 +24,7 @@ import { Play, Star, Calendar, ArrowLeft, Youtube, ChevronRight, Clock, Info, Ch
 import { useAmbient } from "@/context/AmbientContext";
 import { RemotePairingButton } from "@/components/movie/RemotePairingButton";
 import { NextEpisodeOverlay } from "@/components/player/NextEpisodeOverlay";
+import { MovieLogo } from "@/components/ui/MovieLogo";
 
 const sourceIdToIndex = (srcId?: string | null): number => {
   if (!srcId) return 0;
@@ -274,9 +275,15 @@ const Series = () => {
               ))}
             </div>
 
-            <h1 className="font-display text-3xl md:text-6xl lg:text-7xl font-bold mb-4 text-white">
-              {series.name}
-            </h1>
+            <div className="mb-4">
+              <MovieLogo 
+                id={series.id} 
+                type="tv" 
+                title={series.name} 
+                className="h-20 md:h-32 lg:h-40 max-w-sm md:max-w-lg" 
+                textClassName="text-4xl md:text-6xl lg:text-7xl" 
+              />
+            </div>
 
             <div className="flex flex-wrap items-center gap-4 mb-6 text-white/70 text-sm">
               <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/5 border border-white/10">
