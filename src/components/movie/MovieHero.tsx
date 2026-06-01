@@ -19,7 +19,32 @@ export const MovieHero = ({ items }: Props) => {
   const { kidsMode } = useSettings();
   const [index, setIndex] = useState(0);
   const [lastRefresh, setLastRefresh] = useState<number>(Date.now());
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
   const pool = items.slice(0, 6);
+  
+  const MIN_SWIPE_DISTANCE = 50; // Minimum distance for swipe to register
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > MIN_SWIPE_DISTANCE;
+    const isRightSwipe = distance < -MIN_SWIPE_DISTANCE;
+    if (isLeftSwipe) {
+      setIndex((i) => (i + 1) % pool.length);
+    } else if (isRightSwipe) {
+      setIndex((i) => (i - 1 + pool.length) % pool.length);
+    }
+  };
 
   // Auto-rotate
   useEffect(() => {
@@ -54,7 +79,12 @@ export const MovieHero = ({ items }: Props) => {
   ) || movie.videos?.results.find((v) => v.site === "YouTube");
 
   return (
-    <section className="relative h-[65vh] md:h-[92vh] min-h-[400px] md:min-h-[560px] w-full overflow-hidden group">
+    <section 
+      className="relative h-[65vh] md:h-[92vh] min-h-[400px] md:min-h-[560px] w-full overflow-hidden group"
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+    >
       {/* Static Backdrops */}
       {pool.map((m, i) => {
         const img = IMG.backdrop(m.backdrop_path, "w1280");
