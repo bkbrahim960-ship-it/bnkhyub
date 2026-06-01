@@ -7,8 +7,9 @@ import { getMyProfile } from "@/services/profile";
 import { useSettings } from "@/context/SettingsContext";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
-import { Loader2, LogOut, Bell, Tablet, Lock } from "lucide-react";
+import { Loader2, LogOut, Bell, Tablet, Lock, Pencil } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
+import { KidsPinModal } from "@/components/ui/KidsPinModal";
 
 export const SmileSVG = () => (
   <svg viewBox="0 0 100 100" className="w-full h-full opacity-90 drop-shadow-sm" fill="none">
@@ -22,10 +23,13 @@ const ProfilePage = () => {
   const navigate = useNavigate();
   const { user, loading: authLoading, signOut } = useAuth();
   const { t, lang } = useLanguage();
-  const { kidsMode, setKidsMode } = useSettings();
+  const { kidsMode, setKidsMode, kidsPin, setKidsPin } = useSettings();
 
   const [username, setUsername] = useState("");
   const [loading, setLoading] = useState(true);
+  const [pinModalOpen, setPinModalOpen] = useState(false);
+  const [pinMode, setPinMode] = useState<"set" | "verify">("set");
+  const [pendingKidsMode, setPendingKidsMode] = useState<boolean | null>(null);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -50,6 +54,34 @@ const ProfilePage = () => {
 
     return () => clearTimeout(timeout);
   }, [user, authLoading]);
+
+  const handleKidsModeToggle = (newVal: boolean) => {
+    if (newVal === false && kidsPin) {
+      setPendingKidsMode(newVal);
+      setPinMode("verify");
+      setPinModalOpen(true);
+    } else if (newVal === true && !kidsPin) {
+      setPendingKidsMode(newVal);
+      setPinMode("set");
+      setPinModalOpen(true);
+    } else {
+      setKidsMode(newVal);
+    }
+  };
+
+  const handlePinSuccess = (pin?: string) => {
+    if (pinMode === "set" && pendingKidsMode !== null && pin) {
+      setKidsPin(pin);
+      setKidsMode(pendingKidsMode);
+      setPendingKidsMode(null);
+    } else if (pinMode === "set" && pendingKidsMode === null && pin) {
+      setKidsPin(pin);
+    } else if (pendingKidsMode !== null) {
+      setKidsMode(pendingKidsMode);
+      setPendingKidsMode(null);
+    }
+    setPinModalOpen(false);
+  };
 
   const handleSignOut = async () => {
     await signOut();
@@ -83,12 +115,19 @@ const ProfilePage = () => {
               </div>
               <Switch
                 checked={kidsMode}
-                onCheckedChange={setKidsMode}
+                onCheckedChange={handleKidsModeToggle}
                 className="data-[state=checked]:bg-accent"
               />
             </div>
           </div>
         </div>
+        <KidsPinModal
+          open={pinModalOpen}
+          onClose={() => setPinModalOpen(false)}
+          onSuccess={handlePinSuccess}
+          mode={pinMode}
+          currentPin={kidsPin}
+        />
       </Layout>
     );
   }
@@ -140,16 +179,30 @@ const ProfilePage = () => {
           </div>
 
           {/* Kids Mode */}
-          <div className="mb-6 flex items-center justify-between p-4 rounded-xl bg-surface-primary border border-border">
-            <div>
-              <p className="text-sm font-semibold">{t("profile_kids_mode") || "Mode Enfants"}</p>
-              <p className="text-xs text-muted-foreground mt-1">{t("profile_kids_mode_desc") || "Filtrer le contenu non adapté aux plus jeunes"}</p>
+          <div className="mb-6 flex flex-col gap-3 p-4 rounded-xl bg-surface-primary border border-border">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-semibold">{t("profile_kids_mode") || "Mode Enfants"}</p>
+                <p className="text-xs text-muted-foreground mt-1">{t("profile_kids_mode_desc") || "Filtrer le contenu non adapté aux plus jeunes"}</p>
+              </div>
+              <Switch
+                checked={kidsMode}
+                onCheckedChange={handleKidsModeToggle}
+                className="data-[state=checked]:bg-accent"
+              />
             </div>
-            <Switch
-              checked={kidsMode}
-              onCheckedChange={setKidsMode}
-              className="data-[state=checked]:bg-accent"
-            />
+            {kidsPin && (
+              <button
+                onClick={() => {
+                  setPinMode("set");
+                  setPendingKidsMode(null);
+                  setPinModalOpen(true);
+                }}
+                className="text-xs text-accent hover:text-accent/80 flex items-center gap-1 self-end"
+              >
+                <Pencil className="w-3 h-3" /> تغيير الرقم السري
+              </button>
+            )}
           </div>
 
           {/* Notifications */}
@@ -199,6 +252,13 @@ const ProfilePage = () => {
 
         </div>
       </div>
+      <KidsPinModal
+        open={pinModalOpen}
+        onClose={() => setPinModalOpen(false)}
+        onSuccess={handlePinSuccess}
+        mode={pinMode}
+        currentPin={kidsPin}
+      />
     </Layout>
   );
 };

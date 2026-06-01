@@ -238,11 +238,11 @@ const Home = () => {
     setLoading(true);
 
     const heroIds = [
-      { id: 71446, type: "tv" }, // Money Heist
       { id: 126732, type: "tv" }, // FROM
       { id: 1028679, type: "tv" }, // NEMESIS
       { id: 94997, type: "tv" }, // House of the Dragon
-      { id: 201667, type: "tv" } // Berlin
+      { id: 201667, type: "tv" }, // Berlin
+      { id: 71446, type: "tv" } // Money Heist
     ];
 
     if (kidsMode) {

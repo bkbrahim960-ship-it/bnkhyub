@@ -4,6 +4,8 @@ interface SettingsCtx {
   kidsMode: boolean;
   setKidsMode: (val: boolean) => void;
   toggleKidsMode: () => void;
+  kidsPin: string | null;
+  setKidsPin: (pin: string | null) => void;
 }
 
 const Ctx = createContext<SettingsCtx | null>(null);
@@ -22,9 +24,28 @@ export const SettingsProvider = ({ children }: { children: ReactNode }) => {
     }
   });
 
+  const [kidsPin, setKidsPinState] = useState<string | null>(() => {
+    if (typeof window === "undefined") return null;
+    const saved = localStorage.getItem(STORAGE);
+    if (!saved) return null;
+    try {
+      const parsed = JSON.parse(saved);
+      return parsed.kidsPin || null;
+    } catch {
+      return null;
+    }
+  });
+
   const setKidsMode = (val: boolean) => {
     setKidsModeState(val);
-    localStorage.setItem(STORAGE, JSON.stringify({ kidsMode: val }));
+    const current = JSON.parse(localStorage.getItem(STORAGE) || "{}");
+    localStorage.setItem(STORAGE, JSON.stringify({ ...current, kidsMode: val }));
+  };
+
+  const setKidsPin = (pin: string | null) => {
+    setKidsPinState(pin);
+    const current = JSON.parse(localStorage.getItem(STORAGE) || "{}");
+    localStorage.setItem(STORAGE, JSON.stringify({ ...current, kidsPin: pin }));
   };
 
   const toggleKidsMode = () => {
@@ -41,7 +62,7 @@ export const SettingsProvider = ({ children }: { children: ReactNode }) => {
   }, [kidsMode]);
 
   return (
-    <Ctx.Provider value={{ kidsMode, setKidsMode, toggleKidsMode }}>
+    <Ctx.Provider value={{ kidsMode, setKidsMode, toggleKidsMode, kidsPin, setKidsPin }}>
       {children}
     </Ctx.Provider>
   );
