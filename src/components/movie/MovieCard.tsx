@@ -118,7 +118,7 @@ export const MovieCard = memo(({ id, title, posterPath, year, rating, type = "mo
                 {type === 'movie' ? (lang === 'ar' ? 'تشغيل' : 'Lecture') : (lang === 'ar' ? 'حلقات' : 'Épisodes')}
               </span>
             </div>
-            <h3 className="text-white font-display font-black text-sm md:text-lg leading-tight line-clamp-2 drop-shadow-2xl">
+            <h3 className="text-white font-display font-black text-xs sm:text-sm md:text-base lg:text-lg leading-tight line-clamp-2 drop-shadow-2xl">
               {title}
             </h3>
           </div>
@@ -127,7 +127,7 @@ export const MovieCard = memo(({ id, title, posterPath, year, rating, type = "mo
 
       {/* External Info (Visible when not hovered) */}
       <div className="mt-3 px-1 group-hover:opacity-0 group-hover:translate-y-2 transition-all duration-500">
-        <h3 className="font-body font-bold text-xs sm:text-sm text-foreground/90 line-clamp-1 mb-1">
+        <h3 className="font-body font-bold text-[10px] sm:text-xs md:text-sm text-foreground/90 line-clamp-1 mb-1">
           {title}
         </h3>
         <div className="flex items-center gap-2">

@@ -280,8 +280,7 @@ const Series = () => {
                 id={series.id} 
                 type="tv" 
                 title={series.name} 
-                className="h-20 md:h-32 lg:h-40 max-w-sm md:max-w-lg" 
-                textClassName="text-4xl md:text-6xl lg:text-7xl" 
+                className="h-16 sm:h-20 md:h-28 lg:h-40 max-w-full" 
               />
             </div>
 
