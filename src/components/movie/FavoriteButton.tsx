@@ -48,7 +48,7 @@ export const FavoriteButton = ({ tmdbId, mediaType, title, posterPath, backdropP
     setLoading(false);
   };
 
-  if (!user) return null;
+  // If not logged in, show a placeholder or just the button that does nothing (or prompt login later)
 
   return (
     <button
