@@ -1,5 +1,104 @@
 export const KABYLE_CONTENT = [
   {
+    id: 'm-uq-907jor35z6se',
+    title: 'SHREK 1',
+    description: 'Afilm n teqbaylit.',
+    thumbnail: 'https://kabyletv.alwaysdata.net/image/69199338_af.jpg',
+    category: 'Afilm',
+    year: '—',
+    rating: 4.5,
+    isDubbed: false,
+    videoUrl: 'https://drive.google.com/file/d/1JH7dOzUh7zvqQFQIpH9AFH8cn4fGU5L9/preview'
+  },
+  {
+    id: 'm-uq-aoxz0qpfb7q3',
+    title: 'SHREK 2',
+    description: 'Afilm n teqbaylit.',
+    thumbnail: 'https://kabyletv.alwaysdata.net/image/images.jpg',
+    category: 'Afilm',
+    year: '—',
+    rating: 4.5,
+    isDubbed: false,
+    videoUrl: 'https://drive.google.com/file/d/10U71A9U77ie5ntmeJ-qpTyT_cqNYC1na/preview'
+  },
+  {
+    id: 'm-uq-45cizb3g988j',
+    title: 'QEZBOUL 1',
+    description: 'Afilm n teqbaylit.',
+    thumbnail: 'https://kabyletv.alwaysdata.net/image/qezboul.jpg',
+    category: 'Afilm',
+    year: '—',
+    rating: 4.5,
+    isDubbed: false,
+    videoUrl: 'https://drive.google.com/file/d/10YsnKT740a4un3l7sI1xTSHxej0aDO5L/preview'
+  },
+  {
+    id: 'm-uq-cz2hwbawnuwe',
+    title: 'LI MUCUCU 2',
+    description: 'Afilm n teqbaylit.',
+    thumbnail: 'https://kabyletv.alwaysdata.net/image/96d8323186702e3b8a51fed19adb7a6d.jpg',
+    category: 'Afilm',
+    year: '—',
+    rating: 4.5,
+    isDubbed: false,
+    videoUrl: 'https://drive.google.com/file/d/11PMmYbOwJdpZLYoMd4gi4WzvC-56mL8_/preview'
+  },
+  {
+    id: 'm-uq-0jc0s8bdovy8',
+    title: 'LI MUCUCU 3',
+    description: 'Afilm n teqbaylit.',
+    thumbnail: 'https://kabyletv.alwaysdata.net/image/download.jpg',
+    category: 'Afilm',
+    year: '—',
+    rating: 4.5,
+    isDubbed: false,
+    videoUrl: 'https://drive.google.com/file/d/12PVvtMqYnj9ClakPcVHNtTnoGC-r6FSc/preview'
+  },
+  {
+    id: 'm-uq-wr2rr1s0488m',
+    title: '3CHOUCHA',
+    description: 'Afilm n teqbaylit.',
+    thumbnail: 'https://kabyletv.alwaysdata.net/image/20186089.jpg',
+    category: 'Afilm',
+    year: '—',
+    rating: 4.5,
+    isDubbed: false,
+    videoUrl: 'https://drive.google.com/file/d/14vOckU9B3fT2KbZdSGq69OxAd_ioE0da/preview'
+  },
+  {
+    id: 'm-uq-k0e4kayth43b',
+    title: 'QIQI VU LEMRAQI',
+    description: 'Afilm n teqbaylit.',
+    thumbnail: 'https://kabyletv.alwaysdata.net/image/51eJoWwodML._AC_UF1000,1000_QL80_.jpg',
+    category: 'Afilm',
+    year: '—',
+    rating: 4.5,
+    isDubbed: false,
+    videoUrl: 'https://drive.google.com/file/d/12mNbkqj5bBmjNCuv0NBAj0_KX0Ot1Q0v/preview'
+  },
+  {
+    id: 'm-iferfucen',
+    title: 'Iferfucen',
+    description: 'Asaru n uḍsa i d-yettwanefk ɣef yimeṭṭawen n leqbayel.',
+    thumbnail: 'https://github.com/amazighkab/cinema-kabyle/blob/master/img/iferfucen.jpg?raw=true',
+    category: 'Uḍsa • Akalas',
+    year: '2013',
+    rating: 4.3,
+    isDubbed: false,
+    videoUrl: 'https://drive.google.com/file/d/1OrJYhJmsQuXys8Az8_dIZdoWrZm45gxW/preview'
+  },
+  {
+    id: 'm-at-dawuzru',
+    title: 'At Dawuzru',
+    description: 'D afilm n tmaziɣt i d-yettmeslayen ɣef tudert d imeṭṭawen n leqbayel.',
+    thumbnail: 'https://github.com/amazighkab/cinema-kabyle/blob/master/img/atdawuzru.jpg?raw=true',
+    category: 'Amazruy • Tasawant',
+    year: '2015',
+    rating: 4.6,
+    isDubbed: false,
+    videoUrl: 'https://drive.google.com/file/d/1C3cjgIbRZ0FYz2F7W-JEWtQY09DwmLXw/preview'
+  },
+  {
     id: 'm-hmimi-lyes',
     title: 'Ḥmimi d Lyes',
     description: 'Ḥmimi d Lyes, d asaru n unecreḥ, yettales-d yiwet n tmacahut yellan deg zman anda llan idinuẓuṛen !',
@@ -12,7 +111,7 @@ export const KABYLE_CONTENT = [
   },
   {
     id: 'm-amechah-new',
-    title: 'Amecḥaḥ',
+    title: 'Amechah',
     description: 'D asaru n uḍsa n teqbaylit yettmeslayen ɣef yiwen n umechaḥ i iḥemmlen idrimen aṭas.',
     thumbnail: 'https://i.ytimg.com/vi/xJTRs4u-FgU/hq720.jpg',
     category: 'Uḍsa • Akalas',
@@ -31,17 +130,6 @@ export const KABYLE_CONTENT = [
     rating: 4.8,
     isDubbed: true,
     videoUrl: 'https://odysee.com/$/embed/@asekles:d/Ixerri-izimer:1'
-  },
-  {
-    id: 'm-at-dawuzru',
-    title: 'At Dawuzru',
-    description: 'D afilm n tmaziɣt i d-yettmeslayen ɣef tudert d imeṭṭawen n leqbayel.',
-    thumbnail: 'https://github.com/amazighkab/cinema-kabyle/blob/master/img/atdawuzru.jpg?raw=true',
-    category: 'Amazruy • Tasawant',
-    year: '2015',
-    rating: 4.6,
-    isDubbed: false,
-    videoUrl: 'https://vk.com/video_ext.php?oid=267205663&id=169867258&hash=c9c250a4dfcef4f9&hd=2'
   },
   {
     id: 'm-bebelilly',
@@ -88,17 +176,6 @@ export const KABYLE_CONTENT = [
     videoUrl: 'https://luluvid.com/ftbi9zs1g70i'
   },
   {
-    id: 'm-iferfucen',
-    title: 'Iferfucen',
-    description: 'Asaru n uḍsa i d-yettwanefk ɣef yimeṭṭawen n leqbayel.',
-    thumbnail: 'https://github.com/amazighkab/cinema-kabyle/blob/master/img/iferfucen.jpg?raw=true',
-    category: 'Uḍsa • Akalas',
-    year: '2013',
-    rating: 4.3,
-    isDubbed: false,
-    videoUrl: 'https://vk.com/video_ext.php?oid=267205663&id=169791511&hash=449213e4d507224e&hd=1'
-  },
-  {
     id: 'm-skarfez',
     title: 'Skarfez',
     description: 'Afilm n tmaziɣt i d-yettmeslayen ɣef tazmert d tefsut n teqbaylit.',
@@ -121,103 +198,81 @@ export const KABYLE_CONTENT = [
     videoUrl: 'https://vk.com/video_ext.php?oid=267205663&id=169785631&hash=7657c6a4d329bba1&hd=1'
   },
   {
-    id: 'm-uq-wr2rr1s0488m',
-    title: 'Afilm 1',
-    description: 'Afilm n teqbaylit (UQload).',
-    thumbnail: 'https://kabyletv.alwaysdata.net/image/20186089.jpg',
-    category: 'Afilm',
-    year: '—',
-    rating: 4.5,
-    isDubbed: false,
-    videoUrl: 'https://uqload.com/embed-wr2rr1s0488m.html'
-  },
-  {
-    id: 'm-uq-cz2hwbawnuwe',
-    title: 'Afilm 2',
-    description: 'Afilm n teqbaylit (UQload).',
-    thumbnail: 'https://kabyletv.alwaysdata.net/image/96d8323186702e3b8a51fed19adb7a6d.jpg',
-    category: 'Afilm',
-    year: '—',
-    rating: 4.5,
-    isDubbed: false,
-    videoUrl: 'https://uqload.com/embed-cz2hwbawnuwe.html'
-  },
-  {
-    id: 'm-uq-0jc0s8bdovy8',
-    title: 'Afilm 3',
-    description: 'Afilm n teqbaylit (UQload).',
-    thumbnail: 'https://kabyletv.alwaysdata.net/image/download.jpg',
-    category: 'Afilm',
-    year: '—',
-    rating: 4.5,
-    isDubbed: false,
-    videoUrl: 'https://uqload.com/embed-0jc0s8bdovy8.html'
-  },
-  {
     id: 'm-uq-7fiyh3verof3',
-    title: 'Afilm 4',
-    description: 'Afilm n teqbaylit (UQload).',
+    title: 'PUCCI 1',
+    description: 'Afilm n teqbaylit.',
     thumbnail: 'https://kabyletv.alwaysdata.net/image/p1.jpg',
     category: 'Afilm',
     year: '—',
     rating: 4.5,
     isDubbed: false,
-    videoUrl: 'https://uqload.com/embed-7fiyh3verof3.html'
+    videoUrl: 'https://drive.google.com/file/d/1IKw50lpRk1fBEK_WwuNb8RM7fzvBuMN7/preview'
   },
   {
     id: 'm-uq-eg8hie3ioj54',
-    title: 'Afilm 5',
-    description: 'Afilm n teqbaylit (UQload).',
+    title: 'PUCCI 3',
+    description: 'Afilm n teqbaylit.',
     thumbnail: 'https://kabyletv.alwaysdata.net/image/19099924.jpg',
     category: 'Afilm',
     year: '—',
     rating: 4.5,
     isDubbed: false,
-    videoUrl: 'https://uqload.com/embed-eg8hie3ioj54.html'
+    videoUrl: 'https://drive.google.com/file/d/1IRTVOEbg8bbAd7Il9annRVV8nAFTL4D3/preview'
   },
   {
-    id: 'm-uq-k0e4kayth43b',
-    title: 'Afilm 6',
-    description: 'Afilm n teqbaylit (UQload).',
-    thumbnail: 'https://kabyletv.alwaysdata.net/image/51eJoWwodML._AC_UF1000,1000_QL80_.jpg',
+    id: 'm-pucci-2',
+    title: 'PUCCI 2',
+    description: 'Afilm n teqbaylit.',
+    thumbnail: 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjPPMT84TfOLBEMLhYzgoe9d_QmNCbLaUoY07Xeobr3BJpYxzreDKkPhWXl0BHmbDUFM0K1BnBX_2dKp6lBOGRDA5ahQre2XWftUTzgfFhWsGbWnCfAFE0XI_KMJhpLd-j3iPQvy6GXbesyF_Fhzb4LVLufC41T5wx8wpPaan01kug5omLwnqgVTGTNalmB/s320/1000165054.jpg',
     category: 'Afilm',
     year: '—',
     rating: 4.5,
     isDubbed: false,
-    videoUrl: 'https://uqload.com/embed-k0e4kayth43b.html'
+    videoUrl: 'https://drive.google.com/file/d/1LspF-P1lzf2zrOFJBeUm_wk45LZixZLZ/preview'
   },
   {
-    id: 'm-uq-45cizb3g988j',
-    title: 'Afilm 7',
-    description: 'Afilm n teqbaylit (UQload).',
+    id: 'm-pucci-4',
+    title: 'PUCCI 4',
+    description: 'Afilm n teqbaylit.',
+    thumbnail: 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgIcoFYrnv9jXEyNVlGqjdCwEsjcnF45W6_NJ-J4zjhw5RAVTDw6_lZh2x_k6w8Tf0zkIXRk3GpFJqP-uuK3FTDlAEIxDYSJAyRHUXn-fW4S0pxjaMLq5EcvQEoIszFYnSO9FOKdLeBcV-zCs4R4dxmlbQ2lTag1A4m_tvNMH2JSvaH7Me6ygtxf0-sjTbm/s320/1000152405.jpg',
+    category: 'Afilm',
+    year: '—',
+    rating: 4.5,
+    isDubbed: false,
+    videoUrl: 'https://drive.google.com/file/d/15dQ0YPyBWqISkTQYZhcGQGyT9GB5EjMi/preview'
+  },
+  {
+    id: 'm-qezbul-2',
+    title: 'Qezbul 2',
+    description: 'Afilm n teqbaylit.',
     thumbnail: 'https://kabyletv.alwaysdata.net/image/qezboul.jpg',
     category: 'Afilm',
     year: '—',
     rating: 4.5,
     isDubbed: false,
-    videoUrl: 'https://uqload.com/embed-45cizb3g988j.html'
+    videoUrl: 'https://drive.google.com/file/d/16FcfrSBtlfaHSSOGxnzaBYeBwZypnR0_/preview'
   },
   {
-    id: 'm-uq-907jor35z6se',
-    title: 'Afilm 8',
-    description: 'Afilm n teqbaylit (UQload).',
-    thumbnail: 'https://kabyletv.alwaysdata.net/image/69199338_af.jpg',
+    id: 'm-rubiccu',
+    title: 'Rubiccu',
+    description: 'Afilm n teqbaylit.',
+    thumbnail: 'https://kabyletv.alwaysdata.net/image/51eJoWwodML._AC_UF1000,1000_QL80_.jpg',
     category: 'Afilm',
     year: '—',
     rating: 4.5,
     isDubbed: false,
-    videoUrl: 'https://uqload.com/embed-907jor35z6se.html'
+    videoUrl: 'https://drive.google.com/file/d/17ys3g2svR20cXNOrczSxpvsbMLhE8aZu/preview'
   },
   {
-    id: 'm-uq-aoxz0qpfb7q3',
-    title: 'Afilm 9',
-    description: 'Afilm n teqbaylit (UQload).',
-    thumbnail: 'https://kabyletv.alwaysdata.net/image/images.jpg',
+    id: 'm-kipus',
+    title: 'Kipus',
+    description: 'Afilm n teqbaylit.',
+    thumbnail: 'https://amazigh-tv.site/images/kypous.jpg',
     category: 'Afilm',
     year: '—',
     rating: 4.5,
     isDubbed: false,
-    videoUrl: 'https://uqload.com/embed-aoxz0qpfb7q3.html'
+    videoUrl: 'https://drive.google.com/file/d/16eCNjjpRivz_WVvJwxgaY0rXlL0EIhuw/preview'
   }
 ];
 
@@ -377,7 +432,10 @@ export const MOCK_ISEFRA: IsefraItem[] = [
     id: 'i1',
     title: 'Abrid n Tidet',
     author: 'Si Muhand U Mhand',
-    content: `Abrid n tidet d azewwar\nWigad i d-yeṭṭfen deg-s ur nheddar\nLukan d netta i d ṣṣwab\nTili nufa-d lberr deg imsar`,
+    content: `Abrid n tidet d azewwar
+Wigad i d-yeṭṭfen deg-s ur nheddar
+Lukan d netta i d ṣṣwab
+Tili nufa-d lberr deg imsar`,
     meaning: 'The path of truth is heavy. Those who hold it do not speak in vain.'
   }
 ];
