@@ -63,8 +63,8 @@ export const KidsPinModal = ({ open, onClose, onSuccess, mode, currentPin }: Kid
               <InputOTPSlot index={1} />
               <InputOTPSlot index={2} />
               <InputOTPSlot index={3} />
-            </InputOTPSlot>
-          </InputOTPGroup>
+            </InputOTPGroup>
+          </InputOTP>
 
           {mode === "set" && (
             <>
@@ -76,7 +76,7 @@ export const KidsPinModal = ({ open, onClose, onSuccess, mode, currentPin }: Kid
                   <InputOTPSlot index={2} />
                   <InputOTPSlot index={3} />
                 </InputOTPGroup>
-              </InputOTPGroup>
+              </InputOTP>
             </>
           )}
 
