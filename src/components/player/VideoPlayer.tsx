@@ -324,6 +324,22 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
     };
   }, [isWebFullscreen]);
 
+  // Auto fullscreen for Google Drive (Kabyle) movies
+  useEffect(() => {
+    if (playerActive && allSources[sourceIndex]?.includes("drive.google.com") && playerContainerRef.current) {
+      const container = playerContainerRef.current;
+      if (container.requestFullscreen) {
+        container.requestFullscreen().catch(() => {});
+      } else if ((container as any).webkitRequestFullscreen) {
+        (container as any).webkitRequestFullscreen();
+      } else if ((container as any).mozRequestFullScreen) {
+        (container as any).mozRequestFullScreen();
+      } else if ((container as any).msRequestFullscreen) {
+        (container as any).msRequestFullscreen();
+      }
+    }
+  }, [playerActive, allSources, sourceIndex]);
+
   return (
     <div className="w-full max-w-5xl mx-auto">
       <AdsNoticeModal open={adsOpen} onAccept={() => {
