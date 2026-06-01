@@ -67,23 +67,21 @@ export const MovieLogo = ({ id, type, title, className = "h-20 md:h-32", textCla
     return () => { mounted = false; };
   }, [id, type, isVisible]);
 
-  if (logoUrl) {
-    return (
-      <img 
-        ref={containerRef}
-        src={logoUrl} 
-        alt={title} 
-        className={`object-contain object-left ${className} drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)] filter brightness-110 contrast-125 transition-all duration-700`}
-        loading="lazy"
-        decoding="async"
-      />
-    );
-  }
-
-  // Fallback to text if no logo exists or still loading
   return (
-    <h1 ref={containerRef} className={`font-display font-bold leading-[1.1] ${textClassName} ${loading ? "opacity-50" : "opacity-100"} transition-opacity duration-500`}>
-      <span className="text-white drop-shadow-2xl">{title}</span>
-    </h1>
+    <div ref={containerRef} className={`flex items-center w-full h-full ${className}`}>
+      {logoUrl ? (
+        <img 
+          src={logoUrl} 
+          alt={title} 
+          className="w-full h-full object-contain object-left drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)] filter brightness-110 contrast-125 transition-all duration-700"
+          loading="lazy"
+          decoding="async"
+        />
+      ) : (
+        <h1 className={`font-display font-bold leading-[1.1] ${textClassName} ${loading ? "opacity-50" : "opacity-100"} transition-opacity duration-500 w-full truncate`}>
+          <span className="text-white drop-shadow-2xl">{title}</span>
+        </h1>
+      )}
+    </div>
   );
 };
