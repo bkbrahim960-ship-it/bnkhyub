@@ -353,7 +353,10 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
         }}
       />
 
-      <div ref={containerRef} className={`relative w-full aspect-video bg-black rounded-2xl overflow-hidden border border-white/10 shadow-2xl group/player transition-all duration-500 ${isWebFullscreen ? 'fixed inset-0 z-[1000] rounded-none !aspect-auto h-screen' : ''}`}>
+      <div 
+        ref={containerRef} 
+        className={`relative w-full ${allSources[sourceIndex]?.includes("drive.google.com") ? "aspect-[16/11] md:aspect-[16/10] rounded-lg" : "aspect-video rounded-2xl"} bg-black overflow-hidden border border-white/10 shadow-2xl group/player transition-all duration-500 ${isWebFullscreen ? 'fixed inset-0 z-[1000] rounded-none !aspect-auto h-screen' : ''}`}
+      >
         
         {/* Permanent Brand Watermark */}
         {playerActive && sourceIndex === 0 && (
