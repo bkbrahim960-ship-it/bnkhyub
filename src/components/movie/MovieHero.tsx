@@ -84,18 +84,7 @@ export const MovieHero = ({ items }: Props) => {
         );
       })}
 
-      {/* Video Backdrop with Autoplay */}
-      {trailer?.key && (
-        <div className="absolute inset-0 z-[1]">
-          <iframe
-            src={`https://www.youtube.com/embed/${trailer.key}?autoplay=1&mute=1&controls=0&loop=1&playlist=${trailer.key}&rel=0&showinfo=0&modestbranding=1&iv_load_policy=3&vq=hd1080&playsinline=1&disablekb=1&fs=0&enablejsapi=1`}
-            title="Trailer"
-            className="absolute inset-0 w-full h-full object-cover object-top"
-            allow="autoplay; encrypted-media; fullscreen"
-            style={{ border: 0 }}
-          />
-        </div>
-      )}
+
 
       {/* Overlays */}
       <div className="absolute inset-0 z-[2] grain opacity-20" />
