@@ -267,6 +267,7 @@ const Series = () => {
           </div>
 
           <div className="animate-fade-slide-up">
+            {/* Genres */}
             <div className="flex flex-wrap gap-2 mb-4">
               {series.genres?.slice(0, 3).map(g => (
                 <span key={g.id} className="px-3 py-1 rounded-full bg-accent/10 border border-accent/20 text-[10px] font-bold uppercase tracking-widest text-accent">
@@ -275,6 +276,7 @@ const Series = () => {
               ))}
             </div>
 
+            {/* Series Title */}
             <div className="mb-4">
               <MovieLogo 
                 id={series.id} 
@@ -284,7 +286,8 @@ const Series = () => {
               />
             </div>
 
-            <div className="flex flex-wrap items-center gap-4 mb-6 text-white/70 text-sm">
+            {/* Meta Info */}
+            <div className="flex flex-wrap items-center gap-4 mb-4 text-white/70 text-sm">
               <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/5 border border-white/10">
                 <Star className="w-4 h-4 text-accent fill-accent" />
                 <span className="font-black text-white">{series.vote_average.toFixed(1)}</span>
@@ -293,43 +296,41 @@ const Series = () => {
               <span className="px-2 py-0.5 rounded bg-accent/10 text-accent text-[10px] font-bold">{series.number_of_seasons} SAISONS</span>
             </div>
 
-            <p className="text-white/60 text-base md:text-lg max-w-3xl leading-relaxed mb-8 line-clamp-3">
+            {/* Overview */}
+            <p className="text-white/60 text-base md:text-lg max-w-3xl leading-relaxed mb-6 line-clamp-3">
               {series.overview}
             </p>
 
-            <div className="flex flex-col gap-4">
-              {/* Primary Actions */}
-              <div className="flex items-center gap-3 flex-wrap">
-                <button
-                  onClick={() => handleEpisodeClick(1)}
-                  className="inline-flex items-center justify-center gap-2 bg-accent text-accent-foreground px-6 py-3.5 rounded-2xl font-bold shadow-glow hover:scale-105 transition-all text-sm md:text-base shrink-0 w-full sm:w-auto"
-                >
-                  <Play className="w-5 h-5 fill-current" /> {t("hero_watch")}
-                </button>
+            {/* Primary Action Button (Watch) */}
+            <button
+              onClick={() => handleEpisodeClick(1)}
+              className="inline-flex items-center justify-center gap-2 bg-accent text-accent-foreground px-8 py-4 rounded-2xl font-bold shadow-glow hover:scale-105 transition-all text-sm md:text-base mb-6 w-full sm:w-auto"
+            >
+              <Play className="w-5 h-5 fill-current" /> {t("hero_watch")}
+            </button>
 
-                {trailer && (
-                  <button
-                    onClick={() => setShowTrailer(true)}
-                    className="inline-flex items-center justify-center gap-2 bg-white/10 border border-white/20 text-white px-6 py-3.5 rounded-2xl font-bold hover:bg-white/20 hover:scale-105 transition-all text-sm md:text-base shrink-0 w-full sm:w-auto"
-                  >
-                    <Youtube className="w-5 h-5 text-red-500" /> {t("hero_trailer")}
-                  </button>
-                )}
+            {/* Secondary Icon Buttons (All same size, modern) */}
+            <div className="flex items-center gap-3">
+              {trailer && (
+                <button
+                  onClick={() => setShowTrailer(true)}
+                  className="flex items-center justify-center w-12 h-12 rounded-2xl bg-white/10 border border-white/20 text-white hover:bg-white/20 hover:scale-105 transition-all"
+                  title={t("hero_trailer")}
+                >
+                  <Youtube className="w-5 h-5 text-red-500" />
+                </button>
+              )}
+
+              <div className="flex items-center justify-center w-12 h-12 rounded-2xl bg-white/10 border border-white/20">
+                <FavoriteButton tmdbId={series.id} mediaType="tv" title={series.name} posterPath={series.poster_path} />
               </div>
 
-              {/* Secondary Actions (Icons) */}
-              <div className="flex items-center gap-3">
-                <div className="flex items-center gap-2 bg-white/5 border border-white/10 px-4 py-2.5 rounded-2xl">
-                  <FavoriteButton tmdbId={series.id} mediaType="tv" title={series.name} posterPath={series.poster_path} />
-                </div>
+              <div className="flex items-center justify-center w-12 h-12 rounded-2xl bg-white/10 border border-white/20">
+                <RemotePairingButton />
+              </div>
 
-                <div className="flex items-center gap-2 bg-white/5 border border-white/10 px-4 py-2.5 rounded-2xl">
-                  <RemotePairingButton />
-                </div>
-
-                <div className="flex items-center gap-2 bg-white/5 border border-white/10 px-4 py-2.5 rounded-2xl">
-                  <ShareButtons title={series.name} />
-                </div>
+              <div className="flex items-center justify-center w-12 h-12 rounded-2xl bg-white/10 border border-white/20">
+                <ShareButtons title={series.name} />
               </div>
             </div>
           </div>
