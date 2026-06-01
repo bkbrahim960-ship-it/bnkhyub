@@ -355,7 +355,7 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
 
       <div 
         ref={containerRef} 
-        className={`relative w-full ${allSources[sourceIndex]?.includes("drive.google.com") ? "aspect-[16/11] md:aspect-[16/10] rounded-lg" : "aspect-video rounded-2xl"} bg-black overflow-hidden border border-white/10 shadow-2xl group/player transition-all duration-500 ${isWebFullscreen ? 'fixed inset-0 z-[1000] rounded-none !aspect-auto h-screen' : ''}`}
+        className={`relative w-full ${allSources[sourceIndex]?.includes("drive.google.com") ? "aspect-[4/3] md:aspect-[16/10] rounded-lg" : "aspect-video rounded-2xl"} bg-black overflow-hidden border border-white/10 shadow-2xl group/player transition-all duration-500 ${isWebFullscreen ? 'fixed inset-0 z-[1000] rounded-none !aspect-auto h-screen' : ''}`}
       >
         
         {/* Permanent Brand Watermark */}
@@ -401,16 +401,26 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
             playsInline
             // @ts-ignore
             webkit-playsinline="true"
+            onLoadStart={() => setLoading(true)}
+            onPlaying={() => { setLoading(false); setHasResumed(true); }}
+            onWaiting={() => setLoading(true)}
+            onTimeUpdate={(e) => {
+              const current = (e.target as HTMLVideoElement).currentTime;
+              const duration = (e.target as HTMLVideoElement).duration;
+              
+              if (current > 0 && Math.abs(current - lastSaveTime.current) >= 10) {
+                lastSaveTime.current = current;
+                saveProgress(current, duration);
+              }
+            }}
+            onEnded={() => {
+              if (user && historyIdRef.current) {
+                supabase.from('watch_history').update({ completed: true }).eq('id', historyIdRef.current);
+              }
+            }}
           >
-            {appliedExternalSub && (
-              <track 
-                src={appliedExternalSub} 
-                kind="subtitles" 
-                srcLang="ar" 
-                label="Arabe (Online)" 
-                default 
-              />
-            )}
+            {appliedInternalSub && <track kind="subtitles" src={appliedInternalSub} srcLang="ar" label="Arabic" default />}
+            {appliedExternalSub && <track kind="subtitles" src={appliedExternalSub} srcLang="ar" label="Arabic" default />}
           </video>
         )}
 
@@ -442,7 +452,6 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
             allowTransparency
             frameBorder="0"
             scrolling="no"
-            {...((allSources[sourceIndex]?.includes("drive.google.com") || allSources[sourceIndex]?.includes("vk.com") || allSources[sourceIndex]?.includes("odysee.com") || allSources[sourceIndex]?.includes("dailymotion.com") || allSources[sourceIndex]?.includes("luluvid.com")) ? {} : { sandbox: "allow-same-origin allow-scripts allow-forms" })}
             onLoad={handleLoad}
             className="absolute inset-0 w-full h-full border-0 transition-opacity duration-700"
           />
