@@ -128,8 +128,8 @@ export const MovieHero = ({ items }: Props) => {
               id={movie.id} 
               type={isTV ? "tv" : "movie"} 
               title={movie.title || (movie as any).name} 
-              className="h-24 md:h-36 lg:h-48 max-w-md md:max-w-xl" 
-              textClassName="text-4xl md:text-7xl lg:text-8xl text-gradient-accent" 
+              className="h-16 md:h-24 lg:h-32 max-w-xs md:max-w-lg" 
+              textClassName="text-2xl md:text-5xl lg:text-6xl text-gradient-accent" 
             />
           </div>
 
