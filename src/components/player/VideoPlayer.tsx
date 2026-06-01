@@ -485,9 +485,6 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
             };
           })}
           onSelect={selectSource}
-          onToggleSettings={() => { setActiveTab("speed"); setShowSettings(true); }}
-          onToggleSubtitles={() => { setActiveTab("subtitle"); setShowSettings(true); }}
-          onToggleQuality={() => { setActiveTab("quality"); setShowSettings(true); }}
           isLoading={false}
         />
       </div>

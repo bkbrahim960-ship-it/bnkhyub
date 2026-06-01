@@ -2,9 +2,7 @@ import {
   Server, 
   ChevronDown,
   Check,
-  Loader2,
-  Captions,
-  Settings
+  Loader2
 } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { 
@@ -26,16 +24,12 @@ interface Source {
 interface Props {
   sources: Source[];
   onSelect: (index: number) => void;
-  onToggleSettings?: () => void;
-  onToggleSubtitles?: () => void;
   isLoading?: boolean;
 }
 
 export const PlayerSourceSelector = ({ 
   sources, 
   onSelect, 
-  onToggleSettings,
-  onToggleSubtitles,
   isLoading 
 }: Props) => {
   const { lang } = useLanguage();
@@ -56,15 +50,6 @@ export const PlayerSourceSelector = ({
   return (
     <div className="w-full mt-6 flex flex-col items-center gap-6 animate-in fade-in slide-in-from-bottom-4 duration-1000">
       <div className="flex flex-wrap items-center justify-center gap-4">
-        {/* Settings Button */}
-        <button 
-          onClick={onToggleSettings}
-          className="p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-accent/40 hover:bg-white/10 transition-all group"
-          aria-label="Settings"
-        >
-          <Settings className="w-6 h-6 text-white/40 group-hover:text-accent transition-colors" />
-        </button>
-
         {/* Large Centered Server Selector */}
         <div className="flex items-center gap-3">
           <Popover>
@@ -100,16 +85,6 @@ export const PlayerSourceSelector = ({
             </PopoverContent>
           </Popover>
         </div>
-
-        {/* Subtitles Button */}
-        <button 
-          onClick={onToggleSubtitles}
-          className="p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-accent/40 hover:bg-white/10 transition-all group relative"
-          aria-label="Subtitles"
-        >
-          <Captions className="w-6 h-6 text-white/40 group-hover:text-accent transition-colors" />
-          <span className="absolute -top-1 -right-1 w-2 h-2 bg-accent rounded-full animate-pulse shadow-glow-sm" />
-        </button>
       </div>
     </div>
   );
