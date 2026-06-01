@@ -117,6 +117,12 @@ const buildVidApiThemeParams = (): string => {
     hidesecondarycolor: "true",
     hideiconcolor: "true",
     hideiconset: "true",
+    // Ad-hiding parameters
+    ads: "0",
+    noads: "1",
+    hideAds: "true",
+    hideads: "true",
+    noAds: "1",
     // Localization & playback
     lang: "ar",
     ds_lang: "ar",
