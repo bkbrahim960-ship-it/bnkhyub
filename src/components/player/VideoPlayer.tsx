@@ -238,7 +238,7 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
   }, [tmdb_id, type, season, episode]);
 
   const allLabels = Array(50).fill(null);
-  allLabels[0] = "🎬 CinemaOS (بدون إعلانات)";
+  allLabels[0] = "cinema";
   allLabels[1] = customUrl ? "Serveur Kabyle" : "BNKhub serveur";
 
   const handleLoad = () => {

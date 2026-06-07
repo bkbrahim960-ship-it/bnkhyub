@@ -190,85 +190,89 @@ const Movie = () => {
 
       {/* NEW ORGANIZED INFO BLOCK */}
       <section className="container -mt-32 relative z-20 pb-12">
-        <div className="grid lg:grid-cols-[300px_1fr] gap-6 md:gap-12 items-end">
-          <div className="animate-fade-in group flex justify-center lg:block">
-            <div className="relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl shadow-accent/20 w-32 sm:w-48 lg:w-full">
+        {/* Poster + Logo row */}
+        <div className="flex items-end gap-4 md:gap-8 mb-6">
+          {/* Poster - always left aligned */}
+          <div className="animate-fade-in shrink-0">
+            <div className="relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl shadow-accent/20 w-28 sm:w-36 md:w-48 lg:w-64">
                <img src={poster} alt={movie.title} className="w-full" />
             </div>
           </div>
 
-          <div className="animate-fade-slide-up">
+          {/* Logo beside poster */}
+          <div className="animate-fade-slide-up flex-1 min-w-0 pb-2">
             {/* Genres */}
-            <div className="flex flex-wrap gap-2 mb-4">
+            <div className="flex flex-wrap gap-1.5 sm:gap-2 mb-2 sm:mb-4">
               {movie.genres?.slice(0, 3).map(g => (
-                <span key={g.id} className="px-3 py-1 rounded-full bg-accent/10 border border-accent/20 text-[10px] font-bold uppercase tracking-widest text-accent">
+                <span key={g.id} className="px-2 sm:px-3 py-0.5 sm:py-1 rounded-full bg-accent/10 border border-accent/20 text-[8px] sm:text-[10px] font-bold uppercase tracking-widest text-accent">
                   {g.name}
                 </span>
               ))}
             </div>
 
-            {/* Movie Title */}
-            <div className="mb-4">
+            {/* Movie Title Logo - small on mobile */}
+            <div className="mb-2 sm:mb-4">
               <MovieLogo 
                 id={movie.id} 
                 type="movie" 
                 title={movie.title} 
-                className="h-10 sm:h-16 md:h-28 lg:h-40 max-w-full" 
+                className="h-8 sm:h-12 md:h-20 lg:h-28 max-w-full" 
               />
             </div>
 
             {/* Meta Info */}
-            <div className="flex flex-wrap items-center gap-4 mb-4 text-white/70 text-sm">
-              <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/5 border border-white/10">
-                <Star className="w-4 h-4 text-accent fill-accent" />
+            <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-white/70 text-xs sm:text-sm">
+              <div className="flex items-center gap-1.5 px-2 sm:px-3 py-1 sm:py-1.5 rounded-xl bg-white/5 border border-white/10">
+                <Star className="w-3 h-3 sm:w-4 sm:h-4 text-accent fill-accent" />
                 <span className="font-black text-white">{rating.toFixed(1)}</span>
               </div>
               <span>{year}</span>
               <span>{runtime}</span>
             </div>
-
-            {/* Overview */}
-            <p className="text-white/60 text-base md:text-lg max-w-3xl leading-relaxed mb-6 line-clamp-3">
-              {overview}
-            </p>
-
-            {/* Primary Action Button (Watch) */}
-            {!playing && (
-              <button
-                onClick={startWatching}
-                className="inline-flex items-center justify-center gap-2 bg-accent text-accent-foreground px-8 py-4 rounded-2xl font-bold shadow-glow hover:scale-105 transition-all text-sm md:text-base mb-6 w-full sm:w-auto"
-              >
-                <Play className="w-5 h-5 fill-current" /> {t("hero_watch")}
-              </button>
-            )}
-
-            {/* Secondary Icon Buttons (Modern & Clean) */}
-            <div className="flex items-center gap-3">
-              {trailer && (
-                <button
-                  onClick={() => setShowTrailer(true)}
-                  className="flex items-center justify-center w-12 h-12 rounded-full bg-white/5 hover:bg-accent/20 text-white hover:text-accent hover:scale-110 transition-all"
-                  title={t("hero_trailer")}
-                >
-                  <Youtube className="w-6 h-6" />
-                </button>
-              )}
-
-              <button className="flex items-center justify-center w-12 h-12 rounded-full bg-white/5 hover:bg-accent/20 text-white hover:text-accent hover:scale-110 transition-all">
-                <FavoriteButton tmdbId={movie.id} mediaType="movie" title={movie.title} posterPath={movie.poster_path} />
-              </button>
-
-              <button className="flex items-center justify-center w-12 h-12 rounded-full bg-white/5 hover:bg-accent/20 text-white hover:text-accent hover:scale-110 transition-all">
-                <RemotePairingButton />
-              </button>
-
-              <button className="flex items-center justify-center w-12 h-12 rounded-full bg-white/5 hover:bg-accent/20 text-white hover:text-accent hover:scale-110 transition-all">
-                <ShareButtons title={movie.title} />
-              </button>
-            </div>
           </div>
         </div>
+
+        {/* Overview */}
+        <p className="text-white/60 text-sm md:text-base lg:text-lg max-w-3xl leading-relaxed mb-5 line-clamp-3">
+          {overview}
+        </p>
+
+        {/* Primary Action Button (Watch) */}
+        {!playing && (
+          <button
+            onClick={startWatching}
+            className="inline-flex items-center justify-center gap-2 bg-accent text-accent-foreground px-8 py-4 rounded-2xl font-bold shadow-glow hover:scale-105 transition-all text-sm md:text-base mb-5 w-full sm:w-auto"
+          >
+            <Play className="w-5 h-5 fill-current" /> {t("hero_watch")}
+          </button>
+        )}
+
+        {/* Secondary Icon Buttons (Modern & Clean) */}
+        <div className="flex items-center gap-3">
+          {trailer && (
+            <button
+              onClick={() => setShowTrailer(true)}
+              className="flex items-center justify-center w-12 h-12 rounded-full bg-white/5 hover:bg-accent/20 text-white hover:text-accent hover:scale-110 transition-all"
+              title={t("hero_trailer")}
+            >
+              <Youtube className="w-6 h-6" />
+            </button>
+          )}
+
+          <button className="flex items-center justify-center w-12 h-12 rounded-full bg-white/5 hover:bg-accent/20 text-white hover:text-accent hover:scale-110 transition-all">
+            <FavoriteButton tmdbId={movie.id} mediaType="movie" title={movie.title} posterPath={movie.poster_path} />
+          </button>
+
+          <button className="flex items-center justify-center w-12 h-12 rounded-full bg-white/5 hover:bg-accent/20 text-white hover:text-accent hover:scale-110 transition-all">
+            <RemotePairingButton />
+          </button>
+
+          <button className="flex items-center justify-center w-12 h-12 rounded-full bg-white/5 hover:bg-accent/20 text-white hover:text-accent hover:scale-110 transition-all">
+            <ShareButtons title={movie.title} />
+          </button>
+        </div>
       </section>
+
 
       <TrailerModal isOpen={showTrailer} onClose={() => setShowTrailer(false)} videoKey={trailer?.key} title={movie.title} />
 
