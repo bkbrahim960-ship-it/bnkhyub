@@ -193,10 +193,11 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
 
   const sources = customUrl ? [customUrl] : defaultSources;
 
-  // CinemaOS URL builder (Arabic, theme matching site accent, no ads)
+  // CinemaOS URL builder (Arabic language & subtitles, theme matching site accent, no ads)
+  const cinemaOsParams = "language=ar&theme=c124a0&autoPlay=true&subtitle=ar&sub=ar&default_sub=ar&cc_lang_pref=ar";
   const cinemaOsUrl = type === "movie"
-    ? `https://cinemaos.tech/player/${tmdb_id}?language=ar&theme=c124a0&autoPlay=true`
-    : `https://cinemaos.tech/player/${tmdb_id}/${season}/${episode}?language=ar&theme=c124a0&autoPlay=true`;
+    ? `https://cinemaos.tech/player/${tmdb_id}?${cinemaOsParams}`
+    : `https://cinemaos.tech/player/${tmdb_id}/${season}/${episode}?${cinemaOsParams}`;
 
   // Combine with internal sources
   const allSources = [cinemaOsUrl, ...sources, ...internalSources.filter(s => s.url).map(s => s.url)];
@@ -460,7 +461,7 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
             allowTransparency
             frameBorder="0"
             scrolling="no"
-            {...((allSources[sourceIndex]?.includes("vidapi") || allSources[sourceIndex]?.includes("vaplayer.ru")) ? { sandbox: "allow-same-origin allow-scripts allow-forms" } : {})}
+            {...((allSources[sourceIndex]?.includes("vidapi") || allSources[sourceIndex]?.includes("vaplayer.ru") || allSources[sourceIndex]?.includes("cinemaos.tech")) ? { sandbox: "allow-same-origin allow-scripts allow-forms" } : {})}
             onLoad={handleLoad}
             className="absolute inset-0 w-full h-full border-0 transition-opacity duration-700"
           />
