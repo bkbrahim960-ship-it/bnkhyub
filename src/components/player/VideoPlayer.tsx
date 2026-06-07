@@ -193,8 +193,13 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
 
   const sources = customUrl ? [customUrl] : defaultSources;
 
+  // CinemaOS URL builder (Arabic, theme matching site accent, no ads)
+  const cinemaOsUrl = type === "movie"
+    ? `https://cinemaos.tech/player/${tmdb_id}?language=ar&theme=c124a0&autoPlay=true`
+    : `https://cinemaos.tech/player/${tmdb_id}/${season}/${episode}?language=ar&theme=c124a0&autoPlay=true`;
+
   // Combine with internal sources
-  const allSources = [...sources, ...internalSources.filter(s => s.url).map(s => s.url)];
+  const allSources = [cinemaOsUrl, ...sources, ...internalSources.filter(s => s.url).map(s => s.url)];
 
   useEffect(() => {
     const fetchInternal = async () => {
@@ -232,7 +237,8 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
   }, [tmdb_id, type, season, episode]);
 
   const allLabels = Array(50).fill(null);
-  allLabels[0] = customUrl ? "Serveur Kabyle" : "BNKhub serveur";
+  allLabels[0] = "🎬 CinemaOS (بدون إعلانات)";
+  allLabels[1] = customUrl ? "Serveur Kabyle" : "BNKhub serveur";
 
   const handleLoad = () => {
     setLoading(false);
