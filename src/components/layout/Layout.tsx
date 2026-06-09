@@ -12,19 +12,19 @@ const LayoutContent = ({ children }: { children: ReactNode }) => {
   const { isCollapsed, isHovered } = useSidebar();
   const isSidebarExpanded = !isCollapsed || isHovered;
   
-  // Calculate padding: when collapsed, it's pr-20, expanded is pr-64 lg:pr-72
+  // Calculate padding: when collapsed, it's pl-20, expanded is pl-64 lg:pl-72
   const mainPadding = isSidebarExpanded 
-    ? 'md:pb-8 md:pr-64 lg:pr-72' 
-    : 'md:pb-8 md:pr-20';
+    ? 'md:pb-8 md:pl-64 lg:pl-72' 
+    : 'md:pb-8 md:pl-20';
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row bg-surface-primary">
+      <Sidebar />
       <div className="flex-1 flex flex-col">
         <Header />
         <main className={`flex-1 pb-24 ${mainPadding}`}>{children}</main>
         <BottomNav />
       </div>
-      <Sidebar />
       <InstallModal />
     </div>
   );

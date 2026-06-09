@@ -82,17 +82,17 @@ export const Sidebar = () => {
     <aside
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className={`hidden md:flex fixed right-0 top-0 bottom-0 z-[90] flex-col bg-surface-elevated/95 backdrop-blur-3xl border-l border-white/10 shadow-2xl transition-all duration-500 ease-in-out ${
+      className={`hidden md:flex fixed left-0 top-0 bottom-0 z-[90] flex-col bg-surface-elevated/95 backdrop-blur-3xl border-r border-white/10 shadow-2xl transition-all duration-500 ease-in-out ${
         isExpanded ? 'w-64 lg:w-72' : 'w-20'
-      } ${immersiveHidden ? 'translate-x-full opacity-0 pointer-events-none' : 'translate-x-0 opacity-100'}`}
+      } ${immersiveHidden ? '-translate-x-full opacity-0 pointer-events-none' : 'translate-x-0 opacity-100'}`}
     >
       {/* Toggle Button */}
       <button
         onClick={() => setIsCollapsed(!isCollapsed)}
-        className="absolute -left-5 top-1/2 -translate-y-1/2 bg-accent text-white rounded-full w-10 h-10 flex items-center justify-center shadow-lg hover:scale-110 transition-all z-10"
+        className="absolute -right-5 top-1/2 -translate-y-1/2 bg-accent text-white rounded-full w-10 h-10 flex items-center justify-center shadow-lg hover:scale-110 transition-all z-10"
         aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
       >
-        {isCollapsed ? <ChevronsLeft className="w-5 h-5" /> : <ChevronsRight className="w-5 h-5" />}
+        {isCollapsed ? <ChevronsRight className="w-5 h-5" /> : <ChevronsLeft className="w-5 h-5" />}
       </button>
 
       {/* Sidebar Content */}
