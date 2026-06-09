@@ -332,8 +332,8 @@ const Movie = () => {
               title={movie.title}
               initialSourceIndex={initialSourceIndex}
               customUrl={(movie as any).video_url || (movie as any).videoUrl}
-              autoStart={autoPlayMode}
-              autoFullscreen={autoPlayMode}
+              autoStart={false}
+              autoFullscreen={false}
               onPlayStart={(_i, label) => saveHistory(label)}
               onSourceChange={(_i, label) => saveHistory(label)}
               onProgress={(seconds, duration) => {

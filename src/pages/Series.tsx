@@ -431,8 +431,8 @@ const Series = () => {
                 episode={episode}
                 title={`${series.name} — S${season} E${episode}`}
                 initialSourceIndex={initialSourceIndex}
-                autoStart={autoPlayMode}
-                autoFullscreen={autoPlayMode}
+                autoStart={false}
+                autoFullscreen={false}
                 customUrl={(() => {
                   const customSeries = MOCK_SERIES.find(c => c.id === String(series.id));
                   const customMovie = KABYLE_CONTENT.find(c => c.id === String(series.id));
