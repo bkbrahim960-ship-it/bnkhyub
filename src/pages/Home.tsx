@@ -13,7 +13,7 @@ import { BrandRow } from "@/components/movie/BrandRow";
 import { ContinueWatchingRow } from "@/components/movie/ContinueWatchingRow";
 import { ForYouRow } from "@/components/movie/ForYouRow";
 import { DiscoverRow } from "@/components/movie/DiscoverRow";
-import { SideWingColumn, mergeTMDBPages, splitWingColumns } from "@/components/movie/SideWingColumn";
+import { mergeTMDBPages } from "@/components/movie/SideWingColumn";
 import { ROW_HEADER, ROW_TRACK } from "@/components/movie/rowLayout";
 import { VidAPILatestRow } from "@/components/movie/VidAPILatestRow";
 import { SEO } from "@/components/SEO";
@@ -269,8 +269,7 @@ const Home = () => {
   const [nowPlaying, setNowPlaying] = useState<TMDBMovie[]>([]);
   const [kidsMovies, setKidsMovies] = useState<TMDBMovie[]>([]);
   const [kidsSeries, setKidsSeries] = useState<TMDBSeries[]>([]);
-  const [leftWing, setLeftWing] = useState<(TMDBMovie | TMDBSeries)[]>([]);
-  const [rightWing, setRightWing] = useState<(TMDBMovie | TMDBSeries)[]>([]);
+
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -349,19 +348,6 @@ const Home = () => {
         setKidsMovies([]);
         setKidsSeries([]);
 
-        const wingPool = mergeTMDBPages(
-          { results: tr2.results },
-          { results: pop2.results },
-          { results: pop3.results },
-          { results: top2.results },
-          { results: tv2.results },
-          { results: tv3.results },
-          { results: topTV2.results },
-          { results: np2.results },
-        );
-        const { left, right } = splitWingColumns(wingPool);
-        setLeftWing(left);
-        setRightWing(right);
         setLoading(false);
       });
     }
@@ -377,8 +363,7 @@ const Home = () => {
       />
       <MovieHero items={hero} />
 
-      <div className="relative z-30 grid grid-cols-1 lg:grid-cols-[minmax(112px,120px)_minmax(0,1fr)_minmax(112px,120px)] xl:grid-cols-[minmax(118px,128px)_minmax(0,1fr)_minmax(118px,128px)] gap-x-1 xl:gap-x-2">
-        <SideWingColumn side="left" items={leftWing} loading={loading} />
+      <div className="relative z-30">
         <div className="min-w-0">
         <ContinueWatchingRow />
         
@@ -441,7 +426,6 @@ const Home = () => {
           </>
         )}
         </div>
-        <SideWingColumn side="right" items={rightWing} loading={loading} />
       </div>
     </Layout>
   );
