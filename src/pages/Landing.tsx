@@ -1,31 +1,10 @@
 
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Globe, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
 import { useLanguage } from "@/context/LanguageContext";
-
-const LANDING_POSTERS = [
-  "https://image.tmdb.org/t/p/w300/1E5baAaEAnUhcR6S4Ymjt9pZpES.jpg",
-  "https://image.tmdb.org/t/p/w300/vpnVM9B6NMmQpWeZno4HjMBG0o5.jpg",
-  "https://image.tmdb.org/t/p/w300/8Y4XvS9Sra36oJ6o9vSra36oJ6o.jpg",
-  "https://image.tmdb.org/t/p/w300/mS9Sra36oJ6o9vSra36oJ6o.jpg",
-  "https://image.tmdb.org/t/p/w300/pB8172LfXUkvh9u4SVRD9S77vS5.jpg",
-  "https://image.tmdb.org/t/p/w300/t6Sna4asZ9fS6YpOiY782X69Yn0.jpg",
-  "https://image.tmdb.org/t/p/w300/ztkUQvFCz9Z96mZCNm60rxkv0BT.jpg",
-  "https://image.tmdb.org/t/p/w300/riYIn11q39vSra36oJ6o9vSra36.jpg",
-  "https://image.tmdb.org/t/p/w300/7WsyChvSra36oJ6o9vSra36oJ6o.jpg",
-  "https://image.tmdb.org/t/p/w300/8c9XvS9Sra36oJ6o9vSra36oJ6o.jpg",
-  "https://image.tmdb.org/t/p/w300/9dAxvS9Sra36oJ6o9vSra36oJ6o.jpg",
-  "https://image.tmdb.org/t/p/w300/AeXxvS9Sra36oJ6o9vSra36oJ6o.jpg",
-  "https://image.tmdb.org/t/p/w300/BfXxvS9Sra36oJ6o9vSra36oJ6o.jpg",
-  "https://image.tmdb.org/t/p/w300/CgXxvS9Sra36oJ6o9vSra36oJ6o.jpg",
-  "https://image.tmdb.org/t/p/w300/DhXxvS9Sra36oJ6o9vSra36oJ6o.jpg",
-  "https://image.tmdb.org/t/p/w300/EiXxvS9Sra36oJ6o9vSra36oJ6o.jpg",
-  "https://image.tmdb.org/t/p/w300/FjXxvS9Sra36oJ6o9vSra36oJ6o.jpg",
-  "https://image.tmdb.org/t/p/w300/GkXxvS9Sra36oJ6o9vSra36oJ6o.jpg",
-];
 
 export default function Landing() {
   const { lang, t } = useLanguage();
@@ -43,31 +22,9 @@ export default function Landing() {
 
   return (
     <div className="relative min-h-screen bg-black overflow-hidden font-body">
-      {/* Background Poster Grid */}
-      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none opacity-40">
-        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4 p-4 transform -rotate-12 scale-150 origin-center">
-          {LANDING_POSTERS.concat(LANDING_POSTERS).map((url, i) => (
-            <div 
-              key={i} 
-              className="aspect-[2/3] bg-surface-elevated rounded-xl overflow-hidden shadow-2xl animate-pulse"
-              style={{ animationDelay: `${i * 100}ms`, animationDuration: '3s' }}
-            >
-              <img 
-                src={url} 
-                alt="" 
-                className="w-full h-full object-cover opacity-80"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).src = "https://via.placeholder.com/300x450/111111/333333?text=BNK";
-                }}
-              />
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Dark Overlays */}
-      <div className="absolute inset-0 z-10 bg-gradient-to-b from-black/80 via-black/40 to-black pointer-events-none" />
-      <div className="absolute inset-0 z-10 bg-radial-gradient from-transparent to-black pointer-events-none" />
+      {/* Dark Gradient Overlay Background */}
+      <div className="absolute inset-0 z-0 bg-gradient-to-br from-black via-black to-black pointer-events-none" />
+      <div className="absolute inset-0 z-0 bg-radial-gradient from-transparent to-black pointer-events-none" />
 
       {/* Header */}
       <header className="relative z-50 flex items-center justify-between px-6 py-4 md:px-12 md:py-8 animate-fade-in">

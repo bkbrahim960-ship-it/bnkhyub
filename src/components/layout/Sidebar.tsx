@@ -1,5 +1,6 @@
 /**
  * BNKhub — Sidebar desktop/TV : masqué par défaut, affiché au survol/s glissement.
+ * Mode icônes uniquement quand fermé.
  */
 import { useEffect, useRef } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
@@ -22,6 +23,7 @@ import { SIDEBAR_WIDTH, useSidebar } from "@/context/SidebarContext";
 
 const DRAG_THRESHOLD = 48;
 const EDGE_ZONE = 14;
+const COLLAPSED_WIDTH = 80;
 
 export const Sidebar = () => {
   const { lang, t } = useLanguage();
@@ -126,26 +128,6 @@ export const Sidebar = () => {
     },
   ];
 
-  const itemClass = (isActive: boolean) => {
-    const base =
-      "group relative flex flex-1 items-center gap-4 w-full px-5 font-semibold transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-accent/50 min-h-0";
-    if (isActive) {
-      return kidsMode
-        ? `${base} bg-sky-500/20 text-sky-200`
-        : `${base} bg-accent/20 text-accent`;
-    }
-    return `${base} text-foreground/70 hover:text-foreground hover:bg-white/[0.05]`;
-  };
-
-  const iconClass = (isActive: boolean) =>
-    `w-7 h-7 lg:w-8 lg:h-8 shrink-0 ${
-      isActive
-        ? kidsMode
-          ? "text-sky-200"
-          : "text-accent"
-        : "text-foreground/50 group-hover:text-foreground/90"
-    }`;
-
   const sidebarBg = kidsMode
     ? "bg-[#0c1520]/98 border-sky-500/15"
     : "bg-[#07070a]/98 border-white/[0.07]";
@@ -180,7 +162,7 @@ export const Sidebar = () => {
       )}
 
       <aside
-        style={{ width: SIDEBAR_WIDTH }}
+        style={{ width: isOpen ? SIDEBAR_WIDTH : COLLAPSED_WIDTH }}
         onMouseEnter={cancelClose}
         onMouseLeave={scheduleClose}
         onPointerDown={(e) => {
@@ -192,19 +174,21 @@ export const Sidebar = () => {
         }}
         onPointerUp={onDragEnd}
         onPointerCancel={onDragEnd}
-        className={`hidden md:flex fixed left-0 top-0 bottom-0 z-[90] flex-col border-r backdrop-blur-2xl transition-transform duration-300 ease-out touch-none ${sidebarBg} ${
-          isOpen ? "translate-x-0 shadow-[4px_0_40px_rgba(0,0,0,0.5)]" : "-translate-x-full"
-        }`}
+        className={`hidden md:flex fixed left-0 top-0 bottom-0 z-[90] flex-col border-r backdrop-blur-2xl transition-all duration-300 ease-out touch-none ${sidebarBg} shadow-[4px_0_40px_rgba(0,0,0,0.3)]`}
       >
         {/* Logo */}
         <Link
           to="/"
-          className="shrink-0 flex items-center justify-center h-[88px] border-b border-white/[0.06] hover:bg-white/[0.03] transition-colors"
+          className={`shrink-0 flex items-center justify-center h-[88px] border-b border-white/[0.06] hover:bg-white/[0.03] transition-colors ${
+            !isOpen ? "px-2" : ""
+          }`}
         >
           <img
             src="/logo.png"
             alt="BNKhub"
-            className="h-[72px] lg:h-[80px] w-auto object-contain drop-shadow-[0_0_24px_rgba(var(--accent-rgb),0.4)]"
+            className={`object-contain drop-shadow-[0_0_24px_rgba(var(--accent-rgb),0.4)] transition-all duration-300 ${
+              isOpen ? "h-[72px] lg:h-[80px]" : "h-10 w-auto"
+            }`}
           />
         </Link>
 
@@ -217,7 +201,15 @@ export const Sidebar = () => {
               end={l.to === "/"}
               data-tv-nav="main"
               tabIndex={0}
-              className={({ isActive }) => itemClass(isActive)}
+              className={({ isActive }) =>
+                `group relative flex flex-1 items-center ${isOpen ? "gap-4 px-5" : "justify-center px-0"} w-full font-semibold transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-accent/50 min-h-0 ${
+                  isActive
+                    ? kidsMode
+                      ? `bg-sky-500/20 text-sky-200`
+                      : `bg-accent/20 text-accent`
+                    : `text-foreground/70 hover:text-foreground hover:bg-white/[0.05]`
+                }`
+              }
             >
               {({ isActive }) => (
                 <>
@@ -226,8 +218,16 @@ export const Sidebar = () => {
                       className={`absolute left-0 top-0 bottom-0 w-1 ${kidsMode ? "bg-sky-400" : "bg-accent"}`}
                     />
                   )}
-                  <l.icon className={iconClass(isActive)} />
-                  <span className="text-base lg:text-lg truncate">{l.label}</span>
+                  <l.icon
+                    className={`w-7 h-7 lg:w-8 lg:h-8 shrink-0 ${
+                      isActive
+                        ? kidsMode
+                          ? "text-sky-200"
+                          : "text-accent"
+                        : "text-foreground/50 group-hover:text-foreground/90"
+                    }`}
+                  />
+                  {isOpen && <span className="text-base lg:text-lg truncate">{l.label}</span>}
                 </>
               )}
             </NavLink>
@@ -240,10 +240,24 @@ export const Sidebar = () => {
                   key={item.key}
                   type="button"
                   onClick={item.onClick}
-                  className={itemClass(!!item.active)}
+                  className={`group relative flex flex-1 items-center ${isOpen ? "gap-4 px-5" : "justify-center px-0"} w-full font-semibold transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-accent/50 min-h-0 ${
+                    item.active
+                      ? kidsMode
+                        ? `bg-sky-500/20 text-sky-200`
+                        : `bg-accent/20 text-accent`
+                      : `text-foreground/70 hover:text-foreground hover:bg-white/[0.05]`
+                  }`}
                 >
-                  <item.icon className={iconClass(!!item.active)} />
-                  <span className="text-base lg:text-lg truncate">{item.label}</span>
+                  <item.icon
+                    className={`w-7 h-7 lg:w-8 lg:h-8 shrink-0 ${
+                      item.active
+                        ? kidsMode
+                          ? "text-sky-200"
+                          : "text-accent"
+                        : "text-foreground/50 group-hover:text-foreground/90"
+                    }`}
+                  />
+                  {isOpen && <span className="text-base lg:text-lg truncate">{item.label}</span>}
                 </button>
               ) : (
                 <NavLink
@@ -252,7 +266,15 @@ export const Sidebar = () => {
                   end={item.end}
                   data-tv-nav="main"
                   tabIndex={0}
-                  className={({ isActive }) => itemClass(isActive)}
+                  className={({ isActive }) =>
+                    `group relative flex flex-1 items-center ${isOpen ? "gap-4 px-5" : "justify-center px-0"} w-full font-semibold transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-accent/50 min-h-0 ${
+                      isActive
+                        ? kidsMode
+                          ? `bg-sky-500/20 text-sky-200`
+                          : `bg-accent/20 text-accent`
+                        : `text-foreground/70 hover:text-foreground hover:bg-white/[0.05]`
+                    }`
+                  }
                 >
                   {({ isActive }) => (
                     <>
@@ -261,8 +283,16 @@ export const Sidebar = () => {
                           className={`absolute left-0 top-0 bottom-0 w-1 ${kidsMode ? "bg-sky-400" : "bg-accent"}`}
                         />
                       )}
-                      <item.icon className={iconClass(isActive)} />
-                      <span className="text-base lg:text-lg truncate">{item.label}</span>
+                      <item.icon
+                        className={`w-7 h-7 lg:w-8 lg:h-8 shrink-0 ${
+                          isActive
+                            ? kidsMode
+                              ? "text-sky-200"
+                              : "text-accent"
+                            : "text-foreground/50 group-hover:text-foreground/90"
+                        }`}
+                      />
+                      {isOpen && <span className="text-base lg:text-lg truncate">{item.label}</span>}
                     </>
                   )}
                 </NavLink>
