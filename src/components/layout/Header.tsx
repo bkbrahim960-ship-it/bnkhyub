@@ -8,6 +8,7 @@ import { useLanguage } from "@/context/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
 import { useSettings } from "@/context/SettingsContext";
 import { useImmersiveMode } from "@/hooks/useImmersiveMode";
+import { useSidebar } from "@/context/SidebarContext";
 
 export const Header = () => {
   const { lang, t } = useLanguage();
@@ -16,6 +17,8 @@ export const Header = () => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const immersiveHidden = useImmersiveMode();
+  const { isCollapsed, isHovered } = useSidebar();
+  const isSidebarExpanded = !isCollapsed || isHovered;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -44,7 +47,9 @@ export const Header = () => {
 
   return (
     <header
-      className={`fixed top-0 inset-x-0 md:right-64 lg:right-72 z-[100] transition-all duration-500 ease-luxe pt-safe ${headerBg} ${immersiveHidden ? '-translate-y-full opacity-0 pointer-events-none' : 'translate-y-0 opacity-100'}`}
+      className={`fixed top-0 inset-x-0 ${
+        isSidebarExpanded ? 'md:right-64 lg:right-72' : 'md:right-20'
+      } z-[100] transition-all duration-500 ease-luxe pt-safe ${headerBg} ${immersiveHidden ? '-translate-y-full opacity-0 pointer-events-none' : 'translate-y-0 opacity-100'}`}
     >
 
       <div className="w-full px-4 md:px-10 lg:px-16 flex items-center justify-between h-16 md:h-20 lg:h-24">

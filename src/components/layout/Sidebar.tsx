@@ -1,8 +1,22 @@
 /**
- * BNKhub — Right Sidebar for desktop/TV
+ * BNKhub — Modern Right Sidebar for desktop/TV (collapsible, remote-friendly)
  */
-import { Link, NavLink } from "react-router-dom";
-import { Search, Bell, Baby } from "lucide-react";
+import { useEffect } from "react";
+import { Link, NavLink, useLocation } from "react-router-dom";
+import { 
+  Home, 
+  Clapperboard, 
+  Tv2, 
+  List, 
+  CalendarClock, 
+  Search, 
+  Bell, 
+  Baby, 
+  User, 
+  Settings, 
+  ChevronsLeft, 
+  ChevronsRight 
+} from "lucide-react";
 import {
   Popover,
   PopoverContent,
@@ -15,33 +29,86 @@ import { InstallButton } from "@/components/pwa/InstallButton";
 import { useSettings } from "@/context/SettingsContext";
 import { useImmersiveMode } from "@/hooks/useImmersiveMode";
 import { SmileSVG } from "@/pages/Profile";
+import { useSidebar } from "@/context/SidebarContext";
 
 export const Sidebar = () => {
   const { lang, t } = useLanguage();
   const { user } = useAuth();
   const { kidsMode, toggleKidsMode } = useSettings();
   const immersiveHidden = useImmersiveMode();
+  const location = useLocation();
+  const { isCollapsed, setIsCollapsed, isHovered, setIsHovered } = useSidebar();
+
+  // Auto-expand when active page changes
+  useEffect(() => {
+    if (isCollapsed) {
+      setIsHovered(true);
+      const timer = setTimeout(() => setIsHovered(false), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [location.pathname, isCollapsed]);
+
+  // Remote control support (arrow keys)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowRight' && isCollapsed) {
+        setIsCollapsed(false);
+      } else if (e.key === 'ArrowLeft' && !isCollapsed) {
+        setIsCollapsed(true);
+      }
+    };
+    
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isCollapsed]);
 
   const navLinks = [
-    { to: "/", label: t("nav_home") },
-    { to: "/movies", label: t("nav_movies") },
-    { to: "/series", label: t("nav_series") },
-    { to: "/my-list", label: lang === "ar" ? "قائمتي" : "Ma Liste" },
-    { to: "/coming-soon", label: lang === "ar" ? "قريباً" : "Bientôt" },
-    { to: "/search", label: t("nav_search") },
-    { to: user ? "/profile" : "/landing", label: t("nav_profile") },
+    { to: "/", label: t("nav_home"), icon: Home },
+    { to: "/movies", label: t("nav_movies"), icon: Clapperboard },
+    { to: "/series", label: t("nav_series"), icon: Tv2 },
+    { to: "/my-list", label: lang === "ar" ? "قائمتي" : "Ma Liste", icon: List },
+    { to: "/coming-soon", label: lang === "ar" ? "قريباً" : "Bientôt", icon: CalendarClock },
+    { to: "/search", label: t("nav_search"), icon: Search },
+    { to: user ? "/profile" : "/landing", label: t("nav_profile"), icon: User },
   ];
 
   if (user?.email === "bkbrahim960@gmail.com") {
-    navLinks.push({ to: "/admin", label: t("nav_admin") });
+    navLinks.push({ to: "/admin", label: t("nav_admin"), icon: Settings });
   }
+
+  const isExpanded = !isCollapsed || isHovered;
 
   return (
     <aside
-      className={`hidden md:flex fixed right-0 top-0 bottom-0 z-[90] w-64 lg:w-72 flex-col bg-surface-elevated/95 backdrop-blur-3xl border-l border-white/10 shadow-2xl transition-all duration-500 ${immersiveHidden ? 'translate-x-full opacity-0 pointer-events-none' : 'translate-x-0 opacity-100'}`}
+      ref={sidebarRef}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      className={`hidden md:flex fixed right-0 top-0 bottom-0 z-[90] flex-col bg-surface-elevated/95 backdrop-blur-3xl border-l border-white/10 shadow-2xl transition-all duration-500 ease-in-out ${
+        isExpanded ? 'w-64 lg:w-72' : 'w-20'
+      } ${immersiveHidden ? 'translate-x-full opacity-0 pointer-events-none' : 'translate-x-0 opacity-100'}`}
     >
+      {/* Toggle Button */}
+      <button
+        onClick={() => setIsCollapsed(!isCollapsed)}
+        className="absolute -left-5 top-1/2 -translate-y-1/2 bg-accent text-white rounded-full w-10 h-10 flex items-center justify-center shadow-lg hover:scale-110 transition-all z-10"
+        aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+      >
+        {isCollapsed ? <ChevronsLeft className="w-5 h-5" /> : <ChevronsRight className="w-5 h-5" />}
+      </button>
+
       {/* Sidebar Content */}
-      <div className="flex-1 flex flex-col p-6 gap-8">
+      <div className="flex-1 flex flex-col p-4 gap-8 overflow-y-auto">
+        {/* Logo (collapsed only) */}
+        {isCollapsed && (
+          <Link to="/" className="flex items-center justify-center mb-4">
+            <img 
+              src="/logo.png" 
+              alt="BNKhub" 
+              className="h-12 w-12 object-contain"
+            />
+          </Link>
+        )}
+
         {/* Navigation Links */}
         <nav className="flex flex-col gap-2">
           {navLinks.map((l) => (
@@ -50,11 +117,23 @@ export const Sidebar = () => {
               to={l.to}
               end={l.to === "/"}
               className={({ isActive }) =>
-                `px-4 py-3 rounded-xl flex items-center gap-3 text-sm lg:text-base font-medium transition-all duration-300 hover:bg-white/5 ${isActive ? "bg-accent/10 text-accent" : "text-foreground/80 hover:text-foreground"
-                }`
+                `px-3 py-3 rounded-xl flex items-center gap-3 text-sm lg:text-base font-medium transition-all duration-300 hover:bg-white/5 group ${
+                  isActive ? "bg-accent/10 text-accent" : "text-foreground/80 hover:text-foreground"
+                } ${!isExpanded ? 'justify-center' : ''}`
               }
             >
-              {l.label}
+              {({ isActive }) => (
+                <>
+                  <l.icon 
+                    className={`w-6 h-6 ${
+                      isActive ? 'text-accent' : 'text-muted-foreground group-hover:text-foreground'
+                    }`} 
+                  />
+                  {isExpanded && (
+                    <span className="truncate">{l.label}</span>
+                  )}
+                </>
+              )}
             </NavLink>
           ))}
         </nav>
@@ -63,23 +142,18 @@ export const Sidebar = () => {
         <div className="h-px bg-white/10" />
 
         {/* Actions */}
-        <div className="flex flex-col gap-4">
-          {/* Search */}
-          <Link
-            to="/search"
-            className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 transition-all"
-          >
-            <Search className="w-5 h-5" />
-            <span className="text-sm font-medium">{t("nav_search")}</span>
-          </Link>
-
+        <div className="flex flex-col gap-3">
           {/* Notifications */}
           <Popover>
             <PopoverTrigger asChild>
-              <button className="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 transition-all text-left">
-                <Bell className="w-5 h-5" />
-                <span className="text-sm font-medium">{t("profile_notifications")}</span>
-                <span className="ml-auto w-2.5 h-2.5 bg-accent border-2 border-surface-elevated rounded-full animate-pulse" />
+              <button className={`w-full flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-white/5 transition-all group ${!isExpanded ? 'justify-center' : ''}`}>
+                <Bell className="w-6 h-6 text-muted-foreground group-hover:text-foreground" />
+                {isExpanded && (
+                  <>
+                    <span className="text-sm font-medium">{t("profile_notifications")}</span>
+                    <span className="ml-auto w-2.5 h-2.5 bg-accent border-2 border-surface-elevated rounded-full animate-pulse" />
+                  </>
+                )}
               </button>
             </PopoverTrigger>
             <PopoverContent className="w-[320px] bg-surface-card/95 backdrop-blur-2xl border-white/5 p-0 overflow-hidden shadow-2xl">
@@ -120,7 +194,7 @@ export const Sidebar = () => {
                       <span className="w-2 h-2 bg-accent rounded-full" />
                     </div>
                     <p className="text-[11px] text-muted-foreground leading-relaxed">Le dernier épisode de la série culte est prêt à être visionné.</p>
-                    <p className="text-[9px] text-accent/60 mt-2 font-black uppercase tracking-tighter">Il y a 5h</p>
+                    <p className="text-[9px] text-accent/60 mt-2 font-black uppercase tracking-tighter">Il ي 5h</p>
                   </div>
                 </Link>
               </div>
@@ -128,32 +202,42 @@ export const Sidebar = () => {
           </Popover>
 
           {/* Language Switcher */}
-          <div className="flex items-center gap-3 px-4 py-3">
+          <div className={`flex items-center gap-3 px-3 py-3 ${!isExpanded ? 'justify-center' : ''}`}>
             <LanguageSwitcher />
-            <span className="text-sm font-medium text-muted-foreground">{lang === "ar" ? "اللغة" : "Langue"}</span>
+            {isExpanded && (
+              <span className="text-sm font-medium text-muted-foreground">{lang === "ar" ? "اللغة" : "Langue"}</span>
+            )}
           </div>
 
           {/* Kids Mode */}
           <button
             onClick={toggleKidsMode}
-            className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
+            className={`flex items-center gap-3 px-3 py-3 rounded-xl transition-all ${
               kidsMode 
                 ? "text-sky-400 bg-sky-400/10 border border-sky-400/30" 
                 : "text-muted-foreground hover:text-white hover:bg-white/5"
-            }`}
+            } ${!isExpanded ? 'justify-center' : ''}`}
           >
-            <Baby className="w-5 h-5" />
-            <span className="text-sm font-medium">{kidsMode ? (lang === "ar" ? "إيقاف وضع الأطفال" : "Désactiver Mode Enfants") : (lang === "ar" ? "وضع الأطفال" : "Mode Enfants")}</span>
+            <Baby className="w-6 h-6" />
+            {isExpanded && (
+              <span className="text-sm font-medium">{kidsMode ? (lang === "ar" ? "إيقاف وضع الأطفال" : "Désactiver Mode Enfants") : (lang === "ar" ? "وضع الأطفال" : "Mode Enfants")}</span>
+            )}
           </button>
 
           {/* Install Button */}
-          <div className="flex items-center gap-3 px-4 py-3">
-            <InstallButton />
-            <span className="text-sm font-medium text-muted-foreground">{lang === "ar" ? "تثبيت التطبيق" : "Installer App"}</span>
+          <div className={`flex items-center gap-3 px-3 py-3 ${!isExpanded ? 'justify-center' : ''}`}>
+            {isExpanded ? (
+              <>
+                <InstallButton />
+                <span className="text-sm font-medium text-muted-foreground">{lang === "ar" ? "تثبيت التطبيق" : "Installer App"}</span>
+              </>
+            ) : (
+              <InstallButton />
+            )}
           </div>
 
           {/* Profile */}
-          <div className="flex items-center gap-3 px-4 py-3">
+          <div className={`flex items-center gap-3 px-3 py-3 ${!isExpanded ? 'justify-center' : ''}`}>
             <NavLink
               to={user ? "/profile" : "/auth"}
               className={({ isActive }) =>
@@ -169,7 +253,9 @@ export const Sidebar = () => {
                 <span className="absolute top-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-black/80" />
               )}
             </NavLink>
-            <span className="text-sm font-medium">{user ? (lang === "ar" ? "الملف الشخصي" : "Profil") : (lang === "ar" ? "تسجيل الدخول" : "Connexion")}</span>
+            {isExpanded && (
+              <span className="text-sm font-medium">{user ? (lang === "ar" ? "الملف الشخصي" : "Profil") : (lang === "ar" ? "تسجيل الدخول" : "Connexion")}</span>
+            )}
           </div>
         </div>
       </div>
