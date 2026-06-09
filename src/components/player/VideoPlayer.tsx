@@ -110,44 +110,22 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
   const [hasResumed, setHasResumed] = useState(false);
   const [isWebFullscreen, setIsWebFullscreen] = useState(false);
   const lastSaveTime = useRef(0);
-  const historyIdRef = useRef<string | null>(null);
-  const supabase = useRef<any>(null);
 
-  // Initialize supabase
-  useEffect(() => {
-    import("@/services/supabase").then((module) => {
-      supabase.current = module.supabase;
-    });
-  }, []);
-
+  // Save progress using existing watchHistory service
   const saveProgress = async (seconds: number, duration?: number) => {
-    if (!user || !supabase.current) return;
+    if (!user) return;
 
     try {
-      if (historyIdRef.current) {
-        await supabase.current
-          .from("watch_history")
-          .update({ progress_seconds: seconds, duration_seconds: duration })
-          .eq("id", historyIdRef.current);
-      } else {
-        const { data, error } = await supabase.current
-          .from("watch_history")
-          .insert({
-            user_id: user.id,
-            tmdb_id: typeof tmdb_id === 'string' ? parseInt(tmdb_id) : tmdb_id,
-            media_type: type,
-            season_number: season,
-            episode_number: episode,
-            progress_seconds: seconds,
-            duration_seconds: duration,
-            title: title,
-          })
-          .select("id");
-
-        if (data && data.length > 0) {
-          historyIdRef.current = data[0].id;
-        }
-      }
+      const { upsertWatchEntry } = await import("@/services/watchHistory");
+      await upsertWatchEntry(user.id, {
+        tmdb_id: typeof tmdb_id === 'string' ? parseInt(tmdb_id) : tmdb_id,
+        media_type: type,
+        season_number: season,
+        episode_number: episode,
+        title: title || "",
+        progress_seconds: seconds,
+        duration_seconds: duration
+      });
     } catch (err) {
       console.error("Progress save error:", err);
     }
@@ -485,9 +463,7 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
               }
             }}
             onEnded={() => {
-              if (user && historyIdRef.current) {
-                supabase.current.from('watch_history').update({ completed: true }).eq('id', historyIdRef.current);
-              }
+              // No need to handle completed here, watchHistory doesn't track it
             }}
           >
             {appliedExternalSub && <track kind="subtitles" src={appliedExternalSub} srcLang="ar" label="Arabic" default />}
