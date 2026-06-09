@@ -80,7 +80,6 @@ export const Sidebar = () => {
 
   return (
     <aside
-      ref={sidebarRef}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       className={`hidden md:flex fixed right-0 top-0 bottom-0 z-[90] flex-col bg-surface-elevated/95 backdrop-blur-3xl border-l border-white/10 shadow-2xl transition-all duration-500 ease-in-out ${
@@ -194,7 +193,7 @@ export const Sidebar = () => {
                       <span className="w-2 h-2 bg-accent rounded-full" />
                     </div>
                     <p className="text-[11px] text-muted-foreground leading-relaxed">Le dernier épisode de la série culte est prêt à être visionné.</p>
-                    <p className="text-[9px] text-accent/60 mt-2 font-black uppercase tracking-tighter">Il ي 5h</p>
+                    <p className="text-[9px] text-accent/60 mt-2 font-black uppercase tracking-tighter">Il y a 5h</p>
                   </div>
                 </Link>
               </div>
