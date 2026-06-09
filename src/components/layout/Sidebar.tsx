@@ -85,7 +85,7 @@ export const Sidebar = () => {
     <aside
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className={`hidden md:flex fixed left-0 top-0 bottom-0 z-[90] flex-col border-r transition-all duration-300 ease-out ${
+      className={`hidden md:flex fixed left-0 top-0 bottom-0 z-[40] flex-col border-r transition-all duration-300 ease-out ${
         kidsMode
           ? "bg-[#0c1520]/50 border-sky-500/10"
           : "bg-[#08080c]/50 border-white/[0.06]"

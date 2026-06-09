@@ -18,21 +18,19 @@ const LayoutContent = ({ children }: { children: ReactNode }) => {
   return (
     <>
       <Sidebar />
-      {/* Desktop Layout - with sidebar offset */}
+      {/* Desktop Layout - with sidebar offset using padding */}
       <div 
-        className="hidden md:block transition-all duration-300 ease-out"
+        className="hidden md:flex md:flex-col min-h-screen bg-surface-primary transition-all duration-300 ease-out"
         style={{
-          marginLeft: `${sidebarWidth}px`
+          paddingLeft: `${sidebarWidth}px`
         }}
       >
-        <div className="min-h-screen flex flex-col">
-          <Header />
-          <main className={`flex-1 pb-24 ${mainPadding}`}>{children}</main>
-          <BottomNav />
-        </div>
+        <Header />
+        <main className={`flex-1 pb-24 ${mainPadding}`}>{children}</main>
+        <BottomNav />
       </div>
       
-      {/* Mobile Layout - no sidebar offset */}
+      {/* Mobile Layout - no sidebar */}
       <div className="md:hidden flex flex-col min-h-screen bg-surface-primary">
         <Header />
         <main className={`flex-1 pb-24 ${mainPadding}`}>{children}</main>
