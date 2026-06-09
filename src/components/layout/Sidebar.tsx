@@ -37,12 +37,46 @@ export const Sidebar = () => {
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "ArrowRight" && isCollapsed) setIsCollapsed(false);
-      else if (e.key === "ArrowLeft" && !isCollapsed) setIsCollapsed(true);
+      // Only handle sidebar navigation if not typing in input
+      if (['INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName || '')) {
+        return;
+      }
+
+      // Right arrow: expand sidebar when collapsed
+      if (e.key === "ArrowRight" && isCollapsed && !isHovered) {
+        e.preventDefault();
+        setIsHovered(true);
+        return;
+      }
+
+      // Left arrow: collapse sidebar when expanded
+      if (e.key === "ArrowLeft" && !isCollapsed) {
+        e.preventDefault();
+        setIsCollapsed(true);
+        return;
+      }
+
+      // Escape: collapse sidebar smoothly
+      if (e.key === "Escape" && !isCollapsed) {
+        e.preventDefault();
+        setIsCollapsed(true);
+        setIsHovered(false);
+        return;
+      }
+
+      // Home: collapse sidebar and go to home
+      if (e.key === "Home") {
+        e.preventDefault();
+        setIsCollapsed(true);
+        setIsHovered(false);
+        window.location.href = "/";
+        return;
+      }
     };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isCollapsed, setIsCollapsed]);
+    
+    window.addEventListener("keydown", handleKeyDown, { capture: true });
+    return () => window.removeEventListener("keydown", handleKeyDown, { capture: true });
+  }, [isCollapsed, isHovered, setIsCollapsed, setIsHovered]);
 
   const navLinks = [
     { to: "/", label: t("nav_home"), icon: Home },
@@ -90,6 +124,8 @@ export const Sidebar = () => {
           ? "bg-[#0c1520]/30 border-sky-500/10"
           : "bg-[#08080c]/30 border-white/[0.06]"
       } backdrop-blur-3xl ${isExpanded ? "w-[240px] lg:w-[260px]" : "w-[72px]"}`}
+      role="navigation"
+      aria-label="Main navigation"
     >
       {/* Logo */}
       <div className={`shrink-0 flex items-center border-b border-white/[0.06] ${isExpanded ? "px-5 h-[72px]" : "justify-center h-[72px]"}`}>

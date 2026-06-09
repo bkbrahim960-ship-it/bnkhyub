@@ -50,11 +50,13 @@ const queryClient = new QueryClient({
 });
 
 import { useNavigate } from "react-router-dom";
+import { useRemoteButtons } from "@/hooks/useRemoteButtons";
 
 const TVNavigationActivator = () => {
   const [tvSessionId] = useState(() => Math.random().toString(36).substring(7));
   const navigate = useNavigate();
   useTVNavigation();
+  useRemoteButtons(); // Enable enhanced remote button handling
   const { lastCommand } = useRemoteControl(tvSessionId);
   
   useEffect(() => {
