@@ -444,6 +444,19 @@ export const searchCustomContent = (query: string): any[] => {
   const q = query.toLowerCase().trim();
   if (!q) return [];
   
+  // If search is for "kabyle" (or any variations), return ALL Kabyle content
+  if (q.includes('kab')) {
+    const allMovies = KABYLE_CONTENT.map(item => ({
+      ...item,
+      media_type: "movie"
+    }));
+    const allSeries = MOCK_SERIES.map(item => ({
+      ...item,
+      media_type: "tv"
+    }));
+    return [...allMovies, ...allSeries];
+  }
+  
   const movies = KABYLE_CONTENT.filter(item => 
     item.title.toLowerCase().includes(q) || 
     (item.description && item.description.toLowerCase().includes(q)) ||
