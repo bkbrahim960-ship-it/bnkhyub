@@ -4,7 +4,7 @@
  */
 import { useEffect, useState, useRef } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { MovieCard } from "./MovieCard";
+import { LandscapeMovieCard } from "./LandscapeMovieCard";
 import { discoverMovies, discoverSeries, TMDBMovie, TMDBSeries } from "@/services/tmdb";
 import { useLanguage } from "@/context/LanguageContext";
 import { tmdbLang } from "@/services/i18n";
@@ -45,7 +45,7 @@ export const DiscoverRow = ({ title, originalLanguage, type = "movie", genres, i
         if (mounted) setLoading(false);
       });
 
-    return () => { mounted = false; };
+    return () => { mounted = false };
   }, [lang, originalLanguage, type, genres]);
 
   if (!loading && items.length === 0) return null;
@@ -88,20 +88,19 @@ export const DiscoverRow = ({ title, originalLanguage, type = "movie", genres, i
           ? Array.from({ length: 7 }).map((_, i) => (
               <div
                 key={i}
-                className="shrink-0 w-[150px] sm:w-[170px] md:w-[190px] aspect-[2/3] rounded-xl shimmer-gold"
+                className="shrink-0 w-[280px] sm:w-[320px] md:w-[360px] aspect-video rounded-2xl shimmer-gold"
               />
             ))
           : items.slice(0, 7).map((m: any) => (
-              <div key={`${type}-${m.id}`} className="snap-start">
-                <MovieCard
-                  id={m.id}
-                  title={m.title ?? m.name ?? ""}
-                  posterPath={m.poster_path}
-                  year={(m.release_date ?? m.first_air_date ?? "").slice(0, 4)}
-                  rating={m.vote_average}
-                  type={type}
-                />
-              </div>
+              <LandscapeMovieCard
+                key={`${type}-${m.id}`}
+                id={m.id}
+                title={m.title ?? m.name ?? ""}
+                posterPath={m.poster_path}
+                year={(m.release_date ?? m.first_air_date ?? "").slice(0, 4)}
+                rating={m.vote_average}
+                type={type}
+              />
             ))}
       </div>
     </section>

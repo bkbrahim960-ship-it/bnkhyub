@@ -1,6 +1,6 @@
 import { useRef, memo } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { MovieCard } from "./MovieCard";
+import { LandscapeMovieCard } from "./LandscapeMovieCard";
 import { TMDBMovie, TMDBSeries } from "@/services/tmdb";
 
 interface Item {
@@ -61,21 +61,20 @@ export const MovieRow = memo(({ title, items, type = "movie", loading }: Props) 
           ? Array.from({ length: 7 }).map((_, i) => (
               <div
                 key={i}
-                className="shrink-0 w-[150px] sm:w-[170px] md:w-[190px] aspect-[2/3] rounded-xl shimmer-gold"
+                className="shrink-0 w-[280px] sm:w-[320px] md:w-[360px] aspect-video rounded-2xl shimmer-gold"
               />
             ))
           : items.slice(0, 7).map((m: any) => (
-              <div key={`${type}-${m.id}`} className="snap-start">
-                <MovieCard
-                  id={m.id}
-                  title={m.title ?? m.name ?? ""}
-                  posterPath={m.poster_path}
-                  year={(m.release_date ?? m.first_air_date ?? "").slice(0, 4)}
-                  rating={m.vote_average}
-                  type={type}
-                  customUrl={m.video_url}
-                />
-              </div>
+              <LandscapeMovieCard
+                key={`${type}-${m.id}`}
+                id={m.id}
+                title={m.title ?? m.name ?? ""}
+                posterPath={m.poster_path}
+                year={(m.release_date ?? m.first_air_date ?? "").slice(0, 4)}
+                rating={m.vote_average}
+                type={type}
+                customUrl={m.video_url}
+              />
             ))}
       </div>
     </section>

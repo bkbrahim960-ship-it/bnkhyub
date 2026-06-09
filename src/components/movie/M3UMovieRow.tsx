@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
-import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
-import { MovieCard } from "./MovieCard";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { LandscapeMovieCard } from "./LandscapeMovieCard";
 import { fetchAndParseM3U, M3UItem } from "@/services/m3u";
 
 interface Props {
@@ -72,21 +72,20 @@ export const M3UMovieRow = ({ title, m3uUrl, type = "movie" }: Props) => {
           ? Array.from({ length: 7 }).map((_, i) => (
               <div
                 key={i}
-                className="shrink-0 w-[150px] sm:w-[170px] md:w-[190px] aspect-[2/3] rounded-xl shimmer-gold"
+                className="shrink-0 w-[280px] sm:w-[320px] md:w-[360px] aspect-video rounded-2xl shimmer-gold"
               />
             ))
           : items.slice(0, 7).map((m, idx) => (
-              <div key={`m3u-${idx}`} className="snap-start">
-                <MovieCard
-                  id={`m3u-${idx}`}
-                  title={m.name}
-                  posterPath={m.logo || null}
-                  year="2024"
-                  rating={10}
-                  type={type}
-                  customUrl={m.url}
-                />
-              </div>
+              <LandscapeMovieCard
+                key={`m3u-${idx}`}
+                id={`m3u-${idx}`}
+                title={m.name}
+                posterPath={m.logo || null}
+                year="2024"
+                rating={10}
+                type={type}
+                customUrl={m.url}
+              />
             ))}
       </div>
     </section>
