@@ -62,7 +62,7 @@ export const Sidebar = () => {
   const navItemClass = (isActive: boolean) => {
     const base =
       "relative flex items-center gap-3 rounded-xl font-medium transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/60";
-    const size = isExpanded ? "px-3 py-2.5 text-sm" : "justify-center p-2.5 mx-auto w-11 h-11";
+    const size = isExpanded ? "px-4 py-3 text-base" : "justify-center p-3 mx-auto w-14 h-14";
 
     if (isActive) {
       return kidsMode
@@ -73,7 +73,7 @@ export const Sidebar = () => {
   };
 
   const iconClass = (isActive: boolean) =>
-    `w-[18px] h-[18px] shrink-0 ${
+    `w-[24px] h-[24px] shrink-0 ${
       isActive
         ? kidsMode
           ? "text-sky-300"
@@ -87,9 +87,9 @@ export const Sidebar = () => {
       onMouseLeave={() => setIsHovered(false)}
       className={`hidden md:flex fixed left-0 top-0 bottom-0 z-[40] flex-col border-r transition-all duration-300 ease-out ${
         kidsMode
-          ? "bg-[#0c1520]/50 border-sky-500/10"
-          : "bg-[#08080c]/50 border-white/[0.06]"
-      } backdrop-blur-3xl ${isExpanded ? "w-[240px] lg:w-[260px]" : "w-[72px]"}`}
+          ? "bg-[#0c1520]/30 border-sky-500/10"
+          : "bg-[#08080c]/30 border-white/[0.06]"
+      } backdrop-blur-3xl ${isExpanded ? "w-[240px] lg:w-[260px]" : "w-[72px]"}`,,
     >
       {/* Logo */}
       <div className={`shrink-0 flex items-center border-b border-white/[0.06] ${isExpanded ? "px-5 h-[72px]" : "justify-center h-[72px]"}`}>
@@ -98,7 +98,7 @@ export const Sidebar = () => {
             src="/logo.png"
             alt="BNKhub"
             className={`object-contain transition-all duration-300 group-hover:scale-105 drop-shadow-[0_0_20px_rgba(var(--accent-rgb),0.35)] ${
-              isExpanded ? "h-14 lg:h-16 w-auto" : "h-9 w-9"
+              isExpanded ? "h-16 lg:h-20 w-auto" : "h-10 w-10"
             }`}
           />
         </Link>
