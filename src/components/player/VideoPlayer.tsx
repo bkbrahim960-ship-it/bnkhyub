@@ -199,8 +199,26 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
     ? `https://cinemaos.tech/player/${tmdb_id}?${cinemaOsParams}`
     : `https://cinemaos.tech/player/${tmdb_id}/${season}/${episode}?${cinemaOsParams}`;
 
-  // Combine with internal sources, keep only first 3 sources total (S1, S2, S3)
-  const allSources = [cinemaOsUrl, ...sources.slice(0,2)];
+  // nhdapi.com URL builder (Custom theme, Arabic options, download enabled)
+  const nhdapiParams = new URLSearchParams({
+    autoplay: "true",
+    autonext: "true",
+    download: "true", // Enable download control
+    primarycolor: "C124A0", // Match site accent color
+    secondarycolor: "9F2BBF", // Lighter shade of accent
+    iconcolor: "FFFFFF",
+    glasscolor: "000000",
+    glassopacity: "65",
+    glassblur: "20",
+    fontcolor: "FFFFFF",
+    subtitle: "ar", // Arabic subtitles default
+  });
+  const nhdapiUrl = type === "movie"
+    ? `https://nhdapi.com/embed/movie/${tmdb_id}?${nhdapiParams.toString()}`
+    : `https://nhdapi.com/embed/tv/${tmdb_id}/${season}/${episode}?${nhdapiParams.toString()}`;
+
+  // Combine all 3 sources: CinemaOS, Default, nhdapi
+  const allSources = [cinemaOsUrl, ...sources.slice(0,1), nhdapiUrl];
 
   useEffect(() => {
     const fetchInternal = async () => {
@@ -240,6 +258,7 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
   const allLabels = Array(50).fill(null);
   allLabels[0] = "🎬 CinemaOS (بدون إعلانات)";
   allLabels[1] = customUrl ? "Serveur Kabyle" : "BNKhub serveur";
+  allLabels[2] = "📥 nhdapi (تحميل مباشر)";
 
   const handleLoad = () => {
     setLoading(false);
