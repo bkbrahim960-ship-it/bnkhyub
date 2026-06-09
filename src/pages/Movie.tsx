@@ -216,7 +216,7 @@ const Movie = () => {
         />
       )}
       {/* Cinematic Hero with Video Background */}
-      <section className="relative min-h-[45vh] md:min-h-[90vh] lg:min-h-[95vh] flex items-end pb-24 md:pb-16 lg:pb-24 overflow-hidden pt-0 md:pt-20 lg:pt-24">
+      <section className="relative min-h-[45vh] md:min-h-[90vh] lg:min-h-[95vh] flex items-end pb-24 md:pb-16 lg:pb-24 overflow-hidden">
         <VideoBackdrop 
           backdropPath={backdrop} 
           videoKey={trailer?.key} 

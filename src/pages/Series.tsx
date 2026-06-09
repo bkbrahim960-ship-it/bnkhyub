@@ -314,7 +314,7 @@ const Series = () => {
       )}
 
       {/* Cinematic Hero with Video Background */}
-      <section className="relative min-h-[45vh] md:min-h-[85vh] lg:min-h-[90vh] flex items-end pb-24 md:pb-14 lg:pb-20 overflow-hidden pt-0 md:pt-20 lg:pt-24">
+      <section className="relative min-h-[45vh] md:min-h-[85vh] lg:min-h-[90vh] flex items-end pb-24 md:pb-14 lg:pb-20 overflow-hidden">
         <VideoBackdrop 
           backdropPath={backdrop} 
           videoKey={trailer?.key} 
