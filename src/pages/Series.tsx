@@ -4,6 +4,8 @@ import { Layout } from "@/components/layout/Layout";
 import { VideoPlayer, VideoPlayerRef } from "@/components/player/VideoPlayer";
 import { SubtitleFinder } from "@/components/player/SubtitleFinder";
 import { IMG, getSeriesDetails, getSeasonDetails, getSeriesRecommendations, TMDBSeries, TMDBSeason } from "@/services/tmdb";
+import { getOMDbDetails, OMDbResult } from "@/services/omdb";
+import { RatingsDisplay } from "@/components/ui/RatingsDisplay";
 import { FavoriteButton } from "@/components/movie/FavoriteButton";
 import { ShareButtons } from "@/components/movie/ShareButtons";
 import { MovieRow } from "@/components/movie/MovieRow";
@@ -39,6 +41,7 @@ const Series = () => {
   const { user } = useAuth();
   const { setAmbientColor, setAmbientImage } = useAmbient();
   const [series, setSeries] = useState<TMDBSeries | null>(null);
+  const [omdbData, setOmdbData] = useState<OMDbResult | null>(null);
   const [loading, setLoading] = useState(true);
   const [season, setSeason] = useState(1);
   const [episode, setEpisode] = useState(1);
@@ -123,6 +126,10 @@ const Series = () => {
           const firstReal = s.seasons?.find((se) => se.season_number > 0);
           setSeason(firstReal?.season_number ?? 1);
           setEpisode(1);
+        }
+        // Fetch OMDb data
+        if (s.external_ids?.imdb_id) {
+          getOMDbDetails(s.external_ids.imdb_id, s.name, s.first_air_date?.slice(0, 4)).then(setOmdbData);
         }
       })
       .finally(() => setLoading(false));
@@ -334,14 +341,19 @@ const Series = () => {
             </div>
 
             {/* Meta Info */}
-            <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-white/70 text-xs sm:text-sm">
-              <div className="flex items-center gap-1.5 px-2 sm:px-3 py-1 sm:py-1.5 rounded-xl bg-white/5 border border-white/10">
-                <Star className="w-3 h-3 sm:w-4 sm:h-4 text-accent fill-accent" />
-                <span className="font-black text-white">{series.vote_average.toFixed(1)}</span>
-              </div>
+            <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-white/70 text-xs sm:text-sm mb-3">
               <span>{year}</span>
               <span className="px-2 py-0.5 rounded bg-accent/10 text-accent text-[8px] sm:text-[10px] font-bold">{series.number_of_seasons} SAISONS</span>
             </div>
+            
+            {/* Ratings Display */}
+            <RatingsDisplay
+              tmdbRating={series.vote_average}
+              tmdbVoteCount={series.vote_count}
+              imdbRating={omdbData?.imdbRating}
+              rottenTomatoes={omdbData?.Ratings?.find(r => r.Source === "Rotten Tomatoes")?.Value}
+              metacritic={omdbData?.Ratings?.find(r => r.Source === "Metacritic")?.Value}
+            />
           </div>
         </div>
 

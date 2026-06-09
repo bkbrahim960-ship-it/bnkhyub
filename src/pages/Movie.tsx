@@ -12,6 +12,8 @@ import { TrailerModal } from "@/components/movie/TrailerModal";
 import { VideoBackdrop } from "@/components/movie/VideoBackdrop";
 import { LoginPrompt } from "@/components/LoginPrompt";
 import { IMG, getMovieDetails, getMovieRecommendations, TMDBMovie } from "@/services/tmdb";
+import { getOMDbDetails, OMDbResult } from "@/services/omdb";
+import { RatingsDisplay } from "@/components/ui/RatingsDisplay";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
 import { tmdbLang } from "@/services/i18n";
@@ -37,6 +39,7 @@ const Movie = () => {
   const { user } = useAuth();
   const { setAmbientColor, setAmbientImage } = useAmbient();
   const [movie, setMovie] = useState<TMDBMovie | null>(null);
+  const [omdbData, setOmdbData] = useState<OMDbResult | null>(null);
   const [loading, setLoading] = useState(true);
   const [playing, setPlaying] = useState(false);
   const [recommendations, setRecommendations] = useState<TMDBMovie[]>([]);
@@ -96,6 +99,10 @@ const Movie = () => {
           setAmbientImage(IMG.backdrop(m.backdrop_path, "w780"));
         }
         if (resumeRequested) setPlaying(true);
+        // Fetch OMDb data
+        if (m.imdb_id) {
+          getOMDbDetails(m.imdb_id).then(setOmdbData);
+        }
       })
       .finally(() => setLoading(false));
     getMovieRecommendations(id, tmdbLang(lang))
@@ -229,14 +236,19 @@ const Movie = () => {
             </div>
 
             {/* Meta Info */}
-            <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-white/70 text-xs sm:text-sm">
-              <div className="flex items-center gap-1.5 px-2 sm:px-3 py-1 sm:py-1.5 rounded-xl bg-white/5 border border-white/10">
-                <Star className="w-3 h-3 sm:w-4 sm:h-4 text-accent fill-accent" />
-                <span className="font-black text-white">{rating.toFixed(1)}</span>
-              </div>
+            <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-white/70 text-xs sm:text-sm mb-3">
               <span>{year}</span>
               <span>{runtime}</span>
             </div>
+            
+            {/* Ratings Display */}
+            <RatingsDisplay
+              tmdbRating={movie.vote_average}
+              tmdbVoteCount={movie.vote_count}
+              imdbRating={omdbData?.imdbRating}
+              rottenTomatoes={omdbData?.Ratings?.find(r => r.Source === "Rotten Tomatoes")?.Value}
+              metacritic={omdbData?.Ratings?.find(r => r.Source === "Metacritic")?.Value}
+            />
           </div>
         </div>
 

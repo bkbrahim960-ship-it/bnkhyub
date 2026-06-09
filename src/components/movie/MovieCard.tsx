@@ -126,9 +126,13 @@ export const MovieCard = memo(({ id, title, posterPath, year, rating, type = "mo
 
           {/* Rating Badge (Top Left - No Background) */}
           {typeof rating === "number" && rating > 0 && (
-            <div className="absolute top-1 left-1 z-10 flex items-center gap-0.5">
-              <Star className="w-3.5 h-3.5 text-accent fill-accent drop-shadow-lg" />
-              <span className="text-[9px] sm:text-[10px] font-black text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
+            <div className="absolute top-1 left-1 z-10 flex items-center gap-1">
+              <img
+                src="https://www.themoviedb.org/assets/2/v4/logos/v2/blue_square_2-d537fb228cf3ded904ef09b136fe3fec72548ebc1fea3fbbd1ad9e36364db38b.svg"
+                alt="TMDB"
+                className="w-6 h-6"
+              />
+              <span className="text-[10px] sm:text-[11px] font-black text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
                 {rating.toFixed(1)}
               </span>
             </div>
