@@ -495,7 +495,7 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
             title="BNKHUB"
             allow="autoplay; fullscreen; picture-in-picture; encrypted-media; clipboard-write; gyroscope; accelerometer; web-share; display-capture; screen-wake-lock"
             allowFullScreen
-            allowTransparency
+            allowtransparency
             frameBorder="0"
             scrolling="no"
             {...((allSources[sourceIndex]?.includes("vidapi") || allSources[sourceIndex]?.includes("vaplayer.ru") || allSources[sourceIndex]?.includes("cinemaos.tech")) ? { sandbox: "allow-same-origin allow-scripts allow-forms" } : {})}

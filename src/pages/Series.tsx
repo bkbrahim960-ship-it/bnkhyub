@@ -370,17 +370,17 @@ const Series = () => {
             </button>
           )}
 
-          <button className="flex items-center justify-center w-12 h-12 rounded-full bg-white/5 hover:bg-accent/20 text-white hover:text-accent hover:scale-110 transition-all">
+          <div className="flex items-center justify-center w-12 h-12 rounded-full bg-white/5 hover:bg-accent/20 transition-all">
             <FavoriteButton tmdbId={series.id} mediaType="tv" title={series.name} posterPath={series.poster_path} />
-          </button>
+          </div>
 
-          <button className="flex items-center justify-center w-12 h-12 rounded-full bg-white/5 hover:bg-accent/20 text-white hover:text-accent hover:scale-110 transition-all">
+          <div className="flex items-center justify-center w-12 h-12 rounded-full bg-white/5 hover:bg-accent/20 transition-all">
             <RemotePairingButton />
-          </button>
+          </div>
 
-          <button className="flex items-center justify-center w-12 h-12 rounded-full bg-white/5 hover:bg-accent/20 text-white hover:text-accent hover:scale-110 transition-all">
+          <div className="flex items-center justify-center w-12 h-12 rounded-full bg-white/5 hover:bg-accent/20 transition-all">
             <ShareButtons title={series.name} />
-          </button>
+          </div>
         </div>
       </section>
 
