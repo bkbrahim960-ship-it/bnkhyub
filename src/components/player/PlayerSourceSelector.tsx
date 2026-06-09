@@ -1,11 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { 
   Server, 
   ChevronDown,
   Check,
   Loader2,
   Download,
-  ExternalLink
+  X
 } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { 
@@ -44,14 +44,13 @@ export const PlayerSourceSelector = React.memo(({
   const { lang } = useLanguage();
   const isAr = lang === "ar";
   const currentSource = sources.find(s => s.selected) || sources[0];
+  const [downloadModalOpen, setDownloadModalOpen] = useState(false);
 
-  const handleDownloadClick = () => {
-    if (!type || !tmdbId) return;
-    const url = type === "movie"
-      ? `https://nhdapi.com/dl/movie/${tmdbId}`
-      : `https://nhdapi.com/dl/tv/${tmdbId}`;
-    window.open(url, "_blank");
-  };
+  const downloadUrl = type && tmdbId 
+    ? (type === "movie" 
+      ? `https://nhdapi.com/dl/movie/${tmdbId}` 
+      : `https://nhdapi.com/dl/tv/${tmdbId}`)
+    : "";
 
   if (isLoading || hideControls) {
     if (isLoading) {
@@ -73,14 +72,13 @@ export const PlayerSourceSelector = React.memo(({
         {/* Download Button */}
         {type && tmdbId && (
           <button
-            onClick={handleDownloadClick}
+            onClick={() => setDownloadModalOpen(true)}
             className="flex items-center gap-3 px-8 py-4 rounded-[2rem] bg-white/5 border border-white/10 hover:border-accent/40 hover:bg-white/10 transition-all group shadow-2xl"
           >
             <Download className="w-5 h-5 text-accent/40 group-hover:text-accent transition-colors" />
             <span className="text-lg font-black text-white group-hover:text-accent transition-colors">
               {isAr ? "تحميل" : "Download"}
             </span>
-            <ExternalLink className="w-4 h-4 text-white/20 group-hover:text-accent transition-colors" />
           </button>
         )}
         
@@ -120,6 +118,32 @@ export const PlayerSourceSelector = React.memo(({
           </Popover>
         </div>
       </div>
+
+      {/* Download Modal */}
+      {downloadModalOpen && (
+        <div className="fixed inset-0 z-[110] flex items-center justify-center px-4 py-8 animate-fade-in">
+          <div className="absolute inset-0 bg-black/90" onClick={() => setDownloadModalOpen(false)} />
+          <div className="relative w-full max-w-4xl h-[80vh] bg-surface-elevated border border-white/10 rounded-3xl overflow-hidden shadow-2xl animate-modal-in">
+            <div className="flex items-center justify-between p-4 border-b border-white/10">
+              <h3 className="text-lg font-display font-black text-white">
+                {isAr ? "تحميل" : "Download"}
+              </h3>
+              <button 
+                onClick={() => setDownloadModalOpen(false)} 
+                className="p-2 rounded-full hover:bg-white/10 text-muted-foreground hover:text-white transition-all"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <iframe
+              src={downloadUrl}
+              title="Download"
+              className="w-full h-[calc(100%-64px)] border-0"
+              allow="fullscreen"
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 });
