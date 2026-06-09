@@ -20,7 +20,7 @@ const LayoutContent = ({ children }: { children: ReactNode }) => {
   return (
     <div className="min-h-screen flex flex-col md:flex-row bg-surface-primary">
       <Sidebar />
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col min-h-screen">
         <Header />
         <main className={`flex-1 pb-24 ${mainPadding}`}>{children}</main>
         <BottomNav />
