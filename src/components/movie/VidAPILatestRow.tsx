@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import { getLatestMovies, getLatestTVShows, VidAPIItem } from "@/services/vidapi";
-import { LandscapeMovieCard } from "./LandscapeMovieCard";
-import { Sparkles } from "lucide-react";
+import { MovieCard } from "./MovieCard";
+import { Sparkles, ChevronLeft, ChevronRight } from "lucide-react";
 
 interface VidAPILatestRowProps {
   type: "movie" | "tv";
@@ -13,6 +13,7 @@ export const VidAPILatestRow = ({ type, title }: VidAPILatestRowProps) => {
   const { lang } = useLanguage();
   const [items, setItems] = useState<VidAPIItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const fetchLatest = async () => {
@@ -29,44 +30,69 @@ export const VidAPILatestRow = ({ type, title }: VidAPILatestRowProps) => {
     fetchLatest();
   }, [type]);
 
+  const scroll = (dir: 1 | -1) => {
+    const el = scrollRef.current;
+    if (!el) return;
+    el.scrollBy({ left: dir * (el.clientWidth * 0.85), behavior: "smooth" });
+  };
+
   if (!loading && items.length === 0) return null;
 
   return (
-    <section className="relative py-12 group/row">
-      <div className="container mb-8 flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <div className="p-3 rounded-2xl bg-accent/10 text-accent group-hover/row:scale-110 transition-transform duration-500 shadow-glow-sm">
-            <Sparkles className="w-6 h-6" />
+    <section className="relative py-4 group/row">
+      <div className="container flex items-end justify-between mb-5">
+        <div className="flex items-center gap-3">
+          <div className="p-2 rounded-xl bg-accent/10 text-accent group-hover/row:scale-110 transition-transform duration-500 shadow-glow-sm">
+            <Sparkles className="w-5 h-5" />
           </div>
-          <div>
-            <h2 className="font-display text-2xl md:text-3xl font-bold tracking-tight text-white group-hover/row:text-accent transition-colors">
-              {title}
-            </h2>
-            <div className="h-1 w-12 bg-accent/40 rounded-full mt-1 group-hover/row:w-full transition-all duration-700" />
-          </div>
+          <h2 className="font-display text-2xl md:text-3xl font-bold tracking-tight text-white group-hover/row:text-accent transition-colors">
+            {title}
+          </h2>
         </div>
-        <div className="px-3 py-1 rounded-full border border-accent/20 bg-accent/5 text-[10px] font-black text-accent uppercase tracking-[0.2em] animate-pulse">
-          Premium Source
+        <div className="hidden md:flex gap-2 opacity-0 group-hover/row:opacity-100 transition-opacity duration-300">
+          <button
+            onClick={() => scroll(-1)}
+            className="w-10 h-10 rounded-full bg-surface-elevated/80 backdrop-blur border border-border hover:border-accent-subtle grid place-items-center"
+            aria-label="Précédent"
+          >
+            <ChevronLeft className="w-5 h-5 rtl:rotate-180" />
+          </button>
+          <button
+            onClick={() => scroll(1)}
+            className="w-10 h-10 rounded-full bg-surface-elevated/80 backdrop-blur border border-border hover:border-accent-subtle grid place-items-center"
+            aria-label="Suivant"
+          >
+            <ChevronRight className="w-5 h-5 rtl:rotate-180" />
+          </button>
         </div>
       </div>
 
-      <div className="container relative">
-        <div className="flex gap-4 md:gap-6 overflow-x-auto scrollbar-hide pb-8 snap-x snap-mandatory pt-2">
+      <div className="container">
+        <div
+          ref={scrollRef}
+          className="flex gap-2 md:gap-3 lg:gap-4 overflow-x-auto scrollbar-hide pb-4 snap-x snap-mandatory pt-6"
+        >
           {loading ? (
-            Array(7).fill(0).map((_, i) => (
-              <div key={i} className="snap-start shrink-0 w-[280px] sm:w-[320px] md:w-[360px] aspect-video rounded-2xl shimmer-gold animate-in fade-in" />
+            Array(10).fill(0).map((_, i) => (
+              <div
+                key={i}
+                className="snap-start shrink-0 w-[85px] sm:w-[110px] md:w-[130px] lg:w-[150px] aspect-[2/3] rounded-lg shimmer-gold animate-in fade-in"
+              />
             ))
           ) : (
             items.map((item, idx) => (
-              <div key={`${item.tmdb_id}-${idx}`} className="snap-start animate-in fade-in slide-in-from-right-8 duration-500" style={{ animationDelay: `${idx * 100}ms` }}>
-                <LandscapeMovieCard
+              <div
+                key={`${item.tmdb_id}-${idx}`}
+                className="snap-start animate-in fade-in slide-in-from-right-8 duration-500"
+                style={{ animationDelay: `${idx * 50}ms` }}
+              >
+                <MovieCard
                   id={item.tmdb_id || item.imdb_id}
                   title={item.title}
                   posterPath={item.poster_url.replace('https://image.tmdb.org/t/p/original', '')}
                   year={item.year}
                   rating={parseFloat(item.rating)}
                   type={item.type}
-                  className="w-full"
                 />
               </div>
             ))

@@ -4,7 +4,7 @@
  */
 import { useEffect, useState, useRef } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { LandscapeMovieCard } from "./LandscapeMovieCard";
+import { MovieCard } from "./MovieCard";
 import { discoverMovies, discoverSeries, TMDBMovie, TMDBSeries } from "@/services/tmdb";
 import { useLanguage } from "@/context/LanguageContext";
 import { tmdbLang } from "@/services/i18n";
@@ -82,25 +82,26 @@ export const DiscoverRow = ({ title, originalLanguage, type = "movie", genres, i
 
       <div
         ref={scrollRef}
-        className="container overflow-x-auto scrollbar-hide flex gap-4 md:gap-5 pt-6 pb-4 snap-x snap-mandatory"
+        className="container overflow-x-auto scrollbar-hide flex gap-2 md:gap-3 lg:gap-4 pt-6 pb-4 snap-x snap-mandatory"
       >
         {loading
-          ? Array.from({ length: 7 }).map((_, i) => (
+          ? Array.from({ length: 10 }).map((_, i) => (
               <div
                 key={i}
-                className="shrink-0 w-[280px] sm:w-[320px] md:w-[360px] aspect-video rounded-2xl shimmer-gold"
+                className="shrink-0 w-[85px] sm:w-[110px] md:w-[130px] lg:w-[150px] aspect-[2/3] rounded-lg shimmer-gold"
               />
             ))
           : items.map((m: any) => (
-              <LandscapeMovieCard
-                key={`${type}-${m.id}`}
-                id={m.id}
-                title={m.title ?? m.name ?? ""}
-                posterPath={m.poster_path}
-                year={(m.release_date ?? m.first_air_date ?? "").slice(0, 4)}
-                rating={m.vote_average}
-                type={type}
-              />
+              <div key={`${type}-${m.id}`} className="snap-start">
+                <MovieCard
+                  id={m.id}
+                  title={m.title ?? m.name ?? ""}
+                  posterPath={m.poster_path}
+                  year={(m.release_date ?? m.first_air_date ?? "").slice(0, 4)}
+                  rating={m.vote_average}
+                  type={type}
+                />
+              </div>
             ))}
       </div>
     </section>

@@ -35,12 +35,13 @@ const SLIDES = [
 export const Onboarding = () => {
   const [show, setShow] = useState(false);
   const [step, setStep] = useState(0);
-  const [lang, setLang] = useState<"ar" | "fr">("ar");
+  const [lang, setLang] = useState<"ar" | "fr">("fr");
 
   useEffect(() => {
     // Detect system language roughly or use default context, here we just guess or provide bilingual
-    const savedLang = localStorage.getItem("bnkhub_lang") || "ar";
-    if (savedLang === "fr" || savedLang === "en") setLang("fr");
+    const savedLang = localStorage.getItem("bnkhub_lang") || "fr";
+    if (savedLang === "ar") setLang("ar");
+    else setLang("fr");
     
     const hasSeen = localStorage.getItem("bnkhub_onboarding_seen");
     if (!hasSeen) {

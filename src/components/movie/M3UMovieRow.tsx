@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { LandscapeMovieCard } from "./LandscapeMovieCard";
+import { MovieCard } from "./MovieCard";
 import { fetchAndParseM3U, M3UItem } from "@/services/m3u";
 
 interface Props {
@@ -66,26 +66,27 @@ export const M3UMovieRow = ({ title, m3uUrl, type = "movie" }: Props) => {
 
       <div
         ref={scrollRef}
-        className="container overflow-x-auto scrollbar-hide flex gap-4 md:gap-5 pt-6 pb-4 snap-x snap-mandatory"
+        className="container overflow-x-auto scrollbar-hide flex gap-2 md:gap-3 lg:gap-4 pt-6 pb-4 snap-x snap-mandatory"
       >
         {loading
-          ? Array.from({ length: 7 }).map((_, i) => (
+          ? Array.from({ length: 10 }).map((_, i) => (
               <div
                 key={i}
-                className="shrink-0 w-[280px] sm:w-[320px] md:w-[360px] aspect-video rounded-2xl shimmer-gold"
+                className="shrink-0 w-[85px] sm:w-[110px] md:w-[130px] lg:w-[150px] aspect-[2/3] rounded-lg shimmer-gold"
               />
             ))
           : items.map((m, idx) => (
-              <LandscapeMovieCard
-                key={`m3u-${idx}`}
-                id={`m3u-${idx}`}
-                title={m.name}
-                posterPath={m.logo || null}
-                year="2024"
-                rating={10}
-                type={type}
-                customUrl={m.url}
-              />
+              <div key={`m3u-${idx}`} className="snap-start">
+                <MovieCard
+                  id={`m3u-${idx}`}
+                  title={m.name}
+                  posterPath={m.logo || null}
+                  year="2024"
+                  rating={10}
+                  type={type}
+                  customUrl={m.url}
+                />
+              </div>
             ))}
       </div>
     </section>

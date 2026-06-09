@@ -79,6 +79,18 @@ const dict = {
     footer_credit: "Cette application a été conçue et programmée par",
     footer_rights: "Tous droits réservés",
 
+    // Movie Card Context Menu & Badges
+    card_type_movie: "Film",
+    card_type_series: "Série",
+    card_context_title: "Options rapides",
+    card_context_watch: "Regarder maintenant",
+    card_context_watch_desc: "Ouvrir le film ou la série",
+    card_context_add_list: "Ajouter à ma liste",
+    card_context_add_list_desc: "Enregistrer pour plus tard",
+    card_context_share: "Partager",
+    card_context_share_desc: "Partager avec vos amis",
+    card_context_cancel: "Annuler",
+
     search_placeholder: "Rechercher un film, une série…",
     loading: "Chargement…",
     sub_title: "Sous-titres intelligents",
@@ -184,6 +196,18 @@ const dict = {
 
     footer_credit: "This application was designed and programmed by",
     footer_rights: "All rights reserved",
+
+    // Movie Card Context Menu & Badges
+    card_type_movie: "Movie",
+    card_type_series: "Series",
+    card_context_title: "Quick options",
+    card_context_watch: "Watch now",
+    card_context_watch_desc: "Open movie or show",
+    card_context_add_list: "Add to my list",
+    card_context_add_list_desc: "Save for later",
+    card_context_share: "Share",
+    card_context_share_desc: "Share with your friends",
+    card_context_cancel: "Cancel",
 
     search_placeholder: "Search for a movie or show…",
     loading: "Loading…",
@@ -292,6 +316,18 @@ const dict = {
     footer_credit: "تم تصميم وبرمجة هذا التطبيق بواسطة",
     footer_rights: "جميع الحقوق محفوظة",
 
+    // Movie Card Context Menu & Badges
+    card_type_movie: "فيلم",
+    card_type_series: "مسلسل",
+    card_context_title: "خيارات سريعة",
+    card_context_watch: "مشاهدة الآن",
+    card_context_watch_desc: "افتح الفيلم أو المسلسل",
+    card_context_add_list: "إضافة للمشاهدة لاحقاً",
+    card_context_add_list_desc: "حفظها في قائمتك",
+    card_context_share: "مشاركة",
+    card_context_share_desc: "شارك مع أصدقائك",
+    card_context_cancel: "إلغاء",
+
     search_placeholder: "ابحث عن فيلم أو مسلسل…",
     loading: "جاري التحميل…",
     sub_title: "الترجمات الذكية",
@@ -391,6 +427,18 @@ const dict = {
 
     footer_credit: "Diseñado y desarrollado por",
     footer_rights: "Todos los derechos reservados",
+
+    // Movie Card Context Menu & Badges
+    card_type_movie: "Película",
+    card_type_series: "Serie",
+    card_context_title: "Opciones rápidas",
+    card_context_watch: "Ver ahora",
+    card_context_watch_desc: "Abrir película o serie",
+    card_context_add_list: "Añadir a mi lista",
+    card_context_add_list_desc: "Guardar para más tarde",
+    card_context_share: "Compartir",
+    card_context_share_desc: "Compartir con tus amigos",
+    card_context_cancel: "Cancelar",
 
     search_placeholder: "Buscar una película o serie…",
     loading: "Cargando…",
