@@ -531,6 +531,8 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
             })}
             onSelect={selectSource}
             isLoading={false}
+            type={type}
+            tmdbId={tmdb_id}
           />
         </div>
       )}

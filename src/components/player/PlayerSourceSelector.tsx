@@ -2,7 +2,9 @@ import {
   Server, 
   ChevronDown,
   Check,
-  Loader2
+  Loader2,
+  Download,
+  ExternalLink
 } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { 
@@ -25,31 +27,62 @@ interface Props {
   sources: Source[];
   onSelect: (index: number) => void;
   isLoading?: boolean;
+  type?: "movie" | "tv";
+  tmdbId?: number | string;
+  hideControls?: boolean;
 }
 
-export const PlayerSourceSelector = ({ 
+export const PlayerSourceSelector = React.memo(({ 
   sources, 
   onSelect, 
-  isLoading 
+  isLoading,
+  type,
+  tmdbId,
+  hideControls
 }: Props) => {
   const { lang } = useLanguage();
   const isAr = lang === "ar";
   const currentSource = sources.find(s => s.selected) || sources[0];
 
-  if (isLoading) {
-    return (
-      <div className="py-6 flex flex-col items-center justify-center text-center">
-        <Loader2 className="w-6 h-6 text-accent animate-spin mb-2" />
-        <p className="text-xs font-medium animate-pulse text-muted-foreground">
-          {isAr ? "جاري جلب السيرفرات..." : "Loading servers..."}
-        </p>
-      </div>
-    );
+  const handleDownloadClick = () => {
+    if (!type || !tmdbId) return;
+    const url = type === "movie"
+      ? `https://nhdapi.com/dl/movie/${tmdbId}`
+      : `https://nhdapi.com/dl/tv/${tmdbId}`;
+    window.open(url, "_blank");
+  };
+
+  if (isLoading || hideControls) {
+    if (isLoading) {
+      return (
+        <div className="py-6 flex flex-col items-center justify-center text-center">
+          <Loader2 className="w-6 h-6 text-accent animate-spin mb-2" />
+          <p className="text-xs font-medium animate-pulse text-muted-foreground">
+            {isAr ? "جاري جلب السيرفرات..." : "Loading servers..."}
+          </p>
+        </div>
+      );
+    }
+    return null;
   }
 
   return (
     <div className="w-full mt-6 flex flex-col items-center gap-6 animate-in fade-in slide-in-from-bottom-4 duration-1000">
       <div className="flex flex-wrap items-center justify-center gap-4">
+        {/* Download Button */}
+        {type && tmdbId && (
+          <button
+            onClick={handleDownloadClick}
+            className="flex items-center gap-3 px-8 py-4 rounded-[2rem] bg-white/5 border border-white/10 hover:border-accent/40 hover:bg-white/10 transition-all group shadow-2xl"
+          >
+            <Download className="w-5 h-5 text-accent/40 group-hover:text-accent transition-colors" />
+            <span className="text-lg font-black text-white group-hover:text-accent transition-colors">
+              {isAr ? "تحميل" : "Download"}
+            </span>
+            <ExternalLink className="w-4 h-4 text-white/20 group-hover:text-accent transition-colors" />
+          </button>
+        )}
+        
         {/* Large Centered Server Selector */}
         <div className="flex items-center gap-3">
           <Popover>
@@ -88,4 +121,4 @@ export const PlayerSourceSelector = ({
       </div>
     </div>
   );
-};
+});
