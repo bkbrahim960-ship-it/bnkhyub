@@ -69,13 +69,13 @@ export const M3UMovieRow = ({ title, m3uUrl, type = "movie" }: Props) => {
         className="container overflow-x-auto scrollbar-hide flex gap-4 md:gap-5 pt-6 pb-4 snap-x snap-mandatory"
       >
         {loading
-          ? Array.from({ length: 8 }).map((_, i) => (
+          ? Array.from({ length: 7 }).map((_, i) => (
               <div
                 key={i}
                 className="shrink-0 w-[150px] sm:w-[170px] md:w-[190px] aspect-[2/3] rounded-xl shimmer-gold"
               />
             ))
-          : items.map((m, idx) => (
+          : items.slice(0, 7).map((m, idx) => (
               <div key={`m3u-${idx}`} className="snap-start">
                 <MovieCard
                   id={`m3u-${idx}`}

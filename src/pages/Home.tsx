@@ -192,9 +192,9 @@ const KabyleCinemaRow = () => {
         </p>
       </div>
       <div className="container overflow-x-auto scrollbar-hide flex gap-4 md:gap-5 pt-6 pb-4 snap-x snap-mandatory">
-        {all.map((item) => (
+        {all.slice(0, 7).map((item) => (
           <div key={item.id} className="snap-start">
-            <MovieCard 
+            <MovieCard
               id={item.id}
               title={item.title}
               posterPath={item.thumbnail}

@@ -2,8 +2,8 @@
  * BNKhub — "Pour Vous" (For You) Row.
  * Personnalise les recommandations basées sur l'historique de visionnage de l'utilisateur.
  */
-import { useEffect, useState, useRef } from "react";
-import { ChevronLeft, ChevronRight, Sparkles } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Sparkles } from "lucide-react";
 import { MovieCard } from "./MovieCard";
 import { useAuth } from "@/context/AuthContext";
 import { useLanguage } from "@/context/LanguageContext";
@@ -14,7 +14,6 @@ import { tmdbLang } from "@/services/i18n";
 export const ForYouRow = () => {
   const { user } = useAuth();
   const { lang } = useLanguage();
-  const scrollRef = useRef<HTMLDivElement>(null);
   const [items, setItems] = useState<TMDBMovie[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -72,64 +71,42 @@ export const ForYouRow = () => {
 
   if (!user || (!loading && items.length === 0)) return null;
 
-  const scroll = (dir: 1 | -1) => {
-    const el = scrollRef.current;
-    if (!el) return;
-    el.scrollBy({ left: dir * (el.clientWidth * 0.85), behavior: "smooth" });
-  };
-
   return (
-    <section className="relative py-4 group/row">
-      <div className="container flex items-end justify-between mb-5">
+    <section className="relative py-4">
+      <div className="container mb-5">
         <div className="flex items-center gap-3">
           <Sparkles className="w-6 h-6 text-accent animate-pulse" />
           <h2 className="font-display text-2xl md:text-3xl">
             <span className="text-gradient-accent">
-              {lang === "ar" ? "🎯 مُقترح لك" : "🎯 Pour Vous"}
+              {lang === "ar" ? "🎯 مقترح لك" : "🎯 Pour Vous"}
             </span>
           </h2>
         </div>
-        <div className="hidden md:flex gap-2 opacity-0 group-hover/row:opacity-100 transition-opacity duration-300">
-          <button
-            onClick={() => scroll(-1)}
-            className="w-10 h-10 rounded-full bg-surface-elevated/80 backdrop-blur border border-border hover:border-accent-subtle grid place-items-center"
-            aria-label="Précédent"
-          >
-            <ChevronLeft className="w-5 h-5 rtl:rotate-180" />
-          </button>
-          <button
-            onClick={() => scroll(1)}
-            className="w-10 h-10 rounded-full bg-surface-elevated/80 backdrop-blur border border-border hover:border-accent-subtle grid place-items-center"
-            aria-label="Suivant"
-          >
-            <ChevronRight className="w-5 h-5 rtl:rotate-180" />
-          </button>
-        </div>
       </div>
 
-      <div
-        ref={scrollRef}
-        className="container overflow-x-auto scrollbar-hide flex gap-4 md:gap-5 pt-6 pb-4 snap-x snap-mandatory"
-      >
-        {loading
-          ? Array.from({ length: 8 }).map((_, i) => (
-              <div
-                key={i}
-                className="shrink-0 w-[150px] sm:w-[170px] md:w-[190px] aspect-[2/3] rounded-xl shimmer-gold"
-              />
-            ))
-          : items.map((m: any) => (
-              <div key={`fy-${m.id}`} className="snap-start">
-                <MovieCard
-                  id={m.id}
-                  title={m.title ?? m.name ?? ""}
-                  posterPath={m.poster_path}
-                  year={(m.release_date ?? m.first_air_date ?? "").slice(0, 4)}
-                  rating={m.vote_average}
-                  type={m.media_type === "tv" || m.first_air_date ? "tv" : "movie"}
+      <div className="container pt-6 pb-4">
+        <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 gap-3 sm:gap-6">
+          {loading
+            ? Array.from({ length: 7 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="aspect-[2/3] rounded-xl shimmer-gold"
                 />
-              </div>
-            ))}
+              ))
+            : items.slice(0, 7).map((m: any) => (
+                <div key={`fy-${m.id}`}>
+                  <MovieCard
+                    id={m.id}
+                    title={m.title ?? m.name ?? ""}
+                    posterPath={m.poster_path}
+                    year={(m.release_date ?? m.first_air_date ?? "").slice(0, 4)}
+                    rating={m.vote_average}
+                    type={m.media_type === "tv" || m.first_air_date ? "tv" : "movie"}
+                    className="w-full"
+                  />
+                </div>
+              ))}
+        </div>
       </div>
     </section>
   );

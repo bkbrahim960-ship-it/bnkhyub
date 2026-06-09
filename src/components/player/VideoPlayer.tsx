@@ -59,7 +59,7 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
   onCompleted,
 }, ref) => {
   const { t, lang } = useLanguage();
-  const [sourceIndex, setSourceIndex] = useState(initialSourceIndex);
+  const [sourceIndex, setSourceIndex] = useState(Math.min(initialSourceIndex, 2));
   const [loading, setLoading] = useState(true);
   const [slow, setSlow] = useState<boolean[]>(Array(50).fill(false));
   const [adsOpen, setAdsOpen] = useState(!hasSeenAdsNotice());
@@ -199,8 +199,8 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
     ? `https://cinemaos.tech/player/${tmdb_id}?${cinemaOsParams}`
     : `https://cinemaos.tech/player/${tmdb_id}/${season}/${episode}?${cinemaOsParams}`;
 
-  // Combine with internal sources
-  const allSources = [cinemaOsUrl, ...sources, ...internalSources.filter(s => s.url).map(s => s.url)];
+  // Combine with internal sources, keep only first 3 sources total (S1, S2, S3)
+  const allSources = [cinemaOsUrl, ...sources.slice(0,2)];
 
   useEffect(() => {
     const fetchInternal = async () => {
@@ -238,7 +238,7 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
   }, [tmdb_id, type, season, episode]);
 
   const allLabels = Array(50).fill(null);
-  allLabels[0] = "cinema";
+  allLabels[0] = "🎬 CinemaOS (بدون إعلانات)";
   allLabels[1] = customUrl ? "Serveur Kabyle" : "BNKhub serveur";
 
   const handleLoad = () => {
@@ -257,15 +257,16 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
     
     const current = allSources[sourceIndex];
     setSourceIndex(-1);
-    setTimeout(() => setSourceIndex(allSources.indexOf(current)), 10);
+    setTimeout(() => setSourceIndex(Math.max(0, Math.min(allSources.indexOf(current), 2))), 10);
   };
 
   const selectSource = (index: number) => {
-    if (index === sourceIndex) return;
+    const clampedIndex = Math.max(0, Math.min(index, 2));
+    if (clampedIndex === sourceIndex) return;
     setLoading(true);
-    setSourceIndex(index);
+    setSourceIndex(clampedIndex);
     if (onSourceChange) {
-      onSourceChange(index, allLabels[index] || SOURCE_LABELS[index] || `Internal S${index - 6}`);
+      onSourceChange(clampedIndex, `S${clampedIndex + 1} BNKHUB`);
     }
   };
 
@@ -400,8 +401,7 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
 
         {/* Video Element for HLS / Direct */}
         {(allSources[sourceIndex]?.includes(".m3u8") || 
-          allSources[sourceIndex]?.includes(".mp4") || 
-          (sourceIndex >= sources.length && internalSources[sourceIndex - sources.length]?.type === "hls")) && (
+          allSources[sourceIndex]?.includes(".mp4")) && (
           <video
             ref={videoRef}
             className={`absolute inset-0 w-full h-full object-contain bg-black transition-opacity duration-300 ${playerActive ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
@@ -455,7 +455,7 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
           <iframe
             key={`${sourceIndex}-${appliedExternalSub}`}
             src={allSources[sourceIndex]}
-            title={customUrl ? "Serveur Kabyle" : (allLabels[sourceIndex] || SOURCE_LABELS[sourceIndex] || (sourceIndex < sources.length ? "BNKhub Mirror Server" : (internalSources[sourceIndex - sources.length]?.provider || "Internal Server")))}
+            title="BNKHUB"
             allow="autoplay; fullscreen; picture-in-picture; encrypted-media; clipboard-write; gyroscope; accelerometer; web-share; display-capture; screen-wake-lock"
             allowFullScreen
             allowTransparency
@@ -471,7 +471,7 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
           <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/60 pointer-events-none">
             <Loader2 className="w-10 h-10 text-accent animate-spin mb-3" />
             <p className="text-sm text-muted-foreground">{t("player_loading")}</p>
-            <p className="text-xs text-accent mt-1">{allLabels[sourceIndex] || SOURCE_LABELS[sourceIndex]}</p>
+            <p className="text-xs text-accent mt-1">BNKHUB</p>
           </div>
         )}
       </div>
@@ -479,11 +479,11 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
       {/* Sélecteur de source avancé */}
       <div className="mt-5">
         <PlayerSourceSelector 
-          sources={sources.map((src, idx) => {
-            const isDirect = src.includes(".m3u8") || src.includes(".mp4") || src.includes("youtube");
+          sources={allSources.map((src, idx) => {
+            const isDirect = src.includes(".m3u8") || src.includes(".mp4") || src.includes("youtube") || src.includes("cinemaos.tech");
             return {
               id: idx,
-              name: allLabels[idx] || SOURCE_LABELS[idx] || `Source ${idx + 1}`,
+              name: `S${idx + 1} BNKHUB`,
               quality: isDirect ? "1080p" : "Auto",
               speed: isDirect ? "50" : "30",
               uptime: "99",

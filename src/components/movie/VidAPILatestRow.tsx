@@ -53,11 +53,11 @@ export const VidAPILatestRow = ({ type, title }: VidAPILatestRowProps) => {
       <div className="container relative">
         <div className="flex gap-4 md:gap-6 overflow-x-auto scrollbar-hide pb-8 snap-x snap-mandatory pt-2">
           {loading ? (
-            Array(6).fill(0).map((_, i) => (
+            Array(7).fill(0).map((_, i) => (
               <div key={i} className="min-w-[160px] md:min-w-[220px] aspect-[2/3] rounded-3xl shimmer-gold animate-in fade-in" />
             ))
           ) : (
-            items.map((item, idx) => (
+            items.slice(0, 7).map((item, idx) => (
               <div 
                 key={`${item.tmdb_id}-${idx}`} 
                 className="snap-start animate-in fade-in slide-in-from-right-8 duration-500"
