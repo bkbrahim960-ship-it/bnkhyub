@@ -1,8 +1,7 @@
 /**
- * BNKhub — Sidebar desktop/TV : masqué par défaut, affiché au survol/s glissement.
- * Mode icônes uniquement quand fermé.
+ * BNKhub — Sidebar professionnel pour desktop/TV uniquement.
  */
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import {
   Home,
@@ -19,65 +18,31 @@ import {
 import { useLanguage } from "@/context/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
 import { useSettings } from "@/context/SettingsContext";
-import { SIDEBAR_WIDTH, useSidebar } from "@/context/SidebarContext";
-
-const DRAG_THRESHOLD = 48;
-const EDGE_ZONE = 14;
-const COLLAPSED_WIDTH = 80;
+import { useSidebar } from "@/context/SidebarContext";
 
 export const Sidebar = () => {
   const { lang, t } = useLanguage();
   const { user } = useAuth();
   const { kidsMode, toggleKidsMode } = useSettings();
   const location = useLocation();
-  const { isOpen, setIsOpen } = useSidebar();
-
-  const dragStartX = useRef(0);
-  const isDragging = useRef(false);
-  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const cancelClose = () => {
-    if (closeTimer.current) {
-      clearTimeout(closeTimer.current);
-      closeTimer.current = null;
-    }
-  };
-
-  const scheduleClose = () => {
-    cancelClose();
-    closeTimer.current = setTimeout(() => setIsOpen(false), 400);
-  };
+  const { isCollapsed, setIsCollapsed, isHovered, setIsHovered } = useSidebar();
 
   useEffect(() => {
-    setIsOpen(true);
-    const timer = setTimeout(() => setIsOpen(false), 1200);
-    return () => clearTimeout(timer);
-  }, [location.pathname, setIsOpen]);
+    if (isCollapsed) {
+      setIsHovered(true);
+      const timer = setTimeout(() => setIsHovered(false), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [location.pathname, isCollapsed, setIsHovered]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "ArrowRight") setIsOpen(true);
-      else if (e.key === "ArrowLeft") setIsOpen(false);
+      if (e.key === "ArrowRight" && isCollapsed) setIsCollapsed(false);
+      else if (e.key === "ArrowLeft" && !isCollapsed) setIsCollapsed(true);
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [setIsOpen]);
-
-  const onDragStart = (clientX: number) => {
-    dragStartX.current = clientX;
-    isDragging.current = true;
-  };
-
-  const onDragMove = (clientX: number) => {
-    if (!isDragging.current) return;
-    const delta = clientX - dragStartX.current;
-    if (!isOpen && delta > DRAG_THRESHOLD) setIsOpen(true);
-    if (isOpen && delta < -DRAG_THRESHOLD) setIsOpen(false);
-  };
-
-  const onDragEnd = () => {
-    isDragging.current = false;
-  };
+  }, [isCollapsed, setIsCollapsed]);
 
   const navLinks = [
     { to: "/", label: t("nav_home"), icon: Home },
@@ -92,108 +57,62 @@ export const Sidebar = () => {
     navLinks.push({ to: "/admin", label: t("nav_admin"), icon: Settings });
   }
 
-  const bottomItems = [
-    {
-      type: "button" as const,
-      key: "kids",
-      label: kidsMode
-        ? lang === "ar"
-          ? "إيقاف وضع الأطفال"
-          : "Désactiver Enfants"
-        : lang === "ar"
-          ? "وضع الأطفال"
-          : "Mode Enfants",
-      icon: Baby,
-      active: kidsMode,
-      onClick: toggleKidsMode,
-    },
-    ...(!user
-      ? [
-          {
-            type: "link" as const,
-            key: "signin",
-            to: "/auth-desktop",
-            label: t("auth_signin"),
-            icon: LogIn,
-          },
-        ]
-      : []),
-    {
-      type: "link" as const,
-      key: "profile",
-      to: "/profile",
-      label: t("nav_profile"),
-      icon: User,
-      end: true,
-    },
-  ];
+  const isExpanded = !isCollapsed || isHovered;
 
-  const sidebarBg = kidsMode
-    ? "bg-[#0c1520]/98 border-sky-500/15"
-    : "bg-[#07070a]/98 border-white/[0.07]";
+  const navItemClass = (isActive: boolean) => {
+    const base =
+      "relative flex items-center gap-3 rounded-xl font-medium transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/60";
+    const size = isExpanded ? "px-3 py-2.5 text-sm" : "justify-center p-2.5 mx-auto w-11 h-11";
+
+    if (isActive) {
+      return kidsMode
+        ? `${base} ${size} bg-sky-500/15 text-sky-300 shadow-[inset_0_0_0_1px_rgba(56,189,248,0.25)]`
+        : `${base} ${size} bg-accent/15 text-accent shadow-[inset_0_0_0_1px_rgba(var(--accent-rgb),0.3)]`;
+    }
+    return `${base} ${size} text-foreground/55 hover:text-foreground hover:bg-white/[0.06]`;
+  };
+
+  const iconClass = (isActive: boolean) =>
+    `w-[18px] h-[18px] shrink-0 ${
+      isActive
+        ? kidsMode
+          ? "text-sky-300"
+          : "text-accent"
+        : "text-foreground/45 group-hover:text-foreground/80"
+    }`;
 
   return (
-    <>
-      {/* Zone de déclenchement gauche — survol & glissement pour ouvrir */}
-      {!isOpen && (
-        <div
-          className="hidden md:block fixed left-0 top-0 bottom-0 z-[91] cursor-e-resize"
-          style={{ width: EDGE_ZONE }}
-          onMouseEnter={() => {
-            cancelClose();
-            setIsOpen(true);
-          }}
-          onPointerDown={(e) => {
-            e.preventDefault();
-            onDragStart(e.clientX);
-          }}
-          onPointerMove={(e) => {
-            if (e.buttons === 1) onDragMove(e.clientX);
-          }}
-          onPointerUp={onDragEnd}
-          onPointerCancel={onDragEnd}
-        >
-          <div
-            className={`absolute left-0 top-1/2 -translate-y-1/2 w-1 h-24 rounded-r-full ${
-              kidsMode ? "bg-sky-400/60" : "bg-accent/50"
-            }`}
-          />
-        </div>
-      )}
-
-      <aside
-        style={{ width: isOpen ? SIDEBAR_WIDTH : COLLAPSED_WIDTH }}
-        onMouseEnter={cancelClose}
-        onMouseLeave={scheduleClose}
-        onPointerDown={(e) => {
-          if (e.button !== 0) return;
-          onDragStart(e.clientX);
-        }}
-        onPointerMove={(e) => {
-          if (e.buttons === 1) onDragMove(e.clientX);
-        }}
-        onPointerUp={onDragEnd}
-        onPointerCancel={onDragEnd}
-        className={`hidden md:flex fixed left-0 top-0 bottom-0 z-[90] flex-col border-r backdrop-blur-2xl transition-all duration-300 ease-out touch-none ${sidebarBg} shadow-[4px_0_40px_rgba(0,0,0,0.3)]`}
-      >
-        {/* Logo */}
-        <Link
-          to="/"
-          className={`shrink-0 flex items-center justify-center h-[88px] border-b border-white/[0.06] hover:bg-white/[0.03] transition-colors ${
-            !isOpen ? "px-2" : ""
-          }`}
-        >
+    <aside
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      className={`hidden md:flex fixed left-0 top-0 bottom-0 z-[90] flex-col border-r transition-all duration-300 ease-out ${
+        kidsMode
+          ? "bg-[#0c1520]/95 border-sky-500/10"
+          : "bg-[#08080c]/95 border-white/[0.06]"
+      } backdrop-blur-2xl ${isExpanded ? "w-[240px] lg:w-[260px]" : "w-[72px]"}`}
+    >
+      {/* Logo */}
+      <div className={`shrink-0 flex items-center border-b border-white/[0.06] ${isExpanded ? "px-5 h-[72px]" : "justify-center h-[72px]"}`}>
+        <Link to="/" className="flex items-center group overflow-hidden">
           <img
             src="/logo.png"
             alt="BNKhub"
-            className={`object-contain drop-shadow-[0_0_24px_rgba(var(--accent-rgb),0.4)] transition-all duration-300 ${
-              isOpen ? "h-[72px] lg:h-[80px]" : "h-10 w-auto"
+            className={`object-contain transition-all duration-300 group-hover:scale-105 drop-shadow-[0_0_20px_rgba(var(--accent-rgb),0.35)] ${
+              isExpanded ? "h-14 lg:h-16 w-auto" : "h-9 w-9"
             }`}
           />
         </Link>
+      </div>
 
-        {/* Tous les éléments — hauteur égale, sans espaces */}
-        <div className="flex-1 flex flex-col min-h-0">
+      {/* Navigation */}
+      <div className="flex-1 flex flex-col overflow-y-auto overflow-x-hidden py-4 px-3 gap-1">
+        {isExpanded && (
+          <p className="px-3 pb-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-foreground/25">
+            {lang === "ar" ? "التصفح" : "Navigation"}
+          </p>
+        )}
+
+        <nav className="flex flex-col gap-0.5">
           {navLinks.map((l) => (
             <NavLink
               key={l.to}
@@ -201,106 +120,82 @@ export const Sidebar = () => {
               end={l.to === "/"}
               data-tv-nav="main"
               tabIndex={0}
-              className={({ isActive }) =>
-                `group relative flex flex-1 items-center ${isOpen ? "gap-4 px-5" : "justify-center px-0"} w-full font-semibold transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-accent/50 min-h-0 ${
-                  isActive
-                    ? kidsMode
-                      ? `bg-sky-500/20 text-sky-200`
-                      : `bg-accent/20 text-accent`
-                    : `text-foreground/70 hover:text-foreground hover:bg-white/[0.05]`
-                }`
-              }
+              title={!isExpanded ? l.label : undefined}
+              className={({ isActive }) => `group ${navItemClass(isActive)}`}
             >
               {({ isActive }) => (
                 <>
-                  {isActive && (
-                    <span
-                      className={`absolute left-0 top-0 bottom-0 w-1 ${kidsMode ? "bg-sky-400" : "bg-accent"}`}
-                    />
+                  <l.icon className={iconClass(isActive)} />
+                  {isExpanded && <span className="truncate">{l.label}</span>}
+                  {isActive && !isExpanded && (
+                    <span className={`absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r-full ${kidsMode ? "bg-sky-400" : "bg-accent"}`} />
                   )}
-                  <l.icon
-                    className={`w-7 h-7 lg:w-8 lg:h-8 shrink-0 ${
-                      isActive
-                        ? kidsMode
-                          ? "text-sky-200"
-                          : "text-accent"
-                        : "text-foreground/50 group-hover:text-foreground/90"
-                    }`}
-                  />
-                  {isOpen && <span className="text-base lg:text-lg truncate">{l.label}</span>}
                 </>
               )}
             </NavLink>
           ))}
+        </nav>
+      </div>
 
-          <div className="flex flex-col flex-1 min-h-0 border-t border-white/[0.06]">
-            {bottomItems.map((item) =>
-              item.type === "button" ? (
-                <button
-                  key={item.key}
-                  type="button"
-                  onClick={item.onClick}
-                  className={`group relative flex flex-1 items-center ${isOpen ? "gap-4 px-5" : "justify-center px-0"} w-full font-semibold transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-accent/50 min-h-0 ${
-                    item.active
-                      ? kidsMode
-                        ? `bg-sky-500/20 text-sky-200`
-                        : `bg-accent/20 text-accent`
-                      : `text-foreground/70 hover:text-foreground hover:bg-white/[0.05]`
-                  }`}
-                >
-                  <item.icon
-                    className={`w-7 h-7 lg:w-8 lg:h-8 shrink-0 ${
-                      item.active
-                        ? kidsMode
-                          ? "text-sky-200"
-                          : "text-accent"
-                        : "text-foreground/50 group-hover:text-foreground/90"
-                    }`}
-                  />
-                  {isOpen && <span className="text-base lg:text-lg truncate">{item.label}</span>}
-                </button>
-              ) : (
-                <NavLink
-                  key={item.key}
-                  to={item.to}
-                  end={item.end}
-                  data-tv-nav="main"
-                  tabIndex={0}
-                  className={({ isActive }) =>
-                    `group relative flex flex-1 items-center ${isOpen ? "gap-4 px-5" : "justify-center px-0"} w-full font-semibold transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-accent/50 min-h-0 ${
-                      isActive
-                        ? kidsMode
-                          ? `bg-sky-500/20 text-sky-200`
-                          : `bg-accent/20 text-accent`
-                        : `text-foreground/70 hover:text-foreground hover:bg-white/[0.05]`
-                    }`
-                  }
-                >
-                  {({ isActive }) => (
-                    <>
-                      {isActive && (
-                        <span
-                          className={`absolute left-0 top-0 bottom-0 w-1 ${kidsMode ? "bg-sky-400" : "bg-accent"}`}
-                        />
-                      )}
-                      <item.icon
-                        className={`w-7 h-7 lg:w-8 lg:h-8 shrink-0 ${
-                          isActive
-                            ? kidsMode
-                              ? "text-sky-200"
-                              : "text-accent"
-                            : "text-foreground/50 group-hover:text-foreground/90"
-                        }`}
-                      />
-                      {isOpen && <span className="text-base lg:text-lg truncate">{item.label}</span>}
-                    </>
-                  )}
-                </NavLink>
-              )
+      {/* Bottom section */}
+      <div className="shrink-0 px-3 pb-4 pt-2 border-t border-white/[0.06] flex flex-col gap-0.5">
+        {isExpanded && (
+          <p className="px-3 pb-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-foreground/25">
+            {lang === "ar" ? "الحساب" : "Compte"}
+          </p>
+        )}
+
+        <button
+          type="button"
+          onClick={toggleKidsMode}
+          title={!isExpanded ? (kidsMode ? "Kids" : "Kids Mode") : undefined}
+          className={`group ${navItemClass(kidsMode)}`}
+        >
+          <Baby className={iconClass(kidsMode)} />
+          {isExpanded && (
+            <span className="truncate">
+              {kidsMode
+                ? lang === "ar"
+                  ? "إيقاف وضع الأطفال"
+                  : "Désactiver Enfants"
+                : lang === "ar"
+                  ? "وضع الأطفال"
+                  : "Mode Enfants"}
+            </span>
+          )}
+        </button>
+
+        {!user && (
+          <NavLink
+            to="/auth-desktop"
+            title={!isExpanded ? t("auth_signin") : undefined}
+            className={({ isActive }) => `group ${navItemClass(isActive)}`}
+          >
+            {({ isActive }) => (
+              <>
+                <LogIn className={iconClass(isActive)} />
+                {isExpanded && <span className="truncate">{t("auth_signin")}</span>}
+              </>
             )}
-          </div>
-        </div>
-      </aside>
-    </>
+          </NavLink>
+        )}
+
+        <NavLink
+          to="/profile"
+          end
+          data-tv-nav="main"
+          tabIndex={0}
+          title={!isExpanded ? t("nav_profile") : undefined}
+          className={({ isActive }) => `group ${navItemClass(isActive)}`}
+        >
+          {({ isActive }) => (
+            <>
+              <User className={iconClass(isActive)} />
+              {isExpanded && <span className="truncate">{t("nav_profile")}</span>}
+            </>
+          )}
+        </NavLink>
+      </div>
+    </aside>
   );
 };
