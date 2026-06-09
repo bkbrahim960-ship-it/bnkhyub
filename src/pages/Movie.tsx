@@ -75,7 +75,15 @@ const Movie = () => {
     }
 
     if (custom) {
-      setMovie(custom as any);
+      setMovie({
+        ...custom,
+        poster_path: custom.thumbnail,
+        backdrop_path: custom.thumbnail,
+        overview: custom.description,
+        vote_average: custom.rating,
+        release_date: custom.year,
+        genres: custom.category ? [{ id: 1, name: custom.category }] : []
+      } as any);
       setLoading(false);
       if (resumeRequested) setPlaying(true);
       return;
