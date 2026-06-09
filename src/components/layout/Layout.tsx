@@ -16,27 +16,30 @@ const LayoutContent = ({ children }: { children: ReactNode }) => {
   const sidebarWidth = isCollapsed ? 72 : 240;
 
   return (
-    <div className="min-h-screen bg-surface-primary">
+    <>
       <Sidebar />
-      {/* Main content with smooth transition */}
+      {/* Desktop Layout - with sidebar offset */}
       <div 
-        className="hidden md:flex md:flex-col min-h-screen transition-all duration-300 ease-out"
+        className="hidden md:block transition-all duration-300 ease-out"
         style={{
           marginLeft: `${sidebarWidth}px`
         }}
       >
-        <Header />
-        <main className={`flex-1 pb-24 ${mainPadding}`}>{children}</main>
-        <BottomNav />
+        <div className="min-h-screen flex flex-col">
+          <Header />
+          <main className={`flex-1 pb-24 ${mainPadding}`}>{children}</main>
+          <BottomNav />
+        </div>
       </div>
-      {/* Mobile layout - no sidebar offset */}
-      <div className="md:hidden flex flex-col min-h-screen">
+      
+      {/* Mobile Layout - no sidebar offset */}
+      <div className="md:hidden flex flex-col min-h-screen bg-surface-primary">
         <Header />
         <main className={`flex-1 pb-24 ${mainPadding}`}>{children}</main>
         <BottomNav />
       </div>
       <InstallModal />
-    </div>
+    </>
   );
 };
 

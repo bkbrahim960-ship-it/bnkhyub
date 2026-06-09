@@ -87,9 +87,9 @@ export const Sidebar = () => {
       onMouseLeave={() => setIsHovered(false)}
       className={`hidden md:flex fixed left-0 top-0 bottom-0 z-[90] flex-col border-r transition-all duration-300 ease-out ${
         kidsMode
-          ? "bg-[#0c1520]/95 border-sky-500/10"
-          : "bg-[#08080c]/95 border-white/[0.06]"
-      } backdrop-blur-2xl ${isExpanded ? "w-[240px] lg:w-[260px]" : "w-[72px]"}`}
+          ? "bg-[#0c1520]/50 border-sky-500/10"
+          : "bg-[#08080c]/50 border-white/[0.06]"
+      } backdrop-blur-3xl ${isExpanded ? "w-[240px] lg:w-[260px]" : "w-[72px]"}`}
     >
       {/* Logo */}
       <div className={`shrink-0 flex items-center border-b border-white/[0.06] ${isExpanded ? "px-5 h-[72px]" : "justify-center h-[72px]"}`}>
