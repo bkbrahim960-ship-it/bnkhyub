@@ -7,8 +7,8 @@ export default {
   theme: {
     container: {
       center: true,
-      padding: "1.5rem",
-      screens: { "2xl": "1440px" },
+      padding: "1rem",
+      screens: { "2xl": "100%" },
     },
     extend: {
       fontFamily: {

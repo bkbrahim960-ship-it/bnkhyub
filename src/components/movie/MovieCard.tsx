@@ -80,7 +80,7 @@ export const MovieCard = memo(({ id, title, posterPath, year, rating, type = "mo
 
   return (
     <div
-      className={`relative block shrink-0 w-[100px] sm:w-[130px] md:w-[150px] lg:w-[170px] xl:w-[190px] transition-all duration-300 ${className}`}
+      className={`relative block shrink-0 w-[100px] sm:w-[130px] md:w-[145px] lg:w-[155px] xl:w-[165px] 2xl:w-[175px] transition-all duration-300 ${className}`}
       onMouseEnter={handleActive}
       onMouseLeave={handleLeave}
       onContextMenu={handleContextMenu}

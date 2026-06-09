@@ -8,6 +8,7 @@ import { MovieCard } from "./MovieCard";
 import { discoverMovies, discoverSeries, TMDBMovie, TMDBSeries } from "@/services/tmdb";
 import { useLanguage } from "@/context/LanguageContext";
 import { tmdbLang } from "@/services/i18n";
+import { ROW_HEADER, ROW_TRACK, CARD_SKELETON } from "./rowLayout";
 
 interface ContentRowProps {
   title: string;
@@ -58,7 +59,7 @@ export const DiscoverRow = ({ title, originalLanguage, type = "movie", genres, i
 
   return (
     <section className="relative py-4 group/row">
-      <div className="container flex items-end justify-between mb-5">
+      <div className={ROW_HEADER}>
         <h2 className="font-display text-2xl md:text-3xl">
           <span className="text-gradient-accent">{icon ? `${icon} ` : ""}{title}</span>
         </h2>
@@ -82,13 +83,13 @@ export const DiscoverRow = ({ title, originalLanguage, type = "movie", genres, i
 
       <div
         ref={scrollRef}
-        className="container overflow-x-auto scrollbar-hide flex gap-2 md:gap-3 lg:gap-4 pt-6 pb-4 snap-x snap-mandatory"
+        className={ROW_TRACK}
       >
         {loading
           ? Array.from({ length: 10 }).map((_, i) => (
               <div
                 key={i}
-                className="shrink-0 w-[100px] sm:w-[130px] md:w-[150px] lg:w-[170px] xl:w-[190px] aspect-[2/3] rounded-lg shimmer-gold"
+                className={CARD_SKELETON}
               />
             ))
           : items.map((m: any) => (

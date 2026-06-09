@@ -13,6 +13,8 @@ import { BrandRow } from "@/components/movie/BrandRow";
 import { ContinueWatchingRow } from "@/components/movie/ContinueWatchingRow";
 import { ForYouRow } from "@/components/movie/ForYouRow";
 import { DiscoverRow } from "@/components/movie/DiscoverRow";
+import { SideWingColumn, mergeTMDBPages, splitWingColumns } from "@/components/movie/SideWingColumn";
+import { ROW_HEADER, ROW_TRACK } from "@/components/movie/rowLayout";
 import { VidAPILatestRow } from "@/components/movie/VidAPILatestRow";
 import { SEO } from "@/components/SEO";
 import { useLanguage } from "@/context/LanguageContext";
@@ -185,7 +187,7 @@ const KabyleCinemaRow = () => {
 
   return (
     <section className="relative py-8">
-      <div className="container mb-5">
+      <div className={ROW_HEADER}>
         <h2 className="font-display text-2xl md:text-3xl">
           <span className="text-gradient-accent">Kabyle</span>
         </h2>
@@ -196,10 +198,10 @@ const KabyleCinemaRow = () => {
       
       {/* Kabyle Movies */}
       <div className="mb-8">
-        <h3 className="container text-lg font-display text-muted-foreground mb-4">
+        <h3 className={`${ROW_HEADER} text-lg font-display text-muted-foreground mb-0 py-0`}>
           {lang === "ar" ? "🎬 الأفلام" : "🎬 Films"}
         </h3>
-        <div className="container overflow-x-auto scrollbar-hide flex gap-2 md:gap-3 lg:gap-4 pt-2 pb-4 snap-x snap-mandatory">
+        <div className={`${ROW_TRACK} pt-2`}>
           {allMovies.map((item) => (
             <div key={item.id} className="snap-start">
               <MovieCard
@@ -219,10 +221,10 @@ const KabyleCinemaRow = () => {
       {/* Kabyle Series */}
       {allSeries.length > 0 && (
         <div>
-          <h3 className="container text-lg font-display text-muted-foreground mb-4">
+          <h3 className={`${ROW_HEADER} text-lg font-display text-muted-foreground mb-0 py-0`}>
             {lang === "ar" ? "📺 المسلسلات" : "📺 Séries"}
           </h3>
-          <div className="container overflow-x-auto scrollbar-hide flex gap-2 md:gap-3 lg:gap-4 pt-2 pb-4 snap-x snap-mandatory">
+          <div className={`${ROW_TRACK} pt-2`}>
             {allSeries.map((item) => (
               <div key={item.id} className="snap-start">
                 <MovieCard
@@ -267,6 +269,8 @@ const Home = () => {
   const [nowPlaying, setNowPlaying] = useState<TMDBMovie[]>([]);
   const [kidsMovies, setKidsMovies] = useState<TMDBMovie[]>([]);
   const [kidsSeries, setKidsSeries] = useState<TMDBSeries[]>([]);
+  const [leftWing, setLeftWing] = useState<(TMDBMovie | TMDBSeries)[]>([]);
+  const [rightWing, setRightWing] = useState<(TMDBMovie | TMDBSeries)[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -303,26 +307,32 @@ const Home = () => {
       });
     } else {
       Promise.all([
-        getTrendingMovies(tl).catch(() => ({ results: [] })),
-        getPopularMovies(tl).catch(() => ({ results: [] })),
-        getTopRatedMovies(tl).catch(() => ({ results: [] })),
-        getPopularSeries(tl).catch(() => ({ results: [] })),
-        getTopRatedSeries(tl).catch(() => ({ results: [] })),
-        getNowPlaying(tl).catch(() => ({ results: [] })),
+        getTrendingMovies(tl, 1).catch(() => ({ results: [] })),
+        getTrendingMovies(tl, 2).catch(() => ({ results: [] })),
+        getPopularMovies(tl, 1).catch(() => ({ results: [] })),
+        getPopularMovies(tl, 2).catch(() => ({ results: [] })),
+        getPopularMovies(tl, 3).catch(() => ({ results: [] })),
+        getTopRatedMovies(tl, 1).catch(() => ({ results: [] })),
+        getTopRatedMovies(tl, 2).catch(() => ({ results: [] })),
+        getPopularSeries(tl, 1).catch(() => ({ results: [] })),
+        getPopularSeries(tl, 2).catch(() => ({ results: [] })),
+        getPopularSeries(tl, 3).catch(() => ({ results: [] })),
+        getTopRatedSeries(tl, 1).catch(() => ({ results: [] })),
+        getTopRatedSeries(tl, 2).catch(() => ({ results: [] })),
+        getNowPlaying(tl, 1).catch(() => ({ results: [] })),
+        getNowPlaying(tl, 2).catch(() => ({ results: [] })),
         ...heroIds.map(item => 
           item.type === "tv" 
             ? getSeriesDetails(item.id, tl).catch(() => null) 
             : getMovieDetails(item.id, tl).catch(() => null)
         )
-      ]).then(([tr, pop, top, tv, topTV, np, ...heroResults]) => {
+      ]).then(([tr1, tr2, pop1, pop2, pop3, top1, top2, tv1, tv2, tv3, topTV1, topTV2, np1, np2, ...heroResults]) => {
         if (canceled) return;
-        setTrending(tr.results);
+        setTrending(mergeTMDBPages(tr1, tr2));
         
-        // Combine specific hero picks with trending items to have a larger list in the carousel
         const validHeroPicks = heroResults.filter((item): item is any => item !== null && item.backdrop_path);
-        const validTrending = tr.results.filter((item: any) => item && item.backdrop_path).slice(0, 10);
+        const validTrending = tr1.results.filter((item: any) => item && item.backdrop_path).slice(0, 10);
         
-        // Remove duplicates
         const combinedHero = [...validHeroPicks];
         validTrending.forEach(tItem => {
           if (!combinedHero.find(h => h.id === tItem.id)) {
@@ -331,13 +341,27 @@ const Home = () => {
         });
         
         setHero(combinedHero);
-        setPopular(pop.results);
-        setTopRated(top.results);
-        setPopularTV(tv.results);
-        setTopRatedTV(topTV.results);
-        setNowPlaying(np.results);
+        setPopular(mergeTMDBPages(pop1, pop2));
+        setTopRated(mergeTMDBPages(top1, top2));
+        setPopularTV(mergeTMDBPages(tv1, tv2));
+        setTopRatedTV(mergeTMDBPages(topTV1, topTV2));
+        setNowPlaying(mergeTMDBPages(np1, np2));
         setKidsMovies([]);
         setKidsSeries([]);
+
+        const wingPool = mergeTMDBPages(
+          { results: tr2.results },
+          { results: pop2.results },
+          { results: pop3.results },
+          { results: top2.results },
+          { results: tv2.results },
+          { results: tv3.results },
+          { results: topTV2.results },
+          { results: np2.results },
+        );
+        const { left, right } = splitWingColumns(wingPool);
+        setLeftWing(left);
+        setRightWing(right);
         setLoading(false);
       });
     }
@@ -353,7 +377,9 @@ const Home = () => {
       />
       <MovieHero items={hero} />
 
-      <div className="relative z-30">
+      <div className="relative z-30 grid grid-cols-1 lg:grid-cols-[minmax(112px,120px)_minmax(0,1fr)_minmax(112px,120px)] xl:grid-cols-[minmax(118px,128px)_minmax(0,1fr)_minmax(118px,128px)] gap-x-1 xl:gap-x-2">
+        <SideWingColumn side="left" items={leftWing} loading={loading} />
+        <div className="min-w-0">
         <ContinueWatchingRow />
         
         <ForYouRow />
@@ -414,6 +440,8 @@ const Home = () => {
             <DiscoverRow title={lang === "ar" ? "📜 الوثائقيات" : "📜 Documentaires"} genres="99" type="movie" icon="🌍" />
           </>
         )}
+        </div>
+        <SideWingColumn side="right" items={rightWing} loading={loading} />
       </div>
     </Layout>
   );

@@ -1,21 +1,33 @@
 import React, { createContext, useContext, useState, ReactNode } from "react";
 
 interface SidebarContextType {
+  isOpen: boolean;
+  setIsOpen: (value: boolean) => void;
+  /** @deprecated use isOpen */
   isCollapsed: boolean;
   setIsCollapsed: (value: boolean) => void;
+  /** @deprecated use isOpen */
   isHovered: boolean;
   setIsHovered: (value: boolean) => void;
 }
 
 const SidebarContext = createContext<SidebarContextType | undefined>(undefined);
 
+export const SIDEBAR_WIDTH = 280;
+
 export const SidebarProvider = ({ children }: { children: ReactNode }) => {
-  const [isCollapsed, setIsCollapsed] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
     <SidebarContext.Provider
-      value={{ isCollapsed, setIsCollapsed, isHovered, setIsHovered }}
+      value={{
+        isOpen,
+        setIsOpen,
+        isCollapsed: !isOpen,
+        setIsCollapsed: (v) => setIsOpen(!v),
+        isHovered: isOpen,
+        setIsHovered: setIsOpen,
+      }}
     >
       {children}
     </SidebarContext.Provider>

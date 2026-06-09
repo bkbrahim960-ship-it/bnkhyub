@@ -6,15 +6,10 @@ import { Header } from "./Header";
 import { BottomNav } from "./BottomNav";
 import { Sidebar } from "./Sidebar";
 import { InstallModal } from "@/components/pwa/InstallModal";
-import { SidebarProvider, useSidebar } from "@/context/SidebarContext";
+import { SidebarProvider } from "@/context/SidebarContext";
 
 const LayoutContent = ({ children }: { children: ReactNode }) => {
-  const { isCollapsed, isHovered } = useSidebar();
-  const isSidebarExpanded = !isCollapsed || isHovered;
-  
-  const mainPadding = isSidebarExpanded
-    ? "md:pb-8 md:pl-[240px] lg:pl-[260px]"
-    : "md:pb-8 md:pl-[72px]";
+  const mainPadding = "md:pb-8";
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row bg-surface-primary">

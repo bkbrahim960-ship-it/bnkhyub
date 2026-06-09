@@ -10,6 +10,7 @@ import { useLanguage } from "@/context/LanguageContext";
 import { getRecentHistory } from "@/services/watchHistory";
 import { getMovieRecommendations, getSeriesRecommendations, TMDBMovie } from "@/services/tmdb";
 import { tmdbLang } from "@/services/i18n";
+import { ROW_HEADER, ROW_TRACK, CARD_SKELETON } from "./rowLayout";
 
 export const ForYouRow = () => {
   const { user } = useAuth();
@@ -80,7 +81,7 @@ export const ForYouRow = () => {
 
   return (
     <section className="relative py-4 group/row">
-      <div className="container flex items-end justify-between mb-5">
+      <div className={ROW_HEADER}>
         <div className="flex items-center gap-3">
           <Sparkles className="w-6 h-6 text-accent animate-pulse" />
           <h2 className="font-display text-2xl md:text-3xl">
@@ -109,13 +110,13 @@ export const ForYouRow = () => {
 
       <div
         ref={scrollRef}
-        className="container overflow-x-auto scrollbar-hide flex gap-2 md:gap-3 lg:gap-4 pt-6 pb-4 snap-x snap-mandatory"
+        className={ROW_TRACK}
       >
         {loading
           ? Array.from({ length: 10 }).map((_, i) => (
               <div
                 key={i}
-                className="shrink-0 w-[100px] sm:w-[130px] md:w-[150px] lg:w-[170px] xl:w-[190px] aspect-[2/3] rounded-lg shimmer-gold"
+                className={CARD_SKELETON}
               />
             ))
           : items.map((m: any) => (

@@ -14,6 +14,7 @@ import {
 } from "@/services/watchHistory";
 import { IMG } from "@/services/tmdb";
 import { toast } from "sonner";
+import { ROW_HEADER, ROW_TRACK } from "./rowLayout";
 
 export const ContinueWatchingRow = () => {
   const { user } = useAuth();
@@ -68,10 +69,10 @@ export const ContinueWatchingRow = () => {
   if (loading) {
     return (
       <section className="relative py-4">
-        <div className="container mb-5">
+        <div className={`${ROW_HEADER} mb-5`}>
            <div className="h-8 w-48 bg-white/10 rounded-lg animate-pulse" />
         </div>
-        <div className="container flex gap-4 overflow-x-auto scrollbar-hide">
+        <div className={`${ROW_TRACK} gap-4 md:gap-5 pt-0`}>
           {[1, 2, 3].map(i => (
             <div key={i} className="shrink-0 w-[280px] aspect-video bg-white/5 rounded-2xl animate-pulse" />
           ))}
@@ -84,7 +85,7 @@ export const ContinueWatchingRow = () => {
 
   return (
     <section className="relative py-4 group/row z-30">
-      <div className="container flex items-end justify-between mb-5">
+      <div className={ROW_HEADER}>
         <h2 className="font-display text-2xl md:text-3xl">
           <span className="text-gradient-accent">{t("section_continue")}</span>
         </h2>
@@ -108,7 +109,7 @@ export const ContinueWatchingRow = () => {
 
       <div
         ref={scrollRef}
-        className="container overflow-x-auto scrollbar-hide flex gap-4 md:gap-5 pt-6 pb-4 snap-x snap-mandatory"
+        className={`${ROW_TRACK} gap-4 md:gap-5`}
       >
         {items.map((e) => {
           const poster = IMG.poster(e.poster_path);
