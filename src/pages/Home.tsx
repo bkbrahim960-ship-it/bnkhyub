@@ -33,7 +33,7 @@ import {
   TMDBMovie,
   TMDBSeries,
 } from "@/services/tmdb";
-import { KABYLE_CONTENT } from "@/services/customContent";
+import { KABYLE_CONTENT, MOCK_SERIES } from "@/services/customContent";
 import { IMG } from "@/services/tmdb";
 import { Play, Star } from "lucide-react";
 
