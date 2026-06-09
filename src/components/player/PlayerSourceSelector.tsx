@@ -121,24 +121,24 @@ export const PlayerSourceSelector = React.memo(({
 
       {/* Download Modal */}
       {downloadModalOpen && (
-        <div className="fixed inset-0 z-[110] flex items-center justify-center p-2 sm:p-4 animate-fade-in">
-          <div className="absolute inset-0 bg-black/90" onClick={() => setDownloadModalOpen(false)} />
-          <div className="relative w-full max-w-7xl h-[90vh] sm:h-[85vh] md:h-[80vh] bg-surface-elevated border border-white/10 rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl animate-modal-in">
-            <div className="flex items-center justify-between p-3 sm:p-4 border-b border-white/10">
-              <h3 className="text-base sm:text-lg font-display font-black text-white">
+        <div className="fixed inset-0 z-[110] animate-fade-in">
+          <div className="absolute inset-0 bg-black/95" onClick={() => setDownloadModalOpen(false)} />
+          <div className="relative w-full h-full bg-surface-elevated border border-white/10 shadow-2xl animate-modal-in">
+            <div className="flex items-center justify-between p-4 border-b border-white/10">
+              <h3 className="text-lg font-display font-black text-white">
                 {isAr ? "تحميل" : "Download"}
               </h3>
               <button 
                 onClick={() => setDownloadModalOpen(false)} 
-                className="p-2 rounded-full hover:bg-white/10 text-muted-foreground hover:text-white transition-all"
+                className="p-3 rounded-full hover:bg-white/10 text-muted-foreground hover:text-white transition-all"
               >
-                <X className="w-5 h-5" />
+                <X className="w-6 h-6" />
               </button>
             </div>
             <iframe
               src={downloadUrl}
               title="Download"
-              className="w-full h-[calc(100%-56px)] sm:h-[calc(100%-64px)] border-0"
+              className="w-full h-[calc(100%-72px)] border-0"
               allow="fullscreen"
             />
           </div>
