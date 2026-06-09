@@ -62,8 +62,8 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
   const [sourceIndex, setSourceIndex] = useState(Math.min(initialSourceIndex, 2));
   const [loading, setLoading] = useState(true);
   const [slow, setSlow] = useState<boolean[]>(Array(50).fill(false));
-  const [adsOpen, setAdsOpen] = useState(!hasSeenAdsNotice());
-  const [playerActive, setPlayerActive] = useState(hasSeenAdsNotice());
+  const [adsOpen, setAdsOpen] = useState(!customUrl && !hasSeenAdsNotice());
+  const [playerActive, setPlayerActive] = useState(customUrl || hasSeenAdsNotice());
   const timeoutRef = useRef<number | null>(null);
   const startedRef = useRef(false);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -109,6 +109,49 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
   const [historyProgress, setHistoryProgress] = useState(0);
   const [hasResumed, setHasResumed] = useState(false);
   const [isWebFullscreen, setIsWebFullscreen] = useState(false);
+  const lastSaveTime = useRef(0);
+  const historyIdRef = useRef<string | null>(null);
+  const supabase = useRef<any>(null);
+
+  // Initialize supabase
+  useEffect(() => {
+    import("@/services/supabase").then((module) => {
+      supabase.current = module.supabase;
+    });
+  }, []);
+
+  const saveProgress = async (seconds: number, duration?: number) => {
+    if (!user || !supabase.current) return;
+
+    try {
+      if (historyIdRef.current) {
+        await supabase.current
+          .from("watch_history")
+          .update({ progress_seconds: seconds, duration_seconds: duration })
+          .eq("id", historyIdRef.current);
+      } else {
+        const { data, error } = await supabase.current
+          .from("watch_history")
+          .insert({
+            user_id: user.id,
+            tmdb_id: typeof tmdb_id === 'string' ? parseInt(tmdb_id) : tmdb_id,
+            media_type: type,
+            season_number: season,
+            episode_number: episode,
+            progress_seconds: seconds,
+            duration_seconds: duration,
+            title: title,
+          })
+          .select("id");
+
+        if (data && data.length > 0) {
+          historyIdRef.current = data[0].id;
+        }
+      }
+    } catch (err) {
+      console.error("Progress save error:", err);
+    }
+  };
 
   // Auto-fetch Arabic subtitles on mount
   useEffect(() => {
@@ -217,8 +260,8 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
     ? `https://nhdapi.com/embed/movie/${tmdb_id}?${nhdapiParams.toString()}`
     : `https://nhdapi.com/embed/tv/${tmdb_id}/${season}/${episode}?${nhdapiParams.toString()}`;
 
-  // Combine all 3 sources: CinemaOS, Default, nhdapi
-  const allSources = [cinemaOsUrl, ...sources.slice(0,1), nhdapiUrl];
+  // For customUrl (Kabyle), only use customUrl
+  const allSources = customUrl ? [customUrl] : [cinemaOsUrl, ...sources.slice(0,1), nhdapiUrl];
 
   useEffect(() => {
     const fetchInternal = async () => {
@@ -397,7 +440,7 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
 
 
 
-        {!playerActive && (
+        {!playerActive && !customUrl && (
           <div className="absolute inset-0 flex flex-col items-center justify-center bg-surface-card/40 backdrop-blur-3xl z-30 p-12 text-center overflow-hidden">
             <div className="absolute -top-24 -start-24 w-64 h-64 bg-accent/10 blur-[100px] rounded-full animate-pulse" />
             <div className="relative z-10 animate-in fade-in zoom-in duration-1000">
@@ -443,11 +486,10 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
             }}
             onEnded={() => {
               if (user && historyIdRef.current) {
-                supabase.from('watch_history').update({ completed: true }).eq('id', historyIdRef.current);
+                supabase.current.from('watch_history').update({ completed: true }).eq('id', historyIdRef.current);
               }
             }}
           >
-            {appliedInternalSub && <track kind="subtitles" src={appliedInternalSub} srcLang="ar" label="Arabic" default />}
             {appliedExternalSub && <track kind="subtitles" src={appliedExternalSub} srcLang="ar" label="Arabic" default />}
           </video>
         )}
@@ -495,25 +537,27 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
         )}
       </div>
 
-      {/* Sélecteur de source avancé */}
-      <div className="mt-5">
-        <PlayerSourceSelector 
-          sources={allSources.map((src, idx) => {
-            const isDirect = src.includes(".m3u8") || src.includes(".mp4") || src.includes("youtube") || src.includes("cinemaos.tech");
-            return {
-              id: idx,
-              name: `S${idx + 1} BNKHUB`,
-              quality: isDirect ? "1080p" : "Auto",
-              speed: isDirect ? "50" : "30",
-              uptime: "99",
-              hasAds: !isDirect,
-              selected: idx === sourceIndex
-            };
-          })}
-          onSelect={selectSource}
-          isLoading={false}
-        />
-      </div>
+      {/* Sélecteur de source avancé - hide for customUrl */}
+      {!customUrl && (
+        <div className="mt-5">
+          <PlayerSourceSelector 
+            sources={allSources.map((src, idx) => {
+              const isDirect = src.includes(".m3u8") || src.includes(".mp4") || src.includes("youtube") || src.includes("cinemaos.tech");
+              return {
+                id: idx,
+                name: `S${idx + 1} BNKHUB`,
+                quality: isDirect ? "1080p" : "Auto",
+                speed: isDirect ? "50" : "30",
+                uptime: "99",
+                hasAds: !isDirect,
+                selected: idx === sourceIndex
+              };
+            })}
+            onSelect={selectSource}
+            isLoading={false}
+          />
+        </div>
+      )}
 
       {/* Settings Modal (High-Contrast Glassmorphism) */}
       {showSettings && (
