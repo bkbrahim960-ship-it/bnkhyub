@@ -336,28 +336,28 @@ const Series = () => {
           {/* Logo beside poster */}
           <div className="animate-fade-slide-up flex-1 min-w-0 pb-2">
             {/* Genres */}
-            <div className="flex flex-wrap gap-1.5 sm:gap-2 mb-2 sm:mb-4">
+            <div className="flex flex-wrap gap-1.5 sm:gap-2 lg:gap-3 mb-2 sm:mb-4 lg:mb-6">
               {series.genres?.slice(0, 3).map(g => (
-                <span key={g.id} className="px-2 sm:px-3 py-0.5 sm:py-1 rounded-full bg-accent/10 border border-accent/20 text-[8px] sm:text-[10px] font-bold uppercase tracking-widest text-accent">
+                <span key={g.id} className="px-2 sm:px-3 lg:px-4 py-0.5 sm:py-1 lg:py-1.5 rounded-full bg-accent/10 border border-accent/20 text-[7px] sm:text-[9px] lg:text-xs font-bold uppercase tracking-widest text-accent">
                   {g.name}
                 </span>
               ))}
             </div>
 
             {/* Series Title Logo - small on mobile */}
-            <div className="mb-2 sm:mb-4">
+            <div className="mb-2 sm:mb-4 lg:mb-8">
               <MovieLogo 
                 id={series.id} 
                 type="tv" 
                 title={series.name} 
-                className="h-8 sm:h-12 md:h-20 lg:h-28 max-w-full" 
+                className="h-8 sm:h-12 md:h-20 lg:h-32 max-w-full" 
               />
             </div>
 
             {/* Meta Info */}
-            <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-white/70 text-xs sm:text-sm mb-3">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-4 lg:gap-6 text-white/70 text-xs sm:text-sm lg:text-base mb-3 lg:mb-6">
               <span>{year}</span>
-              <span className="px-2 py-0.5 rounded bg-accent/10 text-accent text-[8px] sm:text-[10px] font-bold">{series.number_of_seasons} SAISONS</span>
+              <span className="px-2 sm:px-3 lg:px-4 py-0.5 sm:py-1 lg:py-1.5 rounded bg-accent/10 text-accent text-[7px] sm:text-[9px] lg:text-xs font-bold">{series.number_of_seasons} {lang === 'ar' ? 'مواسم' : 'SAISONS'}</span>
             </div>
             
             {/* Ratings Display */}
@@ -372,7 +372,7 @@ const Series = () => {
         </div>
 
         {/* Overview */}
-        <p className="text-white/60 text-sm md:text-base lg:text-lg max-w-3xl leading-relaxed mb-5 line-clamp-3">
+        <p className="text-white/60 text-xs sm:text-sm md:text-base lg:text-lg max-w-3xl leading-relaxed mb-6 lg:mb-8 line-clamp-3">
           {series.overview}
         </p>
 
@@ -384,32 +384,32 @@ const Series = () => {
           onClick={() =>
             isDesktopOrTV ? playEpisodeDirectly(1, true) : handleEpisodeClick(1)
           }
-          className="inline-flex items-center justify-center gap-2 bg-accent text-accent-foreground px-8 py-4 rounded-2xl font-bold shadow-glow hover:scale-105 transition-all text-sm md:text-base mb-5 w-full sm:w-auto focus:outline-none focus-visible:ring-4 focus-visible:ring-accent"
+          className="inline-flex items-center justify-center gap-2 bg-accent text-accent-foreground px-6 sm:px-8 lg:px-12 py-3 sm:py-4 lg:py-5 rounded-2xl font-bold shadow-glow hover:scale-105 active:scale-95 transition-all text-xs sm:text-sm md:text-base lg:text-lg mb-6 w-full sm:w-auto focus:outline-none focus-visible:ring-4 focus-visible:ring-accent"
         >
-          <Play className="w-5 h-5 fill-current" /> {t("hero_watch")}
+          <Play className="w-4 sm:w-5 lg:w-6 h-4 sm:h-5 lg:h-6 fill-current" /> {t("hero_watch")}
         </button>
 
         {/* Secondary Icon Buttons (Modern & Clean) */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3 lg:gap-4">
           {trailer && (
             <button
               onClick={() => setShowTrailer(true)}
-              className="flex items-center justify-center w-12 h-12 rounded-full bg-white/5 hover:bg-accent/20 text-white hover:text-accent hover:scale-110 transition-all"
+              className="flex items-center justify-center w-10 sm:w-12 lg:w-14 h-10 sm:h-12 lg:h-14 rounded-full bg-white/5 hover:bg-accent/20 text-white hover:text-accent hover:scale-110 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
               title={t("hero_trailer")}
             >
-              <Youtube className="w-6 h-6" />
+              <Youtube className="w-5 sm:w-6 lg:w-7 h-5 sm:h-6 lg:h-7" />
             </button>
           )}
 
-          <div className="flex items-center justify-center w-12 h-12 rounded-full bg-white/5 hover:bg-accent/20 transition-all">
+          <div className="flex items-center justify-center w-10 sm:w-12 lg:w-14 h-10 sm:h-12 lg:h-14 rounded-full bg-white/5 hover:bg-accent/20 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-accent">
             <FavoriteButton tmdbId={series.id} mediaType="tv" title={series.name} posterPath={series.poster_path} />
           </div>
 
-          <div className="flex items-center justify-center w-12 h-12 rounded-full bg-white/5 hover:bg-accent/20 transition-all">
+          <div className="flex items-center justify-center w-10 sm:w-12 lg:w-14 h-10 sm:h-12 lg:h-14 rounded-full bg-white/5 hover:bg-accent/20 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-accent">
             <RemotePairingButton />
           </div>
 
-          <div className="flex items-center justify-center w-12 h-12 rounded-full bg-white/5 hover:bg-accent/20 transition-all">
+          <div className="flex items-center justify-center w-10 sm:w-12 lg:w-14 h-10 sm:h-12 lg:h-14 rounded-full bg-white/5 hover:bg-accent/20 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-accent">
             <ShareButtons title={series.name} />
           </div>
         </div>
