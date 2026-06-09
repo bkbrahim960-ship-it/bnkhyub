@@ -25,6 +25,9 @@ import { Play, Star, Clock, Calendar, Globe2, ArrowLeft, Youtube, Info } from "l
 import { useAmbient } from "@/context/AmbientContext";
 import { RemotePairingButton } from "@/components/movie/RemotePairingButton";
 import { MovieLogo } from "@/components/ui/MovieLogo";
+import { useAuthPath } from "@/hooks/useAuthPath";
+import { useIsDesktopOrTV } from "@/hooks/useIsDesktopOrTV";
+import { isDesktopOrTVScreen } from "@/utils/screen";
 
 const sourceIdToIndex = (srcId?: string | null): number => {
   if (!srcId) return 0;
@@ -48,12 +51,19 @@ const Movie = () => {
   const playerContainerRef = useRef<HTMLDivElement>(null);
   const videoPlayerRef = useRef<VideoPlayerRef>(null);
   const navigate = useNavigate();
+  const authPath = useAuthPath();
+  const isDesktopOrTV = useIsDesktopOrTV();
+  const [autoPlayMode, setAutoPlayMode] = useState(false);
+  const autoPlayTriggered = useRef(false);
 
   const resumeRequested = params.get("resume") === "1";
+  const playRequested = params.get("play") === "1";
   const initialSourceIndex = useMemo(() => sourceIdToIndex(params.get("src")), [params]);
 
   useEffect(() => {
     if (!id) return;
+    autoPlayTriggered.current = false;
+    setAutoPlayMode(false);
     setLoading(true);
     setPlaying(false);
     
@@ -105,10 +115,24 @@ const Movie = () => {
         }
       })
       .finally(() => setLoading(false));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id, lang, resumeRequested, setAmbientImage]);
+
+  useEffect(() => {
+    if (!movie || loading || autoPlayTriggered.current) return;
+    if ((playRequested || resumeRequested) && isDesktopOrTV) {
+      autoPlayTriggered.current = true;
+      setAutoPlayMode(true);
+      setPlaying(true);
+    }
+  }, [movie, loading, playRequested, resumeRequested, isDesktopOrTV]);
+
+  useEffect(() => {
+    if (!id) return;
     getMovieRecommendations(id, tmdbLang(lang))
       .then((r) => setRecommendations(r.results.filter((m) => m.poster_path)))
       .catch(() => {});
-  }, [id, lang, setAmbientImage]);
+  }, [id, lang]);
 
   // Clean up ambient on unmount
   useEffect(() => {
@@ -157,8 +181,9 @@ const Movie = () => {
     }).catch(() => {});
   };
 
-  const confirmWatch = () => {
+  const confirmWatch = (withAutoMode = false) => {
     setShowLoginPrompt(false);
+    if (withAutoMode || isDesktopOrTVScreen()) setAutoPlayMode(true);
     setPlaying(true);
     setTimeout(() => {
       playerContainerRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -166,11 +191,7 @@ const Movie = () => {
   };
 
   const startWatching = () => {
-    if (!user) {
-      setShowLoginPrompt(true);
-      return;
-    }
-    confirmWatch();
+    confirmWatch(true);
   };
 
   const director = movie.credits?.crew.find(c => c.job === 'Director')?.name;
@@ -190,7 +211,7 @@ const Movie = () => {
         <LoginPrompt
           title={lang === "ar" ? "سجل لتجربة أفضل!" : "Connectez-vous pour une meilleure expérience!"}
           description={lang === "ar" ? "سجل حسابك مجاناً لتتمكن من حفظ تقدمك في المشاهدة، واستئناف الأفلام من حيث توقفت، وإضافة ما يعجبك إلى مفضلتك." : "Créez un compte gratuit pour sauvegarder votre progression de visionnage, reprendre les films là où vous vous êtes arrêté et enregistrer vos favoris."}
-          onLogin={() => navigate("/auth")}
+          onLogin={() => navigate(authPath)}
           onWatch={confirmWatch}
         />
       )}
@@ -260,8 +281,11 @@ const Movie = () => {
         {/* Primary Action Button (Watch) */}
         {!playing && (
           <button
+            type="button"
+            data-tv-nav="primary"
+            tabIndex={0}
             onClick={startWatching}
-            className="inline-flex items-center justify-center gap-2 bg-accent text-accent-foreground px-8 py-4 rounded-2xl font-bold shadow-glow hover:scale-105 transition-all text-sm md:text-base mb-5 w-full sm:w-auto"
+            className="inline-flex items-center justify-center gap-2 bg-accent text-accent-foreground px-8 py-4 rounded-2xl font-bold shadow-glow hover:scale-105 transition-all text-sm md:text-base mb-5 w-full sm:w-auto focus:outline-none focus-visible:ring-4 focus-visible:ring-accent"
           >
             <Play className="w-5 h-5 fill-current" /> {t("hero_watch")}
           </button>
@@ -308,6 +332,8 @@ const Movie = () => {
               title={movie.title}
               initialSourceIndex={initialSourceIndex}
               customUrl={(movie as any).video_url || (movie as any).videoUrl}
+              autoStart={autoPlayMode}
+              autoFullscreen={autoPlayMode}
               onPlayStart={(_i, label) => saveHistory(label)}
               onSourceChange={(_i, label) => saveHistory(label)}
               onProgress={(seconds, duration) => {

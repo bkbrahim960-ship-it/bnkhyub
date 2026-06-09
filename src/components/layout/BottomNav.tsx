@@ -1,12 +1,15 @@
 import { useState, useEffect, useRef } from "react";
 import { NavLink } from "react-router-dom";
+import { Baby } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
+import { useSettings } from "@/context/SettingsContext";
 import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
 import { SmileSVG } from "@/pages/Profile";
 import { useImmersiveMode } from "@/hooks/useImmersiveMode";
 
 export const BottomNav = () => {
   const { user } = useAuth();
+  const { kidsMode, toggleKidsMode } = useSettings();
   const [isVisible, setIsVisible] = useState(true);
   const lastScrollY = useRef(0);
   const immersiveHidden = useImmersiveMode();
@@ -62,6 +65,18 @@ export const BottomNav = () => {
           <LanguageSwitcher />
         </div>
 
+        {/* Kids Mode Toggle */}
+        <button
+          onClick={toggleKidsMode}
+          className={`p-2 sm:p-3 rounded-full transition-all duration-500 transform-gpu hover:scale-110 active:scale-95 border ${
+            kidsMode 
+              ? "text-sky-400 bg-sky-400/20 shadow-[0_0_20px_rgba(56,189,248,0.4)] border-sky-400/40" 
+              : "text-white/60 hover:text-white hover:bg-white/5 border-transparent"
+          }`}
+          aria-label="Kids Mode"
+        >
+          <Baby className="w-5 h-5 sm:w-6 sm:h-6" />
+        </button>
       </div>
     </div>
   );

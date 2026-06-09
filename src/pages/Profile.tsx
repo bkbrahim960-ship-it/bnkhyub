@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { Loader2, LogOut, Bell, Tablet, Lock, Pencil } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import { KidsPinModal } from "@/components/ui/KidsPinModal";
+import { useAuthPath } from "@/hooks/useAuthPath";
 
 export const SmileSVG = () => (
   <svg viewBox="0 0 100 100" className="w-full h-full opacity-90 drop-shadow-sm" fill="none">
@@ -24,6 +25,7 @@ const ProfilePage = () => {
   const { user, loading: authLoading, signOut } = useAuth();
   const { t, lang } = useLanguage();
   const { kidsMode, setKidsMode, kidsPin, setKidsPin } = useSettings();
+  const authPath = useAuthPath();
 
   const [username, setUsername] = useState("");
   const [loading, setLoading] = useState(true);
@@ -100,7 +102,7 @@ const ProfilePage = () => {
             <div className="mb-8 p-4 rounded-xl bg-accent/10 border border-accent/20 flex items-center justify-between">
               <p className="text-sm text-muted-foreground">{t("profile_signin_prompt")}</p>
               <Link
-                to="/auth"
+                to={authPath}
                 className="inline-flex items-center gap-2 bg-accent text-accent-foreground font-semibold px-5 py-2 rounded-full text-sm"
               >
                 {t("profile_signin_cta")}

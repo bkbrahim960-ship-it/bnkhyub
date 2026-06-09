@@ -27,6 +27,8 @@ import { useAmbient } from "@/context/AmbientContext";
 import { RemotePairingButton } from "@/components/movie/RemotePairingButton";
 import { NextEpisodeOverlay } from "@/components/player/NextEpisodeOverlay";
 import { MovieLogo } from "@/components/ui/MovieLogo";
+import { useIsDesktopOrTV } from "@/hooks/useIsDesktopOrTV";
+import { isDesktopOrTVScreen } from "@/utils/screen";
 
 const sourceIdToIndex = (srcId?: string | null): number => {
   if (!srcId) return 0;
@@ -58,14 +60,20 @@ const Series = () => {
   const navigate = useNavigate();
   const playerRef = useRef<HTMLDivElement>(null);
   const videoPlayerRef = useRef<VideoPlayerRef>(null);
+  const isDesktopOrTV = useIsDesktopOrTV();
+  const [autoPlayMode, setAutoPlayMode] = useState(false);
+  const autoPlayTriggered = useRef(false);
 
   const resumeRequested = params.get("resume") === "1";
+  const playRequested = params.get("play") === "1";
   const resumeSeason = Number(params.get("s")) || null;
   const resumeEpisode = Number(params.get("e")) || null;
   const initialSourceIndex = useMemo(() => sourceIdToIndex(params.get("src")), [params]);
 
   useEffect(() => {
     if (!id) return;
+    autoPlayTriggered.current = false;
+    setAutoPlayMode(false);
     setLoading(true);
     setPlaying(false);
 
@@ -152,6 +160,15 @@ const Series = () => {
       getSeriesHistory(user.id, series.id).then(setSeriesHistory).catch(() => {});
     }
   }, [user, series]);
+
+  useEffect(() => {
+    if (!series || loading || autoPlayTriggered.current) return;
+    if ((playRequested || resumeRequested) && isDesktopOrTV) {
+      autoPlayTriggered.current = true;
+      setAutoPlayMode(true);
+      setPlaying(true);
+    }
+  }, [series, loading, playRequested, resumeRequested, isDesktopOrTV]);
 
   useEffect(() => {
     if (!series || !season) return;
@@ -241,9 +258,10 @@ const Series = () => {
     }).catch(() => {});
   };
 
-  const playEpisodeDirectly = (epNum: number) => {
+  const playEpisodeDirectly = (epNum: number, withAutoMode = false) => {
     setSelectedEpisode(epNum);
     setEpisode(epNum);
+    if (withAutoMode || isDesktopOrTVScreen()) setAutoPlayMode(true);
     setPlaying(true);
     setTimeout(() => {
       playerRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -259,11 +277,7 @@ const Series = () => {
     setShowLoginPrompt(false);
     setShowEpisodeModal(false);
     if (selectedEpisode) {
-      setEpisode(selectedEpisode);
-      setPlaying(true);
-      setTimeout(() => {
-        playerRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
-      }, 100);
+      playEpisodeDirectly(selectedEpisode, true);
     }
   };
 
@@ -364,8 +378,13 @@ const Series = () => {
 
         {/* Primary Action Button (Watch) */}
         <button
-          onClick={() => handleEpisodeClick(1)}
-          className="inline-flex items-center justify-center gap-2 bg-accent text-accent-foreground px-8 py-4 rounded-2xl font-bold shadow-glow hover:scale-105 transition-all text-sm md:text-base mb-5 w-full sm:w-auto"
+          type="button"
+          data-tv-nav="primary"
+          tabIndex={0}
+          onClick={() =>
+            isDesktopOrTV ? playEpisodeDirectly(1, true) : handleEpisodeClick(1)
+          }
+          className="inline-flex items-center justify-center gap-2 bg-accent text-accent-foreground px-8 py-4 rounded-2xl font-bold shadow-glow hover:scale-105 transition-all text-sm md:text-base mb-5 w-full sm:w-auto focus:outline-none focus-visible:ring-4 focus-visible:ring-accent"
         >
           <Play className="w-5 h-5 fill-current" /> {t("hero_watch")}
         </button>
@@ -412,6 +431,8 @@ const Series = () => {
                 episode={episode}
                 title={`${series.name} — S${season} E${episode}`}
                 initialSourceIndex={initialSourceIndex}
+                autoStart={autoPlayMode}
+                autoFullscreen={autoPlayMode}
                 customUrl={(() => {
                   const customSeries = MOCK_SERIES.find(c => c.id === String(series.id));
                   const customMovie = KABYLE_CONTENT.find(c => c.id === String(series.id));

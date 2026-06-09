@@ -9,10 +9,12 @@ import { useLanguage } from "@/context/LanguageContext";
 import { getUserFavorites, FavoriteEntry } from "@/services/favorites";
 import { Heart, LogIn } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useAuthPath } from "@/hooks/useAuthPath";
 
 const MyList = () => {
   const { user } = useAuth();
   const { lang } = useLanguage();
+  const authPath = useAuthPath();
   const [favorites, setFavorites] = useState<FavoriteEntry[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -40,7 +42,7 @@ const MyList = () => {
               Connectez-vous pour sauvegarder vos films et séries préférés dans votre liste personnelle.
             </p>
             <Link
-              to="/auth"
+              to={authPath}
               className="inline-flex items-center gap-2 bg-gradient-accent text-accent-foreground font-semibold px-8 py-3 rounded-full shadow-accent"
             >
               Se connecter

@@ -4,7 +4,7 @@
  * Le timeout de 5s n'a été conservé que pour marquer visuellement une source
  * comme potentiellement indisponible, mais il NE bascule plus automatiquement.
  */
-import React, { useEffect, useRef, useState, forwardRef, useImperativeHandle } from "react";
+import React, { useCallback, useEffect, useRef, useState, forwardRef, useImperativeHandle } from "react";
 import { getMovieSources, getTVSources, SOURCE_LABELS, getInternalBackendSources } from "@/services/player";
 import { AdsNoticeModal, hasSeenAdsNotice } from "./AdsNoticeModal";
 import { ResumeModal } from "./ResumeModal";
@@ -38,10 +38,16 @@ interface Props {
   onProgress?: (seconds: number, duration?: number) => void;
   /** Callback quand la vidéo est terminée (pour auto-play suivant) */
   onCompleted?: () => void;
+  /** Démarre automatiquement la lecture (TV / desktop) */
+  autoStart?: boolean;
+  /** Passe en plein écran dès que la lecture commence */
+  autoFullscreen?: boolean;
 }
 
 export interface VideoPlayerRef {
   setSubtitle: (url: string) => void;
+  enterFullscreen: () => void;
+  startPlayback: () => void;
 }
 
 export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
@@ -57,6 +63,8 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
   customUrl,
   onProgress,
   onCompleted,
+  autoStart = false,
+  autoFullscreen = false,
 }, ref) => {
   const { t, lang } = useLanguage();
   const [sourceIndex, setSourceIndex] = useState(Math.min(initialSourceIndex, 2));
@@ -95,12 +103,39 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
   const [internalSources, setInternalSources] = useState<any[]>([]);
 
 
+  const enterFullscreen = useCallback(() => {
+    if (!containerRef.current) return;
+    const el = containerRef.current as HTMLElement & {
+      webkitRequestFullscreen?: () => void;
+    };
+    const doc = document as Document & {
+      webkitFullscreenElement?: Element;
+      webkitExitFullscreen?: () => void;
+    };
+    if (!doc.fullscreenElement && !doc.webkitFullscreenElement) {
+      if (el.requestFullscreen) {
+        el.requestFullscreen().catch(() => setIsWebFullscreen(true));
+      } else if (el.webkitRequestFullscreen) {
+        el.webkitRequestFullscreen();
+      } else {
+        setIsWebFullscreen(true);
+      }
+    }
+  }, []);
+
+  const startPlayback = useCallback(() => {
+    setAdsOpen(false);
+    setPlayerActive(true);
+  }, []);
+
   // Expose methods to parent
   useImperativeHandle(ref, () => ({
     setSubtitle: (url: string) => {
       setAppliedExternalSub(url);
       setPlayerActive(true);
-    }
+    },
+    enterFullscreen,
+    startPlayback,
   }));
 
   // Resume Logic
@@ -110,6 +145,7 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
   const [hasResumed, setHasResumed] = useState(false);
   const [isWebFullscreen, setIsWebFullscreen] = useState(false);
   const lastSaveTime = useRef(0);
+  const fullscreenAttempted = useRef(false);
 
   // Save progress using existing watchHistory service
   const saveProgress = async (seconds: number, duration?: number) => {
@@ -310,21 +346,38 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
     }
   };
 
-  const toggleFullscreen = () => {
+  const toggleFullscreen = useCallback(() => {
     if (!containerRef.current) return;
-    const el = containerRef.current as any;
-    const doc = document as any;
+    const el = containerRef.current as HTMLElement & {
+      webkitRequestFullscreen?: () => void;
+    };
+    const doc = document as Document & {
+      webkitFullscreenElement?: Element;
+      webkitExitFullscreen?: () => void;
+    };
     if (!doc.fullscreenElement && !doc.webkitFullscreenElement) {
-      if (el.requestFullscreen) {
-        el.requestFullscreen().catch(() => {});
-      } else if (el.webkitRequestFullscreen) {
-        el.webkitRequestFullscreen();
-      }
+      enterFullscreen();
     } else {
       if (doc.exitFullscreen) doc.exitFullscreen();
       else if (doc.webkitExitFullscreen) doc.webkitExitFullscreen();
+      setIsWebFullscreen(false);
     }
-  };
+  }, [enterFullscreen]);
+
+  useEffect(() => {
+    if (!autoStart) return;
+    setAdsOpen(false);
+    setPlayerActive(true);
+  }, [autoStart]);
+
+  useEffect(() => {
+    if (!autoFullscreen || !playerActive || fullscreenAttempted.current) return;
+    fullscreenAttempted.current = true;
+    // CSS fullscreen works without user gesture (desktop & TV)
+    setIsWebFullscreen(true);
+    const timer = window.setTimeout(() => enterFullscreen(), 150);
+    return () => window.clearTimeout(timer);
+  }, [autoFullscreen, playerActive, enterFullscreen]);
 
   useEffect(() => {
     if (!playerActive) return;
@@ -370,7 +423,7 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
       document.removeEventListener('fullscreenchange', handleFsChange);
       document.removeEventListener('webkitfullscreenchange', handleFsChange);
     };
-  }, [isWebFullscreen]);
+  }, [isWebFullscreen, toggleFullscreen]);
 
   return (
     <div className="w-full max-w-5xl mx-auto">
@@ -422,9 +475,12 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
           <div className="absolute inset-0 flex flex-col items-center justify-center bg-surface-card/40 backdrop-blur-3xl z-30 p-12 text-center overflow-hidden">
             <div className="absolute -top-24 -start-24 w-64 h-64 bg-accent/10 blur-[100px] rounded-full animate-pulse" />
             <div className="relative z-10 animate-in fade-in zoom-in duration-1000">
-              <button 
+              <button
+                type="button"
+                data-tv-nav="primary"
+                tabIndex={0}
                 onClick={() => { setAdsOpen(false); setPlayerActive(true); }}
-                className="group relative"
+                className="group relative focus:outline-none focus-visible:ring-4 focus-visible:ring-accent rounded-full"
               >
                 <div className="absolute inset-0 bg-accent blur-2xl opacity-20 group-hover:opacity-40 transition-opacity" />
                 <div className="relative w-24 h-24 rounded-full bg-accent flex items-center justify-center text-black shadow-accent hover:scale-110 transition-transform duration-500">

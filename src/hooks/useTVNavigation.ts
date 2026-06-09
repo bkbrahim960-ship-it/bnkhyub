@@ -5,7 +5,16 @@
  */
 import { useEffect } from "react";
 
-const FOCUSABLE = 'a[href], button:not([disabled]), [tabindex="0"], input, select, textarea';
+const FOCUSABLE =
+  'a[href], button:not([disabled]), [tabindex="0"], input, select, textarea';
+
+function getTVPriorityFocusable(): HTMLElement | null {
+  const priority = document.querySelector<HTMLElement>('[data-tv-nav="primary"]');
+  if (priority && getVisibleFocusable().includes(priority)) return priority;
+  const main = document.querySelector<HTMLElement>('[data-tv-nav="main"]');
+  if (main && getVisibleFocusable().includes(main)) return main;
+  return null;
+}
 
 function getVisibleFocusable(): HTMLElement[] {
   const all = Array.from(document.querySelectorAll<HTMLElement>(FOCUSABLE));
@@ -93,6 +102,12 @@ export function useTVNavigation() {
       const active = document.activeElement as HTMLElement | null;
       
       if (!active || active === document.body) {
+        const priority = getTVPriorityFocusable();
+        if (priority) {
+          priority.focus();
+          priority.scrollIntoView({ behavior: "auto", block: "center", inline: "center" });
+          return;
+        }
         const first = getVisibleFocusable()[0];
         if (first) first.focus();
         return;

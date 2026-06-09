@@ -9,6 +9,7 @@ import { IMG, TMDBMovie, TMDBSeries } from "@/services/tmdb";
 import { useLanguage } from "@/context/LanguageContext";
 import { useSettings } from "@/context/SettingsContext";
 import { MovieLogo } from "@/components/ui/MovieLogo";
+import { useIsDesktopOrTV } from "@/hooks/useIsDesktopOrTV";
 
 interface Props {
   items: (TMDBMovie | TMDBSeries)[];
@@ -17,6 +18,7 @@ interface Props {
 export const MovieHero = ({ items }: Props) => {
   const { t } = useLanguage();
   const { kidsMode } = useSettings();
+  const isDesktopOrTV = useIsDesktopOrTV();
   const [index, setIndex] = useState(0);
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
@@ -60,6 +62,9 @@ export const MovieHero = ({ items }: Props) => {
 
   const movie = pool[index];
   const isTV = !!(movie as any).name;
+  const playSuffix = isDesktopOrTV ? "?play=1" : "";
+  const watchPath = isTV ? `/series/${movie.id}${playSuffix}` : `/movie/${movie.id}${playSuffix}`;
+  const infoPath = isTV ? `/series/${movie.id}` : `/movie/${movie.id}`;
 
   // Find trailer for video background
   const trailer = movie.videos?.results.find(
@@ -127,15 +132,19 @@ export const MovieHero = ({ items }: Props) => {
 
           <div className="flex items-center gap-4">
             <Link
-              to={isTV ? `/series/${movie.id}` : `/movie/${movie.id}`}
-              className="inline-flex items-center gap-3 bg-gradient-accent text-accent-foreground font-bold px-7 md:px-10 py-3.5 md:py-5 rounded-full shadow-accent hover:scale-[1.05] active:scale-[0.98] transition-all duration-300 text-sm md:text-lg"
+              to={watchPath}
+              data-tv-nav="primary"
+              tabIndex={0}
+              className="inline-flex items-center gap-3 bg-gradient-accent text-accent-foreground font-bold px-7 md:px-10 py-3.5 md:py-5 rounded-full shadow-accent hover:scale-[1.05] active:scale-[0.98] transition-all duration-300 text-sm md:text-lg focus:outline-none focus-visible:ring-4 focus-visible:ring-accent"
             >
               <Play className="w-5 h-5 md:w-6 md:h-6 fill-current" />
               {t("hero_watch")}
             </Link>
             <Link
-              to={isTV ? `/series/${movie.id}` : `/movie/${movie.id}`}
-              className="inline-flex items-center gap-3 px-6 md:px-8 py-3.5 md:py-5 rounded-full border border-border bg-surface-elevated/60 backdrop-blur hover:bg-surface-elevated transition-all text-sm md:text-lg"
+              to={infoPath}
+              data-tv-nav="main"
+              tabIndex={0}
+              className="inline-flex items-center gap-3 px-6 md:px-8 py-3.5 md:py-5 rounded-full border border-border bg-surface-elevated/60 backdrop-blur hover:bg-surface-elevated transition-all text-sm md:text-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
             >
               <Info className="w-5 h-5 md:w-6 md:h-6" />
               {t("hero_info")}

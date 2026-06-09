@@ -15,6 +15,7 @@ import Channels from "./pages/Channels";
 import Search from "./pages/Search";
 import Catalog from "./pages/Catalog";
 import Auth from "./pages/Auth";
+import DesktopAuth from "./pages/DesktopAuth";
 import Profile from "./pages/Profile";
 import Admin from "./pages/Admin";
 import MyList from "./pages/MyList";
@@ -128,6 +129,7 @@ const AppContent = () => (
                         <Route path="/channels" element={<Channels />} />
                         <Route path="/search" element={<Search />} />
                         <Route path="/auth" element={<Auth />} />
+                        <Route path="/auth-desktop" element={<DesktopAuth />} />
                         <Route path="/profile" element={<Profile />} />
                         <Route path="/my-list" element={<MyList />} />
                         <Route path="/admin" element={<Admin />} />

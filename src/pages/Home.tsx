@@ -250,7 +250,10 @@ const Home = () => {
 
   useEffect(() => {
     const hasSeen = localStorage.getItem("hasSeenLanding");
-    if (!hasSeen) {
+    if (hasSeen) return;
+    if (window.matchMedia("(min-width: 768px)").matches) {
+      localStorage.setItem("hasSeenLanding", "true");
+    } else {
       navigate("/landing");
     }
   }, [navigate]);
@@ -377,7 +380,9 @@ const Home = () => {
             <DiscoverRow title={lang === "ar" ? "💡 أفلام الخيال العلمي" : "💡 Science-Fiction"} genres="878" type="movie" icon="🚀" />
             
             <MovieRow title={t("section_popular")} items={popular} loading={loading} />
-            <AdBanner />
+            <div className="md:hidden">
+              <AdBanner />
+            </div>
             
             {/* M3U Custom Rows (Premium Content) */}
             {supabaseM3ULists.slice(0, 3).map((list) => (
