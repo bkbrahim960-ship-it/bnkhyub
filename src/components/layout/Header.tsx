@@ -13,7 +13,6 @@ import { useSidebar } from "@/context/SidebarContext";
 export const Header = () => {
   const { lang, t } = useLanguage();
   const { user } = useAuth();
-  const { kidsMode } = useSettings();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const immersiveHidden = useImmersiveMode();
@@ -41,9 +40,7 @@ export const Header = () => {
     navLinks.push({ to: "/admin", label: t("nav_admin") });
   }
 
-  const headerBg = kidsMode
-    ? (scrolled ? "bg-white/40 backdrop-blur-3xl border-b border-sky-200" : "bg-gradient-to-b from-white/60 to-transparent")
-    : (scrolled ? "bg-black/20 backdrop-blur-3xl border-b border-white/5" : "bg-gradient-to-b from-black/80 to-transparent");
+  const headerBg = scrolled ? "bg-black/20 backdrop-blur-3xl border-b border-white/5" : "bg-gradient-to-b from-black/80 to-transparent";
 
   return (
     <header
