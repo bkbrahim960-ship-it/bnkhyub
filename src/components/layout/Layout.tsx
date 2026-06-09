@@ -11,13 +11,26 @@ import { SidebarProvider, useSidebar } from "@/context/SidebarContext";
 const LayoutContent = ({ children }: { children: ReactNode }) => {
   const mainPadding = "md:pb-8";
   const { isCollapsed } = useSidebar();
+  
+  // Sidebar width: 72px when collapsed, 240px when expanded
+  const sidebarWidth = isCollapsed ? 72 : 240;
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row bg-surface-primary">
+    <div className="min-h-screen bg-surface-primary">
       <Sidebar />
-      <div className="flex-1 flex flex-col min-h-screen transition-all duration-300 ease-out" style={{
-        marginLeft: isCollapsed ? '72px' : '240px'
-      }}>
+      {/* Main content with smooth transition */}
+      <div 
+        className="hidden md:flex md:flex-col min-h-screen transition-all duration-300 ease-out"
+        style={{
+          marginLeft: `${sidebarWidth}px`
+        }}
+      >
+        <Header />
+        <main className={`flex-1 pb-24 ${mainPadding}`}>{children}</main>
+        <BottomNav />
+      </div>
+      {/* Mobile layout - no sidebar offset */}
+      <div className="md:hidden flex flex-col min-h-screen">
         <Header />
         <main className={`flex-1 pb-24 ${mainPadding}`}>{children}</main>
         <BottomNav />
