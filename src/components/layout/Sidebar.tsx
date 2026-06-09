@@ -89,7 +89,7 @@ export const Sidebar = () => {
         kidsMode
           ? "bg-[#0c1520]/30 border-sky-500/10"
           : "bg-[#08080c]/30 border-white/[0.06]"
-      } backdrop-blur-3xl ${isExpanded ? "w-[240px] lg:w-[260px]" : "w-[72px]"}`,,
+      } backdrop-blur-3xl ${isExpanded ? "w-[240px] lg:w-[260px]" : "w-[72px]"}`}
     >
       {/* Logo */}
       <div className={`shrink-0 flex items-center border-b border-white/[0.06] ${isExpanded ? "px-5 h-[72px]" : "justify-center h-[72px]"}`}>
