@@ -76,7 +76,7 @@ export const VidAPILatestRow = ({ type, title }: VidAPILatestRowProps) => {
             Array(10).fill(0).map((_, i) => (
               <div
                 key={i}
-                className="snap-start shrink-0 w-[85px] sm:w-[110px] md:w-[130px] lg:w-[150px] aspect-[2/3] rounded-lg shimmer-gold animate-in fade-in"
+                className="snap-start shrink-0 w-[100px] sm:w-[130px] md:w-[150px] lg:w-[170px] xl:w-[190px] aspect-[2/3] rounded-lg shimmer-gold animate-in fade-in"
               />
             ))
           ) : (

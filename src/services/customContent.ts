@@ -448,10 +448,12 @@ export const searchCustomContent = (query: string): any[] => {
   if (q.includes('kab')) {
     const allMovies = KABYLE_CONTENT.map(item => ({
       ...item,
+      poster_path: item.thumbnail,
       media_type: "movie"
     }));
     const allSeries = MOCK_SERIES.map(item => ({
       ...item,
+      poster_path: item.thumbnail,
       media_type: "tv"
     }));
     return [...allMovies, ...allSeries];
@@ -463,6 +465,7 @@ export const searchCustomContent = (query: string): any[] => {
     (item.category && item.category.toLowerCase().includes(q))
   ).map(item => ({
     ...item,
+    poster_path: item.thumbnail,
     media_type: "movie"
   }));
   
@@ -472,6 +475,7 @@ export const searchCustomContent = (query: string): any[] => {
     (item.category && item.category.toLowerCase().includes(q))
   ).map(item => ({
     ...item,
+    poster_path: item.thumbnail,
     media_type: "tv"
   }));
   

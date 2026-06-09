@@ -72,7 +72,7 @@ export const M3UMovieRow = ({ title, m3uUrl, type = "movie" }: Props) => {
           ? Array.from({ length: 10 }).map((_, i) => (
               <div
                 key={i}
-                className="shrink-0 w-[85px] sm:w-[110px] md:w-[130px] lg:w-[150px] aspect-[2/3] rounded-lg shimmer-gold"
+                className="shrink-0 w-[100px] sm:w-[130px] md:w-[150px] lg:w-[170px] xl:w-[190px] aspect-[2/3] rounded-lg shimmer-gold"
               />
             ))
           : items.map((m, idx) => (
