@@ -16,6 +16,7 @@ import { DiscoverRow } from "@/components/movie/DiscoverRow";
 import { VidAPILatestRow } from "@/components/movie/VidAPILatestRow";
 import { SEO } from "@/components/SEO";
 import { useLanguage } from "@/context/LanguageContext";
+import { useSettings } from "@/context/SettingsContext";
 import { tmdbLang } from "@/services/i18n";
 import { AdBanner } from "@/components/ui/AdBanner";
 import {
@@ -66,7 +67,7 @@ const supabaseM3ULists = [
   },
   { 
     title_fr: "Films d'Aventure", 
-    title_ar: "أفلام المغامرات", 
+    title_ar: "أفلام المغامرة", 
     url: "https://aymrgknetzpucldhpkwm.supabase.co/storage/v1/object/public/tmdb/adventure-movies.m3u", 
     type: "movie" as const 
   },
@@ -244,6 +245,7 @@ const KabyleCinemaRow = () => {
 const Home = () => {
   const navigate = useNavigate();
   const { lang, t } = useLanguage();
+  const { kidsMode } = useSettings();
   const tl = tmdbLang(lang);
 
   useEffect(() => {
@@ -260,6 +262,8 @@ const Home = () => {
   const [popularTV, setPopularTV] = useState<TMDBSeries[]>([]);
   const [topRatedTV, setTopRatedTV] = useState<TMDBSeries[]>([]);
   const [nowPlaying, setNowPlaying] = useState<TMDBMovie[]>([]);
+  const [kidsMovies, setKidsMovies] = useState<TMDBMovie[]>([]);
+  const [kidsSeries, setKidsSeries] = useState<TMDBSeries[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -274,45 +278,69 @@ const Home = () => {
       { id: 71446, type: "tv" } // Money Heist
     ];
 
-    Promise.all([
-      getTrendingMovies(tl).catch(() => ({ results: [] })),
-      getPopularMovies(tl).catch(() => ({ results: [] })),
-      getTopRatedMovies(tl).catch(() => ({ results: [] })),
-      getPopularSeries(tl).catch(() => ({ results: [] })),
-      getTopRatedSeries(tl).catch(() => ({ results: [] })),
-      getNowPlaying(tl).catch(() => ({ results: [] })),
-      ...heroIds.map(item => 
-        item.type === "tv" 
-          ? getSeriesDetails(item.id, tl).catch(() => null) 
-          : getMovieDetails(item.id, tl).catch(() => null)
-      )
-    ]).then(([tr, pop, top, tv, topTV, np, ...heroResults]) => {
-      if (canceled) return;
-      setTrending(tr.results);
-      
-      // Combine specific hero picks with trending items to have a larger list in the carousel
-      const validHeroPicks = heroResults.filter((item): item is any => item !== null && item.backdrop_path);
-      const validTrending = tr.results.filter((item: any) => item && item.backdrop_path).slice(0, 10);
-      
-      // Remove duplicates
-      const combinedHero = [...validHeroPicks];
-      validTrending.forEach(tItem => {
-        if (!combinedHero.find(h => h.id === tItem.id)) {
-          combinedHero.push(tItem);
-        }
+    if (kidsMode) {
+      // Kids mode: animation (16) + family (10751)
+      Promise.all([
+        discoverMovies(tl, { with_genres: "16", sort_by: "popularity.desc" }).catch(() => ({ results: [] })),
+        discoverSeries(tl, { with_genres: "16", sort_by: "popularity.desc" }).catch(() => ({ results: [] })),
+        discoverMovies(tl, { with_genres: "10751", sort_by: "popularity.desc" }).catch(() => ({ results: [] })),
+      ]).then(([animMovies, animSeries, familyMovies]) => {
+        if (canceled) return;
+        const safe = (items: any[]) => items.filter((m: any) => !m.adult);
+        setKidsMovies(safe(animMovies.results));
+        setKidsSeries(safe(animSeries.results));
+        setHero(safe(animMovies.results.filter((m: any) => m.backdrop_path)).slice(0, 5));
+        setPopular(safe(familyMovies.results));
+        setTrending([]);
+        setTopRated([]);
+        setPopularTV([]);
+        setTopRatedTV([]);
+        setNowPlaying([]);
+        setLoading(false);
       });
-      
-      setHero(combinedHero);
-      setPopular(pop.results);
-      setTopRated(top.results);
-      setPopularTV(tv.results);
-      setTopRatedTV(topTV.results);
-      setNowPlaying(np.results);
-      setLoading(false);
-    });
+    } else {
+      Promise.all([
+        getTrendingMovies(tl).catch(() => ({ results: [] })),
+        getPopularMovies(tl).catch(() => ({ results: [] })),
+        getTopRatedMovies(tl).catch(() => ({ results: [] })),
+        getPopularSeries(tl).catch(() => ({ results: [] })),
+        getTopRatedSeries(tl).catch(() => ({ results: [] })),
+        getNowPlaying(tl).catch(() => ({ results: [] })),
+        ...heroIds.map(item => 
+          item.type === "tv" 
+            ? getSeriesDetails(item.id, tl).catch(() => null) 
+            : getMovieDetails(item.id, tl).catch(() => null)
+        )
+      ]).then(([tr, pop, top, tv, topTV, np, ...heroResults]) => {
+        if (canceled) return;
+        setTrending(tr.results);
+        
+        // Combine specific hero picks with trending items to have a larger list in the carousel
+        const validHeroPicks = heroResults.filter((item): item is any => item !== null && item.backdrop_path);
+        const validTrending = tr.results.filter((item: any) => item && item.backdrop_path).slice(0, 10);
+        
+        // Remove duplicates
+        const combinedHero = [...validHeroPicks];
+        validTrending.forEach(tItem => {
+          if (!combinedHero.find(h => h.id === tItem.id)) {
+            combinedHero.push(tItem);
+          }
+        });
+        
+        setHero(combinedHero);
+        setPopular(pop.results);
+        setTopRated(top.results);
+        setPopularTV(tv.results);
+        setTopRatedTV(topTV.results);
+        setNowPlaying(np.results);
+        setKidsMovies([]);
+        setKidsSeries([]);
+        setLoading(false);
+      });
+    }
 
     return () => { canceled = true; };
-  }, [tl]);
+  }, [tl, kidsMode]);
 
   return (
     <Layout>
@@ -333,44 +361,54 @@ const Home = () => {
           icon="🔬" 
         />
 
-        <MovieRow title={t("section_latest")} items={nowPlaying} loading={loading} />
-        <MovieRow title={t("section_trending")} items={trending} loading={loading} />
-        
-        {/* Netflix Style Genre Sections */}
-        <DiscoverRow title={lang === "ar" ? "🔥 أفلام الأكشن والمغامرة" : "🔥 Action & Aventure"} genres="28,12" type="movie" icon="💥" />
-        <DiscoverRow title={lang === "ar" ? "💡 أفلام الخيال العلمي" : "💡 Science-Fiction"} genres="878" type="movie" icon="🚀" />
-        
-        <MovieRow title={t("section_popular")} items={popular} loading={loading} />
-        <AdBanner />
-        
-        {/* M3U Custom Rows (Premium Content) */}
-        {supabaseM3ULists.slice(0, 3).map((list) => (
-          <M3UMovieRow key={list.title_fr} title={lang === "ar" ? list.title_ar : list.title_fr} m3uUrl={list.url} type={list.type} />
-        ))}
+        {kidsMode ? (
+          <>
+            <MovieRow title={lang === "ar" ? "🎬 أفلام كرتونية" : "🎬 Films d'Animation"} items={kidsMovies} loading={loading} />
+            <MovieRow title={lang === "ar" ? "📺 مسلسلات كرتونية" : "📺 Séries d'Animation"} items={kidsSeries} type="tv" loading={loading} />
+            <MovieRow title={lang === "ar" ? "👨‍👩‍👧‍👦 أفلام عائلية" : "👨‍👩‍👧‍👦 Films de Famille"} items={popular} loading={loading} />
+          </>
+        ) : (
+          <>
+            <MovieRow title={t("section_latest")} items={nowPlaying} loading={loading} />
+            <MovieRow title={t("section_trending")} items={trending} loading={loading} />
+            
+            {/* Netflix Style Genre Sections */}
+            <DiscoverRow title={lang === "ar" ? "🔥 أفلام الأكشن والمغامرة" : "🔥 Action & Aventure"} genres="28,12" type="movie" icon="💥" />
+            <DiscoverRow title={lang === "ar" ? "💡 أفلام الخيال العلمي" : "💡 Science-Fiction"} genres="878" type="movie" icon="🚀" />
+            
+            <MovieRow title={t("section_popular")} items={popular} loading={loading} />
+            <AdBanner />
+            
+            {/* M3U Custom Rows (Premium Content) */}
+            {supabaseM3ULists.slice(0, 3).map((list) => (
+              <M3UMovieRow key={list.title_fr} title={lang === "ar" ? list.title_ar : list.title_fr} m3uUrl={list.url} type={list.type} />
+            ))}
 
-        <MovieRow title={t("section_popular_tv")} items={popularTV} type="tv" loading={loading} />
-        
-        <DiscoverRow title={lang === "ar" ? "🎬 أفلام الرعب والإثارة" : "🎬 Horreur & Thriller"} genres="27,53" type="movie" icon="👻" />
-        
-        <MovieRow title={lang === "ar" ? "⭐ أفضل المسلسلات على الإطلاق" : "⭐ Séries les mieux notées"} items={topRatedTV} type="tv" loading={loading} />
-        
-        {/* International Content Rows */}
-        <div className="bg-surface-elevated/30 py-8 my-8 border-y border-white/5 backdrop-blur-sm">
-          <DiscoverRow title={lang === "ar" ? "🇰🇷 الدراما الكورية" : "🇰🇷 K-Drama"} originalLanguage="ko" type="tv" genres="18" icon="✨" />
-          <DiscoverRow title={lang === "ar" ? "🇰🇷 السينما الكورية" : "🇰🇷 Cinéma Coréen"} originalLanguage="ko" type="movie" icon="🎬" />
-        </div>
+            <MovieRow title={t("section_popular_tv")} items={popularTV} type="tv" loading={loading} />
+            
+            <DiscoverRow title={lang === "ar" ? "🎬 أفلام الرعب والإثارة" : "🎬 Horreur & Thriller"} genres="27,53" type="movie" icon="👻" />
+            
+            <MovieRow title={lang === "ar" ? "⭐ أفضل المسلسلات على الإطلاق" : "⭐ Séries les mieux notées"} items={topRatedTV} type="tv" loading={loading} />
+            
+            {/* International Content Rows */}
+            <div className="bg-surface-elevated/30 py-8 my-8 border-y border-white/5 backdrop-blur-sm">
+              <DiscoverRow title={lang === "ar" ? "🇰🇷 الدراما الكورية" : "🇰🇷 K-Drama"} originalLanguage="ko" type="tv" genres="18" icon="✨" />
+              <DiscoverRow title={lang === "ar" ? "🇰🇷 السينما الكورية" : "🇰🇷 Cinéma Coréen"} originalLanguage="ko" type="movie" icon="🎬" />
+            </div>
 
-        <MovieRow title={t("section_top_rated")} items={topRated} loading={loading} />
+            <MovieRow title={t("section_top_rated")} items={topRated} loading={loading} />
 
-        {/* Specialized Content */}
-        <DiscoverRow title={lang === "ar" ? "🇸🇦 أقوى الأفلام العربية" : "🇸🇦 Films Arabes"} originalLanguage="ar" type="movie" icon="🌟" />
-        <DiscoverRow title={lang === "ar" ? "🇸🇦 المسلسلات العربية" : "🇸🇦 Séries Arabes"} originalLanguage="ar" type="tv" icon="📺" />
+            {/* Specialized Content */}
+            <DiscoverRow title={lang === "ar" ? "🇸🇦 أقوى الأفلام العربية" : "🇸🇦 Films Arabes"} originalLanguage="ar" type="movie" icon="🌟" />
+            <DiscoverRow title={lang === "ar" ? "🇸🇦 المسلسلات العربية" : "🇸🇦 Séries Arabes"} originalLanguage="ar" type="tv" icon="📺" />
 
-        <KabyleCinemaRow />
-        
-        {/* Dynamic Genre Footer Rows */}
-        <DiscoverRow title={lang === "ar" ? "😂 الكوميديا" : "😂 Comédie"} genres="35" type="movie" icon="🎭" />
-        <DiscoverRow title={lang === "ar" ? "📜 الوثائقيات" : "📜 Documentaires"} genres="99" type="movie" icon="🌍" />
+            <KabyleCinemaRow />
+            
+            {/* Dynamic Genre Footer Rows */}
+            <DiscoverRow title={lang === "ar" ? "😂 الكوميديا" : "😂 Comédie"} genres="35" type="movie" icon="🎭" />
+            <DiscoverRow title={lang === "ar" ? "📜 الوثائقيات" : "📜 Documentaires"} genres="99" type="movie" icon="🌍" />
+          </>
+        )}
       </div>
     </Layout>
   );
