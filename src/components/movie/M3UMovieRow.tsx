@@ -75,7 +75,7 @@ export const M3UMovieRow = ({ title, m3uUrl, type = "movie" }: Props) => {
                 className="shrink-0 w-[280px] sm:w-[320px] md:w-[360px] aspect-video rounded-2xl shimmer-gold"
               />
             ))
-          : items.slice(0, 7).map((m, idx) => (
+          : items.map((m, idx) => (
               <LandscapeMovieCard
                 key={`m3u-${idx}`}
                 id={`m3u-${idx}`}

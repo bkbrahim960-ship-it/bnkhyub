@@ -29,7 +29,7 @@ export const ContinueWatchingRow = () => {
       return;
     }
     setLoading(true);
-    getRecentHistory(user.id, 7)
+    getRecentHistory(user.id, 20)
       .then((data) => {
         // Deduplicate: keep only the most recent entry per tmdb_id
         const seen = new Set<number>();

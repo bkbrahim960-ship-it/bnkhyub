@@ -60,7 +60,7 @@ export const ForYouRow = () => {
           [unique[i], unique[j]] = [unique[j], unique[i]];
         }
 
-        setItems(unique.slice(0, 7) as TMDBMovie[]);
+        setItems(unique as TMDBMovie[]);
         setLoading(false);
       })
       .catch(() => setLoading(false));

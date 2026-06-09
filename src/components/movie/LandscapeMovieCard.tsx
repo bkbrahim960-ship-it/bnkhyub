@@ -23,21 +23,20 @@ export const LandscapeMovieCard = ({
   customUrl,
   className,
 }: Props) => {
-  const poster = IMG.poster(posterPath, "w780");
-  const backdrop = IMG.backdrop(posterPath, "w780") ?? poster;
+  const poster = IMG.poster(posterPath, "w500");
   const playPath = `/${type === "tv" ? "series" : "movie"}/${id}`;
   const finalPath = customUrl ? `${playPath}?video_url=${encodeURIComponent(customUrl)}` : playPath;
 
   return (
-    <div className={`snap-start shrink-0 w-[280px] sm:w-[320px] md:w-[360px] ${className}`}>
+    <div className={`snap-start shrink-0 w-[200px] sm:w-[220px] md:w-[240px] ${className}`}>
       <Link to={finalPath} className="group relative block transition-all duration-700 hover:-translate-y-2">
         {/* Glow effect on hover */}
         <div className="absolute -inset-2 bg-accent/10 rounded-[1.5rem] blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
         
-        <div className="relative aspect-video rounded-2xl overflow-hidden bg-surface-card border border-white/5 group-hover:border-accent/40 group-hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.7)] transition-all duration-700 ease-luxe">
-          {backdrop ? (
+        <div className="relative aspect-[2/3] rounded-2xl overflow-hidden bg-surface-card border border-white/5 group-hover:border-accent/40 group-hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.7)] transition-all duration-700 ease-luxe">
+          {poster ? (
             <img 
-              src={backdrop} 
+              src={poster} 
               alt={title} 
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
             />
@@ -75,16 +74,15 @@ export const LandscapeMovieCard = ({
               <Play className="w-7 h-7 fill-current" />
             </div>
           </div>
-        </div>
-
-        <div className="pt-4 px-1">
-          <div className="flex items-center justify-between gap-4">
-            <h3 className="font-body font-bold text-sm text-foreground/90 line-clamp-1 group-hover:text-accent transition-colors duration-300">
+          
+          {/* Movie/Series Title at Bottom */}
+          <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/95 to-transparent">
+            <h3 className="font-body font-bold text-sm text-white line-clamp-2 group-hover:text-accent transition-colors duration-300">
               {title}
             </h3>
-            <span className="shrink-0 text-[10px] font-black text-accent bg-accent/10 px-2 py-0.5 rounded-md">
-              {type === "tv" ? "مسلسل" : "فيلم"}
-            </span>
+            <p className="text-xs text-white/70 mt-1">
+              {year || type === "tv" ? "مسلسل" : "فيلم"}
+            </p>
           </div>
         </div>
       </Link>

@@ -19,7 +19,7 @@ export const VidAPILatestRow = ({ type, title }: VidAPILatestRowProps) => {
       setLoading(true);
       try {
         const data = type === "movie" ? await getLatestMovies(1) : await getLatestTVShows(1);
-        setItems(data.items.slice(0, 7));
+        setItems(data.items);
       } catch (err) {
         console.error("VidAPI Fetch Error:", err);
       } finally {

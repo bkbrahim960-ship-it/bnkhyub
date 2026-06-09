@@ -64,7 +64,7 @@ export const MovieRow = memo(({ title, items, type = "movie", loading }: Props) 
                 className="shrink-0 w-[280px] sm:w-[320px] md:w-[360px] aspect-video rounded-2xl shimmer-gold"
               />
             ))
-          : items.slice(0, 7).map((m: any) => (
+          : items.map((m: any) => (
               <LandscapeMovieCard
                 key={`${type}-${m.id}`}
                 id={m.id}
