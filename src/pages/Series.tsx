@@ -18,7 +18,7 @@ import { useAuth } from "@/context/AuthContext";
 import { tmdbLang } from "@/services/i18n";
 import { SEO } from "@/components/SEO";
 import { upsertWatchEntry, getSeriesHistory, WatchHistoryEntry } from "@/services/watchHistory";
-import { KABYLE_CONTENT } from "@/services/customContent";
+import { KABYLE_CONTENT, MOCK_SERIES } from "@/services/customContent";
 import { SOURCE_LABELS } from "@/services/player";
 import { Play, Star, Calendar, ArrowLeft, Youtube, ChevronRight, Clock, Info, Check } from "lucide-react";
 import { useAmbient } from "@/context/AmbientContext";
@@ -66,13 +66,38 @@ const Series = () => {
     setLoading(true);
     setPlaying(false);
 
-    const custom = KABYLE_CONTENT.find(c => c.id === id);
-    if (custom) {
-      const customSeries = {
-        ...custom,
-        seasons: [{ id: 1, name: "Saison 1", episode_count: custom.episodes?.length || 0, season_number: 1 }],
+    const customMovie = KABYLE_CONTENT.find(c => c.id === id);
+    const customSeries = MOCK_SERIES.find(c => c.id === id);
+    if (customSeries) {
+      const seriesData = {
+        ...customSeries,
+        name: customSeries.title,
+        overview: customSeries.description,
+        poster_path: customSeries.thumbnail,
+        backdrop_path: customSeries.thumbnail,
+        vote_average: customSeries.rating,
+        first_air_date: customSeries.year,
+        seasons: [{ id: 1, name: "Saison 1", episode_count: customSeries.episodes?.length || 0, season_number: 1 }],
+        episodes: customSeries.episodes
       };
-      setSeries(customSeries as any);
+      setSeries(seriesData as any);
+      setLoading(false);
+      
+      if (resumeRequested && resumeSeason && resumeEpisode) {
+        setSeason(resumeSeason);
+        setEpisode(resumeEpisode);
+        setPlaying(true);
+      }
+      return;
+    }
+
+    if (customMovie && customMovie.episodes) {
+      const customSeriesFromMovie = {
+        ...customMovie,
+        name: customMovie.title,
+        seasons: [{ id: 1, name: "Saison 1", episode_count: customMovie.episodes.length, season_number: 1 }],
+      };
+      setSeries(customSeriesFromMovie as any);
       setLoading(false);
       
       if (resumeRequested && resumeSeason && resumeEpisode) {
@@ -124,16 +149,35 @@ const Series = () => {
   useEffect(() => {
     if (!series || !season) return;
     
-    const custom = KABYLE_CONTENT.find(c => c.id === String(series.id));
-    if (custom) {
+    const customMovie = KABYLE_CONTENT.find(c => c.id === String(series.id));
+    const customSeries = MOCK_SERIES.find(c => c.id === String(series.id));
+    
+    if (customSeries) {
       setSeasonData({
         id: 1,
         name: "Saison 1",
         season_number: 1,
-        episodes: custom.episodes?.map(ep => ({
+        episodes: customSeries.episodes?.map((ep, idx) => ({
           id: ep.id,
           name: ep.title,
-          episode_number: ep.id,
+          episode_number: idx + 1,
+          still_path: null,
+          overview: ""
+        })) || []
+      } as any);
+      setSeasonLoading(false);
+      return;
+    }
+
+    if (customMovie && customMovie.episodes) {
+      setSeasonData({
+        id: 1,
+        name: "Saison 1",
+        season_number: 1,
+        episodes: customMovie.episodes?.map((ep, idx) => ({
+          id: ep.id,
+          name: ep.title,
+          episode_number: idx + 1,
           still_path: null,
           overview: ""
         })) || []
@@ -356,6 +400,19 @@ const Series = () => {
                 episode={episode}
                 title={`${series.name} — S${season} E${episode}`}
                 initialSourceIndex={initialSourceIndex}
+                customUrl={(() => {
+                  const customSeries = MOCK_SERIES.find(c => c.id === String(series.id));
+                  const customMovie = KABYLE_CONTENT.find(c => c.id === String(series.id));
+                  if (customSeries && customSeries.episodes) {
+                    const ep = customSeries.episodes[episode - 1];
+                    return ep?.videoUrl;
+                  }
+                  if (customMovie && customMovie.episodes) {
+                    const ep = customMovie.episodes[episode - 1];
+                    return ep?.videoUrl;
+                  }
+                  return undefined;
+                })()}
                 onPlayStart={(_i, label) => saveHistory(label)}
                 onSourceChange={(_i, label) => saveHistory(label)}
                 onProgress={(seconds, duration) => {

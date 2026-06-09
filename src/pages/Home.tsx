@@ -178,8 +178,10 @@ const supabaseM3ULists = [
 /** Kabyle cinema section */
 const KabyleCinemaRow = () => {
   const { lang } = useLanguage();
-  const all = KABYLE_CONTENT;
-  if (all.length === 0) return null;
+  const allMovies = KABYLE_CONTENT;
+  const allSeries = MOCK_SERIES;
+  
+  if (allMovies.length === 0 && allSeries.length === 0) return null;
 
   return (
     <section className="relative py-8">
@@ -191,20 +193,51 @@ const KabyleCinemaRow = () => {
           {lang === "ar" ? "أفلام ومسلسلات بالأمازيغية القبائلية" : "Films et séries en langue Kabyle"}
         </p>
       </div>
-      <div className="container overflow-x-auto scrollbar-hide flex gap-4 md:gap-5 pt-6 pb-4 snap-x snap-mandatory">
-        {all.slice(0, 7).map((item) => (
-          <div key={item.id} className="snap-start">
-            <MovieCard
-              id={item.id}
-              title={item.title}
-              posterPath={item.thumbnail}
-              year={item.year || "Kabyle"}
-              rating={item.rating}
-              type="movie"
-            />
-          </div>
-        ))}
+      
+      {/* Kabyle Movies */}
+      <div className="mb-8">
+        <h3 className="container text-lg font-display text-muted-foreground mb-4">
+          {lang === "ar" ? "🎬 الأفلام" : "🎬 Films"}
+        </h3>
+        <div className="container overflow-x-auto scrollbar-hide flex gap-2 md:gap-3 lg:gap-4 pt-2 pb-4 snap-x snap-mandatory">
+          {allMovies.map((item) => (
+            <div key={item.id} className="snap-start">
+              <MovieCard
+                id={item.id}
+                title={item.title}
+                posterPath={item.thumbnail}
+                year={item.year || "Kabyle"}
+                rating={item.rating}
+                type="movie"
+                customUrl={item.videoUrl}
+              />
+            </div>
+          ))}
+        </div>
       </div>
+
+      {/* Kabyle Series */}
+      {allSeries.length > 0 && (
+        <div>
+          <h3 className="container text-lg font-display text-muted-foreground mb-4">
+            {lang === "ar" ? "📺 المسلسلات" : "📺 Séries"}
+          </h3>
+          <div className="container overflow-x-auto scrollbar-hide flex gap-2 md:gap-3 lg:gap-4 pt-2 pb-4 snap-x snap-mandatory">
+            {allSeries.map((item) => (
+              <div key={item.id} className="snap-start">
+                <MovieCard
+                  id={item.id}
+                  title={item.title}
+                  posterPath={item.thumbnail}
+                  year={item.year || "Kabyle"}
+                  rating={item.rating}
+                  type="tv"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </section>
   );
 };
