@@ -48,7 +48,7 @@ const ProfilePage = () => {
           setUsername(p.username ?? "");
         }
       })
-      .catch(() => {})
+      .catch((err) => console.error("Profile fetch error:", err))
       .finally(() => {
         clearTimeout(timeout);
         setLoading(false);

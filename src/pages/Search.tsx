@@ -69,7 +69,7 @@ const Search = () => {
   useEffect(() => {
     getMovieGenres(tl)
       .then((r) => setGenres(r.genres))
-      .catch(() => {});
+      .catch((err) => console.error("Search genres fetch error:", err));
   }, [tl]);
 
   const performSearch = useCallback(async () => {

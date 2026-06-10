@@ -74,7 +74,7 @@ const ComingSoon = () => {
           .sort((a, b) => (a.daysUntilRelease || 999) - (b.daysUntilRelease || 999));
         setMovies(upcoming);
       })
-      .catch(() => {})
+      .catch((err) => console.error("ComingSoon fetch error:", err))
       .finally(() => setLoading(false));
   }, [lang]);
 

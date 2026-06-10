@@ -14,6 +14,7 @@ import { TrailerModal } from "@/components/movie/TrailerModal";
 
 import { VideoBackdrop } from "@/components/movie/VideoBackdrop";
 import { LoginPrompt } from "@/components/LoginPrompt";
+import { ReviewSection } from "@/components/movie/ReviewSection";
 import { EpisodeModal } from "@/components/movie/EpisodeModal";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
@@ -152,12 +153,12 @@ const Series = () => {
     if (!id) return;
     getSeriesRecommendations(id, tmdbLang(lang))
       .then((r) => setRecommendations(r.results.filter((s: any) => s.poster_path)))
-      .catch(() => {});
+      .catch((err) => console.error("Series recommendations fetch error:", err));
   }, [id, lang]);
 
   useEffect(() => {
     if (user && series) {
-      getSeriesHistory(user.id, series.id).then(setSeriesHistory).catch(() => {});
+      getSeriesHistory(user.id, series.id).then(setSeriesHistory).catch((err) => console.error("Series history fetch error:", err));
     }
   }, [user, series]);
 
@@ -255,7 +256,7 @@ const Series = () => {
       source_id: sid,
       progress_seconds: progress,
       duration_seconds: duration,
-    }).catch(() => {});
+    }).catch((err) => console.error("Series history save error:", err));
   };
 
   const playEpisodeDirectly = (epNum: number, withAutoMode = false) => {
@@ -621,6 +622,9 @@ const Series = () => {
           <MovieRow title={lang === "ar" ? "مسلسلات مشابهة" : "Séries similaires"} items={recommendations} type="tv" />
         </div>
       )}
+
+      {/* Reviews */}
+      <ReviewSection tmdbId={series.id} mediaType="tv" />
 
       {/* DISTRIBUTION MOVED TO BOTTOM */}
       <section className="container py-20 border-t border-white/5">

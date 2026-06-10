@@ -25,7 +25,7 @@ const MyList = () => {
     }
     getUserFavorites(user.id)
       .then(setFavorites)
-      .catch(() => {})
+      .catch((err) => console.error("MyList fetch error:", err))
       .finally(() => setLoading(false));
   }, [user]);
 

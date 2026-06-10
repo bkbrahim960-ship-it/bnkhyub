@@ -11,6 +11,7 @@ import { TrailerModal } from "@/components/movie/TrailerModal";
 
 import { VideoBackdrop } from "@/components/movie/VideoBackdrop";
 import { LoginPrompt } from "@/components/LoginPrompt";
+import { ReviewSection } from "@/components/movie/ReviewSection";
 import { IMG, getMovieDetails, getMovieRecommendations, TMDBMovie } from "@/services/tmdb";
 import { getOMDbDetails, OMDbResult } from "@/services/omdb";
 import { RatingsDisplay } from "@/components/ui/RatingsDisplay";
@@ -131,7 +132,7 @@ const Movie = () => {
     if (!id) return;
     getMovieRecommendations(id, tmdbLang(lang))
       .then((r) => setRecommendations(r.results.filter((m) => m.poster_path)))
-      .catch(() => {});
+      .catch((err) => console.error("Movie recommendations fetch error:", err));
   }, [id, lang]);
 
   // Clean up ambient on unmount
@@ -178,7 +179,7 @@ const Movie = () => {
       source_id: sid,
       progress_seconds: progress,
       duration_seconds: duration,
-    }).catch(() => {});
+    }).catch((err) => console.error("Watch history save error:", err));
   };
 
   const confirmWatch = (withAutoMode = false) => {
@@ -359,6 +360,9 @@ const Movie = () => {
           <MovieRow title={lang === "ar" ? "أفلام مشابهة" : "Vous pourriez aussi aimer"} items={recommendations} />
         </div>
       )}
+
+      {/* Reviews */}
+      <ReviewSection tmdbId={movie.id} mediaType="movie" />
 
       {/* DISTRIBUTION MOVED TO BOTTOM */}
       <section className="container py-20 border-t border-white/5">

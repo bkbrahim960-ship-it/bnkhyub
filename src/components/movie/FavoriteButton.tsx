@@ -22,7 +22,7 @@ export const FavoriteButton = ({ tmdbId, mediaType, title, posterPath, backdropP
 
   useEffect(() => {
     if (!user) return;
-    isFavorite(user.id, tmdbId, mediaType).then(setFav).catch(() => {});
+    isFavorite(user.id, tmdbId, mediaType).then(setFav).catch((err) => console.error("Favorite check error:", err));
   }, [user, tmdbId, mediaType]);
 
   const toggle = async () => {

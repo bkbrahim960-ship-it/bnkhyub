@@ -17,7 +17,7 @@ type Mode = "signin" | "signup";
 
 export default function Auth() {
   const navigate = useNavigate();
-  const { user, loading: authLoading, signIn, signUp } = useAuth();
+  const { user, loading: authLoading, signIn, signUp, signInWithGoogle, resetPassword } = useAuth();
   const { lang, setLang, t } = useLanguage();
   const isRTL = lang === "ar";
 
@@ -70,7 +70,14 @@ export default function Auth() {
   };
 
   const google = async () => {
-    toast.error("Google Auth non supporté en mode local");
+    try {
+      setBusy(true);
+      await signInWithGoogle();
+    } catch (err: any) {
+      toast.error(err?.message ?? "Erreur de connexion Google");
+    } finally {
+      setBusy(false);
+    }
   };
 
   const openAuth = (selectedMode: Mode) => {
@@ -500,6 +507,30 @@ export default function Auth() {
                 {busy && <Loader2 className="w-5 h-5 animate-spin" />}
                 {mode === "signin" ? "Se connecter" : "Créer un compte"}
               </button>
+
+              {mode === "signin" && (
+                <button
+                  type="button"
+                  onClick={async () => {
+                    if (!email) {
+                      toast.error("Veuillez entrer votre adresse e-mail");
+                      return;
+                    }
+                    try {
+                      setBusy(true);
+                      await resetPassword(email);
+                      toast.success("E-mail de réinitialisation envoyé");
+                    } catch (err: any) {
+                      toast.error(err?.message ?? "Erreur");
+                    } finally {
+                      setBusy(false);
+                    }
+                  }}
+                  className="w-full text-sm text-gray-400 hover:text-[#C124A0] transition-colors mt-2 underline-offset-2 hover:underline"
+                >
+                  Mot de passe oublié ?
+                </button>
+              )}
             </form>
 
             <p className="mt-6 text-sm text-center text-gray-400">

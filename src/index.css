@@ -98,6 +98,30 @@
     --bg-primary: 0 0% 0%;
   }
 
+  [data-theme="gold"] {
+    --accent-h: 43;
+    --accent-s: 78%;
+    --accent-l: 46%;
+    --accent-light: 43 85% 60%;
+    --accent-dark: 43 70% 35%;
+  }
+
+  [data-theme="emerald"] {
+    --accent-h: 152;
+    --accent-s: 83%;
+    --accent-l: 34%;
+    --accent-light: 152 80% 50%;
+    --accent-dark: 152 75% 25%;
+  }
+
+  [data-theme="sky"] {
+    --accent-h: 200;
+    --accent-s: 98%;
+    --accent-l: 41%;
+    --accent-light: 200 95% 55%;
+    --accent-dark: 200 90% 30%;
+  }
+
   /* KIDS MODE THEME OVERRIDE */
   [data-kids="true"] {
     --bg-primary: 0 0% 100%;            /* Pure White Background */

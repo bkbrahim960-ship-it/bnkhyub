@@ -5,6 +5,7 @@
 import { Link, NavLink } from "react-router-dom";
 import { useState } from "react";
 import { Search, Menu, X } from "lucide-react";
+import { ColorSwitcher } from "@/components/ui/ColorSwitcher";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
 import { useImmersiveMode } from "@/hooks/useImmersiveMode";
@@ -44,13 +45,16 @@ export const Header = () => {
           />
         </Link>
 
-        <button
-          className="p-2 rounded-full hover:bg-surface-card focus:outline-none focus:ring-2 focus:ring-accent"
-          onClick={() => setMobileOpen((v) => !v)}
-          aria-label="Menu"
-        >
-          {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-        </button>
+        <div className="flex items-center gap-1">
+          <ColorSwitcher compact />
+          <button
+            className="p-2 rounded-full hover:bg-surface-card focus:outline-none focus:ring-2 focus:ring-accent"
+            onClick={() => setMobileOpen((v) => !v)}
+            aria-label="Menu"
+          >
+            {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
+        </div>
       </div>
 
       {mobileOpen && (

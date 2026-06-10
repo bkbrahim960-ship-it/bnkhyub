@@ -34,6 +34,7 @@ import { HelmetProvider } from "react-helmet-async";
 import { SEO } from "@/components/SEO";
 import { useRemoteControl } from "@/hooks/useRemoteControl";
 import { VirtualCursor } from "@/components/ui/VirtualCursor";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Analytics } from "@vercel/analytics/react";
@@ -122,29 +123,31 @@ const AppContent = () => (
                       <SiteVisitTracker />
                       <TVNavigationActivator />
                       <VirtualCursor />
-                      <Routes>
-                        <Route path="/" element={<Home />} />
-                        <Route path="/movies" element={<Catalog mode="movies" />} />
-                        <Route path="/series" element={<Catalog mode="series" />} />
-                        <Route path="/movie/:id" element={<Movie />} />
-                        <Route path="/series/:id" element={<Series />} />
-                        <Route path="/channels" element={<Channels />} />
-                        <Route path="/search" element={<Search />} />
-                        <Route path="/auth" element={<Auth />} />
-                        <Route path="/auth-desktop" element={<DesktopAuth />} />
-                        <Route path="/profile" element={<Profile />} />
-                        <Route path="/my-list" element={<MyList />} />
-                        <Route path="/admin" element={<Admin />} />
-                        <Route path="/landing" element={<Landing />} />
-                        <Route path="/privacy" element={<Privacy />} />
-                        <Route path="/terms" element={<Terms />} />
-                        <Route path="/faq" element={<Faq />} />
+                      <ErrorBoundary>
+                        <Routes>
+                          <Route path="/" element={<Home />} />
+                          <Route path="/movies" element={<Catalog mode="movies" />} />
+                          <Route path="/series" element={<Catalog mode="series" />} />
+                          <Route path="/movie/:id" element={<Movie />} />
+                          <Route path="/series/:id" element={<Series />} />
+                          <Route path="/channels" element={<Channels />} />
+                          <Route path="/search" element={<Search />} />
+                          <Route path="/auth" element={<Auth />} />
+                          <Route path="/auth-desktop" element={<DesktopAuth />} />
+                          <Route path="/profile" element={<Profile />} />
+                          <Route path="/my-list" element={<MyList />} />
+                          <Route path="/admin" element={<Admin />} />
+                          <Route path="/landing" element={<Landing />} />
+                          <Route path="/privacy" element={<Privacy />} />
+                          <Route path="/terms" element={<Terms />} />
+                          <Route path="/faq" element={<Faq />} />
 
-                        <Route path="/remote" element={<Remote />} />
-                        <Route path="/person/:id" element={<Person />} />
-                        <Route path="/coming-soon" element={<ComingSoon />} />
-                        <Route path="*" element={<NotFound />} />
-                      </Routes>
+                          <Route path="/remote" element={<Remote />} />
+                          <Route path="/person/:id" element={<Person />} />
+                          <Route path="/coming-soon" element={<ComingSoon />} />
+                          <Route path="*" element={<NotFound />} />
+                        </Routes>
+                      </ErrorBoundary>
                     </BrowserRouter>
                     <Analytics />
                   </TooltipProvider>
