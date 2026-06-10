@@ -11,7 +11,7 @@ import { ResumeModal } from "./ResumeModal";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
 import { getRecentHistory } from "@/services/watchHistory";
-import { Loader2, AlertCircle, RotateCw, ShieldCheck, Play, Pause, Settings, Lock, Unlock, FastForward, Languages, Captions, Monitor, Gauge, PictureInPicture as PipIcon, Search, Download, ExternalLink, X, Check, Maximize, Minimize, Volume2, VolumeX } from "lucide-react";
+import { Loader2, RotateCw, ShieldCheck, Play, Settings, Lock, Unlock, Captions, Gauge, Search, Download, ExternalLink, X, Check } from "lucide-react";
 import { searchSubtitles, getDownloadUrl, SubtitleResult } from "@/services/opensubtitles";
 import { searchWyzieSubtitles, WyzieSubtitle } from "@/services/wyzie";
 import { toast } from "sonner";
@@ -102,91 +102,9 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
   const [cineproSources, setCineproSources] = useState<CineProSource[]>([]);
   const [cineproSubs, setCineproSubs] = useState<{ url: string; format: string; label: string }[]>([]);
 
-  // Custom Controls State
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [volume, setVolume] = useState(1);
-  const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(0);
-  const [isFullscreen, setIsFullscreen] = useState(false);
-
-
   const startPlayback = useCallback(() => {
     setAdsOpen(false);
     setPlayerActive(true);
-  }, []);
-
-  const toggleFullscreen = useCallback(() => {
-    if (!containerRef.current) return;
-    const el = containerRef.current as HTMLElement & { webkitRequestFullscreen?: () => void };
-    const doc = document as Document & { webkitFullscreenElement?: Element; webkitExitFullscreen?: () => void };
-    if (!doc.fullscreenElement && !doc.webkitFullscreenElement) {
-      if (el.requestFullscreen) el.requestFullscreen().catch(() => setIsFullscreen(true));
-      else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
-      else setIsFullscreen(true);
-    } else {
-      if (doc.exitFullscreen) doc.exitFullscreen();
-      else if (doc.webkitExitFullscreen) doc.webkitExitFullscreen();
-      setIsFullscreen(false);
-    }
-  }, []);
-
-  const handlePlayPause = useCallback(() => {
-    const video = videoRef.current;
-    if (!video) return;
-    if (video.paused) {
-      video.play().then(() => setIsPlaying(true)).catch(() => {});
-    } else {
-      video.pause();
-      setIsPlaying(false);
-    }
-  }, []);
-
-  const handleSeek = useCallback((seconds: number) => {
-    const video = videoRef.current;
-    if (!video) return;
-    video.currentTime = Math.max(0, Math.min(video.currentTime + seconds, video.duration));
-  }, []);
-
-  const handleProgressChange = useCallback((value: number) => {
-    const video = videoRef.current;
-    if (!video) return;
-    video.currentTime = value;
-  }, []);
-
-  const handleVolumeChange = useCallback((value: number) => {
-    const video = videoRef.current;
-    if (!video) return;
-    video.volume = value;
-    video.muted = value === 0;
-    setVolume(value);
-  }, []);
-
-  // Fullscreen change listener
-  useEffect(() => {
-    const handleFsChange = () => {
-      const doc = document as Document & { webkitFullscreenElement?: Element };
-      setIsFullscreen(!!(doc.fullscreenElement || doc.webkitFullscreenElement));
-    };
-    document.addEventListener('fullscreenchange', handleFsChange);
-    document.addEventListener('webkitfullscreenchange', handleFsChange);
-    return () => {
-      document.removeEventListener('fullscreenchange', handleFsChange);
-      document.removeEventListener('webkitfullscreenchange', handleFsChange);
-    };
-  }, []);
-
-  // Auto-hide controls timeout
-  const controlsTimeoutRef = useRef<number | null>(null);
-  const [controlsVisible, setControlsVisible] = useState(true);
-  const showControlsTemporarily = useCallback(() => {
-    setControlsVisible(true);
-    if (controlsTimeoutRef.current) window.clearTimeout(controlsTimeoutRef.current);
-    controlsTimeoutRef.current = window.setTimeout(() => {
-      if (isPlaying && !showSettings) setControlsVisible(false);
-    }, 3000);
-  }, [isPlaying, showSettings]);
-  useEffect(() => {
-    return () => { if (controlsTimeoutRef.current) window.clearTimeout(controlsTimeoutRef.current); };
   }, []);
 
   // Expose methods to parent
@@ -400,16 +318,13 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
     if (tmdb_id) tryResolve();
   }, [tmdb_id, type, season, episode]);
 
-  // Fetch CinePro Core sources and auto-select when ready
+  // Fetch CinePro Core sources
   useEffect(() => {
     if (!tmdb_id || customUrl) return;
     fetchCineProSources(type, tmdb_id, season, episode).then((data) => {
       if (data && data.sources.length > 0) {
         setCineproSources(data.sources);
         setCineproSubs(data.subtitles || []);
-        // Auto-select first CinePro source
-        setSourceIndex(3);
-        setLoading(true);
       }
     });
   }, [tmdb_id, type, season, episode, customUrl]);
@@ -481,14 +396,6 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
       }
     };
   }, [sourceIndex, playerActive]);
-
-  const formatTime = (seconds: number) => {
-    if (!seconds || !isFinite(seconds)) return "0:00";
-    const h = Math.floor(seconds / 3600);
-    const m = Math.floor((seconds % 3600) / 60);
-    const s = Math.floor(seconds % 60);
-    return h > 0 ? `${h}:${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}` : `${m}:${s.toString().padStart(2, "0")}`;
-  };
 
   return (
     <div className="w-full max-w-5xl mx-auto">
@@ -579,31 +486,22 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
           <video
             ref={videoRef}
             className="absolute inset-0 w-full h-full object-contain bg-black"
+            controls
             playsInline
             // @ts-ignore
             webkit-playsinline="true"
             onLoadStart={() => setLoading(true)}
-            onPlaying={() => { setLoading(false); setHasResumed(true); setIsPlaying(true); }}
-            onPause={() => setIsPlaying(false)}
+            onPlaying={() => { setLoading(false); setHasResumed(true); }}
             onWaiting={() => setLoading(true)}
             onTimeUpdate={(e) => {
-              const video = e.target as HTMLVideoElement;
-              setCurrentTime(video.currentTime);
-              setDuration(video.duration || 0);
-              if (video.currentTime > 0 && Math.abs(video.currentTime - lastSaveTime.current) >= 10) {
-                lastSaveTime.current = video.currentTime;
-                saveProgress(video.currentTime, video.duration);
+              const current = (e.target as HTMLVideoElement).currentTime;
+              const duration = (e.target as HTMLVideoElement).duration;
+              if (current > 0 && Math.abs(current - lastSaveTime.current) >= 10) {
+                lastSaveTime.current = current;
+                saveProgress(current, duration);
               }
             }}
-            onLoadedMetadata={(e) => {
-              setDuration((e.target as HTMLVideoElement).duration || 0);
-            }}
-            onVolumeChange={(e) => {
-              setVolume((e.target as HTMLVideoElement).volume);
-            }}
             onEnded={() => {}}
-            onMouseEnter={showControlsTemporarily}
-            onMouseLeave={() => { if (isPlaying) setControlsVisible(false); }}
           >
             {appliedExternalSub && <track kind="subtitles" src={appliedExternalSub} srcLang="ar" label="Arabic" default />}
           </video>
@@ -658,117 +556,11 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
           />
         )}
 
-        {/* Custom Controls Overlay — for direct video sources */}
-        {playerActive && (() => {
-          const cineproIdx = sourceIndex >= 3 ? sourceIndex - 3 : -1;
-          const cineproSrc = cineproIdx >= 0 && cineproIdx < cineproSources.length ? cineproSources[cineproIdx] : null;
-          return allSources[sourceIndex]?.includes(".m3u8") || 
-            allSources[sourceIndex]?.includes(".mp4") ||
-            (cineproSrc && ["hls", "mp4", "dash", "http", "mkv", "webm"].includes(cineproSrc.type));
-        })() && (
-          <div
-            className={`absolute inset-0 z-40 flex flex-col justify-between p-4 md:p-6 transition-all duration-500 bg-gradient-to-t from-black/90 via-transparent to-black/40 pointer-events-none ${controlsVisible ? 'opacity-100' : 'opacity-0'}`}
-            onMouseEnter={showControlsTemporarily}
-            onMouseMove={showControlsTemporarily}
-          >
-            {/* Top bar — title + lock */}
-            <div className={`flex items-start justify-between transition-all duration-500 pointer-events-auto ${controlsVisible ? 'translate-y-0' : '-translate-y-8'}`}>
-              <div className="space-y-0.5">
-                <h3 className="text-sm md:text-lg font-anton uppercase tracking-[0.08em] text-white drop-shadow-xl truncate max-w-[300px] md:max-w-[500px]">
-                  {title || `Source ${sourceIndex + 1}`}
-                </h3>
-                <p className="text-[9px] md:text-[10px] text-accent font-black uppercase tracking-[0.3em]">
-                  {allLabels[sourceIndex] || `S${sourceIndex + 1}`}
-                </p>
-              </div>
-              <button
-                onClick={() => setIsLocked(!isLocked)}
-                className={`w-10 h-10 rounded-full backdrop-blur-2xl border flex items-center justify-center transition-all pointer-events-auto ${isLocked ? 'bg-accent/30 border-accent/50 text-accent' : 'bg-white/5 border-white/10 text-white/60 hover:bg-white/10'}`}
-              >
-                {isLocked ? <Lock className="w-4 h-4" /> : <Unlock className="w-4 h-4" />}
-              </button>
-            </div>
-
-            {/* Lock overlay */}
-            {isLocked && (
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-auto">
-                <button onClick={() => setIsLocked(false)} className="w-24 h-24 rounded-full bg-black/60 backdrop-blur-3xl border border-white/10 flex flex-col items-center justify-center gap-2 animate-pulse">
-                  <Lock className="w-8 h-8 text-white/40" />
-                  <span className="text-[8px] uppercase font-black tracking-[0.3em] text-white/20">Locked</span>
-                </button>
-              </div>
-            )}
-
-            {/* Bottom controls */}
-            <div className={`space-y-4 transition-all duration-500 pointer-events-auto ${controlsVisible && !isLocked ? 'translate-y-0' : 'translate-y-12'}`}>
-              {/* Seek bar */}
-              {duration > 0 && (
-                <div className="group/progress relative h-1.5 md:h-2 flex items-center cursor-pointer">
-                  <input
-                    type="range"
-                    min={0}
-                    max={duration}
-                    step={0.1}
-                    value={currentTime}
-                    onChange={(e) => handleProgressChange(Number(e.target.value))}
-                    className="absolute inset-0 w-full h-1 md:h-1.5 bg-white/15 rounded-full appearance-none cursor-pointer accent-accent [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-accent [&::-webkit-slider-thumb]:shadow-[0_0_15px_hsl(var(--accent)/0.6)] [&::-webkit-slider-thumb]:opacity-0 group-hover/progress:[&::-webkit-slider-thumb]:opacity-100 transition-all"
-                  />
-                  <div className="absolute h-1 md:h-1.5 bg-accent rounded-full pointer-events-none shadow-[0_0_10px_hsl(var(--accent)/0.4)]" style={{ width: `${duration > 0 ? (currentTime / duration) * 100 : 0}%` }} />
-                </div>
-              )}
-
-              {/* Button row */}
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3 md:gap-5">
-                  {/* Play/Pause */}
-                  <button onClick={handlePlayPause} className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-white text-black flex items-center justify-center hover:scale-110 active:scale-90 transition-all shadow-2xl">
-                    {isPlaying ? <Pause className="w-5 h-5 md:w-7 md:h-7 fill-current" /> : <Play className="w-5 h-5 md:w-7 md:h-7 fill-current ml-0.5 md:ml-1" />}
-                  </button>
-                  {/* Skip */}
-                  <button onClick={() => handleSeek(-10)} className="text-white/50 hover:text-white transition-colors">
-                    <RotateCw className="w-5 h-5 md:w-6 md:h-6" />
-                  </button>
-                  <button onClick={() => handleSeek(10)} className="text-white/50 hover:text-white transition-colors">
-                    <RotateCw className="w-5 h-5 md:w-6 md:h-6 scale-x-[-1]" />
-                  </button>
-                  {/* Time */}
-                  <div className="hidden sm:flex items-center gap-2 text-[10px] md:text-xs font-mono font-bold bg-black/50 px-3 py-1.5 rounded-lg backdrop-blur-md border border-white/5">
-                    <span className="text-accent">{formatTime(currentTime)}</span>
-                    <span className="text-white/20">/</span>
-                    <span className="text-white/50">{formatTime(duration)}</span>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-2 md:gap-3">
-                  {/* Volume */}
-                  <div className="hidden md:flex items-center gap-2 bg-white/5 px-2.5 py-1.5 rounded-xl border border-white/5">
-                    <button onClick={() => handleVolumeChange(volume > 0 ? 0 : 1)} className="text-white/50 hover:text-white transition-colors">
-                      {volume === 0 ? <VolumeX className="w-4 h-4 text-destructive" /> : <Volume2 className="w-4 h-4" />}
-                    </button>
-                    <input type="range" min={0} max={1} step={0.05} value={volume} onChange={(e) => handleVolumeChange(Number(e.target.value))} className="w-16 accent-accent h-1" />
-                  </div>
-                  {/* Settings */}
-                  <button onClick={() => { setShowSettings(true); setControlsVisible(true); }} className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/50 hover:text-white hover:rotate-90 transition-all duration-500">
-                    <Settings className="w-4 h-4 md:w-5 md:h-5" />
-                  </button>
-                  {/* Fullscreen */}
-                  <button onClick={toggleFullscreen} className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-accent/20 border border-accent/30 flex items-center justify-center text-accent hover:bg-accent hover:text-white transition-all">
-                    {isFullscreen ? <Minimize className="w-4 h-4 md:w-5 md:h-5" /> : <Maximize className="w-4 h-4 md:w-5 md:h-5" />}
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
         {playerActive && loading && (
           <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/60 z-20 pointer-events-none">
-            <div className="relative">
-              <Loader2 className="w-12 h-12 text-accent animate-spin" />
-              <div className="absolute inset-0 w-12 h-12 bg-accent/20 blur-xl rounded-full animate-ping" />
-            </div>
-            <p className="text-sm text-muted-foreground mt-4 font-medium">{t("player_loading")}</p>
-            <p className="text-[10px] text-accent font-black uppercase tracking-[0.3em] mt-1">BNKHUB</p>
+            <Loader2 className="w-10 h-10 text-accent animate-spin mb-3" />
+            <p className="text-sm text-muted-foreground">{t("player_loading")}</p>
+            <p className="text-xs text-accent mt-1">BNKHUB</p>
           </div>
         )}
       </div>
