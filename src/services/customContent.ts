@@ -11,7 +11,7 @@ export const CUSTOM_CONTENT = [
     year: '—',
     rating: 4.5,
     isDubbed: false,
-    videoUrl: 'https://hgcloud.to/e/gymsz4vk73ig'
+    videoUrl: 'https://hanerix.com/mxvxbvq2u411'
   },
   {
     id: 'm-skarfez',
@@ -22,7 +22,7 @@ export const CUSTOM_CONTENT = [
     year: '—',
     rating: 4.5,
     isDubbed: false,
-    videoUrl: 'https://hgcloud.to/e/hckewslgnba7'
+    videoUrl: 'https://vibuxer.com/utkl8yrke25c'
   },
   {
     id: 'm-rubiccu',
@@ -33,7 +33,7 @@ export const CUSTOM_CONTENT = [
     year: '—',
     rating: 4.5,
     isDubbed: false,
-    videoUrl: 'https://hgcloud.to/e/xqvrjmwow3to'
+    videoUrl: 'https://vibuxer.com/wjdqwtsgn1yq'
   },
   {
     id: 'm-yamara-1',
@@ -44,7 +44,7 @@ export const CUSTOM_CONTENT = [
     year: '—',
     rating: 4.5,
     isDubbed: false,
-    videoUrl: 'https://hgcloud.to/e/mnahnpghdioa'
+    videoUrl: 'https://vibuxer.com/z5v2na7k4cdk'
   },
   {
     id: 'm-iqjan-imcac',
@@ -55,7 +55,7 @@ export const CUSTOM_CONTENT = [
     year: '—',
     rating: 4.5,
     isDubbed: false,
-    videoUrl: 'https://hgcloud.to/e/8c6nhc0djoyc'
+    videoUrl: 'https://vibuxer.com/dfp4vf7bxshc'
   },
   {
     id: 'm-transporteur',
@@ -66,7 +66,7 @@ export const CUSTOM_CONTENT = [
     year: '—',
     rating: 4.5,
     isDubbed: false,
-    videoUrl: 'https://hgcloud.to/e/791qik1x9og3'
+    videoUrl: 'https://vibuxer.com/t8e4aabme7ac'
   },
   {
     id: 'm-at-dawuzru',
@@ -77,7 +77,7 @@ export const CUSTOM_CONTENT = [
     year: '—',
     rating: 4.5,
     isDubbed: false,
-    videoUrl: 'https://hgcloud.to/e/4d8yxrh3cq2l'
+    videoUrl: 'https://vibuxer.com/y06zhrdjxs78'
   },
   {
     id: 'm-kypous-1',
@@ -88,7 +88,7 @@ export const CUSTOM_CONTENT = [
     year: '—',
     rating: 4.5,
     isDubbed: false,
-    videoUrl: 'https://hgcloud.to/e/ehhpsa1xrhew'
+    videoUrl: 'https://vibuxer.com/b3qj7sonqbg8'
   },
   {
     id: 'm-qezbul-2',
@@ -99,7 +99,7 @@ export const CUSTOM_CONTENT = [
     year: '—',
     rating: 4.5,
     isDubbed: false,
-    videoUrl: 'https://hgcloud.to/e/niwnpgwgg7b3'
+    videoUrl: 'https://vibuxer.com/66w3oxvldmk1'
   },
   {
     id: 'm-heliopolis',
@@ -110,7 +110,7 @@ export const CUSTOM_CONTENT = [
     year: '2021',
     rating: 4.5,
     isDubbed: false,
-    videoUrl: 'https://hgcloud.to/e/pwbjjahvd0ji'
+    videoUrl: 'https://vibuxer.com/tzqnl9k3onh2'
   },
   {
     id: 'm-derniere-reine',
@@ -121,7 +121,7 @@ export const CUSTOM_CONTENT = [
     year: '—',
     rating: 4.5,
     isDubbed: false,
-    videoUrl: 'https://hgcloud.to/e/m5929gq0el8w'
+    videoUrl: 'https://vibuxer.com/x7kg2g4y3lso'
   },
   {
     id: 'm-li-mucucu-3',
@@ -132,7 +132,7 @@ export const CUSTOM_CONTENT = [
     year: '—',
     rating: 4.5,
     isDubbed: false,
-    videoUrl: 'https://hgcloud.to/e/x9h29l2n68d5'
+    videoUrl: 'https://vibuxer.com/xr5l57nsa0md'
   },
   {
     id: 'm-iferfucen',
@@ -143,7 +143,7 @@ export const CUSTOM_CONTENT = [
     year: '—',
     rating: 4.5,
     isDubbed: false,
-    videoUrl: 'https://hgcloud.to/e/gc68taeuh7fi'
+    videoUrl: 'https://vibuxer.com/xa8ea37m8s82'
   },
   {
     id: 'm-pucci-3',
@@ -154,7 +154,7 @@ export const CUSTOM_CONTENT = [
     year: '—',
     rating: 4.5,
     isDubbed: false,
-    videoUrl: 'https://hglink.to/e/81m4yr2agtpj'
+    videoUrl: 'https://vibuxer.com/0pd1g5x8htld'
   },
   {
     id: 'm-3ichucha',
@@ -165,7 +165,7 @@ export const CUSTOM_CONTENT = [
     year: '—',
     rating: 4.5,
     isDubbed: false,
-    videoUrl: 'https://hglink.to/e/ui81qyfikkv9'
+    videoUrl: 'https://vibuxer.com/7eevbsy3a9tn'
   },
   {
     id: 'm-crek-2',
@@ -176,7 +176,7 @@ export const CUSTOM_CONTENT = [
     year: '—',
     rating: 4.5,
     isDubbed: false,
-    videoUrl: 'https://hglink.to/e/r845ku5i0hzj'
+    videoUrl: 'https://vibuxer.com/f5t1ky5cmmog'
   },
   {
     id: 'm-narnia-2',
@@ -187,7 +187,7 @@ export const CUSTOM_CONTENT = [
     year: '—',
     rating: 4.5,
     isDubbed: false,
-    videoUrl: 'https://hglink.to/e/uue2j0nhqccl'
+    videoUrl: 'https://vibuxer.com/22j2rwr8hmy1'
   },
   {
     id: 'm-kiki-1',
@@ -198,7 +198,7 @@ export const CUSTOM_CONTENT = [
     year: '—',
     rating: 4.5,
     isDubbed: false,
-    videoUrl: 'https://hglink.to/e/ny3uz1chqods'
+    videoUrl: 'https://vibuxer.com/jh10f3enwgds'
   },
   {
     id: 'm-crek-1',
@@ -209,7 +209,7 @@ export const CUSTOM_CONTENT = [
     year: '—',
     rating: 4.5,
     isDubbed: false,
-    videoUrl: 'https://hglink.to/e/n9fy75wq1d2i'
+    videoUrl: 'https://vibuxer.com/2h7r3hck2lba'
   },
   {
     id: 'm-li-mucucu-1',
@@ -220,7 +220,7 @@ export const CUSTOM_CONTENT = [
     year: '—',
     rating: 4.5,
     isDubbed: false,
-    videoUrl: 'https://hglink.to/e/itbu9l5k7jta'
+    videoUrl: 'https://vibuxer.com/sqr9n22pu34m'
   },
   {
     id: 'm-narnia-1',
@@ -231,7 +231,7 @@ export const CUSTOM_CONTENT = [
     year: '—',
     rating: 4.5,
     isDubbed: false,
-    videoUrl: 'https://hglink.to/e/65p1t0yh5g72'
+    videoUrl: 'https://vibuxer.com/4hytj5r3lm2h'
   },
   {
     id: 'm-qezbul-1',
@@ -242,7 +242,7 @@ export const CUSTOM_CONTENT = [
     year: '—',
     rating: 4.5,
     isDubbed: false,
-    videoUrl: 'https://hglink.to/e/yt3txh0bxhtm'
+    videoUrl: 'https://vibuxer.com/fp2xnhdxqali'
   },
   {
     id: 'm-pucci-1',
@@ -253,7 +253,7 @@ export const CUSTOM_CONTENT = [
     year: '—',
     rating: 4.5,
     isDubbed: false,
-    videoUrl: 'https://hglink.to/e/j9tsobh2m54t'
+    videoUrl: 'https://vibuxer.com/evkf23xfqwvo'
   },
   {
     id: 'm-pucci-2',
@@ -264,7 +264,7 @@ export const CUSTOM_CONTENT = [
     year: '—',
     rating: 4.5,
     isDubbed: false,
-    videoUrl: 'https://hglink.to/e/zstt9clebyq6'
+    videoUrl: 'https://vibuxer.com/fbrmh3ci2mup'
   },
   {
     id: 'm-pucci-4',
@@ -275,7 +275,7 @@ export const CUSTOM_CONTENT = [
     year: '—',
     rating: 4.5,
     isDubbed: false,
-    videoUrl: 'https://hgcloud.to/e/4hit88uipmq4'
+    videoUrl: 'https://vibuxer.com/ammrxksh7fba'
   },
   {
     id: 'm-li-mucucu-2',
@@ -286,7 +286,7 @@ export const CUSTOM_CONTENT = [
     year: '—',
     rating: 4.5,
     isDubbed: false,
-    videoUrl: 'https://hgcloud.to/e/bjz860d1bmau'
+    videoUrl: 'https://vibuxer.com/1hzol8uo396b'
   },
   {
     id: 'm-qiqi-1',
@@ -297,7 +297,187 @@ export const CUSTOM_CONTENT = [
     year: '—',
     rating: 4.5,
     isDubbed: false,
-    videoUrl: 'https://hgcloud.to/e/x2f80v0jsmx7'
+    videoUrl: 'https://vibuxer.com/2okp4h5kkke8'
+  },
+
+  // ═══════════════════════════════════════════════════════════════
+  // SOURCE: asekles-github  (15 items — Firebase Storage)
+  // ═══════════════════════════════════════════════════════════════
+  {
+    id: 'm-kulla',
+    title: 'Kulla',
+    description: 'Asaru n Kulla — tamacahut taberkant i yemdanen.',
+    thumbnail: '',
+    category: 'Asekles',
+    year: '—',
+    rating: 4.5,
+    isDubbed: false,
+    videoUrl: 'https://firebasestorage.googleapis.com/v0/b/test-2fdd3.firebasestorage.app/o/Asaru%20n%20Kulla.mp4?alt=media&token=30614bd9-54ef-432d-afcc-391ccd48be98'
+  },
+  {
+    id: 'm-iffegh-d-umghar',
+    title: 'Iffeɣ-d umɣar',
+    description: 'Iffeɣ-d umɣar d Imčeqlal — asaru amaziɣ.',
+    thumbnail: '',
+    category: 'Asekles',
+    year: '—',
+    rating: 4.5,
+    isDubbed: false,
+    videoUrl: 'https://firebasestorage.googleapis.com/v0/b/test-2fdd3.firebasestorage.app/o/Asaru%20n%20im%C4%8Deqlal%20(1).mp4?alt=media&token=bb4c1fcb-12fb-4c0e-93ce-cc58c89e83cc'
+  },
+  {
+    id: 'm-imectut-n-leerayes',
+    title: 'Imeččuṭ n leɛrayes',
+    description: 'Asaru amaziɣ — Imeččuṭ n leɛrayes.',
+    thumbnail: '',
+    category: 'Asekles',
+    year: '—',
+    rating: 4.5,
+    isDubbed: false,
+    videoUrl: ''
+  },
+  {
+    id: 'm-amghar-aneghrum',
+    title: 'Amɣar aneɣrum',
+    description: 'D asaru wezzil ɣef yiwen n uneɣrum, ifuk-as kullec di tneɣrumt-is, dɣa yusa-as-d rbeḥ ur yebni fell-as.',
+    thumbnail: '',
+    category: 'Asekles',
+    year: '2025',
+    rating: 4.5,
+    isDubbed: false,
+    videoUrl: 'https://firebasestorage.googleapis.com/v0/b/test-2fdd3.firebasestorage.app/o/amghar%20aneghrum.mp4?alt=media&token=94425297-fd15-4fa3-99a7-5f859085ab92'
+  },
+  {
+    id: 'm-berhuc-d-salas',
+    title: 'Berhuc d Salas',
+    description: 'Berhuc d Salas — tamacahut n teyrat d tmeddurt.',
+    thumbnail: '',
+    category: 'Asekles',
+    year: '2026',
+    rating: 4.5,
+    isDubbed: false,
+    videoUrl: 'https://firebasestorage.googleapis.com/v0/b/test-2fdd3.firebasestorage.app/o/Berhuc%20d%20Salas.mp4?alt=media&token=b72b57c0-63d2-4d75-80d7-17e5846550c1'
+  },
+  {
+    id: 'm-hmimi-d-lyes',
+    title: 'Ḥmimi d Lyes',
+    description: 'Ḥmimi d Lyes, d asaru n unecreḥ, yettales-d yiwet n tmacahut yellan deg zman anda llan idinuẓuṛen!',
+    thumbnail: '',
+    category: 'Asekles',
+    year: '2025',
+    rating: 4.5,
+    isDubbed: false,
+    videoUrl: 'https://firebasestorage.googleapis.com/v0/b/test-2fdd3.firebasestorage.app/o/Hmimi%20d%20lyes.mp4?alt=media&token=95637698-5e86-40b8-9d66-ae87fcd0f1ae'
+  },
+  {
+    id: 'm-cirta',
+    title: 'Cirta',
+    description: 'Cirta — asaru ɣef tmeddurt d umezruy n tmurt n Leqbayel.',
+    thumbnail: '',
+    category: 'Asekles',
+    year: '—',
+    rating: 4.5,
+    isDubbed: false,
+    videoUrl: 'https://firebasestorage.googleapis.com/v0/b/test-2fdd3.firebasestorage.app/o/CIRTA.mp4?alt=media&token=b0039469-bb29-4351-a5c7-1beb6d0bbb2a'
+  },
+  {
+    id: 'm-amezruy-n-tmurt',
+    title: 'Amezruy n tmurt',
+    description: 'Amezruy n tmurt — asaru ɣef umezruy n tmurt n Leqbayel.',
+    thumbnail: '',
+    category: 'Asekles',
+    year: '—',
+    rating: 4.5,
+    isDubbed: false,
+    videoUrl: 'https://firebasestorage.googleapis.com/v0/b/test-2fdd3.firebasestorage.app/o/amezruy%20n%20tmurt.mp4?alt=media&token=fd64b592-88dd-4d0e-868e-955cd289e2f1'
+  },
+  {
+    id: 'm-tamacahut-n-wakli',
+    title: 'Tamacahut n Wakli',
+    description: 'Deg 1954 deg Cordoba, deg yidurar n Sierra Morena, ilemẓi Akli yufa-d imanis weḥd-s yerna yettwaɛzel deg udrar, yedder gar wuccanen ugar n 12 n yiseggasen.',
+    thumbnail: '',
+    category: 'Asekles',
+    year: '2023-2024',
+    rating: 4.5,
+    isDubbed: false,
+    videoUrl: 'https://firebasestorage.googleapis.com/v0/b/test-2fdd3.firebasestorage.app/o/tamacahut%20n%20wakli.mp4?alt=media&token=4fe1d358-c897-4616-a34f-9b04dab0b370'
+  },
+  {
+    id: 'm-ikerri-izimer',
+    title: 'Ikerri izimer',
+    description: 'Deg tmeddit n Yennayer, lferḥ n wakraren yettuɣal d aɛewwiq.',
+    thumbnail: '',
+    category: 'Asekles',
+    year: '2024',
+    rating: 4.5,
+    isDubbed: false,
+    videoUrl: 'https://firebasestorage.googleapis.com/v0/b/test-2fdd3.firebasestorage.app/o/Ikerri%20izimer.mp4?alt=media&token=a96fe6ad-36a1-4252-8939-8370ae7f296b'
+  },
+  {
+    id: 'm-targit',
+    title: 'Targit',
+    description: 'D yiwen iɛerqen deg tegzirt anda ulac win yellan, din yebda yettargu-d ayen nelli.',
+    thumbnail: '',
+    category: 'Asekles',
+    year: '2025',
+    rating: 4.5,
+    isDubbed: false,
+    videoUrl: 'https://firebasestorage.googleapis.com/v0/b/test-2fdd3.firebasestorage.app/o/Targit.mp4?alt=media&token=f33b52f0-58b1-45a8-a733-1082681d22ee'
+  },
+  {
+    id: 'm-imuhucen',
+    title: 'Imuḥucen',
+    description: 'Reda, Ɛisa, Ɛliluc, Ḥmimuc d imuḥucen, d iɛlaḍ. Yal tikkelt ara binen sewjaden taxnanast iwakken ad rewlen seg lḥebs.',
+    thumbnail: '',
+    category: 'Asekles',
+    year: '2025',
+    rating: 4.5,
+    isDubbed: false,
+    videoUrl: 'https://firebasestorage.googleapis.com/v0/b/test-2fdd3.firebasestorage.app/o/EP1-%20Yewhec%20lfil%20yernad%20gma-s.mp4?alt=media&token=04e1cb43-9782-465e-acb4-b96a15c90567'
+  },
+  {
+    id: 'm-waɛli-ak-tzizwit',
+    title: 'Waɛli ak tzizwit',
+    description: 'Tamseṛta n Waɛli ak tzizwit.',
+    thumbnail: '',
+    category: 'Asekles',
+    year: '—',
+    rating: 4.5,
+    isDubbed: false,
+    videoUrl: ''
+  },
+  {
+    id: 'm-zorro',
+    title: 'Zorro',
+    description: 'Izuma n Zorro s tmaziɣt.',
+    thumbnail: '',
+    category: 'Asekles',
+    year: '—',
+    rating: 4.5,
+    isDubbed: false,
+    videoUrl: ''
+  },
+  {
+    id: 'm-tom-et-jerry',
+    title: 'Tom et Jerry à New York',
+    description: 'Tom d Jerry deg New York s tmaziɣt.',
+    thumbnail: '',
+    category: 'Asekles',
+    year: '—',
+    rating: 4.5,
+    isDubbed: false,
+    videoUrl: ''
+  },
+  {
+    id: 'm-maca-ak-d-micka',
+    title: 'Maca ak d Micka',
+    description: 'Maca ak d Micka s tmaziɣt.',
+    thumbnail: '',
+    category: 'Asekles',
+    year: '—',
+    rating: 4.5,
+    isDubbed: false,
+    videoUrl: ''
   },
 
   // ═══════════════════════════════════════════════════════════════
