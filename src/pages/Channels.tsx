@@ -3,7 +3,7 @@ import { Layout } from "@/components/layout/Layout";
 import { useLanguage } from "@/context/LanguageContext";
 import { fetchChannels, Channel } from "@/services/channels";
 import { ChannelPlayer } from "@/components/channel/ChannelPlayer";
-import { Loader2, Tv, Search, Play, Smartphone, Monitor, Link, Trophy, Zap } from "lucide-react";
+import { Loader2, Tv, Search, Play, Trophy, Zap } from "lucide-react";
 
 const Channels = () => {
   const { lang } = useLanguage();
@@ -314,51 +314,7 @@ const Channels = () => {
                   {lang === "ar" ? "اختر قناة للمشاهدة" : "Select a channel to watch"}
                 </p>
 
-                <div className="w-full border-t border-border pt-6 mt-2">
-                  <p className="text-xs font-semibold uppercase tracking-wider mb-4 text-foreground/40">
-                    {lang === "ar" ? "التشغيل على الأجهزة الخارجية" : "Watch on external devices"}
-                  </p>
 
-                  <div className="space-y-4 text-right">
-                    <div className="bg-surface-card/50 border border-border rounded-xl p-4">
-                      <div className="flex items-center gap-3 mb-2">
-                        <Smartphone className="w-5 h-5 text-accent" />
-                        <span className="text-sm font-bold text-foreground/80">📱 {lang === "ar" ? "أندرويد" : "Android"}</span>
-                      </div>
-                      <p className="text-xs text-muted-foreground mb-2">
-                        {lang === "ar" ? "استخدم مشغل البث الشبكي" : "Use a network stream player"}
-                      </p>
-                      <p className="text-xs text-muted-foreground mb-1">
-                        {lang === "ar" ? "أضف هذه القائمة:" : "Add this playlist:"}
-                      </p>
-                      <div className="flex items-center gap-2 bg-black/20 rounded-lg p-2.5">
-                        <Link className="w-3.5 h-3.5 text-accent shrink-0" />
-                        <code className="text-[11px] text-accent truncate select-all">
-                          https://raw.githubusercontent.com/abusaeeidx/IPTV-Scraper-Zilla/main/combined-playlist.m3u
-                        </code>
-                      </div>
-                    </div>
-
-                    <div className="bg-surface-card/50 border border-border rounded-xl p-4">
-                      <div className="flex items-center gap-3 mb-2">
-                        <Monitor className="w-5 h-5 text-accent" />
-                        <span className="text-sm font-bold text-foreground/80">🖥️ {lang === "ar" ? "أندرويد تي في" : "Android TV"}</span>
-                      </div>
-                      <p className="text-xs text-muted-foreground mb-2">
-                        {lang === "ar" ? "استخدم OTT Navigator" : "Use OTT Navigator"}
-                      </p>
-                      <p className="text-xs text-muted-foreground mb-1">
-                        {lang === "ar" ? "أضف هذه القائمة:" : "Add this playlist:"}
-                      </p>
-                      <div className="flex items-center gap-2 bg-black/20 rounded-lg p-2.5">
-                        <Link className="w-3.5 h-3.5 text-accent shrink-0" />
-                        <code className="text-[11px] text-accent truncate select-all">
-                          https://raw.githubusercontent.com/abusaeeidx/IPTV-Scraper-Zilla/main/combined-playlist.m3u
-                        </code>
-                      </div>
-                    </div>
-                  </div>
-                </div>
               </div>
             )}
           </div>

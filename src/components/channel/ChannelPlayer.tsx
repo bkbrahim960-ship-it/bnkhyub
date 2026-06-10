@@ -121,23 +121,23 @@ export const ChannelPlayer = ({ name, logo, url, group, onClose, standalone }: C
   }, []);
 
   const loadingOverlay = (
-    <div className="absolute inset-0 flex flex-col items-center justify-center gap-5 bg-black/60 backdrop-blur-sm">
-      <div className="relative">
-        <div className="w-20 h-20 rounded-full border-4 border-white/10 border-t-emerald-500 animate-spin" />
-        <div className="absolute inset-0 flex items-center justify-center">
-          <Wifi className="w-8 h-8 text-emerald-400 animate-pulse" />
+      <div className="absolute inset-0 flex flex-col items-center justify-center gap-5 bg-black/60 backdrop-blur-sm">
+        <div className="relative">
+          <div className="w-20 h-20 rounded-full border-4 border-white/10 border-t-accent animate-spin" />
+          <div className="absolute inset-0 flex items-center justify-center">
+            <Wifi className="w-8 h-8 text-accent animate-pulse" />
+          </div>
+        </div>
+        <div className="text-center">
+          <p className="text-white/90 text-base font-medium tracking-wide">
+            جاري التحميل...
+          </p>
+          <p className="text-white/50 text-sm mt-1.5 flex items-center gap-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
+            جاري التحقق من الاتصال
+          </p>
         </div>
       </div>
-      <div className="text-center">
-        <p className="text-white/90 text-base font-medium tracking-wide">
-          جاري التحميل...
-        </p>
-        <p className="text-white/50 text-sm mt-1.5 flex items-center gap-2">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-          جاري التحقق من الاتصال
-        </p>
-      </div>
-    </div>
   );
 
   const errorOverlay = (
