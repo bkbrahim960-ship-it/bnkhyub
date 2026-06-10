@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">BNKhub TV</string>
+    <string name="browse_title">BNKhub</string>
+    <string name="popular_movies">Popular Movies</string>
+    <string name="popular_series">Popular Series</string>
+    <string name="trending">Trending Today</string>
+    <string name="action_watch">Watch Now</string>
+    <string name="action_retry">Retry</string>
+    <string name="error_network">Network error. Check connection.</string>
+    <string name="loading">Loading…</string>
+    <string name="no_results">No movies found</string>
+</resources>

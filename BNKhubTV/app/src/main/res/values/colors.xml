@@ -1,0 +1,14 @@
+<resources>
+    <color name="primary">#000000</color>
+    <color name="primaryDark">#000000</color>
+    <color name="accent">#C124A0</color>
+    <color name="accentDark">#9F2BBF</color>
+    <color name="background">#050505</color>
+    <color name="surface">#0a0a0a</color>
+    <color name="onPrimary">#FFFFFF</color>
+    <color name="onBackground">#F5F5F0</color>
+    <color name="white_10">#1AFFFFFF</color>
+    <color name="white_50">#80FFFFFF</color>
+    <color name="black_60">#99000000</color>
+    <color name="ic_launcher_background">#000000</color>
+</resources>
