@@ -7,15 +7,17 @@ import { Loader2, Tv, Search, Play, Smartphone, Monitor, Link } from "lucide-rea
 
 const Channels = () => {
   const { lang } = useLanguage();
-  const [groups, setGroups] = useState<string[]>([]);
+  const [m3uGroups, setM3uGroups] = useState<string[]>([]);
+  const [iptvGroups, setIptvGroups] = useState<string[]>([]);
   const [channels, setChannels] = useState<Channel[]>([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [activeGroup, setActiveGroup] = useState("");
+  const [activeSource, setActiveSource] = useState("");
   const [activeChannel, setActiveChannel] = useState<Channel | null>(null);
   const [search, setSearch] = useState("");
-  const [loading, setLoading] = useState(true);
+  const [loadingGroups, setLoadingGroups] = useState(true);
   const [loadingChannels, setLoadingChannels] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -23,18 +25,21 @@ const Channels = () => {
     (async () => {
       try {
         const data = await fetchChannels({ page: 1 });
-        setGroups(data.groups);
+        setM3uGroups(data.groups.m3u);
+        setIptvGroups(data.groups.iptv);
       } catch {}
+      setLoadingGroups(false);
     })();
   }, []);
 
-  const loadChannels = useCallback(async (group: string, p: number, q?: string) => {
+  const loadChannels = useCallback(async (group: string, source: string, p: number, q?: string) => {
     setLoadingChannels(true);
     setError(null);
     try {
       const data = await fetchChannels({
         page: p,
-        group: group && group !== "__all__" ? group : undefined,
+        group: group || undefined,
+        source: source || undefined,
         search: q || search || undefined,
       });
       setChannels(data.channels);
@@ -44,23 +49,27 @@ const Channels = () => {
       setError(err.message);
     } finally {
       setLoadingChannels(false);
-      setLoading(false);
     }
   }, [search]);
 
   useEffect(() => {
     if (activeGroup) {
-      loadChannels(activeGroup, page);
+      loadChannels(activeGroup, activeSource, page);
     } else {
       setChannels([]);
       setTotal(0);
       setTotalPages(1);
-      setLoading(false);
     }
-  }, [activeGroup, page, loadChannels]);
+  }, [activeGroup, activeSource, page, loadChannels]);
 
-  const handleGroupClick = (group: string) => {
-    setActiveGroup(activeGroup === group ? "" : group);
+  const handleGroupClick = (group: string, source: string) => {
+    if (activeGroup === group) {
+      setActiveGroup("");
+      setActiveSource("");
+    } else {
+      setActiveGroup(group);
+      setActiveSource(source);
+    }
     setPage(1);
     setActiveChannel(null);
   };
@@ -69,9 +78,9 @@ const Channels = () => {
     e.preventDefault();
     setPage(1);
     if (activeGroup) {
-      loadChannels(activeGroup, 1);
+      loadChannels(activeGroup, activeSource, 1);
     } else {
-      loadChannels("__all__", 1);
+      loadChannels("", "", 1, search);
     }
   };
 
@@ -80,24 +89,57 @@ const Channels = () => {
       <section className="pt-24 pb-6 h-screen flex flex-col">
         <div className="flex-1 flex overflow-hidden gap-0">
           <div className="w-56 lg:w-64 shrink-0 border-r border-border overflow-y-auto bg-surface-card/50 py-4">
-            <div className="px-4 mb-3">
-              <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                {lang === "ar" ? "التصنيفات" : "Categories"}
-              </h3>
-            </div>
-            {groups.map((g) => (
-              <button
-                key={g}
-                onClick={() => handleGroupClick(g)}
-                className={`w-full text-right px-4 py-2.5 text-sm font-medium transition-colors hover:bg-white/[0.04] ${
-                  activeGroup === g
-                    ? "bg-accent/10 text-accent border-r-2 border-accent"
-                    : "text-foreground/70"
-                }`}
-              >
-                {g}
-              </button>
-            ))}
+            {loadingGroups ? (
+              <div className="flex items-center justify-center py-10">
+                <Loader2 className="w-5 h-5 text-accent animate-spin" />
+              </div>
+            ) : (
+              <>
+                <div className="px-4 mb-2">
+                  <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                    {lang === "ar" ? "التصنيفات" : "Categories"}
+                  </h3>
+                </div>
+
+                <div className="px-4 mb-1 mt-4">
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-accent/60">
+                    M3U
+                  </p>
+                </div>
+                {m3uGroups.map((g) => (
+                  <button
+                    key={`m3u-${g}`}
+                    onClick={() => handleGroupClick(g, "m3u")}
+                    className={`w-full text-right px-4 py-2 text-sm font-medium transition-colors hover:bg-white/[0.04] ${
+                      activeGroup === g && activeSource === "m3u"
+                        ? "bg-accent/10 text-accent border-r-2 border-accent"
+                        : "text-foreground/70"
+                    }`}
+                  >
+                    {g}
+                  </button>
+                ))}
+
+                <div className="px-4 mb-1 mt-4">
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-blue-400/60">
+                    IPTV Org
+                  </p>
+                </div>
+                {iptvGroups.map((g) => (
+                  <button
+                    key={`iptv-${g}`}
+                    onClick={() => handleGroupClick(g, "iptv")}
+                    className={`w-full text-right px-4 py-2 text-sm font-medium transition-colors hover:bg-white/[0.04] ${
+                      activeGroup === g && activeSource === "iptv"
+                        ? "bg-blue-500/10 text-blue-400 border-r-2 border-blue-500"
+                        : "text-foreground/70"
+                    }`}
+                  >
+                    {g}
+                  </button>
+                ))}
+              </>
+            )}
           </div>
 
           <div className="w-72 lg:w-80 shrink-0 border-r border-border flex flex-col">
@@ -133,7 +175,7 @@ const Channels = () => {
                 <>
                   {channels.map((ch, i) => (
                     <button
-                      key={`${ch.name}-${i}`}
+                      key={`${ch.source}-${ch.name}-${i}`}
                       onClick={() => setActiveChannel(ch)}
                       className={`w-full text-right px-4 py-3 flex items-center gap-3 transition-colors hover:bg-white/[0.04] ${
                         activeChannel?.url === ch.url
@@ -151,6 +193,11 @@ const Channels = () => {
                       ) : null}
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium truncate">{ch.name}</p>
+                        <span className={`text-[10px] font-bold ${
+                          ch.source === "iptv" ? "text-blue-400" : "text-accent/60"
+                        }`}>
+                          {ch.source === "iptv" ? "IPTV" : "M3U"}
+                        </span>
                       </div>
                       <Play className="w-3.5 h-3.5 opacity-30 flex-shrink-0" />
                     </button>

@@ -1,14 +1,11 @@
 const M3U_URL = "https://raw.githubusercontent.com/abusaeeidx/IPTV-Scraper-Zilla/main/combined-playlist.m3u";
+const IPTV_ORG_URL = "https://iptv-org.github.io/iptv/index.category.m3u";
 const PAGE_SIZE = 50;
 
-let parsedCache = null;
-let cacheTime = 0;
+const cache = { data: null, time: 0 };
 
-async function fetchAndParse() {
-  const now = Date.now();
-  if (parsedCache && now - cacheTime < 120000) return parsedCache;
-
-  const res = await fetch(M3U_URL);
+async function parseM3U(url, sourceLabel) {
+  const res = await fetch(url);
   const text = await res.text();
   const lines = text.split("\n");
   const channels = [];
@@ -25,6 +22,7 @@ async function fetchAndParse() {
         name,
         group: groupMatch ? groupMatch[1] : "Uncategorized",
         logo: logoMatch ? logoMatch[1] : "",
+        source: sourceLabel,
       };
     } else if (t.startsWith("http") && current) {
       current.url = t;
@@ -40,9 +38,32 @@ async function fetchAndParse() {
     groups[g]++;
   }
 
-  const result = { channels, groups };
-  parsedCache = result;
-  cacheTime = now;
+  return { channels, groups };
+}
+
+async function fetchAll() {
+  const now = Date.now();
+  if (cache.data && now - cache.time < 120000) return cache.data;
+
+  const [m3u, iptv] = await Promise.all([
+    parseM3U(M3U_URL, "m3u"),
+    parseM3U(IPTV_ORG_URL, "iptv"),
+  ]);
+
+  const result = {
+    channels: [...m3u.channels, ...iptv.channels],
+    groups: {
+      m3u: Object.keys(m3u.groups).sort(),
+      iptv: Object.keys(iptv.groups).sort(),
+    },
+    groupCounts: {
+      m3u: m3u.groups,
+      iptv: iptv.groups,
+    },
+  };
+
+  cache.data = result;
+  cache.time = now;
   return result;
 }
 
@@ -57,11 +78,15 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { channels, groups } = await fetchAndParse();
-    const { page = "1", group, search } = req.query;
+    const { channels, groups, groupCounts } = await fetchAll();
+    const { page = "1", group, source, search } = req.query;
     const pageNum = Math.max(1, parseInt(page, 10) || 1);
 
     let filtered = channels;
+
+    if (source) {
+      filtered = filtered.filter((c) => c.source === source);
+    }
 
     if (group) {
       filtered = filtered.filter((c) => c.group === group);
@@ -79,7 +104,8 @@ export default async function handler(req, res) {
 
     res.json({
       channels: items,
-      groups: Object.keys(groups).sort(),
+      groups,
+      groupCounts,
       total,
       page: pageNum,
       totalPages,
