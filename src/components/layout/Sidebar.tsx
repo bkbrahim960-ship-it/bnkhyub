@@ -1,7 +1,7 @@
 /**
  * BNKhub — Sidebar professionnel pour desktop/TV uniquement.
  */
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import {
   Home,
@@ -34,6 +34,11 @@ export const Sidebar = () => {
       return () => clearTimeout(timer);
     }
   }, [location.pathname, isCollapsed, setIsHovered]);
+
+  useEffect(() => {
+    const w = isExpanded ? (window.innerWidth >= 1024 ? 260 : 240) : 72;
+    document.documentElement.style.setProperty("--sidebar-w", `${w}px`);
+  }, [isExpanded]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {

@@ -10,19 +10,16 @@ import { SidebarProvider, useSidebar } from "@/context/SidebarContext";
 
 const LayoutContent = ({ children }: { children: ReactNode }) => {
   const mainPadding = "md:pb-8";
-  const { isCollapsed } = useSidebar();
+  const { isCollapsed, isHovered } = useSidebar();
   
-  // Sidebar width: 72px when collapsed, 240px when expanded
-  const sidebarWidth = isCollapsed ? 72 : 240;
-
   return (
     <>
       <Sidebar />
-      {/* Desktop Layout - with sidebar offset using padding */}
+      {/* Desktop Layout - with sidebar offset using CSS variable */}
       <div 
         className="hidden md:flex md:flex-col min-h-screen bg-surface-primary transition-all duration-300 ease-out"
         style={{
-          paddingLeft: `${sidebarWidth}px`
+          paddingLeft: "var(--sidebar-w, 72px)"
         }}
       >
         <Header />
