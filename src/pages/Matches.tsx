@@ -1,36 +1,38 @@
 import { useEffect, useState } from "react";
 import { Layout } from "@/components/layout/Layout";
 import { useLanguage } from "@/context/LanguageContext";
-import { Loader2, RefreshCw, ExternalLink, Clock, Tv, Mic, Trophy, MapPin } from "lucide-react";
-import { fetchMatches, KoraliveMatch, matchDate, matchTime } from "@/services/koralive";
+import { Loader2, RefreshCw, Trophy, MapPin, Clock } from "lucide-react";
+import { fetchGames, fetchGroups, Game, Group, getTeamFlag } from "@/services/worldcup";
 
-const STATUS_MAP: Record<string, { label: string; className: string }> = {
-  live: { label: "مباشر", className: "bg-red-600 text-white animate-pulse" },
-  halftime: { label: "استراحة", className: "bg-amber-600 text-white" },
-  ended: { label: "انتهت", className: "bg-gray-600 text-white" },
-  not_started: { label: "لم تبدأ", className: "bg-blue-600 text-white" },
-  starting_soon: { label: "تبدأ قريباً", className: "bg-emerald-600 text-white" },
-  soon: { label: "لم تبدأ بعد", className: "bg-blue-600/60 text-white" },
-  et: { label: "وقت إضافي", className: "bg-red-700 text-white" },
+const STAGE_LABELS: Record<string, { en: string; ar: string }> = {
+  group: { en: "Group Stage", ar: "دور المجموعات" },
+  round_32: { en: "Round of 32", ar: "دور الـ32" },
+  round_16: { en: "Round of 16", ar: "دور الـ16" },
+  quarter: { en: "Quarter-finals", ar: "ربع النهائي" },
+  semi: { en: "Semi-finals", ar: "نصف النهائي" },
+  third: { en: "Third Place", ar: "المركز الثالث" },
+  final: { en: "Final", ar: "النهائي" },
 };
 
 const Matches = () => {
   const { t } = useLanguage();
-  const [matches, setMatches] = useState<KoraliveMatch[]>([]);
+  const [games, setGames] = useState<Game[]>([]);
+  const [groups, setGroups] = useState<Group[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [activeFilter, setActiveFilter] = useState<string>("all");
 
-  const loadMatches = async (silent = false) => {
+  const loadData = async (silent = false) => {
     if (!silent) setLoading(true);
     else setRefreshing(true);
     setError(null);
     try {
-      const data = await fetchMatches();
-      setMatches(data);
+      const [gamesData, groupsData] = await Promise.all([fetchGames(), fetchGroups()]);
+      setGames(gamesData);
+      setGroups(groupsData);
     } catch (err: any) {
-      console.error("Failed to fetch matches:", err);
-      setError(err.message || "فشل تحميل المباريات");
+      setError(err.message || "Failed to load matches");
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -38,87 +40,96 @@ const Matches = () => {
   };
 
   useEffect(() => {
-    loadMatches();
+    loadData();
   }, []);
 
-  const getStatusBadge = (match: KoraliveMatch) => {
-    const key = match.status.initial || match.status.class || "";
-    const config = STATUS_MAP[key];
-    if (!config) {
-      if (match.status.text) {
-        return (
-          <span className="px-3 py-1 rounded-full text-xs font-bold bg-gray-600 text-white">
-            {match.status.text}
-          </span>
-        );
-      }
-      return null;
-    }
-    return (
-      <span className={`px-3 py-1 rounded-full text-xs font-bold ${config.className}`}>
-        {config.label}
-      </span>
-    );
-  };
+  const groupNames = groups.map((g) => g.name);
+  const filteredGames = activeFilter === "all"
+    ? games
+    : activeFilter.length === 1
+      ? games.filter((g) => g.group === activeFilter)
+      : games.filter((g) => g.type === activeFilter);
 
-  const matchLinks = (match: KoraliveMatch) => {
-    if (!match.detailUrl) return null;
-    return (
-      <a
-        href={match.detailUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold bg-accent text-accent-foreground hover:opacity-90 transition-all shadow-accent"
-      >
-        {t === "ar" ? "مشاهدة" : "Voir"}
-        <ExternalLink className="w-3.5 h-3.5" />
-      </a>
-    );
-  };
-
-  const grouped = matches.reduce(
-    (acc, m) => {
-      const date = matchDate(m) || "unknown";
+  const groupedByDate = filteredGames.reduce(
+    (acc, g) => {
+      const date = g.local_date?.split(" ")[0] || "unknown";
       if (!acc[date]) acc[date] = [];
-      acc[date].push(m);
+      acc[date].push(g);
       return acc;
     },
-    {} as Record<string, KoraliveMatch[]>,
+    {} as Record<string, Game[]>,
   );
 
-  const sortedDates = Object.keys(grouped).sort();
+  const sortedDates = Object.keys(groupedByDate).sort();
 
   return (
     <Layout>
       <section className="pt-28 pb-12">
         <div className="container">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-6">
             <div>
               <h1 className="font-display text-4xl md:text-5xl font-bold text-gradient-accent flex items-center gap-4">
                 <Trophy className="w-10 h-10 md:w-12 md:h-12 text-accent" />
-                {t === "ar" ? "مباريات اليوم" : "Matchs du Jour"}
+                {t === "ar" ? "كأس العالم 2026" : "World Cup 2026"}
               </h1>
               <p className="text-muted-foreground mt-2">
-                {t === "ar"
-                  ? "تابع جميع مباريات اليوم بث مباشر"
-                  : "Suivez tous les matchs du jour en direct"}
+                {t === "ar" ? "المكسيك - الولايات المتحدة - كندا" : "Mexico - USA - Canada"}
               </p>
             </div>
             <button
-              onClick={() => loadMatches(true)}
+              onClick={() => loadData(true)}
               disabled={refreshing}
               className="flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-bold bg-surface-card border border-border hover:border-accent-subtle transition-all disabled:opacity-50"
             >
               <RefreshCw className={`w-4 h-4 ${refreshing ? "animate-spin" : ""}`} />
-              {t === "ar" ? "تحديث" : "Actualiser"}
+              {t === "ar" ? "تحديث" : "Refresh"}
             </button>
+          </div>
+
+          <div className="flex flex-wrap gap-2 mb-8">
+            <button
+              onClick={() => setActiveFilter("all")}
+              className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${
+                activeFilter === "all"
+                  ? "bg-accent text-accent-foreground"
+                  : "bg-surface-card border border-border hover:border-accent-subtle"
+              }`}
+            >
+              {t === "ar" ? "الكل" : "All"}
+            </button>
+            {groupNames.map((g) => (
+              <button
+                key={g}
+                onClick={() => setActiveFilter(g)}
+                className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${
+                  activeFilter === g
+                    ? "bg-accent text-accent-foreground"
+                    : "bg-surface-card border border-border hover:border-accent-subtle"
+                }`}
+              >
+                {t === "ar" ? `المجموعة ${g}` : `Group ${g}`}
+              </button>
+            ))}
+            {Object.keys(STAGE_LABELS).filter((k) => k !== "group").map((stage) => (
+              <button
+                key={stage}
+                onClick={() => setActiveFilter(stage)}
+                className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${
+                  activeFilter === stage
+                    ? "bg-accent text-accent-foreground"
+                    : "bg-surface-card border border-border hover:border-accent-subtle"
+                }`}
+              >
+                {t === "ar" ? STAGE_LABELS[stage].ar : STAGE_LABELS[stage].en}
+              </button>
+            ))}
           </div>
 
           {loading ? (
             <div className="flex flex-col items-center justify-center py-20 gap-4">
               <Loader2 className="w-10 h-10 text-accent animate-spin" />
               <p className="text-muted-foreground animate-pulse">
-                {t === "ar" ? "جاري تحميل المباريات..." : "Chargement des matchs..."}
+                {t === "ar" ? "جاري تحميل المباريات..." : "Loading matches..."}
               </p>
             </div>
           ) : error ? (
@@ -126,30 +137,23 @@ const Matches = () => {
               <Trophy className="w-12 h-12 text-muted-foreground/30" />
               <div>
                 <p className="text-lg font-medium text-muted-foreground">
-                  {t === "ar" ? "فشل تحميل المباريات" : "Échec du chargement des matchs"}
+                  {t === "ar" ? "فشل تحميل المباريات" : "Failed to load matches"}
                 </p>
                 <p className="text-sm text-muted-foreground/60 mt-1">{error}</p>
               </div>
               <button
-                onClick={() => loadMatches()}
+                onClick={() => loadData()}
                 className="px-6 py-2 rounded-full bg-accent text-accent-foreground font-bold text-sm"
               >
-                {t === "ar" ? "إعادة المحاولة" : "Réessayer"}
+                {t === "ar" ? "إعادة المحاولة" : "Retry"}
               </button>
             </div>
-          ) : matches.length === 0 ? (
+          ) : filteredGames.length === 0 ? (
             <div className="bg-surface-card border border-border rounded-2xl p-12 text-center flex flex-col items-center gap-4">
               <Trophy className="w-12 h-12 text-muted-foreground/30" />
-              <div>
-                <p className="text-lg font-medium text-muted-foreground">
-                  {t === "ar" ? "لا توجد مباريات اليوم" : "Aucun match aujourd'hui"}
-                </p>
-                <p className="text-sm text-muted-foreground/60 mt-1">
-                  {t === "ar"
-                    ? "المباريات ستظهر هنا عند توفرها"
-                    : "Les matchs apparaîtront ici lorsqu'ils seront disponibles"}
-                </p>
-              </div>
+              <p className="text-lg font-medium text-muted-foreground">
+                {t === "ar" ? "لا توجد مباريات" : "No matches found"}
+              </p>
             </div>
           ) : (
             <div className="space-y-10">
@@ -158,109 +162,76 @@ const Matches = () => {
                   <div className="flex items-center gap-3 mb-6">
                     <div className="h-px flex-1 bg-border" />
                     <span className="text-sm font-bold text-muted-foreground uppercase tracking-widest bg-surface-card px-4 py-1.5 rounded-full border border-border">
-                      {date === "unknown" ? (t === "ar" ? "غير محدد" : "Inconnu") : date}
+                      {date}
                     </span>
                     <div className="h-px flex-1 bg-border" />
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-                    {grouped[date].map((match) => (
-                      <div
-                        key={match.id || `${match.homeTeam}-${match.awayTeam}`}
-                        className="group relative bg-surface-card border border-border rounded-2xl p-5 hover:border-accent-subtle transition-all duration-300 hover:-translate-y-1"
-                      >
-                        <div className="flex items-center gap-4 mb-4">
-                          <div className="flex-1 flex flex-col items-center gap-2">
-                            <div className="w-14 h-14 flex items-center justify-center">
-                              {match.homeLogo ? (
+                    {groupedByDate[date].map((game) => {
+                      const stageKey = game.type || "group";
+                      return (
+                        <div
+                          key={game.id}
+                          className="group relative bg-surface-card border border-border rounded-2xl p-5 hover:border-accent-subtle transition-all duration-300 hover:-translate-y-1"
+                        >
+                          <div className="flex items-center gap-4 mb-4">
+                            <div className="flex-1 flex flex-col items-center gap-2">
+                              <div className="w-14 h-14 flex items-center justify-center">
                                 <img
-                                  src={match.homeLogo}
-                                  alt={match.homeTeam || ""}
+                                  src={getTeamFlag(game, game.home_team_id)}
+                                  alt={game.home_team_name_en || ""}
                                   className="w-full h-full object-contain filter drop-shadow-lg group-hover:scale-110 transition-transform duration-500"
                                 />
-                              ) : (
-                                <div className="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center">
-                                  <Trophy className="w-5 h-5 text-accent" />
-                                </div>
-                              )}
-                            </div>
-                            <span className="text-sm font-bold text-center leading-tight line-clamp-2">
-                              {match.homeTeam}
-                            </span>
-                          </div>
-
-                          <div className="flex flex-col items-center gap-1 min-w-[80px]">
-                            {match.score ? (
-                              <span className="text-2xl md:text-3xl font-black font-mono tracking-wider">
-                                {match.score}
+                              </div>
+                              <span className="text-sm font-bold text-center leading-tight line-clamp-2">
+                                {game.home_team_name_en}
                               </span>
-                            ) : match.kickoff ? (
-                              <>
-                                <span className="text-lg md:text-xl font-bold font-mono">
-                                  {matchTime(match)}
-                                </span>
-                                <Clock className="w-3.5 h-3.5 text-muted-foreground" />
-                              </>
-                            ) : (
-                              <span className="text-lg font-bold">VS</span>
-                            )}
-                            {getStatusBadge(match)}
-                          </div>
+                            </div>
 
-                          <div className="flex-1 flex flex-col items-center gap-2">
-                            <div className="w-14 h-14 flex items-center justify-center">
-                              {match.awayLogo ? (
+                            <div className="flex flex-col items-center gap-1 min-w-[80px]">
+                              {game.finished === "TRUE" ? (
+                                <span className="text-2xl md:text-3xl font-black font-mono tracking-wider">
+                                  {game.home_score} - {game.away_score}
+                                </span>
+                              ) : game.local_date ? (
+                                <>
+                                  <span className="text-lg md:text-xl font-bold font-mono">
+                                    {game.local_date?.split(" ")[1]?.slice(0, 5) || game.local_date?.split(" ")[1] || ""}
+                                  </span>
+                                  <Clock className="w-3.5 h-3.5 text-muted-foreground" />
+                                </>
+                              ) : (
+                                <span className="text-lg font-bold">VS</span>
+                              )}
+                              <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-accent/10 text-accent">
+                                {game.group || (STAGE_LABELS[stageKey]?.en || stageKey)}
+                              </span>
+                            </div>
+
+                            <div className="flex-1 flex flex-col items-center gap-2">
+                              <div className="w-14 h-14 flex items-center justify-center">
                                 <img
-                                  src={match.awayLogo}
-                                  alt={match.awayTeam || ""}
+                                  src={getTeamFlag(game, game.away_team_id)}
+                                  alt={game.away_team_name_en || ""}
                                   className="w-full h-full object-contain filter drop-shadow-lg group-hover:scale-110 transition-transform duration-500"
                                 />
-                              ) : (
-                                <div className="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center">
-                                  <Trophy className="w-5 h-5 text-accent" />
-                                </div>
-                              )}
+                              </div>
+                              <span className="text-sm font-bold text-center leading-tight line-clamp-2">
+                                {game.away_team_name_en}
+                              </span>
                             </div>
-                            <span className="text-sm font-bold text-center leading-tight line-clamp-2">
-                              {match.awayTeam}
+                          </div>
+
+                          <div className="border-t border-border pt-3 mt-2 flex items-center justify-center gap-2 text-xs text-muted-foreground">
+                            <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
+                            <span className="line-clamp-1">
+                              {t === "ar" ? `الملعب ${game.stadium_id || ""}` : `Stadium ${game.stadium_id || ""}`}
                             </span>
                           </div>
                         </div>
-
-                        {(match.channel || match.league || match.commentator || match.venue) && (
-                          <div className="border-t border-border pt-3 mt-2 space-y-1.5">
-                            {match.league && (
-                              <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                                <Trophy className="w-3.5 h-3.5 flex-shrink-0" />
-                                <span className="line-clamp-1">{match.league}</span>
-                              </div>
-                            )}
-                            {match.channel && (
-                              <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                                <Tv className="w-3.5 h-3.5 flex-shrink-0" />
-                                <span className="line-clamp-1">{match.channel}</span>
-                              </div>
-                            )}
-                            {match.commentator && (
-                              <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                                <Mic className="w-3.5 h-3.5 flex-shrink-0" />
-                                <span className="line-clamp-1">{match.commentator}</span>
-                              </div>
-                            )}
-                            {match.venue && (
-                              <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                                <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
-                                <span className="line-clamp-1">{match.venue}</span>
-                              </div>
-                            )}
-                          </div>
-                        )}
-
-                        <div className="mt-4 flex justify-center">
-                          {matchLinks(match)}
-                        </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 </div>
               ))}

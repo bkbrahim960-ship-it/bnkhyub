@@ -1,36 +1,35 @@
 {
-  "name": "bnkhub-free-subtitle-server",
+  "name": "bnkhub-worldcup-api",
   "version": "1.0.0",
-  "description": "100% Free AI Subtitle Translation & Discovery Server",
-  "main": "dist/server.js",
+  "description": "FIFA World Cup 2026 API for BNKhub",
+  "main": "index.js",
   "scripts": {
-    "start": "node dist/server.js",
-    "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
-    "build": "tsc",
-    "prisma:generate": "prisma generate",
-    "prisma:push": "prisma db push"
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "prod": "set NODE_ENV=production&& node index.js",
+    "import:all": "node import-all.js",
+    "import:groups": "node import-groups.js",
+    "import:teams": "node import-teams.js",
+    "import:stadiums": "node import-stadiums.js",
+    "import:matches": "node import-matches.js"
   },
   "dependencies": {
-    "@prisma/client": "^5.10.2",
-    "axios": "^1.6.7",
-    "bullmq": "^5.1.0",
-    "cheerio": "^1.0.0-rc.12",
-    "cors": "^2.8.5",
-    "dotenv": "^16.4.5",
-    "express": "^4.18.2",
-    "ioredis": "^5.3.2",
+    "axios": "^1.13.4",
+    "bcrypt": "^5.0.1",
+    "body-parser": "^1.19.1",
+    "compression": "^1.8.1",
+    "cors": "^2.8.6",
+    "dotenv": "^16.0.0",
+    "express": "^4.17.2",
+    "express-rate-limit": "^8.2.1",
+    "helmet": "^8.1.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.2.5",
     "morgan": "^1.10.0",
-    "socket.io": "^4.7.4",
-    "fluent-ffmpeg": "^2.1.2"
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
-    "@types/cors": "^2.8.17",
-    "@types/express": "^4.17.21",
-    "@types/morgan": "^1.9.9",
-    "@types/node": "^20.11.20",
-    "@types/fluent-ffmpeg": "^2.1.24",
-    "prisma": "^5.10.2",
-    "ts-node-dev": "^2.0.0",
-    "typescript": "^5.3.3"
+    "nodemon": "^2.0.15"
   }
 }

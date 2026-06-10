@@ -85,7 +85,7 @@ export const Sidebar = () => {
     { to: "/series", label: t("nav_series"), icon: Tv2 },
     { to: "/my-list", label: lang === "ar" ? "قائمتي" : "Ma Liste", icon: List },
     { to: "/coming-soon", label: lang === "ar" ? "قريباً" : "Bientôt", icon: CalendarClock },
-    { to: "/matches", label: lang === "ar" ? "المباريات" : "Matchs", icon: Trophy },
+    { to: "/matches", label: lang === "ar" ? "كأس العالم 2026" : "World Cup 2026", icon: Trophy },
     { to: "/search", label: t("nav_search"), icon: Search },
   ];
 

@@ -21,7 +21,7 @@ export const Header = () => {
     { to: "/series", label: t("nav_series") },
     { to: "/my-list", label: lang === "ar" ? "قائمتي" : "Ma Liste" },
     { to: "/coming-soon", label: lang === "ar" ? "قريباً" : "Bientôt" },
-    { to: "/matches", label: lang === "ar" ? "المباريات" : "Matchs" },
+    { to: "/matches", label: lang === "ar" ? "كأس العالم 2026" : "World Cup 2026" },
     { to: "/search", label: t("nav_search") },
     { to: "/profile", label: t("nav_profile") },
   ];

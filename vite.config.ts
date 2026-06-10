@@ -17,6 +17,10 @@ export default defineConfig(({ mode }) => ({
         secure: true,
         rewrite: (p) => p.replace(/^\/api\/koralive/, ""),
       },
+      "/get": {
+        target: "http://localhost:3050",
+        changeOrigin: true,
+      },
     },
   },
   plugins: [react()],

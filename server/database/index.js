@@ -1,0 +1,41 @@
+const mongoose = require('mongoose');
+
+// Set strictQuery before connection
+mongoose.set('strictQuery', false);
+
+// MongoDB connection - Configuration from environment variables
+const isProd = process.env.NODE_ENV === 'production';
+
+const MONGODB_CONFIG = isProd ? {
+    url: process.env.MONGODB_URL,
+    options: {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        serverSelectionTimeoutMS: 10000,
+        socketTimeoutMS: 45000,
+    }
+} : {
+    url: process.env.MONGODB_URL || 'mongodb://localhost:27017/worldcup2026',
+    options: {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        serverSelectionTimeoutMS: 10000,
+        socketTimeoutMS: 45000,
+    }
+};
+
+let mongoConnected = false;
+
+mongoose.connect(MONGODB_CONFIG.url, MONGODB_CONFIG.options)
+.then(() => {
+    mongoConnected = true;
+    console.log("✅ Successful connection with MongoDB");
+}).catch((err) => {
+    console.log('⚠️ MongoDB not available, using JSON file fallback: ' + err.message);
+});
+
+mongoose.isConnected = function() { return mongoConnected; };
+
+mongoose.Promise = global.Promise;
+
+module.exports = mongoose;

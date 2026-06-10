@@ -12,7 +12,11 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "scrape": "node scripts/koralive-scraper.js",
-    "scrape:advanced": "node scripts/koralive-scraper-advanced.js"
+    "scrape:advanced": "node scripts/koralive-scraper-advanced.js",
+    "server": "cd server && npm run dev",
+    "server:start": "cd server && npm start",
+    "server:prod": "cd server && npm run prod",
+    "import:all": "cd server && npm run import:all"
   },
   "dependencies": {
     "@capacitor/android": "^8.3.1",
