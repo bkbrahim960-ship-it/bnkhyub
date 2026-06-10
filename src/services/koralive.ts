@@ -1,3 +1,8 @@
+export interface MatchStreams {
+  iframes: string[];
+  servers: string[];
+}
+
 export interface KoraliveMatch {
   id: string | null;
   homeTeam: string | null;
@@ -21,6 +26,7 @@ export interface KoraliveMatch {
     end: string | null;
     naive: string | null;
   };
+  streams?: MatchStreams;
 }
 
 interface KoraliveResponse {
@@ -30,8 +36,7 @@ interface KoraliveResponse {
   matches: KoraliveMatch[];
 }
 
-const isProd = !import.meta.env.DEV;
-const API_BASE = isProd ? "/api/koralive" : "/api/koralive";
+const API_BASE = "/api/koralive";
 
 function parseKickoff(time: string | null): string {
   if (!time) return "";
@@ -61,23 +66,13 @@ export function matchTime(match: KoraliveMatch): string {
 }
 
 export async function fetchMatches(): Promise<KoraliveMatch[]> {
-  let res = await fetch(`${API_BASE}`);
-  let html: string;
+  const res = await fetch(`${API_BASE}`);
+  const json = await res.json();
 
-  const ct = res.headers.get("content-type") || "";
-  if (ct.includes("application/json")) {
-    const json = await res.json();
-    if (json.html) {
-      html = `<html><body>${json.html}</body></html>`;
-    } else if (json.matches) {
-      return json.matches;
-    } else {
-      throw new Error(json.error || "فشل تحميل المباريات");
-    }
-  } else {
-    html = await res.text();
-  }
+  if (json.matches) return json.matches;
+  if (!json.html) throw new Error(json.error || "Failed to load matches");
 
+  const html = `<html><body>${json.html}</body></html>`;
   const parser = new DOMParser();
   const doc = parser.parseFromString(html, "text/html");
   const matches: KoraliveMatch[] = [];
@@ -96,21 +91,18 @@ export async function fetchMatches(): Promise<KoraliveMatch[]> {
       teamLogos.push(img.getAttribute("data-src") || img.getAttribute("src") || "");
     });
 
-    const kickoff =
-      el.querySelector(".mt-kick")?.textContent?.trim() || null;
+    const kickoff = el.querySelector(".mt-kick")?.textContent?.trim() || null;
 
     const scoreEls = el.querySelectorAll(".ms-score");
-    const score =
-      scoreEls.length === 2
-        ? `${scoreEls[0].textContent?.trim()} - ${scoreEls[1].textContent?.trim()}`
-        : null;
+    const score = scoreEls.length === 2
+      ? `${scoreEls[0].textContent?.trim()} - ${scoreEls[1].textContent?.trim()}`
+      : null;
 
     const badge = el.querySelector(".ms-badge");
     const statusText = badge?.textContent?.trim() || null;
     const statusClass =
       Array.from(badge?.classList || [])
-        .find((c) => c.startsWith("ms-") && c !== "ms-badge" && c !== "ms-badge-md") ||
-      null;
+        .find((c) => c.startsWith("ms-") && c !== "ms-badge" && c !== "ms-badge-md") || null;
 
     let league: string | null = null;
     let channel: string | null = null;
@@ -124,9 +116,7 @@ export async function fetchMatches(): Promise<KoraliveMatch[]> {
       else if (emoji.includes("🎤")) commentator = text;
     });
 
-    const detailUrl =
-      (el.querySelector("a.absolute.inset-0") as HTMLAnchorElement)?.href ||
-      null;
+    const detailUrl = (el.querySelector("a.absolute.inset-0") as HTMLAnchorElement)?.href || null;
 
     matches.push({
       id,
@@ -147,6 +137,13 @@ export async function fetchMatches(): Promise<KoraliveMatch[]> {
   });
 
   return matches;
+}
+
+export async function fetchMatchStreams(detailUrl: string): Promise<MatchStreams> {
+  const res = await fetch(`${API_BASE}?detail=${encodeURIComponent(detailUrl)}`);
+  const json = await res.json();
+  if (json.error) throw new Error(json.error);
+  return { iframes: json.iframes || [], servers: json.servers || [] };
 }
 
 export function groupMatchesByDate(matches: KoraliveMatch[]): Map<string, KoraliveMatch[]> {
