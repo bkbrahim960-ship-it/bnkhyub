@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { Layout } from "@/components/layout/Layout";
 import { useLanguage } from "@/context/LanguageContext";
-import { Loader2, RefreshCw, Trophy, MapPin, Clock } from "lucide-react";
-import { fetchGames, fetchGroups, Game, Group, getTeamFlag } from "@/services/worldcup";
+import { Loader2, RefreshCw, Trophy, MapPin, Clock, Ban, Hourglass } from "lucide-react";
+import { fetchGames, fetchGroups, fetchStadiums, Game, Group, Stadium, getTeamFlag } from "@/services/worldcup";
 
 const STAGE_LABELS: Record<string, { en: string; ar: string }> = {
   group: { en: "Group Stage", ar: "دور المجموعات" },
@@ -18,19 +18,24 @@ const Matches = () => {
   const { t } = useLanguage();
   const [games, setGames] = useState<Game[]>([]);
   const [groups, setGroups] = useState<Group[]>([]);
+  const [stadiums, setStadiums] = useState<Stadium[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [activeFilter, setActiveFilter] = useState<string>("all");
+  const [message, setMessage] = useState<{ title: string; text: string; icon: string } | null>(null);
 
   const loadData = async (silent = false) => {
     if (!silent) setLoading(true);
     else setRefreshing(true);
     setError(null);
     try {
-      const [gamesData, groupsData] = await Promise.all([fetchGames(), fetchGroups()]);
+      const [gamesData, groupsData, stadiumsData] = await Promise.all([
+        fetchGames(), fetchGroups(), fetchStadiums(),
+      ]);
       setGames(gamesData);
       setGroups(groupsData);
+      setStadiums(stadiumsData);
     } catch (err: any) {
       setError(err.message || "Failed to load matches");
     } finally {
@@ -42,6 +47,13 @@ const Matches = () => {
   useEffect(() => {
     loadData();
   }, []);
+
+  const stadiumMap = new Map(stadiums.map((s) => [s.id, s]));
+
+  const getStadiumName = (id: string) => {
+    const s = stadiumMap.get(id);
+    return s ? s.name_en : `${t === "ar" ? "الملعب" : "Stadium"} ${id}`;
+  };
 
   const groupNames = groups.map((g) => g.name);
   const filteredGames = activeFilter === "all"
@@ -61,6 +73,27 @@ const Matches = () => {
   );
 
   const sortedDates = Object.keys(groupedByDate).sort();
+
+  const handleGameClick = (game: Game) => {
+    if (game.finished === "TRUE") {
+      setMessage({
+        title: t === "ar" ? "انتهت المباراة" : "Match Ended",
+        text: t === "ar"
+          ? `المباراة بين ${game.home_team_name_en} و ${game.away_team_name_en} انتهت بنتيجة ${game.home_score} - ${game.away_score}`
+          : `Match between ${game.home_team_name_en} and ${game.away_team_name_en} ended ${game.home_score} - ${game.away_score}`,
+        icon: "ended",
+      });
+    } else {
+      const dateStr = game.local_date || "";
+      setMessage({
+        title: t === "ar" ? "المباراة لم تبدأ بعد" : "Match Not Started",
+        text: t === "ar"
+          ? `ستقام المباراة بين ${game.home_team_name_en} و ${game.away_team_name_en} في ${dateStr}`
+          : `Match between ${game.home_team_name_en} and ${game.away_team_name_en} will start on ${dateStr}`,
+        icon: "upcoming",
+      });
+    }
+  };
 
   return (
     <Layout>
@@ -171,9 +204,10 @@ const Matches = () => {
                     {groupedByDate[date].map((game) => {
                       const stageKey = game.type || "group";
                       return (
-                        <div
+                        <button
                           key={game.id}
-                          className="group relative bg-surface-card border border-border rounded-2xl p-5 hover:border-accent-subtle transition-all duration-300 hover:-translate-y-1"
+                          onClick={() => handleGameClick(game)}
+                          className="group relative bg-surface-card border border-border rounded-2xl p-5 hover:border-accent-subtle transition-all duration-300 hover:-translate-y-1 text-right"
                         >
                           <div className="flex items-center gap-4 mb-4">
                             <div className="flex-1 flex flex-col items-center gap-2">
@@ -225,11 +259,9 @@ const Matches = () => {
 
                           <div className="border-t border-border pt-3 mt-2 flex items-center justify-center gap-2 text-xs text-muted-foreground">
                             <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
-                            <span className="line-clamp-1">
-                              {t === "ar" ? `الملعب ${game.stadium_id || ""}` : `Stadium ${game.stadium_id || ""}`}
-                            </span>
+                            <span className="line-clamp-1">{getStadiumName(game.stadium_id)}</span>
                           </div>
-                        </div>
+                        </button>
                       );
                     })}
                   </div>
@@ -239,6 +271,26 @@ const Matches = () => {
           )}
         </div>
       </section>
+
+      {message && (
+        <div className="fixed inset-0 z-[100] bg-black/70 flex items-center justify-center p-4" onClick={() => setMessage(null)}>
+          <div className="bg-surface-card border border-border rounded-2xl p-8 max-w-md w-full text-center flex flex-col items-center gap-4 animate-scale-in" onClick={(e) => e.stopPropagation()}>
+            {message.icon === "ended" ? (
+              <Ban className="w-16 h-16 text-destructive" />
+            ) : (
+              <Hourglass className="w-16 h-16 text-amber-500" />
+            )}
+            <h2 className="text-xl font-bold">{message.title}</h2>
+            <p className="text-muted-foreground">{message.text}</p>
+            <button
+              onClick={() => setMessage(null)}
+              className="px-8 py-2.5 rounded-full bg-accent text-accent-foreground font-bold text-sm mt-2"
+            >
+              {t === "ar" ? "حسناً" : "OK"}
+            </button>
+          </div>
+        </div>
+      )}
     </Layout>
   );
 };

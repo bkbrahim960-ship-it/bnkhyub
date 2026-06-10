@@ -21,6 +21,7 @@ const Channels = () => {
   const [selectedChannel, setSelectedChannel] = useState<Channel | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const [visibleCount, setVisibleCount] = useState(50);
   const videoRef = useRef<HTMLVideoElement>(null);
   const hlsRef = useRef<Hls | null>(null);
 
@@ -64,7 +65,7 @@ const Channels = () => {
         const externalChannels: Channel[] = [];
         
         let currentChannel: Partial<Channel> = {};
-        for (let i = 0; i < lines.length && externalChannels.length < 100; i++) {
+        for (let i = 0; i < lines.length; i++) {
           const line = lines[i].trim();
           if (line.startsWith("#EXTINF:")) {
             const nameMatch = line.match(/,(.*)$/);
@@ -87,6 +88,13 @@ const Channels = () => {
       } catch (err) {
         console.warn("External M3U fetch failed, using static channels only");
       }
+
+      // 3. Sort by category then name
+      mergedChannels.sort((a, b) => {
+        const catCompare = (a.category || "").localeCompare(b.category || "");
+        if (catCompare !== 0) return catCompare;
+        return (a.name || "").localeCompare(b.name || "");
+      });
 
       setChannels(mergedChannels);
     } catch (err: any) {
@@ -245,43 +253,55 @@ const Channels = () => {
               <p className="text-muted-foreground animate-pulse">Chargement des chaînes...</p>
             </div>
           ) : filteredChannels.length > 0 ? (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
-              {filteredChannels.map((channel) => (
-                <button
-                  key={channel.id}
-                  onClick={() => {
-                    setSelectedChannel(channel);
-                    window.scrollTo({ top: 0, behavior: "smooth" });
-                  }}
-                  className={`group relative flex flex-col items-center p-6 rounded-2xl border transition-all duration-500 hover:-translate-y-2 ${
-                    selectedChannel?.id === channel.id
-                      ? "border-accent bg-accent/5 shadow-glow"
-                      : "border-border bg-surface-card hover:border-accent-subtle"
-                  }`}
-                >
-                  <div className="relative w-20 h-20 mb-4 flex items-center justify-center">
-                    {channel.logo_url ? (
-                      <img
-                        src={channel.logo_url}
-                        alt={channel.name}
-                        className="w-full h-full object-contain filter drop-shadow-lg group-hover:scale-110 transition-transform duration-500"
-                      />
-                    ) : (
-                      <Tv className="w-12 h-12 text-muted-foreground group-hover:text-accent transition-colors" />
-                    )}
-                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/40 rounded-xl">
-                      <Play className="w-8 h-8 text-white fill-white animate-scale-in" />
+            <>
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
+                {filteredChannels.slice(0, visibleCount).map((channel) => (
+                  <button
+                    key={channel.id}
+                    onClick={() => {
+                      setSelectedChannel(channel);
+                      window.scrollTo({ top: 0, behavior: "smooth" });
+                    }}
+                    className={`group relative flex flex-col items-center p-6 rounded-2xl border transition-all duration-500 hover:-translate-y-2 ${
+                      selectedChannel?.id === channel.id
+                        ? "border-accent bg-accent/5 shadow-glow"
+                        : "border-border bg-surface-card hover:border-accent-subtle"
+                    }`}
+                  >
+                    <div className="relative w-20 h-20 mb-4 flex items-center justify-center">
+                      {channel.logo_url ? (
+                        <img
+                          src={channel.logo_url}
+                          alt={channel.name}
+                          className="w-full h-full object-contain filter drop-shadow-lg group-hover:scale-110 transition-transform duration-500"
+                        />
+                      ) : (
+                        <Tv className="w-12 h-12 text-muted-foreground group-hover:text-accent transition-colors" />
+                      )}
+                      <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/40 rounded-xl">
+                        <Play className="w-8 h-8 text-white fill-white animate-scale-in" />
+                      </div>
                     </div>
-                  </div>
-                  <h3 className="text-sm font-bold text-center line-clamp-1 group-hover:text-accent transition-colors">
-                    {channel.name}
-                  </h3>
-                  <p className="text-[10px] uppercase tracking-widest text-muted-foreground mt-1 opacity-60">
-                    {channel.category}
-                  </p>
-                </button>
-              ))}
-            </div>
+                    <h3 className="text-sm font-bold text-center line-clamp-1 group-hover:text-accent transition-colors">
+                      {channel.name}
+                    </h3>
+                    <p className="text-[10px] uppercase tracking-widest text-muted-foreground mt-1 opacity-60">
+                      {channel.category}
+                    </p>
+                  </button>
+                ))}
+              </div>
+              {visibleCount < filteredChannels.length && (
+                <div className="flex justify-center mt-10">
+                  <button
+                    onClick={() => setVisibleCount((prev) => prev + 100)}
+                    className="px-8 py-3 rounded-full bg-surface-card border border-border hover:border-accent-subtle text-sm font-bold transition-all"
+                  >
+                    عرض المزيد ({filteredChannels.length - visibleCount} متبقي)
+                  </button>
+                </div>
+              )}
+            </>
           ) : (
             <div className="bg-surface-card border border-border rounded-2xl p-12 text-center flex flex-col items-center gap-4">
               <Info className="w-12 h-12 text-muted-foreground/30" />

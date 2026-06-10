@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { Layout } from "@/components/layout/Layout";
 import { useLanguage } from "@/context/LanguageContext";
-import { Loader2, RefreshCw, Clock, Tv, Mic, Trophy, Play, AlertCircle } from "lucide-react";
-import { fetchMatches, KoraliveMatch, matchDate, matchTime, isMatchLive } from "@/services/koralive";
+import { Loader2, RefreshCw, Clock, Tv, Mic, Trophy, Play, AlertCircle, Ban, Hourglass } from "lucide-react";
+import { fetchMatches, KoraliveMatch, matchDate, matchTime, isMatchLive, isMatchEnded, isMatchUpcoming } from "@/services/koralive";
 import { MatchPlayer } from "@/components/player/MatchPlayer";
 
 const STATUS_MAP: Record<string, { label: string; className: string }> = {
@@ -22,6 +22,26 @@ const LiveMatches = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [playing, setPlaying] = useState<KoraliveMatch | null>(null);
+  const [message, setMessage] = useState<{ title: string; text: string; icon: string } | null>(null);
+
+  const handlePlayClick = (match: KoraliveMatch) => {
+    const key = match.status.initial || match.status.class || "";
+    if (isMatchEnded(key)) {
+      setMessage({
+        title: "انتهت المباراة",
+        text: `المباراة بين ${match.homeTeam} و ${match.awayTeam} قد انتهت${match.score ? ` بنتيجة ${match.score}` : ""}.`,
+        icon: "ended",
+      });
+    } else if (isMatchUpcoming(key)) {
+      setMessage({
+        title: "المباراة لم تبدأ بعد",
+        text: `المباراة بين ${match.homeTeam} و ${match.awayTeam} ستبدأ في الساعة ${matchTime(match)}${matchDate(match) ? ` بتاريخ ${matchDate(match)}` : ""}.`,
+        icon: "upcoming",
+      });
+    } else {
+      setPlaying(match);
+    }
+  };
 
   const loadMatches = async (silent = false) => {
     if (!silent) setLoading(true);
@@ -238,7 +258,7 @@ const LiveMatches = () => {
 
                         <div className="mt-4 flex justify-center">
                           <button
-                            onClick={() => setPlaying(match)}
+                            onClick={() => handlePlayClick(match)}
                             className="flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-bold bg-accent text-accent-foreground hover:opacity-90 transition-all shadow-accent"
                           >
                             <Play className="w-4 h-4" />
@@ -254,6 +274,26 @@ const LiveMatches = () => {
           )}
         </div>
       </section>
+
+      {message && (
+        <div className="fixed inset-0 z-[100] bg-black/70 flex items-center justify-center p-4" onClick={() => setMessage(null)}>
+          <div className="bg-surface-card border border-border rounded-2xl p-8 max-w-md w-full text-center flex flex-col items-center gap-4 animate-scale-in" onClick={(e) => e.stopPropagation()}>
+            {message.icon === "ended" ? (
+              <Ban className="w-16 h-16 text-destructive" />
+            ) : (
+              <Hourglass className="w-16 h-16 text-amber-500" />
+            )}
+            <h2 className="text-xl font-bold">{message.title}</h2>
+            <p className="text-muted-foreground">{message.text}</p>
+            <button
+              onClick={() => setMessage(null)}
+              className="px-8 py-2.5 rounded-full bg-accent text-accent-foreground font-bold text-sm mt-2"
+            >
+              حسناً
+            </button>
+          </div>
+        </div>
+      )}
 
       {playing && playing.detailUrl && (
         <MatchPlayer
