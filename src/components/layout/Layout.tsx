@@ -10,10 +10,10 @@ import { SidebarProvider, useSidebar } from "@/context/SidebarContext";
 
 const LayoutContent = ({ children }: { children: ReactNode }) => {
   const mainPadding = "md:pb-8";
-  const { isCollapsed } = useSidebar();
+  const { isCollapsed, isHovered } = useSidebar();
   
-  // Sidebar width: 72px when collapsed, 240px when expanded
-  const sidebarWidth = isCollapsed ? 72 : 240;
+  const isExpanded = !isCollapsed || isHovered;
+  const sidebarWidth = isExpanded ? 240 : 72;
 
   return (
     <>
