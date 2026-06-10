@@ -181,7 +181,9 @@ const Channels = () => {
       {playing && (
         <ChannelPlayer
           name={playing.name}
+          logo={playing.logo}
           url={playing.url}
+          group={playing.group}
           onClose={() => setPlaying(null)}
         />
       )}
