@@ -173,25 +173,6 @@ const Channels = () => {
                 </button>
 
                 <div className="px-4 mb-1 mt-4">
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-accent/60">
-                    M3U
-                  </p>
-                </div>
-                {m3uGroups.map((g) => (
-                  <button
-                    key={`m3u-${g}`}
-                    onClick={() => handleGroupClick(g, "m3u")}
-                    className={`w-full text-right px-4 py-2 text-sm font-medium transition-colors hover:bg-white/[0.04] ${
-                      activeGroup === g && activeSource === "m3u"
-                        ? "bg-accent/10 text-accent border-r-2 border-accent"
-                        : "text-foreground/70"
-                    }`}
-                  >
-                    {g}
-                  </button>
-                ))}
-
-                <div className="px-4 mb-1 mt-4">
                   <p className="text-[10px] font-bold uppercase tracking-widest text-blue-400/60">
                     IPTV Org
                   </p>
@@ -203,6 +184,25 @@ const Channels = () => {
                     className={`w-full text-right px-4 py-2 text-sm font-medium transition-colors hover:bg-white/[0.04] ${
                       activeGroup === g && activeSource === "iptv"
                         ? "bg-blue-500/10 text-blue-400 border-r-2 border-blue-500"
+                        : "text-foreground/70"
+                    }`}
+                  >
+                    {g}
+                  </button>
+                ))}
+
+                <div className="px-4 mb-1 mt-4">
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-accent/60">
+                    M3U
+                  </p>
+                </div>
+                {m3uGroups.map((g) => (
+                  <button
+                    key={`m3u-${g}`}
+                    onClick={() => handleGroupClick(g, "m3u")}
+                    className={`w-full text-right px-4 py-2 text-sm font-medium transition-colors hover:bg-white/[0.04] ${
+                      activeGroup === g && activeSource === "m3u"
+                        ? "bg-accent/10 text-accent border-r-2 border-accent"
                         : "text-foreground/70"
                     }`}
                   >
