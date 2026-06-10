@@ -14,6 +14,7 @@ import {
   Settings,
   Baby,
   LogIn,
+  Trophy,
 } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
@@ -84,6 +85,7 @@ export const Sidebar = () => {
     { to: "/series", label: t("nav_series"), icon: Tv2 },
     { to: "/my-list", label: lang === "ar" ? "قائمتي" : "Ma Liste", icon: List },
     { to: "/coming-soon", label: lang === "ar" ? "قريباً" : "Bientôt", icon: CalendarClock },
+    { to: "/matches", label: lang === "ar" ? "المباريات" : "Matchs", icon: Trophy },
     { to: "/search", label: t("nav_search"), icon: Search },
   ];
 

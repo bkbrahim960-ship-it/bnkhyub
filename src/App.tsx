@@ -23,6 +23,7 @@ import Landing from "./pages/Landing";
 import Remote from "./pages/Remote";
 import Person from "./pages/Person";
 import ComingSoon from "./pages/ComingSoon";
+import Matches from "./pages/Matches";
 import NotFound from "./pages/NotFound.tsx";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
@@ -143,6 +144,7 @@ const AppContent = () => (
                         <Route path="/remote" element={<Remote />} />
                         <Route path="/person/:id" element={<Person />} />
                         <Route path="/coming-soon" element={<ComingSoon />} />
+                        <Route path="/matches" element={<Matches />} />
                         <Route path="*" element={<NotFound />} />
                       </Routes>
                     </BrowserRouter>

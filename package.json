@@ -10,7 +10,9 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "scrape": "node scripts/koralive-scraper.js",
+    "scrape:advanced": "node scripts/koralive-scraper-advanced.js"
   },
   "dependencies": {
     "@capacitor/android": "^8.3.1",
@@ -48,6 +50,7 @@
     "@tanstack/react-query": "^5.83.0",
     "@vercel/analytics": "^2.0.1",
     "axios": "^1.16.0",
+    "cheerio": "^1.2.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
@@ -58,6 +61,7 @@
     "input-otp": "^1.4.2",
     "lucide-react": "^0.462.0",
     "next-themes": "^0.3.0",
+    "puppeteer": "^25.1.0",
     "qrcode.react": "^4.2.0",
     "react": "^18.3.1",
     "react-day-picker": "^8.10.1",

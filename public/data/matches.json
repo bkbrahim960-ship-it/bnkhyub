@@ -1,0 +1,147 @@
+{
+  "scrapedAt": "2026-06-10T11:43:37.650Z",
+  "source": "https://www.koralive-hd.com/matches-today/",
+  "totalMatches": 5,
+  "matches": [
+    {
+      "id": "4712160",
+      "homeTeam": "البرتغال",
+      "awayTeam": "نيجيريا",
+      "homeLogo": "https://www.koralive-hd.com/wp-content/uploads/2026/03/5028.png.webp",
+      "awayLogo": "https://www.koralive-hd.com/wp-content/uploads/2026/01/2386.png",
+      "kickoff": "10:45 PM",
+      "score": null,
+      "status": {
+        "initial": "not_started",
+        "text": "لم تبدأ بعد",
+        "class": "ms-soon"
+      },
+      "channel": "بي إن سبورت 2",
+      "commentator": "حسن العيدروس",
+      "league": "مباريات ودية دولية - دولي",
+      "detailUrl": "https://www.koralive-hd.com/matches/portugal-vs-nigeria-friendly-international-2026-06-10/",
+      "timestamps": {
+        "start": "2026-06-10 19:45+00:00",
+        "end": "2026-06-10 22:00+00:00",
+        "naive": "2026-06-10T22:45"
+      },
+      "streams": {
+        "iframes": [],
+        "servers": []
+      },
+      "venue": "ملعب د. ماغالهايس بيسوا"
+    },
+    {
+      "id": "4671396",
+      "homeTeam": "إنجلترا",
+      "awayTeam": "كوستاريكا",
+      "homeLogo": "https://www.koralive-hd.com/wp-content/uploads/2026/03/5054.png.webp",
+      "awayLogo": "https://www.koralive-hd.com/wp-content/uploads/2026/03/5424.png.webp",
+      "kickoff": "11:00 PM",
+      "score": null,
+      "status": {
+        "initial": "not_started",
+        "text": "لم تبدأ بعد",
+        "class": "ms-soon"
+      },
+      "channel": "بي إن سبورت 1",
+      "commentator": "محمد بركات",
+      "league": "مباريات ودية دولية - دولي",
+      "detailUrl": "https://www.koralive-hd.com/matches/england-vs-costa-rica-friendly-international-2026-06-10/",
+      "timestamps": {
+        "start": "2026-06-10 20:00+00:00",
+        "end": "2026-06-10 22:15+00:00",
+        "naive": "2026-06-10T23:00"
+      },
+      "streams": {
+        "iframes": [],
+        "servers": []
+      },
+      "venue": "ملعب إنتر آند كو"
+    },
+    {
+      "id": "4709775",
+      "homeTeam": "السعودية",
+      "awayTeam": "السنغال",
+      "homeLogo": "https://www.koralive-hd.com/wp-content/uploads/2026/03/5087.png.webp",
+      "awayLogo": "https://www.koralive-hd.com/wp-content/uploads/2026/01/5102-2.png",
+      "kickoff": null,
+      "score": "0 - 0",
+      "status": {
+        "initial": "ended",
+        "text": "انتهت",
+        "class": "ms-end"
+      },
+      "channel": "تطبيق STC TV",
+      "commentator": "عبدالله الحربي",
+      "league": "مباريات ودية دولية - دولي",
+      "detailUrl": "https://www.koralive-hd.com/matches/saudi-arabia-vs-senegal-friendly-international-2026-06-10/",
+      "timestamps": {
+        "start": "2026-06-09 23:00+00:00",
+        "end": "2026-06-10 01:15+00:00",
+        "naive": "2026-06-10T02:00"
+      },
+      "streams": {
+        "iframes": [],
+        "servers": []
+      },
+      "venue": "ملعب تويوتا"
+    },
+    {
+      "id": "4715617",
+      "homeTeam": "العراق",
+      "awayTeam": "فنزويلا",
+      "homeLogo": "https://www.koralive-hd.com/wp-content/uploads/2026/03/5078.png.webp",
+      "awayLogo": "https://www.koralive-hd.com/wp-content/uploads/2026/06/5072.png.webp",
+      "kickoff": null,
+      "score": "0 - 2",
+      "status": {
+        "initial": "ended",
+        "text": "انتهت",
+        "class": "ms-end"
+      },
+      "channel": "الرابعة العراقية",
+      "commentator": "غير مدرج",
+      "league": "مباريات ودية دولية - دولي",
+      "detailUrl": "https://www.koralive-hd.com/matches/iraq-vs-venezuela-friendly-international-2026-06-10/",
+      "timestamps": {
+        "start": "2026-06-10 01:00+00:00",
+        "end": "2026-06-10 03:15+00:00",
+        "naive": "2026-06-10T04:00"
+      },
+      "streams": {
+        "iframes": [],
+        "servers": []
+      },
+      "venue": "ملعب سيت جيت"
+    },
+    {
+      "id": "4714673",
+      "homeTeam": "الأرجنتين",
+      "awayTeam": "أيسلندا",
+      "homeLogo": "https://www.koralive-hd.com/wp-content/uploads/2026/03/2378.png.webp",
+      "awayLogo": "https://www.koralive-hd.com/wp-content/uploads/2026/03/5067.png.webp",
+      "kickoff": null,
+      "score": "3 - 0",
+      "status": {
+        "initial": "ended",
+        "text": "انتهت",
+        "class": "ms-end"
+      },
+      "channel": "أبو ظبي الرياضية 1",
+      "commentator": "عبدالله السعدي",
+      "league": "مباريات ودية دولية - دولي",
+      "detailUrl": "https://www.koralive-hd.com/matches/argentina-vs-iceland-friendly-international-2026-06-10/",
+      "timestamps": {
+        "start": "2026-06-10 01:00+00:00",
+        "end": "2026-06-10 03:15+00:00",
+        "naive": "2026-06-10T04:00"
+      },
+      "streams": {
+        "iframes": [],
+        "servers": []
+      },
+      "venue": "ملعب جوردان هير"
+    }
+  ]
+}

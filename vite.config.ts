@@ -10,6 +10,14 @@ export default defineConfig(({ mode }) => ({
     hmr: {
       overlay: false,
     },
+    proxy: {
+      "/api/koralive": {
+        target: "https://www.koralive-hd.com",
+        changeOrigin: true,
+        secure: true,
+        rewrite: (p) => p.replace(/^\/api\/koralive/, ""),
+      },
+    },
   },
   plugins: [react()],
   resolve: {
