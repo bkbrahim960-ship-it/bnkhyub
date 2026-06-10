@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Layout } from "@/components/layout/Layout";
 import { useLanguage } from "@/context/LanguageContext";
-import { Loader2, RefreshCw, Trophy, MapPin, Clock } from "lucide-react";
+import { Loader2, RefreshCw, Trophy, MapPin, Clock, Calendar } from "lucide-react";
 import { fetchGames, fetchGroups, fetchStadiums, Game, Group, Stadium, getTeamFlag } from "@/services/worldcup";
 import { MatchDetails } from "@/components/match/MatchDetails";
 
@@ -15,8 +15,13 @@ const STAGE_LABELS: Record<string, { en: string; ar: string }> = {
   final: { en: "Final", ar: "النهائي" },
 };
 
+const STATUS_MAP: Record<string, { label: { en: string; ar: string }; className: string }> = {
+  TRUE: { label: { en: "Finished", ar: "انتهت" }, className: "bg-gray-600 text-white" },
+  FALSE: { label: { en: "Not started", ar: "لم تبدأ" }, className: "bg-emerald-600 text-white" },
+};
+
 const Matches = () => {
-  const { lang } = useLanguage();
+  const { t, lang } = useLanguage();
   const [games, setGames] = useState<Game[]>([]);
   const [groups, setGroups] = useState<Group[]>([]);
   const [stadiums, setStadiums] = useState<Stadium[]>([]);
@@ -74,6 +79,11 @@ const Matches = () => {
   );
 
   const sortedDates = Object.keys(groupedByDate).sort();
+
+  const getGameStatus = (game: Game) => {
+    if (game.finished === "TRUE") return STATUS_MAP.TRUE;
+    return STATUS_MAP.FALSE;
+  };
 
   return (
     <Layout>
@@ -183,6 +193,7 @@ const Matches = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                     {groupedByDate[date].map((game) => {
                       const stageKey = game.type || "group";
+                      const status = getGameStatus(game);
                       return (
                         <button
                           key={game.id}
@@ -218,8 +229,8 @@ const Matches = () => {
                               ) : (
                                 <span className="text-lg font-bold">VS</span>
                               )}
-                              <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-accent/10 text-accent">
-                                {game.group || (STAGE_LABELS[stageKey]?.en || stageKey)}
+                              <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${status.className}`}>
+                                {lang === "ar" ? status.label.ar : status.label.en}
                               </span>
                             </div>
 
@@ -237,9 +248,24 @@ const Matches = () => {
                             </div>
                           </div>
 
-                          <div className="border-t border-border pt-3 mt-2 flex items-center justify-center gap-2 text-xs text-muted-foreground">
-                            <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
-                            <span className="line-clamp-1">{getStadiumName(game.stadium_id)}</span>
+                          <div className="border-t border-border pt-3 mt-2 space-y-1.5">
+                            <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
+                              <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
+                              <span className="line-clamp-1">{getStadiumName(game.stadium_id)}</span>
+                            </div>
+                            <div className="flex items-center justify-center gap-1">
+                              <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-accent/10 text-accent">
+                                {game.group
+                                  ? (lang === "ar" ? `المجموعة ${game.group}` : `Group ${game.group}`)
+                                  : (lang === "ar" ? STAGE_LABELS[stageKey]?.ar : STAGE_LABELS[stageKey]?.en) || stageKey
+                                }
+                              </span>
+                              {game.matchday && (
+                                <span className="text-xs text-muted-foreground/60">
+                                  {lang === "ar" ? `الجولة ${game.matchday}` : `MD ${game.matchday}`}
+                                </span>
+                              )}
+                            </div>
                           </div>
                         </button>
                       );

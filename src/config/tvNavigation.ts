@@ -13,6 +13,8 @@ export const TV_MAIN_NAV: TVNavItem[] = [
   { path: "/movies", labelFr: "Films", labelAr: "أفلام", labelEn: "Movies" },
   { path: "/series", labelFr: "Séries", labelAr: "مسلسلات", labelEn: "Series" },
   { path: "/my-list", labelFr: "Ma Liste", labelAr: "قائمتي", labelEn: "My List" },
+  { path: "/live", labelFr: "Matchs", labelAr: "مباريات اليوم", labelEn: "Live Matches" },
+  { path: "/matches", labelFr: "Coupe du Monde", labelAr: "كأس العالم", labelEn: "World Cup" },
   { path: "/search", labelFr: "Recherche", labelAr: "البحث", labelEn: "Search" },
   { path: "/profile", labelFr: "Profil", labelAr: "الملف الشخصي", labelEn: "Profile" },
 ];

@@ -54,6 +54,11 @@ export const MatchDetails = ({ game, stadiumMap, lang, onClose }: MatchDetailsPr
             <span className="text-xs font-bold px-3 py-1 rounded-full bg-accent/10 text-accent uppercase tracking-wider">
               {stageLabel}
             </span>
+            {game.matchday && (
+              <span className="text-xs text-muted-foreground/60">
+                {lang === "ar" ? `الجولة ${game.matchday}` : `MD ${game.matchday}`}
+              </span>
+            )}
           </div>
 
           <div className="flex items-center justify-center gap-6 md:gap-10 mb-6">
@@ -113,7 +118,6 @@ export const MatchDetails = ({ game, stadiumMap, lang, onClose }: MatchDetailsPr
               <span>
                 {stadium.name_en}
                 {stadium.city_en ? `, ${stadium.city_en}` : ""}
-                {stadium.country_en ? ` - ${stadium.country_en}` : ""}
                 {stadium.capacity ? ` (${formatCapacity(stadium.capacity)})` : ""}
               </span>
             </div>
@@ -123,7 +127,6 @@ export const MatchDetails = ({ game, stadiumMap, lang, onClose }: MatchDetailsPr
             <Calendar className="w-4 h-4 text-accent flex-shrink-0" />
             <span>
               {game.local_date || game.persian_date || ""}
-              {game.matchday ? ` - ${lang === "ar" ? "الجولة" : "Matchday"} ${game.matchday}` : ""}
             </span>
           </div>
         </div>
