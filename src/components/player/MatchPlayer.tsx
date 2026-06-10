@@ -81,7 +81,6 @@ export function MatchPlayer({ homeTeam, awayTeam, homeLogo, awayLogo, detailUrl,
               src={activeSource}
               className="w-full h-full border-0"
               allow="autoplay; encrypted-media; fullscreen"
-              sandbox="allow-scripts allow-same-origin allow-popups allow-forms allow-presentation"
               allowFullScreen
             />
           ) : (
