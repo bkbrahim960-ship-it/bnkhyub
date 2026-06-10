@@ -244,6 +244,22 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
     return () => window.removeEventListener('message', handleMessage);
   }, [onProgress, onCompleted]);
 
+  // Cleanup hls.js + video on unmount to prevent background audio
+  useEffect(() => {
+    return () => {
+      if (hlsRef.current) {
+        hlsRef.current.destroy();
+        hlsRef.current = null;
+      }
+      const video = videoRef.current;
+      if (video) {
+        video.pause();
+        video.removeAttribute("src");
+        video.load();
+      }
+    };
+  }, []);
+
   const defaultSources = type === "movie" 
     ? getMovieSources(imdb_id, tmdb_id, hasResumed ? historyProgress : 0) 
     : getTVSources(imdb_id, tmdb_id, season!, episode!, hasResumed ? historyProgress : 0);
@@ -495,12 +511,12 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
           </div>
         )}
 
-        {/* Video Element for HLS / Direct */}
-        {(allSources[sourceIndex]?.includes(".m3u8") || 
+        {/* Video Element for HLS / Direct — only render when active to prevent background audio */}
+        {playerActive && (allSources[sourceIndex]?.includes(".m3u8") || 
           allSources[sourceIndex]?.includes(".mp4")) && (
           <video
             ref={videoRef}
-            className={`absolute inset-0 w-full h-full object-contain bg-black transition-opacity duration-300 ${playerActive ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+            className="absolute inset-0 w-full h-full object-contain bg-black"
             controls
             autoPlay
             playsInline
