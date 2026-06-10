@@ -4,13 +4,10 @@
  */
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 
-export type ThemeName = "purple" | "gold" | "emerald" | "sky";
+export type ThemeName = "purple";
 
 export const THEMES: Record<ThemeName, { label: string; swatch: string }> = {
   purple: { label: "Violet Royal",  swatch: "#7B1FA2" },
-  gold:   { label: "Or Prestige",   swatch: "#D4A017" },
-  emerald:{ label: "Émeraude",      swatch: "#0F9D58" },
-  sky:    { label: "Azur Céleste",  swatch: "#0288D1" },
 };
 
 interface ThemeCtx {
