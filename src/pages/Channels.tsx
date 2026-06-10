@@ -3,7 +3,7 @@ import { Layout } from "@/components/layout/Layout";
 import { useLanguage } from "@/context/LanguageContext";
 import { fetchChannels, Channel } from "@/services/channels";
 import { ChannelPlayer } from "@/components/channel/ChannelPlayer";
-import { Loader2, Tv, Search, Play, Smartphone, Monitor, Link } from "lucide-react";
+import { Loader2, Tv, Search, Play, Smartphone, Monitor, Link, Trophy } from "lucide-react";
 
 const Channels = () => {
   const { lang } = useLanguage();
@@ -53,7 +53,17 @@ const Channels = () => {
   }, [search]);
 
   useEffect(() => {
-    if (activeGroup) {
+    if (activeGroup === "__bein__") {
+      setLoadingChannels(true);
+      fetchChannels({ page, search: "bein" })
+        .then((data) => {
+          setChannels(data.channels);
+          setTotal(data.total);
+          setTotalPages(data.totalPages);
+        })
+        .catch(() => {})
+        .finally(() => setLoadingChannels(false));
+    } else if (activeGroup) {
       loadChannels(activeGroup, activeSource, page);
     } else {
       setChannels([]);
@@ -62,8 +72,10 @@ const Channels = () => {
     }
   }, [activeGroup, activeSource, page, loadChannels]);
 
+  const isBeinActive = activeGroup === "__bein__";
+
   const handleGroupClick = (group: string, source: string) => {
-    if (activeGroup === group) {
+    if (activeGroup === group && activeSource === source) {
       setActiveGroup("");
       setActiveSource("");
     } else {
@@ -74,10 +86,24 @@ const Channels = () => {
     setActiveChannel(null);
   };
 
+  const handleBeinClick = () => {
+    if (isBeinActive) {
+      setActiveGroup("");
+      setActiveSource("");
+    } else {
+      setActiveGroup("__bein__");
+      setActiveSource("");
+    }
+    setPage(1);
+    setActiveChannel(null);
+  };
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     setPage(1);
-    if (activeGroup) {
+    if (activeGroup === "__bein__") {
+      loadChannels("", "", 1, "bein");
+    } else if (activeGroup) {
       loadChannels(activeGroup, activeSource, 1);
     } else {
       loadChannels("", "", 1, search);
@@ -100,6 +126,23 @@ const Channels = () => {
                     {lang === "ar" ? "التصنيفات" : "Categories"}
                   </h3>
                 </div>
+
+                <div className="px-4 mb-1 mt-2">
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-emerald-500/60">
+                    {lang === "ar" ? "مميز" : "Featured"}
+                  </p>
+                </div>
+                <button
+                  onClick={handleBeinClick}
+                  className={`w-full text-right px-4 py-2.5 text-sm font-bold transition-colors hover:bg-white/[0.04] flex items-center gap-3 ${
+                    isBeinActive
+                      ? "bg-emerald-500/10 text-emerald-400 border-r-2 border-emerald-500"
+                      : "text-foreground/70"
+                  }`}
+                >
+                  <Trophy className="w-4 h-4" />
+                  beIN Sport
+                </button>
 
                 <div className="px-4 mb-1 mt-4">
                   <p className="text-[10px] font-bold uppercase tracking-widest text-accent/60">
