@@ -197,6 +197,52 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
+// KoraLive proxy route — for live match streaming in production
+const axios = require('axios');
+app.get('/api/koralive', async (req, res) => {
+  try {
+    const { detail } = req.query;
+    const KORALIVE_URL = 'https://www.koralive-hd.com';
+    const headers = {
+      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36',
+      Accept: 'text/html',
+    };
+
+    if (detail) {
+      const detailUrl = detail.startsWith('http') ? detail : `${KORALIVE_URL}${detail}`;
+      const resp = await axios.get(detailUrl, { headers, timeout: 12000 });
+      const html = resp.data;
+      const iframes = [];
+      const serverUrls = [];
+      let m;
+      const srcRe = /<iframe[^>]*src=["']([^"']+)["']/gi;
+      while ((m = srcRe.exec(html)) !== null) {
+        const src = m[1];
+        if (src && !src.includes('koralive-hd') && !src.includes('/matches/')) iframes.push(src);
+      }
+      const dataRe = /data-(?:link|url|embed|stream)=["']([^"']+)["']/gi;
+      while ((m = dataRe.exec(html)) !== null) {
+        const val = m[1];
+        if (val && (val.startsWith('http') || val.startsWith('//')) && !val.includes('koralive-hd')) iframes.push(val.startsWith('//') ? `https:${val}` : val);
+      }
+      const btnRe = /server-btn["'\s][^>]*data-(?:link|url|embed|stream)=["']([^"']+)["']/gi;
+      while ((m = btnRe.exec(html)) !== null) {
+        const val = m[1];
+        if (val && (val.startsWith('http') || val.startsWith('//'))) serverUrls.push(val.startsWith('//') ? `https:${val}` : val);
+      }
+      return res.json({ iframes: [...new Set(iframes)], servers: [...new Set(serverUrls)] });
+    }
+
+    const resp = await axios.get(`${KORALIVE_URL}/matches-today/`, { headers, timeout: 12000 });
+    const bodyMatch = resp.data.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
+    const bodyContent = bodyMatch ? bodyMatch[1] : '';
+    res.json({ html: bodyContent });
+  } catch (err) {
+    console.error('koralive proxy error:', err.message);
+    res.status(502).json({ error: err.message, html: '' });
+  }
+});
+
 require('./controllers/index')(app);
 
 app.use((req, res, next) => {

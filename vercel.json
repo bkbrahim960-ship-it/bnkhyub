@@ -1,9 +1,7 @@
 {
   "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
-    }
+    { "source": "/api/koralive", "destination": "/api/koralive" },
+    { "source": "/(.*)", "destination": "/index.html" }
   ],
   "headers": [
     {
