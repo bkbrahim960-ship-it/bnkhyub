@@ -2,48 +2,25 @@ import { useEffect, useState } from "react";
 import { Layout } from "@/components/layout/Layout";
 import { useLanguage } from "@/context/LanguageContext";
 import { Loader2, RefreshCw, Trophy, MapPin, Clock, Calendar } from "lucide-react";
-import { fetchGames, fetchGroups, fetchStadiums, Game, Group, Stadium, getTeamFlag } from "@/services/worldcup";
-import { MatchDetails } from "@/components/match/MatchDetails";
-
-const STAGE_LABELS: Record<string, { en: string; ar: string }> = {
-  group: { en: "Group Stage", ar: "دور المجموعات" },
-  round_32: { en: "Round of 32", ar: "دور الـ32" },
-  round_16: { en: "Round of 16", ar: "دور الـ16" },
-  quarter: { en: "Quarter-finals", ar: "ربع النهائي" },
-  semi: { en: "Semi-finals", ar: "نصف النهائي" },
-  third: { en: "Third Place", ar: "المركز الثالث" },
-  final: { en: "Final", ar: "النهائي" },
-};
-
-const STATUS_MAP: Record<string, { label: { en: string; ar: string }; className: string }> = {
-  TRUE: { label: { en: "Finished", ar: "انتهت" }, className: "bg-gray-600 text-white" },
-  FALSE: { label: { en: "Not started", ar: "لم تبدأ" }, className: "bg-emerald-600 text-white" },
-};
+import { fetchScriptFootMatches, ScriptFootMatch, matchDate, matchTime } from "@/services/scriptfoot";
 
 const Matches = () => {
   const { t, lang } = useLanguage();
-  const [games, setGames] = useState<Game[]>([]);
-  const [groups, setGroups] = useState<Group[]>([]);
-  const [stadiums, setStadiums] = useState<Stadium[]>([]);
+  const [allMatches, setAllMatches] = useState<ScriptFootMatch[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [activeFilter, setActiveFilter] = useState<string>("all");
-  const [selectedGame, setSelectedGame] = useState<Game | null>(null);
+  const [selectedMatch, setSelectedMatch] = useState<ScriptFootMatch | null>(null);
 
-  const loadData = async (silent = false) => {
+  const loadMatches = async (silent = false) => {
     if (!silent) setLoading(true);
     else setRefreshing(true);
     setError(null);
     try {
-      const [gamesData, groupsData, stadiumsData] = await Promise.all([
-        fetchGames(), fetchGroups(), fetchStadiums(),
-      ]);
-      setGames(gamesData);
-      setGroups(groupsData);
-      setStadiums(stadiumsData);
+      const data = await fetchScriptFootMatches();
+      setAllMatches(data);
     } catch (err: any) {
-      setError(err.message || "Failed to load matches");
+      setError(err.message || "فشل تحميل المباريات");
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -51,38 +28,37 @@ const Matches = () => {
   };
 
   useEffect(() => {
-    loadData();
+    loadMatches();
   }, []);
 
-  const stadiumMap = new Map(stadiums.map((s) => [s.id, s]));
-
-  const getStadiumName = (id: string) => {
-    const s = stadiumMap.get(id);
-    return s ? s.name_en : `${lang === "ar" ? "الملعب" : "Stadium"} ${id}`;
+  const isWorldCup = (m: ScriptFootMatch) => {
+    const kw = ["كأس العالم", "world cup", "wc2026", "kأس", "المجموعة"];
+    const text = `${m.title} ${m.league || ""} ${m.home_team || ""} ${m.away_team || ""}`.toLowerCase();
+    return kw.some(k => text.includes(k.toLowerCase()));
   };
 
-  const groupNames = groups.map((g) => g.name);
-  const filteredGames = activeFilter === "all"
-    ? games
-    : activeFilter.length === 1
-      ? games.filter((g) => g.group === activeFilter)
-      : games.filter((g) => g.type === activeFilter);
+  const worldCupMatches = allMatches.filter(isWorldCup);
 
-  const groupedByDate = filteredGames.reduce(
-    (acc, g) => {
-      const date = g.local_date?.split(" ")[0] || "unknown";
+  const groupedByDate = worldCupMatches.reduce(
+    (acc, m) => {
+      const date = matchDate(m) || "unknown";
       if (!acc[date]) acc[date] = [];
-      acc[date].push(g);
+      acc[date].push(m);
       return acc;
     },
-    {} as Record<string, Game[]>,
+    {} as Record<string, ScriptFootMatch[]>,
   );
 
   const sortedDates = Object.keys(groupedByDate).sort();
 
-  const getGameStatus = (game: Game) => {
-    if (game.finished === "TRUE") return STATUS_MAP.TRUE;
-    return STATUS_MAP.FALSE;
+  const getStatusBadge = (match: ScriptFootMatch) => {
+    if (match.status === "live") {
+      return <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-red-600 text-white animate-pulse">مباشر</span>;
+    }
+    if (match.status === "ended" || match.status === "finished") {
+      return <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-gray-600 text-white">انتهت</span>;
+    }
+    return <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-emerald-600 text-white">لم تبدأ</span>;
   };
 
   return (
@@ -100,52 +76,13 @@ const Matches = () => {
               </p>
             </div>
             <button
-              onClick={() => loadData(true)}
+              onClick={() => loadMatches(true)}
               disabled={refreshing}
               className="flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-bold bg-surface-card border border-border hover:border-accent-subtle transition-all disabled:opacity-50"
             >
               <RefreshCw className={`w-4 h-4 ${refreshing ? "animate-spin" : ""}`} />
               {lang === "ar" ? "تحديث" : "Refresh"}
             </button>
-          </div>
-
-          <div className="flex flex-wrap gap-2 mb-8">
-            <button
-              onClick={() => setActiveFilter("all")}
-              className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${
-                activeFilter === "all"
-                  ? "bg-accent text-accent-foreground"
-                  : "bg-surface-card border border-border hover:border-accent-subtle"
-              }`}
-            >
-              {lang === "ar" ? "الكل" : "All"}
-            </button>
-            {groupNames.map((g) => (
-              <button
-                key={g}
-                onClick={() => setActiveFilter(g)}
-                className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${
-                  activeFilter === g
-                    ? "bg-accent text-accent-foreground"
-                    : "bg-surface-card border border-border hover:border-accent-subtle"
-                }`}
-              >
-                {lang === "ar" ? `المجموعة ${g}` : `Group ${g}`}
-              </button>
-            ))}
-            {Object.keys(STAGE_LABELS).filter((k) => k !== "group").map((stage) => (
-              <button
-                key={stage}
-                onClick={() => setActiveFilter(stage)}
-                className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${
-                  activeFilter === stage
-                    ? "bg-accent text-accent-foreground"
-                    : "bg-surface-card border border-border hover:border-accent-subtle"
-                }`}
-              >
-                {lang === "ar" ? STAGE_LABELS[stage].ar : STAGE_LABELS[stage].en}
-              </button>
-            ))}
           </div>
 
           {loading ? (
@@ -165,18 +102,31 @@ const Matches = () => {
                 <p className="text-sm text-muted-foreground/60 mt-1">{error}</p>
               </div>
               <button
-                onClick={() => loadData()}
+                onClick={() => loadMatches()}
                 className="px-6 py-2 rounded-full bg-accent text-accent-foreground font-bold text-sm"
               >
                 {lang === "ar" ? "إعادة المحاولة" : "Retry"}
               </button>
             </div>
-          ) : filteredGames.length === 0 ? (
+          ) : worldCupMatches.length === 0 ? (
             <div className="bg-surface-card border border-border rounded-2xl p-12 text-center flex flex-col items-center gap-4">
               <Trophy className="w-12 h-12 text-muted-foreground/30" />
-              <p className="text-lg font-medium text-muted-foreground">
-                {lang === "ar" ? "لا توجد مباريات" : "No matches found"}
-              </p>
+              <div>
+                <p className="text-lg font-medium text-muted-foreground">
+                  {lang === "ar" ? "لا توجد مباريات" : "No matches found"}
+                </p>
+                <p className="text-sm text-muted-foreground/60 mt-1">
+                  {lang === "ar"
+                    ? "المباريات ستظهر هنا عند توفرها في المصدر"
+                    : "Matches will appear here when available"}
+                </p>
+              </div>
+              <button
+                onClick={() => loadMatches()}
+                className="px-6 py-2 rounded-full bg-accent text-accent-foreground font-bold text-sm"
+              >
+                {lang === "ar" ? "إعادة المحاولة" : "Retry"}
+              </button>
             </div>
           ) : (
             <div className="space-y-10">
@@ -191,85 +141,62 @@ const Matches = () => {
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-                    {groupedByDate[date].map((game) => {
-                      const stageKey = game.type || "group";
-                      const status = getGameStatus(game);
-                      return (
-                        <button
-                          key={game.id}
-                          onClick={() => setSelectedGame(game)}
-                          className="group relative bg-surface-card border border-border rounded-2xl p-5 hover:border-accent-subtle transition-all duration-300 hover:-translate-y-1 text-right"
-                        >
-                          <div className="flex items-center gap-4 mb-4">
-                            <div className="flex-1 flex flex-col items-center gap-2">
-                              <div className="w-14 h-14 flex items-center justify-center">
-                                <img
-                                  src={getTeamFlag(game, game.home_team_id)}
-                                  alt={game.home_team_name_en || ""}
-                                  className="w-full h-full object-contain filter drop-shadow-lg group-hover:scale-110 transition-transform duration-500"
-                                />
+                    {groupedByDate[date].map((match) => (
+                      <button
+                        key={match.id}
+                        onClick={() => setSelectedMatch(match)}
+                        className="group relative bg-surface-card border border-border rounded-2xl p-5 hover:border-accent-subtle transition-all duration-300 hover:-translate-y-1 text-right"
+                      >
+                        <div className="flex items-center gap-4 mb-4">
+                          <div className="flex-1 flex flex-col items-center gap-2">
+                            <div className="w-14 h-14 flex items-center justify-center">
+                              <div className="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center">
+                                <Trophy className="w-5 h-5 text-accent" />
                               </div>
-                              <span className="text-sm font-bold text-center leading-tight line-clamp-2">
-                                {game.home_team_name_en}
-                              </span>
                             </div>
-
-                            <div className="flex flex-col items-center gap-1 min-w-[80px]">
-                              {game.finished === "TRUE" ? (
-                                <span className="text-2xl md:text-3xl font-black font-mono tracking-wider">
-                                  {game.home_score} - {game.away_score}
-                                </span>
-                              ) : game.local_date ? (
-                                <>
-                                  <span className="text-lg md:text-xl font-bold font-mono">
-                                    {game.local_date?.split(" ")[1]?.slice(0, 5) || game.local_date?.split(" ")[1] || ""}
-                                  </span>
-                                  <Clock className="w-3.5 h-3.5 text-muted-foreground" />
-                                </>
-                              ) : (
-                                <span className="text-lg font-bold">VS</span>
-                              )}
-                              <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${status.className}`}>
-                                {lang === "ar" ? status.label.ar : status.label.en}
-                              </span>
-                            </div>
-
-                            <div className="flex-1 flex flex-col items-center gap-2">
-                              <div className="w-14 h-14 flex items-center justify-center">
-                                <img
-                                  src={getTeamFlag(game, game.away_team_id)}
-                                  alt={game.away_team_name_en || ""}
-                                  className="w-full h-full object-contain filter drop-shadow-lg group-hover:scale-110 transition-transform duration-500"
-                                />
-                              </div>
-                              <span className="text-sm font-bold text-center leading-tight line-clamp-2">
-                                {game.away_team_name_en}
-                              </span>
-                            </div>
+                            <span className="text-sm font-bold text-center leading-tight line-clamp-2">
+                              {match.home_team || match.title}
+                            </span>
                           </div>
 
-                          <div className="border-t border-border pt-3 mt-2 space-y-1.5">
-                            <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
-                              <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
-                              <span className="line-clamp-1">{getStadiumName(game.stadium_id)}</span>
-                            </div>
-                            <div className="flex items-center justify-center gap-1">
-                              <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-accent/10 text-accent">
-                                {game.group
-                                  ? (lang === "ar" ? `المجموعة ${game.group}` : `Group ${game.group}`)
-                                  : (lang === "ar" ? STAGE_LABELS[stageKey]?.ar : STAGE_LABELS[stageKey]?.en) || stageKey
-                                }
+                          <div className="flex flex-col items-center gap-1 min-w-[80px]">
+                            {match.score ? (
+                              <span className="text-2xl md:text-3xl font-black font-mono tracking-wider">
+                                {match.score}
                               </span>
-                              {game.matchday && (
-                                <span className="text-xs text-muted-foreground/60">
-                                  {lang === "ar" ? `الجولة ${game.matchday}` : `MD ${game.matchday}`}
+                            ) : match.match_time ? (
+                              <>
+                                <span className="text-lg md:text-xl font-bold font-mono">
+                                  {matchTime(match)}
                                 </span>
-                              )}
-                            </div>
+                                <Clock className="w-3.5 h-3.5 text-muted-foreground" />
+                              </>
+                            ) : (
+                              <span className="text-lg font-bold">VS</span>
+                            )}
+                            {getStatusBadge(match)}
                           </div>
-                        </button>
-                      );
-                    })}
+
+                          <div className="flex-1 flex flex-col items-center gap-2">
+                            <div className="w-14 h-14 flex items-center justify-center">
+                              <div className="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center">
+                                <Trophy className="w-5 h-5 text-accent" />
+                              </div>
+                            </div>
+                            <span className="text-sm font-bold text-center leading-tight line-clamp-2">
+                              {match.away_team || ""}
+                            </span>
+                          </div>
+                        </div>
+
+                        {match.league && (
+                          <div className="border-t border-border pt-3 mt-2 flex items-center justify-center gap-2 text-xs text-muted-foreground">
+                            <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
+                            <span className="line-clamp-1">{match.league}</span>
+                          </div>
+                        )}
+                      </button>
+                    ))}
                   </div>
                 </div>
               ))}
@@ -278,13 +205,76 @@ const Matches = () => {
         </div>
       </section>
 
-      {selectedGame && (
-        <MatchDetails
-          game={selectedGame}
-          stadiumMap={stadiumMap}
-          lang={lang}
-          onClose={() => setSelectedGame(null)}
-        />
+      {selectedMatch && (
+        <div
+          className="fixed inset-0 z-[100] bg-black/70 flex items-center justify-center p-4"
+          onClick={() => setSelectedMatch(null)}
+        >
+          <div
+            className="bg-surface-card border border-border rounded-3xl max-w-lg w-full overflow-hidden animate-scale-in"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="relative p-8 pb-6">
+              <div className="flex items-center justify-center gap-2 mb-6">
+                <Trophy className="w-4 h-4 text-accent" />
+                <span className="text-xs font-bold px-3 py-1 rounded-full bg-accent/10 text-accent uppercase tracking-wider">
+                  كأس العالم 2026
+                </span>
+              </div>
+
+              <div className="flex items-center justify-center gap-6 md:gap-10 mb-6">
+                <div className="flex flex-col items-center gap-3 flex-1">
+                  <div className="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center">
+                    <Trophy className="w-5 h-5 text-accent" />
+                  </div>
+                  <span className="text-sm md:text-base font-bold text-center leading-tight">
+                    {selectedMatch.home_team || selectedMatch.title}
+                  </span>
+                </div>
+
+                <div className="flex flex-col items-center gap-1">
+                  {selectedMatch.score ? (
+                    <span className="text-4xl md:text-5xl font-black font-mono tracking-wider text-accent">
+                      {selectedMatch.score}
+                    </span>
+                  ) : (
+                    <div className="flex flex-col items-center gap-1">
+                      <span className="text-2xl md:text-3xl font-bold font-mono">
+                        {matchTime(selectedMatch) || "VS"}
+                      </span>
+                      <span className="text-xs text-muted-foreground">
+                        {selectedMatch.status === "live" ? "مباشر" :
+                         selectedMatch.status === "ended" || selectedMatch.status === "finished" ? "انتهت" : "لم تبدأ"}
+                      </span>
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex flex-col items-center gap-3 flex-1">
+                  <div className="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center">
+                    <Trophy className="w-5 h-5 text-accent" />
+                  </div>
+                  <span className="text-sm md:text-base font-bold text-center leading-tight">
+                    {selectedMatch.away_team || ""}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div className="border-t border-border px-8 py-5 space-y-3">
+              {selectedMatch.league && (
+                <div className="flex items-center gap-3 text-sm text-muted-foreground">
+                  <MapPin className="w-4 h-4 text-accent flex-shrink-0" />
+                  <span>{selectedMatch.league}</span>
+                </div>
+              )}
+              <div className="flex items-center gap-3 text-sm text-muted-foreground">
+                <Calendar className="w-4 h-4 text-accent flex-shrink-0" />
+                <span>{selectedMatch.match_date} {matchTime(selectedMatch)}</span>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
     </Layout>
   );
