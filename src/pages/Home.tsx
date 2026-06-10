@@ -35,7 +35,7 @@ import {
   TMDBMovie,
   TMDBSeries,
 } from "@/services/tmdb";
-import { KABYLE_CONTENT, MOCK_SERIES } from "@/services/customContent";
+import { KABYLE_CONTENT } from "@/services/customContent";
 import { IMG } from "@/services/tmdb";
 import { Play, Star } from "lucide-react";
 
@@ -181,9 +181,8 @@ const supabaseM3ULists = [
 const KabyleCinemaRow = () => {
   const { lang } = useLanguage();
   const allMovies = KABYLE_CONTENT;
-  const allSeries = MOCK_SERIES;
   
-  if (allMovies.length === 0 && allSeries.length === 0) return null;
+  if (allMovies.length === 0) return null;
 
   return (
     <section className="relative py-8">
@@ -218,28 +217,6 @@ const KabyleCinemaRow = () => {
         </div>
       </div>
 
-      {/* Kabyle Series */}
-      {allSeries.length > 0 && (
-        <div>
-          <h3 className={`${ROW_HEADER} text-lg font-display text-muted-foreground mb-0 py-0`}>
-            {lang === "ar" ? "📺 المسلسلات" : "📺 Séries"}
-          </h3>
-          <div className={`${ROW_TRACK} pt-2`}>
-            {allSeries.map((item) => (
-              <div key={item.id} className="snap-start">
-                <MovieCard
-                  id={item.id}
-                  title={item.title}
-                  posterPath={item.thumbnail}
-                  year={item.year || "Kabyle"}
-                  rating={item.rating}
-                  type="tv"
-                />
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
     </section>
   );
 };

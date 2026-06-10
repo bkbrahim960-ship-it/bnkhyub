@@ -21,7 +21,7 @@ import { useAuth } from "@/context/AuthContext";
 import { tmdbLang } from "@/services/i18n";
 import { SEO } from "@/components/SEO";
 import { upsertWatchEntry, getSeriesHistory, WatchHistoryEntry } from "@/services/watchHistory";
-import { KABYLE_CONTENT, MOCK_SERIES } from "@/services/customContent";
+import { KABYLE_CONTENT } from "@/services/customContent";
 import { SOURCE_LABELS } from "@/services/player";
 import { Play, Star, Calendar, ArrowLeft, Youtube, ChevronRight, Clock, Info, Check } from "lucide-react";
 import { useAmbient } from "@/context/AmbientContext";
@@ -79,29 +79,6 @@ const Series = () => {
     setPlaying(false);
 
     const customMovie = KABYLE_CONTENT.find(c => c.id === id);
-    const customSeries = MOCK_SERIES.find(c => c.id === id);
-    if (customSeries) {
-      const seriesData = {
-        ...customSeries,
-        name: customSeries.title,
-        overview: customSeries.description,
-        poster_path: customSeries.thumbnail,
-        backdrop_path: customSeries.thumbnail,
-        vote_average: customSeries.rating,
-        first_air_date: customSeries.year,
-        seasons: [{ id: 1, name: "Saison 1", episode_count: customSeries.episodes?.length || 0, season_number: 1 }],
-        episodes: customSeries.episodes
-      };
-      setSeries(seriesData as any);
-      setLoading(false);
-      
-      if (resumeRequested && resumeSeason && resumeEpisode) {
-        setSeason(resumeSeason);
-        setEpisode(resumeEpisode);
-        setPlaying(true);
-      }
-      return;
-    }
 
     if (customMovie && customMovie.episodes) {
       const customSeriesFromMovie = {
@@ -175,24 +152,6 @@ const Series = () => {
     if (!series || !season) return;
     
     const customMovie = KABYLE_CONTENT.find(c => c.id === String(series.id));
-    const customSeries = MOCK_SERIES.find(c => c.id === String(series.id));
-    
-    if (customSeries) {
-      setSeasonData({
-        id: 1,
-        name: "Saison 1",
-        season_number: 1,
-        episodes: customSeries.episodes?.map((ep, idx) => ({
-          id: ep.id,
-          name: ep.title,
-          episode_number: idx + 1,
-          still_path: null,
-          overview: ""
-        })) || []
-      } as any);
-      setSeasonLoading(false);
-      return;
-    }
 
     if (customMovie && customMovie.episodes) {
       setSeasonData({
@@ -434,12 +393,7 @@ const Series = () => {
                 initialSourceIndex={initialSourceIndex}
                 autoStart={false}
                 customUrl={(() => {
-                  const customSeries = MOCK_SERIES.find(c => c.id === String(series.id));
                   const customMovie = KABYLE_CONTENT.find(c => c.id === String(series.id));
-                  if (customSeries && customSeries.episodes) {
-                    const ep = customSeries.episodes[episode - 1];
-                    return ep?.videoUrl;
-                  }
                   if (customMovie && customMovie.episodes) {
                     const ep = customMovie.episodes[episode - 1];
                     return ep?.videoUrl;
