@@ -11,7 +11,7 @@ export const CUSTOM_CONTENT = [
     year: '—',
     rating: 4.5,
     isDubbed: false,
-    videoUrl: 'https://hanerix.com/mxvxbvq2u411'
+    videoUrl: 'https://hgcloud.to/e/gymsz4vk73ig'
   },
   {
     id: 'm-skarfez',
@@ -22,7 +22,7 @@ export const CUSTOM_CONTENT = [
     year: '—',
     rating: 4.5,
     isDubbed: false,
-    videoUrl: 'https://vibuxer.com/utkl8yrke25c'
+    videoUrl: 'https://hgcloud.to/e/hckewslgnba7'
   },
   {
     id: 'm-rubiccu',
@@ -33,7 +33,7 @@ export const CUSTOM_CONTENT = [
     year: '—',
     rating: 4.5,
     isDubbed: false,
-    videoUrl: 'https://vibuxer.com/wjdqwtsgn1yq'
+    videoUrl: 'https://hgcloud.to/e/xqvrjmwow3to'
   },
   {
     id: 'm-yamara-1',
@@ -44,7 +44,7 @@ export const CUSTOM_CONTENT = [
     year: '—',
     rating: 4.5,
     isDubbed: false,
-    videoUrl: 'https://vibuxer.com/z5v2na7k4cdk'
+    videoUrl: 'https://hgcloud.to/e/mnahnpghdioa'
   },
   {
     id: 'm-iqjan-imcac',
@@ -55,7 +55,7 @@ export const CUSTOM_CONTENT = [
     year: '—',
     rating: 4.5,
     isDubbed: false,
-    videoUrl: 'https://vibuxer.com/dfp4vf7bxshc'
+    videoUrl: 'https://hgcloud.to/e/8c6nhc0djoyc'
   },
   {
     id: 'm-transporteur',
@@ -66,7 +66,7 @@ export const CUSTOM_CONTENT = [
     year: '—',
     rating: 4.5,
     isDubbed: false,
-    videoUrl: 'https://vibuxer.com/t8e4aabme7ac'
+    videoUrl: 'https://hgcloud.to/e/791qik1x9og3'
   },
   {
     id: 'm-at-dawuzru',
@@ -77,7 +77,7 @@ export const CUSTOM_CONTENT = [
     year: '—',
     rating: 4.5,
     isDubbed: false,
-    videoUrl: 'https://vibuxer.com/y06zhrdjxs78'
+    videoUrl: 'https://hgcloud.to/e/4d8yxrh3cq2l'
   },
   {
     id: 'm-kypous-1',
@@ -88,7 +88,7 @@ export const CUSTOM_CONTENT = [
     year: '—',
     rating: 4.5,
     isDubbed: false,
-    videoUrl: 'https://vibuxer.com/b3qj7sonqbg8'
+    videoUrl: 'https://hgcloud.to/e/ehhpsa1xrhew'
   },
   {
     id: 'm-qezbul-2',
@@ -99,7 +99,7 @@ export const CUSTOM_CONTENT = [
     year: '—',
     rating: 4.5,
     isDubbed: false,
-    videoUrl: 'https://vibuxer.com/66w3oxvldmk1'
+    videoUrl: 'https://hgcloud.to/e/niwnpgwgg7b3'
   },
   {
     id: 'm-heliopolis',
@@ -110,7 +110,7 @@ export const CUSTOM_CONTENT = [
     year: '2021',
     rating: 4.5,
     isDubbed: false,
-    videoUrl: 'https://vibuxer.com/tzqnl9k3onh2'
+    videoUrl: 'https://hgcloud.to/e/pwbjjahvd0ji'
   },
   {
     id: 'm-derniere-reine',
@@ -121,7 +121,7 @@ export const CUSTOM_CONTENT = [
     year: '—',
     rating: 4.5,
     isDubbed: false,
-    videoUrl: 'https://vibuxer.com/x7kg2g4y3lso'
+    videoUrl: 'https://hgcloud.to/e/m5929gq0el8w'
   },
   {
     id: 'm-li-mucucu-3',
@@ -132,7 +132,7 @@ export const CUSTOM_CONTENT = [
     year: '—',
     rating: 4.5,
     isDubbed: false,
-    videoUrl: 'https://vibuxer.com/xr5l57nsa0md'
+    videoUrl: 'https://hgcloud.to/e/x9h29l2n68d5'
   },
   {
     id: 'm-iferfucen',
@@ -143,7 +143,7 @@ export const CUSTOM_CONTENT = [
     year: '—',
     rating: 4.5,
     isDubbed: false,
-    videoUrl: 'https://vibuxer.com/xa8ea37m8s82'
+    videoUrl: 'https://hgcloud.to/e/gc68taeuh7fi'
   },
   {
     id: 'm-pucci-3',
@@ -154,7 +154,7 @@ export const CUSTOM_CONTENT = [
     year: '—',
     rating: 4.5,
     isDubbed: false,
-    videoUrl: 'https://vibuxer.com/0pd1g5x8htld'
+    videoUrl: 'https://hglink.to/e/81m4yr2agtpj'
   },
   {
     id: 'm-3ichucha',
@@ -165,7 +165,7 @@ export const CUSTOM_CONTENT = [
     year: '—',
     rating: 4.5,
     isDubbed: false,
-    videoUrl: 'https://vibuxer.com/7eevbsy3a9tn'
+    videoUrl: 'https://hglink.to/e/ui81qyfikkv9'
   },
   {
     id: 'm-crek-2',
@@ -176,7 +176,7 @@ export const CUSTOM_CONTENT = [
     year: '—',
     rating: 4.5,
     isDubbed: false,
-    videoUrl: 'https://vibuxer.com/f5t1ky5cmmog'
+    videoUrl: 'https://hglink.to/e/r845ku5i0hzj'
   },
   {
     id: 'm-narnia-2',
@@ -187,7 +187,7 @@ export const CUSTOM_CONTENT = [
     year: '—',
     rating: 4.5,
     isDubbed: false,
-    videoUrl: 'https://vibuxer.com/22j2rwr8hmy1'
+    videoUrl: 'https://hglink.to/e/uue2j0nhqccl'
   },
   {
     id: 'm-kiki-1',
@@ -198,7 +198,7 @@ export const CUSTOM_CONTENT = [
     year: '—',
     rating: 4.5,
     isDubbed: false,
-    videoUrl: 'https://vibuxer.com/jh10f3enwgds'
+    videoUrl: 'https://hglink.to/e/ny3uz1chqods'
   },
   {
     id: 'm-crek-1',
@@ -209,7 +209,7 @@ export const CUSTOM_CONTENT = [
     year: '—',
     rating: 4.5,
     isDubbed: false,
-    videoUrl: 'https://vibuxer.com/2h7r3hck2lba'
+    videoUrl: 'https://hglink.to/e/n9fy75wq1d2i'
   },
   {
     id: 'm-li-mucucu-1',
@@ -220,7 +220,7 @@ export const CUSTOM_CONTENT = [
     year: '—',
     rating: 4.5,
     isDubbed: false,
-    videoUrl: 'https://vibuxer.com/sqr9n22pu34m'
+    videoUrl: 'https://hglink.to/e/itbu9l5k7jta'
   },
   {
     id: 'm-narnia-1',
@@ -231,7 +231,7 @@ export const CUSTOM_CONTENT = [
     year: '—',
     rating: 4.5,
     isDubbed: false,
-    videoUrl: 'https://vibuxer.com/4hytj5r3lm2h'
+    videoUrl: 'https://hglink.to/e/65p1t0yh5g72'
   },
   {
     id: 'm-qezbul-1',
@@ -242,7 +242,7 @@ export const CUSTOM_CONTENT = [
     year: '—',
     rating: 4.5,
     isDubbed: false,
-    videoUrl: 'https://vibuxer.com/fp2xnhdxqali'
+    videoUrl: 'https://hglink.to/e/yt3txh0bxhtm'
   },
   {
     id: 'm-pucci-1',
@@ -253,7 +253,7 @@ export const CUSTOM_CONTENT = [
     year: '—',
     rating: 4.5,
     isDubbed: false,
-    videoUrl: 'https://vibuxer.com/evkf23xfqwvo'
+    videoUrl: 'https://hglink.to/e/j9tsobh2m54t'
   },
   {
     id: 'm-pucci-2',
@@ -264,7 +264,7 @@ export const CUSTOM_CONTENT = [
     year: '—',
     rating: 4.5,
     isDubbed: false,
-    videoUrl: 'https://vibuxer.com/fbrmh3ci2mup'
+    videoUrl: 'https://hglink.to/e/zstt9clebyq6'
   },
   {
     id: 'm-pucci-4',
@@ -275,7 +275,7 @@ export const CUSTOM_CONTENT = [
     year: '—',
     rating: 4.5,
     isDubbed: false,
-    videoUrl: 'https://vibuxer.com/ammrxksh7fba'
+    videoUrl: 'https://hgcloud.to/e/4hit88uipmq4'
   },
   {
     id: 'm-li-mucucu-2',
@@ -286,7 +286,7 @@ export const CUSTOM_CONTENT = [
     year: '—',
     rating: 4.5,
     isDubbed: false,
-    videoUrl: 'https://vibuxer.com/1hzol8uo396b'
+    videoUrl: 'https://hgcloud.to/e/bjz860d1bmau'
   },
   {
     id: 'm-qiqi-1',
@@ -297,7 +297,7 @@ export const CUSTOM_CONTENT = [
     year: '—',
     rating: 4.5,
     isDubbed: false,
-    videoUrl: 'https://vibuxer.com/2okp4h5kkke8'
+    videoUrl: 'https://hgcloud.to/e/x2f80v0jsmx7'
   },
 
   // ═══════════════════════════════════════════════════════════════
