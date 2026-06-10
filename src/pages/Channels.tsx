@@ -87,13 +87,12 @@ const Channels = () => {
   const isNewsActive = activeGroup === "__news__";
   const isMbcActive = activeGroup === "__mbc__";
 
-  const handleFeaturedClick = (id: string) => {
-    setActiveGroup(activeGroup === id ? "" : id);
+  const handleSportsClick = () => {
+    setActiveGroup(isSportsActive ? "" : "__sports__");
     setActiveSource("");
     setPage(1);
     setActiveChannel(null);
   };
-
 
   const handleGroupClick = (group: string, source: string) => {
     if (activeGroup === group && activeSource === source) {
