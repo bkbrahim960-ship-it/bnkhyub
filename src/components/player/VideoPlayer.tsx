@@ -11,7 +11,7 @@ import { ResumeModal } from "./ResumeModal";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
 import { getRecentHistory } from "@/services/watchHistory";
-import { Loader2, AlertCircle, RotateCw, ShieldCheck, Play, Settings, Lock, Unlock, FastForward, Languages, Captions, Monitor, Gauge, PictureInPicture as PipIcon, Maximize, Search, Download, ExternalLink, X, Check } from "lucide-react";
+import { Loader2, AlertCircle, RotateCw, ShieldCheck, Play, Settings, Lock, Unlock, FastForward, Languages, Captions, Monitor, Gauge, PictureInPicture as PipIcon, Search, Download, ExternalLink, X, Check } from "lucide-react";
 import { searchSubtitles, getDownloadUrl, SubtitleResult } from "@/services/opensubtitles";
 import { searchWyzieSubtitles, WyzieSubtitle } from "@/services/wyzie";
 import { toast } from "sonner";
@@ -40,13 +40,10 @@ interface Props {
   onCompleted?: () => void;
   /** Démarre automatiquement la lecture (TV / desktop) */
   autoStart?: boolean;
-  /** Passe en plein écran dès que la lecture commence */
-  autoFullscreen?: boolean;
 }
 
 export interface VideoPlayerRef {
   setSubtitle: (url: string) => void;
-  enterFullscreen: () => void;
   startPlayback: () => void;
 }
 
@@ -64,7 +61,6 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
   onProgress,
   onCompleted,
   autoStart = false,
-  autoFullscreen = false,
 }, ref) => {
   const { t, lang } = useLanguage();
   const [sourceIndex, setSourceIndex] = useState(Math.min(initialSourceIndex, 2));
@@ -107,26 +103,6 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
   const [cineproSubs, setCineproSubs] = useState<{ url: string; format: string; label: string }[]>([]);
 
 
-  const enterFullscreen = useCallback(() => {
-    if (!containerRef.current) return;
-    const el = containerRef.current as HTMLElement & {
-      webkitRequestFullscreen?: () => void;
-    };
-    const doc = document as Document & {
-      webkitFullscreenElement?: Element;
-      webkitExitFullscreen?: () => void;
-    };
-    if (!doc.fullscreenElement && !doc.webkitFullscreenElement) {
-      if (el.requestFullscreen) {
-        el.requestFullscreen().catch(() => setIsWebFullscreen(true));
-      } else if (el.webkitRequestFullscreen) {
-        el.webkitRequestFullscreen();
-      } else {
-        setIsWebFullscreen(true);
-      }
-    }
-  }, []);
-
   const startPlayback = useCallback(() => {
     setAdsOpen(false);
     setPlayerActive(true);
@@ -138,7 +114,6 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
       setAppliedExternalSub(url);
       setPlayerActive(true);
     },
-    enterFullscreen,
     startPlayback,
   }));
 
@@ -147,9 +122,7 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
   const [resumeModalOpen, setResumeModalOpen] = useState(false);
   const [historyProgress, setHistoryProgress] = useState(0);
   const [hasResumed, setHasResumed] = useState(false);
-  const [isWebFullscreen, setIsWebFullscreen] = useState(false);
   const lastSaveTime = useRef(0);
-  const fullscreenAttempted = useRef(false);
 
   // Save progress using existing watchHistory service
   const saveProgress = async (seconds: number, duration?: number) => {
@@ -281,14 +254,13 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
   const sources = customUrl ? [customUrl] : defaultSources;
 
   // CinemaOS URL builder (Arabic language & subtitles, theme matching site accent, no ads)
-  const cinemaOsParams = "language=ar&theme=c124a0&autoPlay=true&subtitle=ar&sub=ar&default_sub=ar&cc_lang_pref=ar";
+  const cinemaOsParams = "language=ar&theme=c124a0&subtitle=ar&sub=ar&default_sub=ar&cc_lang_pref=ar";
   const cinemaOsUrl = type === "movie"
     ? `https://cinemaos.tech/player/${tmdb_id}?${cinemaOsParams}`
     : `https://cinemaos.tech/player/${tmdb_id}/${season}/${episode}?${cinemaOsParams}`;
 
   // nhdapi.com URL builder (Custom theme, Arabic options, download enabled)
   const nhdapiParams = new URLSearchParams({
-    autoplay: "true",
     autonext: "true",
     download: "true", // Enable download control
     primarycolor: "C124A0", // Match site accent color
@@ -396,38 +368,11 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
     }
   };
 
-  const toggleFullscreen = useCallback(() => {
-    if (!containerRef.current) return;
-    const el = containerRef.current as HTMLElement & {
-      webkitRequestFullscreen?: () => void;
-    };
-    const doc = document as Document & {
-      webkitFullscreenElement?: Element;
-      webkitExitFullscreen?: () => void;
-    };
-    if (!doc.fullscreenElement && !doc.webkitFullscreenElement) {
-      enterFullscreen();
-    } else {
-      if (doc.exitFullscreen) doc.exitFullscreen();
-      else if (doc.webkitExitFullscreen) doc.webkitExitFullscreen();
-      setIsWebFullscreen(false);
-    }
-  }, [enterFullscreen]);
-
   useEffect(() => {
     if (!autoStart) return;
     setAdsOpen(false);
     setPlayerActive(true);
   }, [autoStart]);
-
-  useEffect(() => {
-    if (!autoFullscreen || !playerActive || fullscreenAttempted.current) return;
-    fullscreenAttempted.current = true;
-    // CSS fullscreen works without user gesture (desktop & TV)
-    setIsWebFullscreen(true);
-    const timer = window.setTimeout(() => enterFullscreen(), 150);
-    return () => window.clearTimeout(timer);
-  }, [autoFullscreen, playerActive, enterFullscreen]);
 
   useEffect(() => {
     if (!playerActive) return;
@@ -453,27 +398,6 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
       }
     };
   }, [sourceIndex, playerActive]);
-
-  useEffect(() => {
-    const handleRemote = (e: KeyboardEvent) => {
-      if (e.key === "f" || e.key === "F") toggleFullscreen();
-      if (e.key === "Escape" && isWebFullscreen) setIsWebFullscreen(false);
-    };
-    window.addEventListener("keydown", handleRemote);
-    
-    const handleFsChange = () => {
-      const fsElem = document.fullscreenElement || (document as any).webkitFullscreenElement;
-      setIsWebFullscreen(!!fsElem);
-    };
-    document.addEventListener('fullscreenchange', handleFsChange);
-    document.addEventListener('webkitfullscreenchange', handleFsChange);
-
-    return () => {
-      window.removeEventListener("keydown", handleRemote);
-      document.removeEventListener('fullscreenchange', handleFsChange);
-      document.removeEventListener('webkitfullscreenchange', handleFsChange);
-    };
-  }, [isWebFullscreen, toggleFullscreen]);
 
   return (
     <div className="w-full max-w-5xl mx-auto">
@@ -506,7 +430,7 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
 
       <div 
         ref={containerRef} 
-        className={`relative w-full ${allSources[sourceIndex]?.includes("drive.google.com") ? "aspect-square sm:aspect-[4/3] md:aspect-[16/10] rounded-lg" : "aspect-video rounded-2xl"} bg-black overflow-hidden border border-white/10 shadow-2xl group/player transition-all duration-500 ${isWebFullscreen ? 'fixed inset-0 z-[1000] rounded-none !aspect-auto h-screen' : ''}`}
+        className={`relative w-full ${allSources[sourceIndex]?.includes("drive.google.com") ? "aspect-square sm:aspect-[4/3] md:aspect-[16/10] rounded-lg" : "aspect-video rounded-2xl"} bg-black overflow-hidden border border-white/10 shadow-2xl group/player transition-all duration-500`}
       >
         
         {/* Permanent Brand Watermark */}
@@ -570,7 +494,6 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
             ref={videoRef}
             className="absolute inset-0 w-full h-full object-contain bg-black"
             controls
-            autoPlay
             playsInline
             // @ts-ignore
             webkit-playsinline="true"
@@ -609,9 +532,9 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
               allSources[sourceIndex].includes("v=") 
                 ? allSources[sourceIndex].split("v=")[1].split("&")[0] 
                 : allSources[sourceIndex].split("/").pop()
-            }?autoplay=1&rel=0&modestbranding=1&showinfo=0&iv_load_policy=3`}
+            }?rel=0&modestbranding=1&showinfo=0&iv_load_policy=3`}
             title="YouTube Video"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
+            allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
             allowFullScreen
             onLoad={handleLoad}
             className="absolute inset-0 w-full h-full border-0"
@@ -632,7 +555,7 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
             key={`${sourceIndex}-${appliedExternalSub}`}
             src={allSources[sourceIndex]}
             title="BNKHUB"
-            allow="autoplay; fullscreen; picture-in-picture; encrypted-media; clipboard-write; gyroscope; accelerometer; web-share; display-capture; screen-wake-lock"
+            allow="fullscreen; picture-in-picture; encrypted-media; clipboard-write; gyroscope; accelerometer; web-share; display-capture; screen-wake-lock"
             allowFullScreen
             allowtransparency
             frameBorder="0"
