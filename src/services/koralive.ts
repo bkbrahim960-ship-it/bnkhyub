@@ -67,10 +67,15 @@ export function matchTime(match: KoraliveMatch): string {
 
 export async function fetchMatches(): Promise<KoraliveMatch[]> {
   const res = await fetch(`${API_BASE}`);
+  const ct = res.headers.get("content-type") || "";
+  if (!ct.includes("application/json")) {
+    throw new Error("الموقع المصدر غير متاح حالياً، حاول مرة أخرى لاحقاً");
+  }
   const json = await res.json();
 
   if (json.matches) return json.matches;
-  if (!json.html) throw new Error(json.error || "Failed to load matches");
+  if (json.error) throw new Error(json.error);
+  if (!json.html) throw new Error("Failed to load matches");
 
   const html = `<html><body>${json.html}</body></html>`;
   const parser = new DOMParser();
@@ -141,6 +146,10 @@ export async function fetchMatches(): Promise<KoraliveMatch[]> {
 
 export async function fetchMatchStreams(detailUrl: string): Promise<MatchStreams> {
   const res = await fetch(`${API_BASE}?detail=${encodeURIComponent(detailUrl)}`);
+  const ct = res.headers.get("content-type") || "";
+  if (!ct.includes("application/json")) {
+    return { iframes: [], servers: [] };
+  }
   const json = await res.json();
   if (json.error) throw new Error(json.error);
   return { iframes: json.iframes || [], servers: json.servers || [] };

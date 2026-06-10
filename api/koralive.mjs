@@ -2,17 +2,24 @@ import fetch from "node-fetch";
 
 const KORALIVE_URL = "https://www.koralive-hd.com";
 const MATCHES_TODAY_URL = `${KORALIVE_URL}/matches-today/`;
+const FETCH_TIMEOUT = 12000;
+
+function fetchWithTimeout(url, options = {}) {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), FETCH_TIMEOUT);
+  return fetch(url, { ...options, signal: controller.signal }).finally(() => clearTimeout(timeout));
+}
 
 export default async function handler(req, res) {
-  const headers = {
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods": "GET, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type",
+  const setCORS = () => {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type");
   };
 
   if (req.method === "OPTIONS") {
     res.status(200);
-    Object.entries(headers).forEach(([k, v]) => res.setHeader(k, v));
+    setCORS();
     res.end();
     return;
   }
@@ -22,7 +29,7 @@ export default async function handler(req, res) {
 
     if (detail) {
       const detailUrl = detail.startsWith("http") ? detail : `${KORALIVE_URL}${detail}`;
-      const response = await fetch(detailUrl, {
+      const response = await fetchWithTimeout(detailUrl, {
         headers: {
           "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
           Accept: "text/html",
@@ -59,12 +66,12 @@ export default async function handler(req, res) {
 
       res.status(200);
       res.setHeader("Content-Type", "application/json");
-      Object.entries(headers).forEach(([k, v]) => res.setHeader(k, v));
+      setCORS();
       res.json({ iframes: [...new Set(iframes)], servers: [...new Set(serverUrls)] });
       return;
     }
 
-    const response = await fetch(MATCHES_TODAY_URL, {
+    const response = await fetchWithTimeout(MATCHES_TODAY_URL, {
       headers: {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
         Accept: "text/html",
@@ -81,13 +88,13 @@ export default async function handler(req, res) {
 
     res.status(200);
     res.setHeader("Content-Type", "application/json");
-    Object.entries(headers).forEach(([k, v]) => res.setHeader(k, v));
+    setCORS();
     res.json({ html: bodyContent });
   } catch (err) {
-    console.error("koralive proxy error:", err);
+    console.error("koralive proxy error:", err.message);
     res.status(502);
     res.setHeader("Content-Type", "application/json");
     res.setHeader("Access-Control-Allow-Origin", "*");
-    res.json({ error: err.message });
+    res.json({ error: err.message, html: "" });
   }
 }
