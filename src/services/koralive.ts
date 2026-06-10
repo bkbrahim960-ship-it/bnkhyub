@@ -30,7 +30,8 @@ interface KoraliveResponse {
   matches: KoraliveMatch[];
 }
 
-const API_BASE = "/api/koralive";
+const isProd = !import.meta.env.DEV;
+const API_BASE = isProd ? "/api/koralive" : "/api/koralive";
 
 function parseKickoff(time: string | null): string {
   if (!time) return "";
@@ -60,8 +61,22 @@ export function matchTime(match: KoraliveMatch): string {
 }
 
 export async function fetchMatches(): Promise<KoraliveMatch[]> {
-  const res = await fetch(`${API_BASE}/matches-today/`);
-  const html = await res.text();
+  let res = await fetch(`${API_BASE}`);
+  let html: string;
+
+  const ct = res.headers.get("content-type") || "";
+  if (ct.includes("application/json")) {
+    const json = await res.json();
+    if (json.html) {
+      html = `<html><body>${json.html}</body></html>`;
+    } else if (json.matches) {
+      return json.matches;
+    } else {
+      throw new Error(json.error || "فشل تحميل المباريات");
+    }
+  } else {
+    html = await res.text();
+  }
 
   const parser = new DOMParser();
   const doc = parser.parseFromString(html, "text/html");
