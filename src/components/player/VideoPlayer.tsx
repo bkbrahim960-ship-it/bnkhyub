@@ -6,7 +6,6 @@
  */
 import React, { useCallback, useEffect, useRef, useState, forwardRef, useImperativeHandle } from "react";
 import { getMovieSources, getTVSources, SOURCE_LABELS, getInternalBackendSources, fetchCineProSources, CineProSource } from "@/services/player";
-import { AdsNoticeModal, hasSeenAdsNotice } from "./AdsNoticeModal";
 import { ResumeModal } from "./ResumeModal";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
@@ -66,8 +65,7 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
   const [sourceIndex, setSourceIndex] = useState(initialSourceIndex);
   const [loading, setLoading] = useState(true);
   const [slow, setSlow] = useState<boolean[]>(Array(50).fill(false));
-  const [adsOpen, setAdsOpen] = useState(!customUrl && !hasSeenAdsNotice());
-  const [playerActive, setPlayerActive] = useState(customUrl || hasSeenAdsNotice());
+  const [playerActive, setPlayerActive] = useState(false);
   const timeoutRef = useRef<number | null>(null);
   const startedRef = useRef(false);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -103,7 +101,6 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
   const [cineproSubs, setCineproSubs] = useState<{ url: string; format: string; label: string }[]>([]);
 
   const startPlayback = useCallback(() => {
-    setAdsOpen(false);
     setPlayerActive(true);
   }, []);
 
@@ -368,7 +365,6 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
 
   useEffect(() => {
     if (!autoStart) return;
-    setAdsOpen(false);
     setPlayerActive(true);
   }, [autoStart]);
 
@@ -399,11 +395,6 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
 
   return (
     <div className="w-full max-w-5xl mx-auto">
-      <AdsNoticeModal open={adsOpen} onAccept={() => {
-        setAdsOpen(false);
-        setPlayerActive(true);
-      }} />
-
       <ResumeModal 
         open={resumeModalOpen}
         progressSeconds={historyProgress}
@@ -452,7 +443,7 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
                 type="button"
                 data-tv-nav="primary"
                 tabIndex={0}
-                onClick={() => { setAdsOpen(false); setPlayerActive(true); }}
+                onClick={() => { setPlayerActive(true); }}
                 className="group focus:outline-none focus-visible:ring-4 focus-visible:ring-accent rounded-full"
               >
                 <div className="absolute inset-[-20px] rounded-full bg-accent/5 blur-3xl group-hover:bg-accent/20 transition-all duration-700" />

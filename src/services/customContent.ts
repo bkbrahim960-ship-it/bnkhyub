@@ -1,282 +1,304 @@
 export const KABYLE_CONTENT = [
   {
-    id: 'm-uq-907jor35z6se',
-    title: 'SHREK 1',
-    description: 'Afilm n teqbaylit.',
-    thumbnail: 'https://kabyletv.alwaysdata.net/image/69199338_af.jpg',
-    category: 'Afilm',
+    id: 'm-kiki-2',
+    title: 'Kiki 2',
+    description: 'Kiki un jeune garçon malin, prouve que l\'intelligence vaut mieux que la force brute. Quand son village est menacé, Vic use de ruse et d\'ingéniosité pour sauver les siens. Entre humour nordique et aventures maritimes, il fait chavirer les clichés sur les Vikings.',
+    thumbnail: 'https://amazigh-tv.site/images/kiki2.jpg',
+    category: 'Fantastique',
     year: '—',
     rating: 4.5,
     isDubbed: false,
-    videoUrl: 'https://drive.google.com/file/d/1JH7dOzUh7zvqQFQIpH9AFH8cn4fGU5L9/preview'
-  },
-  {
-    id: 'm-uq-aoxz0qpfb7q3',
-    title: 'SHREK 2',
-    description: 'Afilm n teqbaylit.',
-    thumbnail: 'https://kabyletv.alwaysdata.net/image/images.jpg',
-    category: 'Afilm',
-    year: '—',
-    rating: 4.5,
-    isDubbed: false,
-    videoUrl: 'https://drive.google.com/file/d/10U71A9U77ie5ntmeJ-qpTyT_cqNYC1na/preview'
-  },
-  {
-    id: 'm-uq-45cizb3g988j',
-    title: 'QEZBOUL 1',
-    description: 'Afilm n teqbaylit.',
-    thumbnail: 'https://kabyletv.alwaysdata.net/image/qezboul.jpg',
-    category: 'Afilm',
-    year: '—',
-    rating: 4.5,
-    isDubbed: false,
-    videoUrl: 'https://drive.google.com/file/d/10YsnKT740a4un3l7sI1xTSHxej0aDO5L/preview'
-  },
-  {
-    id: 'm-uq-cz2hwbawnuwe',
-    title: 'LI MUCUCU 2',
-    description: 'Afilm n teqbaylit.',
-    thumbnail: 'https://kabyletv.alwaysdata.net/image/96d8323186702e3b8a51fed19adb7a6d.jpg',
-    category: 'Afilm',
-    year: '—',
-    rating: 4.5,
-    isDubbed: false,
-    videoUrl: 'https://drive.google.com/file/d/11PMmYbOwJdpZLYoMd4gi4WzvC-56mL8_/preview'
-  },
-  {
-    id: 'm-uq-0jc0s8bdovy8',
-    title: 'LI MUCUCU 3',
-    description: 'Afilm n teqbaylit.',
-    thumbnail: 'https://kabyletv.alwaysdata.net/image/download.jpg',
-    category: 'Afilm',
-    year: '—',
-    rating: 4.5,
-    isDubbed: false,
-    videoUrl: 'https://drive.google.com/file/d/12PVvtMqYnj9ClakPcVHNtTnoGC-r6FSc/preview'
-  },
-  {
-    id: 'm-uq-wr2rr1s0488m',
-    title: '3CHOUCHA',
-    description: 'Afilm n teqbaylit.',
-    thumbnail: 'https://kabyletv.alwaysdata.net/image/20186089.jpg',
-    category: 'Afilm',
-    year: '—',
-    rating: 4.5,
-    isDubbed: false,
-    videoUrl: 'https://drive.google.com/file/d/14vOckU9B3fT2KbZdSGq69OxAd_ioE0da/preview'
-  },
-  {
-    id: 'm-uq-k0e4kayth43b',
-    title: 'QIQI VU LEMRAQI',
-    description: 'Afilm n teqbaylit.',
-    thumbnail: 'https://kabyletv.alwaysdata.net/image/51eJoWwodML._AC_UF1000,1000_QL80_.jpg',
-    category: 'Afilm',
-    year: '—',
-    rating: 4.5,
-    isDubbed: false,
-    videoUrl: 'https://drive.google.com/file/d/12mNbkqj5bBmjNCuv0NBAj0_KX0Ot1Q0v/preview'
-  },
-  {
-    id: 'm-iferfucen',
-    title: 'Iferfucen',
-    description: 'Asaru n uḍsa i d-yettwanefk ɣef yimeṭṭawen n leqbayel.',
-    thumbnail: 'https://github.com/amazighkab/cinema-kabyle/blob/master/img/iferfucen.jpg?raw=true',
-    category: 'Uḍsa • Akalas',
-    year: '2013',
-    rating: 4.3,
-    isDubbed: false,
-    videoUrl: 'https://drive.google.com/file/d/1OrJYhJmsQuXys8Az8_dIZdoWrZm45gxW/preview'
-  },
-  {
-    id: 'm-at-dawuzru',
-    title: 'At Dawuzru',
-    description: 'D afilm n tmaziɣt i d-yettmeslayen ɣef tudert d imeṭṭawen n leqbayel.',
-    thumbnail: 'https://github.com/amazighkab/cinema-kabyle/blob/master/img/atdawuzru.jpg?raw=true',
-    category: 'Amazruy • Tasawant',
-    year: '2015',
-    rating: 4.6,
-    isDubbed: false,
-    videoUrl: 'https://drive.google.com/file/d/1C3cjgIbRZ0FYz2F7W-JEWtQY09DwmLXw/preview'
-  },
-  {
-    id: 'm-hmimi-lyes',
-    title: 'Ḥmimi d Lyes',
-    description: 'Ḥmimi d Lyes, d asaru n unecreḥ, yettales-d yiwet n tmacahut yellan deg zman anda llan idinuẓuṛen !',
-    thumbnail: 'https://abdessah15.github.io/Asekles/hmimi.jpg',
-    category: 'Uskan • Tasawant',
-    year: '2025',
-    rating: 5.0,
-    isDubbed: true,
-    videoUrl: 'https://odysee.com/$/embed/@asekles:d/Hmimi-d-lyes:e'
-  },
-  {
-    id: 'm-amechah-new',
-    title: 'Amechah',
-    description: 'D asaru n uḍsa n teqbaylit yettmeslayen ɣef yiwen n umechaḥ i iḥemmlen idrimen aṭas.',
-    thumbnail: 'https://i.ytimg.com/vi/xJTRs4u-FgU/hq720.jpg',
-    category: 'Uḍsa • Akalas',
-    year: '2010',
-    rating: 4.8,
-    isDubbed: false,
-    videoUrl: 'https://www.youtube.com/watch?v=xJTRs4u-FgU'
-  },
-  {
-    id: 'm-ikerri-izimer',
-    title: 'Ikerri izimer',
-    description: 'Asaru n uḍsa d unecreḥ i dderyet (Yettwasuḍ s teqbaylit).',
-    thumbnail: 'https://abdessah15.github.io/Asekles/ikerri.jpg',
-    category: 'Uḍsa • Uskan',
-    year: '2024',
-    rating: 4.8,
-    isDubbed: true,
-    videoUrl: 'https://odysee.com/$/embed/@asekles:d/Ixerri-izimer:1'
-  },
-  {
-    id: 'm-bebelilly',
-    title: 'Bebe Lili',
-    description: 'Afilm n uḍsa i d-yessefkayen tasekla n teqbaylit.',
-    thumbnail: 'https://th.bing.com/th/id/OIP.54aLHygZ_XsYmkiRRv2c7gAAAA?w=115&h=180&c=7&r=0&o=7&pid=1.7&rm=3',
-    category: 'Uḍsa • Akalas',
-    year: '2012',
-    rating: 4.4,
-    isDubbed: false,
-    videoUrl: 'https://vk.com/video_ext.php?oid=267205663&id=169821305&hash=ae3eb8506578e6cb&hd=3'
-  },
-  {
-    id: 'm-iqjanimcac',
-    title: 'Iqjan Imcac',
-    description: 'Afilm n teqbaylit i d-yettawin ɣef tmetti d taddart.',
-    thumbnail: 'https://github.com/amazighkab/cinema-kabyle/blob/master/img/iqjanimcac.jpg?raw=true',
-    category: 'Imetti • Tasawant',
-    year: '2014',
-    rating: 4.3,
-    isDubbed: false,
-    videoUrl: 'https://vk.com/video_ext.php?oid=267205663&id=169798608&hash=688c354f4d01f753&hd=1'
-  },
-  {
-    id: 'm-vriroch',
-    title: 'Vriroch',
-    description: 'Tamacahut n tmeṭṭut d tettebwiḍ n wussan n leqbayel.',
-    thumbnail: 'https://github.com/amazighkab/cinema-kabyle/blob/master/img/vriroch.jpg?raw=true',
-    category: 'Amazruy • Tasawant',
-    year: '2011',
-    rating: 4.2,
-    isDubbed: false,
-    videoUrl: 'https://vk.com/video_ext.php?oid=267205663&id=169797301&hash=7cf1f92039f951fc&hd=1'
-  },
-  {
-    id: 'm-alidwali',
-    title: 'Ali d Wali',
-    description: 'Afilm n uḍsa d tamedyazt n teqbaylit.',
-    thumbnail: 'https://github.com/amazighkab/cinema-kabyle/blob/master/img/alidwali.jpg?raw=true',
-    category: 'Uḍsa • Akalas',
-    year: '2009',
-    rating: 4.5,
-    isDubbed: false,
-    videoUrl: 'https://luluvid.com/ftbi9zs1g70i'
+    videoUrl: 'https://hgcloud.to/e/gymsz4vk73ig'
   },
   {
     id: 'm-skarfez',
     title: 'Skarfez',
-    description: 'Afilm n tmaziɣt i d-yettmeslayen ɣef tazmert d tefsut n teqbaylit.',
-    thumbnail: 'https://github.com/amazighkab/cinema-kabyle/blob/master/img/skarfez.jpg?raw=true',
-    category: 'Amazruy • Tasawant',
-    year: '2016',
-    rating: 4.4,
-    isDubbed: false,
-    videoUrl: 'https://vk.com/video_ext.php?oid=267205663&id=169786324&hash=804f4a5c7470ea93&hd=1'
-  },
-  {
-    id: 'm-mqidech',
-    title: 'Mqidech',
-    description: 'Afilm n uḍsa i d-yesskanen tura n teqbaylit.',
-    thumbnail: 'https://github.com/amazighkab/cinema-kabyle/blob/master/img/mqidech.jpg?raw=true',
-    category: 'Uḍsa • Akalas',
-    year: '2008',
-    rating: 4.2,
-    isDubbed: false,
-    videoUrl: 'https://vk.com/video_ext.php?oid=267205663&id=169785631&hash=7657c6a4d329bba1&hd=1'
-  },
-  {
-    id: 'm-uq-7fiyh3verof3',
-    title: 'PUCCI 1',
-    description: 'Afilm n teqbaylit.',
-    thumbnail: 'https://kabyletv.alwaysdata.net/image/p1.jpg',
-    category: 'Afilm',
+    description: 'Skarfez mène une vie tranquille jusqu\'à l\'arrivée Fifi, un chien maladroit. Jaloux, il provoque sa disparition puis part le sauver, découvrant l\'amitié.',
+    thumbnail: 'https://amazigh-tv.site/images/Skarfez.jpg',
+    category: 'Comedie',
     year: '—',
     rating: 4.5,
     isDubbed: false,
-    videoUrl: 'https://drive.google.com/file/d/1IKw50lpRk1fBEK_WwuNb8RM7fzvBuMN7/preview'
-  },
-  {
-    id: 'm-uq-eg8hie3ioj54',
-    title: 'PUCCI 3',
-    description: 'Afilm n teqbaylit.',
-    thumbnail: 'https://kabyletv.alwaysdata.net/image/19099924.jpg',
-    category: 'Afilm',
-    year: '—',
-    rating: 4.5,
-    isDubbed: false,
-    videoUrl: 'https://drive.google.com/file/d/1IRTVOEbg8bbAd7Il9annRVV8nAFTL4D3/preview'
-  },
-  {
-    id: 'm-pucci-2',
-    title: 'PUCCI 2',
-    description: 'Afilm n teqbaylit.',
-    thumbnail: 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjPPMT84TfOLBEMLhYzgoe9d_QmNCbLaUoY07Xeobr3BJpYxzreDKkPhWXl0BHmbDUFM0K1BnBX_2dKp6lBOGRDA5ahQre2XWftUTzgfFhWsGbWnCfAFE0XI_KMJhpLd-j3iPQvy6GXbesyF_Fhzb4LVLufC41T5wx8wpPaan01kug5omLwnqgVTGTNalmB/s320/1000165054.jpg',
-    category: 'Afilm',
-    year: '—',
-    rating: 4.5,
-    isDubbed: false,
-    videoUrl: 'https://drive.google.com/file/d/1LspF-P1lzf2zrOFJBeUm_wk45LZixZLZ/preview'
-  },
-  {
-    id: 'm-pucci-4',
-    title: 'PUCCI 4',
-    description: 'Afilm n teqbaylit.',
-    thumbnail: 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgIcoFYrnv9jXEyNVlGqjdCwEsjcnF45W6_NJ-J4zjhw5RAVTDw6_lZh2x_k6w8Tf0zkIXRk3GpFJqP-uuK3FTDlAEIxDYSJAyRHUXn-fW4S0pxjaMLq5EcvQEoIszFYnSO9FOKdLeBcV-zCs4R4dxmlbQ2lTag1A4m_tvNMH2JSvaH7Me6ygtxf0-sjTbm/s320/1000152405.jpg',
-    category: 'Afilm',
-    year: '—',
-    rating: 4.5,
-    isDubbed: false,
-    videoUrl: 'https://drive.google.com/file/d/15dQ0YPyBWqISkTQYZhcGQGyT9GB5EjMi/preview'
-  },
-  {
-    id: 'm-qezbul-2',
-    title: 'Qezbul 2',
-    description: 'Afilm n teqbaylit.',
-    thumbnail: 'https://kabyletv.alwaysdata.net/image/qezboul.jpg',
-    category: 'Afilm',
-    year: '—',
-    rating: 4.5,
-    isDubbed: false,
-    videoUrl: 'https://drive.google.com/file/d/16FcfrSBtlfaHSSOGxnzaBYeBwZypnR0_/preview'
+    videoUrl: 'https://hgcloud.to/e/hckewslgnba7'
   },
   {
     id: 'm-rubiccu',
     title: 'Rubiccu',
-    description: 'Afilm n teqbaylit.',
-    thumbnail: 'https://kabyletv.alwaysdata.net/image/51eJoWwodML._AC_UF1000,1000_QL80_.jpg',
-    category: 'Afilm',
+    description: 'Iferfucen raconte comment les petits êtres bleus. Perdus loin de leur village, ils doivent trouver un moyen de rentrer chez eux tout en échappant à leur ennemi.',
+    thumbnail: 'https://amazigh-tv.site/images/Rubiccu.jpg',
+    category: 'Fantastique',
     year: '—',
     rating: 4.5,
     isDubbed: false,
-    videoUrl: 'https://drive.google.com/file/d/17ys3g2svR20cXNOrczSxpvsbMLhE8aZu/preview'
+    videoUrl: 'https://hgcloud.to/e/xqvrjmwow3to'
   },
   {
-    id: 'm-kipus',
-    title: 'Kipus',
-    description: 'Afilm n teqbaylit.',
-    thumbnail: 'https://amazigh-tv.site/images/kypous.jpg',
-    category: 'Afilm',
+    id: 'm-yamara-1',
+    title: 'Yamara la cuvette 1',
+    description: 'Yamara la cuvette un espion britannique maladroit doit empêcher un complot visant à s\'emparer du trône du Royaume-Uni. Malgré ses erreurs, il se retrouve au cœur de la mission.',
+    thumbnail: 'https://amazigh-tv.site/images/Yamara la cuvette 1.jpg',
+    category: 'Fantastique',
     year: '—',
     rating: 4.5,
     isDubbed: false,
-    videoUrl: 'https://drive.google.com/file/d/16eCNjjpRivz_WVvJwxgaY0rXlL0EIhuw/preview'
+    videoUrl: 'https://hgcloud.to/e/mnahnpghdioa'
+  },
+  {
+    id: 'm-iqjan-imcac',
+    title: 'Iqjan Imcac',
+    description: 'Iqjan aked yemcac se livrent une guerre secrète pendant qu\'un chiot tente de sauver les chiens d\'un plan des chats.',
+    thumbnail: 'https://amazigh-tv.site/images/Iqjan Imcac.png',
+    category: 'Comédie',
+    year: '—',
+    rating: 4.5,
+    isDubbed: false,
+    videoUrl: 'https://hgcloud.to/e/8c6nhc0djoyc'
+  },
+  {
+    id: 'm-transporteur',
+    title: 'Transporteur',
+    description: 'Un chauffeur spécialisé dans les livraisons secrètes, brise ses propres règles en découvrant qu\'il transporte une femme kidnappée.',
+    thumbnail: 'https://amazigh-tv.site/images/Transporteur.jpg',
+    category: 'Comédie',
+    year: '—',
+    rating: 4.5,
+    isDubbed: false,
+    videoUrl: 'https://hgcloud.to/e/791qik1x9og3'
+  },
+  {
+    id: 'm-at-dawuzru',
+    title: 'At Dawuzru',
+    description: 'At Dawuzuru suit une famille préhistorique qui quitte sa grotte après une catastrophe et découvre un monde nouveau grâce à un jeune inventeur.',
+    thumbnail: 'https://amazigh-tv.site/images/At Dawuzru.jpg',
+    category: 'Fantastique',
+    year: '—',
+    rating: 4.5,
+    isDubbed: false,
+    videoUrl: 'https://hgcloud.to/e/4d8yxrh3cq2l'
+  },
+  {
+    id: 'm-kypous-1',
+    title: 'Kypous 1',
+    description: 'Kypous suricate plein d\'énergie, voit sa rivière disparaître à cause des humains, il part affronter les responsables pour sauver leur habitat et ramener l\'eau.',
+    thumbnail: 'https://amazigh-tv.site/images/kypous.jpg',
+    category: 'Fantastique',
+    year: '—',
+    rating: 4.5,
+    isDubbed: false,
+    videoUrl: 'https://hgcloud.to/e/ehhpsa1xrhew'
+  },
+  {
+    id: 'm-qezbul-2',
+    title: 'Qezbul 2',
+    description: 'Qezbul, un panda maladroit passionné de kung-fu, travaille dans le restaurant de nouilles de son père. Par un concours de circonstances, il est désigné comme l\'Élu censé sauver la vallée. Entraîné malgré lui aux côtés des Cinq Cyclones par le maître Shifu, il devra prouver sa valeur.',
+    thumbnail: 'https://amazigh-tv.site/images/qezbul2.jpg',
+    category: 'Comédie',
+    year: '—',
+    rating: 4.5,
+    isDubbed: false,
+    videoUrl: 'https://hgcloud.to/e/niwnpgwgg7b3'
+  },
+  {
+    id: 'm-heliopolis',
+    title: 'Héliopolis هيليوبوليس',
+    description: 'Héliopolis est un film dramatique algérien réalisé par Djaffar Gacem et sorti en 2021. Le film évoque les massacres de Sétif, Guelma et Kherrata en 1945.',
+    thumbnail: 'https://amazigh-tv.site/images/helio.jpg',
+    category: 'Historique',
+    year: '2021',
+    rating: 4.5,
+    isDubbed: false,
+    videoUrl: 'https://hgcloud.to/e/pwbjjahvd0ji'
+  },
+  {
+    id: 'm-derniere-reine',
+    title: 'La dernière reine الملكة الأخيرة',
+    description: 'En ce début de XVIe siècle, Alger est occupé par les Espagnols. Le roi Salim Toumi décide de s\'allier au pirate Aroudj Barberousse pour libérer sa ville des tyrans qui la gouvernent.',
+    thumbnail: 'https://amazigh-tv.site/images/queen.jpg',
+    category: 'Historique',
+    year: '—',
+    rating: 4.5,
+    isDubbed: false,
+    videoUrl: 'https://hgcloud.to/e/m5929gq0el8w'
+  },
+  {
+    id: 'm-li-mucucu-3',
+    title: 'Li Mucucu 3',
+    description: 'Alaoua, Farid et Moh partent en croisière avec Timucuctin, mais ils se retrouvent accidentellement perdus sur une île déserte. Ils devront s\'unir malgré leurs différences pour survivre et rentrer chez eux.',
+    thumbnail: 'https://amazigh-tv.site/images/li mucucu 3.jpg',
+    category: 'Comédie',
+    year: '—',
+    rating: 4.5,
+    isDubbed: false,
+    videoUrl: 'https://hgcloud.to/e/x9h29l2n68d5'
+  },
+  {
+    id: 'm-iferfucen',
+    title: 'Iferfucen',
+    description: 'Iferfucen raconte comment les petits êtres bleus. Perdus loin de leur village, ils doivent trouver un moyen de rentrer chez eux tout en échappant à leur ennemi.',
+    thumbnail: 'https://amazigh-tv.site/images/iferfucen.jpg',
+    category: 'Fantastique',
+    year: '—',
+    rating: 4.5,
+    isDubbed: false,
+    videoUrl: 'https://hgcloud.to/e/gc68taeuh7fi'
+  },
+  {
+    id: 'm-pucci-3',
+    title: 'Pucci 3',
+    description: 'Mascara, zengouf et micha sont à la recherche de leur ami Pucci qui après avoir voler des oeufs dinosaures s\'y fait kidnapper. Dans le monde caché sous la glace ils font la rencontre de Behlat un personnage à l\'esprit d\'aventures.',
+    thumbnail: 'https://amazigh-tv.site/images/pucci3.jpg',
+    category: 'Comédie',
+    year: '—',
+    rating: 4.5,
+    isDubbed: false,
+    videoUrl: 'https://hglink.to/e/81m4yr2agtpj'
+  },
+  {
+    id: 'm-3ichucha',
+    title: '3ichucha',
+    description: '3ichucha défie une tradition ancestrale et déclenche un chaos magique qu\'elle devra réparer elle-même. Une aventure nerveuse et émotive où la liberté personnelle cogne de front les attentes familiales.',
+    thumbnail: 'https://amazigh-tv.site/images/3ichucha.jpg',
+    category: 'Fantastique',
+    year: '—',
+    rating: 4.5,
+    isDubbed: false,
+    videoUrl: 'https://hglink.to/e/ui81qyfikkv9'
+  },
+  {
+    id: 'm-crek-2',
+    title: 'Crek 2',
+    description: 'Crek et Selyauna rentrent de leur lune de miel pour rencontrer les beaux-parents royaux, qui déchantent vite en voyant leur gendre verdâtre. Entre une marraine fée manipulatrice et un Chat Potté qui manie l\'épée, Crek doit sauver son couple et son amour-propre.',
+    thumbnail: 'https://amazigh-tv.site/images/crek2.jpg',
+    category: 'Fantastique',
+    year: '—',
+    rating: 4.5,
+    isDubbed: false,
+    videoUrl: 'https://hglink.to/e/r845ku5i0hzj'
+  },
+  {
+    id: 'm-narnia-2',
+    title: 'Narnia 2',
+    description: 'Le Prince Caspian, les quatre Pevensie reviennent à Narnia, mille ans après leur départ, pour découvrir un royaume tombé en ruines. Le jeune prince Caspian lutte pour reprendre son trône usurpé par son oncle.',
+    thumbnail: 'https://amazigh-tv.site/images/narnia2.jpg',
+    category: 'Fantastique',
+    year: '—',
+    rating: 4.5,
+    isDubbed: false,
+    videoUrl: 'https://hglink.to/e/uue2j0nhqccl'
+  },
+  {
+    id: 'm-kiki-1',
+    title: 'Kiki 1',
+    description: 'Kiki un jeune garçon malin, prouve que l\'intelligence vaut mieux que la force brute. Quand son village est menacé, Vic use de ruse et d\'ingéniosité pour sauver les siens.',
+    thumbnail: 'https://amazigh-tv.site/images/kiki1.jpg',
+    category: 'Fantastique',
+    year: '—',
+    rating: 4.5,
+    isDubbed: false,
+    videoUrl: 'https://hglink.to/e/ny3uz1chqods'
+  },
+  {
+    id: 'm-crek-1',
+    title: 'Crek 1',
+    description: 'Crek, un ogre solitaire, voit son marais envahi par des créatures féeriques exilées par le tyrannique Farqou3a. Pour récupérer son calme, il accepte de sauver la princesse Selyuna.',
+    thumbnail: 'https://amazigh-tv.site/images/crek1.jpg',
+    category: 'Fantastique',
+    year: '—',
+    rating: 4.5,
+    isDubbed: false,
+    videoUrl: 'https://hglink.to/e/n9fy75wq1d2i'
+  },
+  {
+    id: 'm-li-mucucu-1',
+    title: 'Li Mucucu 1',
+    description: 'Découvrez Li Mucucu dans sa première aventure hilarante ! Ce personnage attachant et maladroit nous entraîne dans des situations comiques absurdes avec son groupe d\'amis.',
+    thumbnail: 'https://amazigh-tv.site/images/li mucucu 1.jpg',
+    category: 'Comédie',
+    year: '—',
+    rating: 4.5,
+    isDubbed: false,
+    videoUrl: 'https://hglink.to/e/itbu9l5k7jta'
+  },
+  {
+    id: 'm-narnia-1',
+    title: 'Narnia 1',
+    description: 'En pleine Seconde Guerre mondiale, quatre enfants sont envoyés à la campagne. En explorant une mystérieuse armoire, ils découvrent Narnia, un monde magique plongé dans un hiver éternel sous le règne de la Sorcière blanche.',
+    thumbnail: 'https://amazigh-tv.site/images/narnia 1.jpg',
+    category: 'Fantastique',
+    year: '—',
+    rating: 4.5,
+    isDubbed: false,
+    videoUrl: 'https://hglink.to/e/65p1t0yh5g72'
+  },
+  {
+    id: 'm-qezbul-1',
+    title: 'Qezbul 1',
+    description: 'Qezbul, un panda maladroit passionné de kung-fu, travaille dans le restaurant de nouilles de son père. Par un concours de circonstances, il est désigné comme l\'Élu censé sauver la vallée.',
+    thumbnail: 'https://amazigh-tv.site/images/qezbul 1.jpg',
+    category: 'Comédie',
+    year: '—',
+    rating: 4.5,
+    isDubbed: false,
+    videoUrl: 'https://hglink.to/e/yt3txh0bxhtm'
+  },
+  {
+    id: 'm-pucci-1',
+    title: 'Pucci 1',
+    description: 'À l\'époque glaciaire, un mammouth solitaire nommé Manny, un paresseux maladroit appelé pucci, et un tigre à dents de sabre rusé nommé zenghouf se retrouvent à devoir ramener un bébé humain perdu à sa tribu.',
+    thumbnail: 'https://amazigh-tv.site/images/pucci1.jpg',
+    category: 'Comédie',
+    year: '—',
+    rating: 4.5,
+    isDubbed: false,
+    videoUrl: 'https://hglink.to/e/j9tsobh2m54t'
+  },
+  {
+    id: 'm-pucci-2',
+    title: 'Pucci 2',
+    description: 'Mascara le mammouth, Pucci le paresseux et zenghouf le tigre alors que la banquise fond, menaçant leur vallée d\'inondation. En route vers des terres plus sûres, ils rencontrent Micha.',
+    thumbnail: 'https://amazigh-tv.site/images/pucci2.jpg',
+    category: 'Comédie',
+    year: '—',
+    rating: 4.5,
+    isDubbed: false,
+    videoUrl: 'https://hglink.to/e/zstt9clebyq6'
+  },
+  {
+    id: 'm-pucci-4',
+    title: 'Pucci 4',
+    description: 'À cause de weskiki et sa quête obsessionnelle du gland, les continents se séparent. Manny, Zenghouf et pucci se retrouvent à la dérive sur un iceberg, séparés du reste du groupe.',
+    thumbnail: 'https://amazigh-tv.site/images/pucci4.jpg',
+    category: 'Comédie',
+    year: '—',
+    rating: 4.5,
+    isDubbed: false,
+    videoUrl: 'https://hgcloud.to/e/4hit88uipmq4'
+  },
+  {
+    id: 'm-li-mucucu-2',
+    title: 'Li Mucucu 2',
+    description: 'Li mucucu retournent à l\'école et affrontent un nouveau trio : Ti mucucu-tin, leurs rivales aussi mignonnes que talentueuses.',
+    thumbnail: 'https://amazigh-tv.site/images/li mucucu 2.jpg',
+    category: 'Comédie',
+    year: '—',
+    rating: 4.5,
+    isDubbed: false,
+    videoUrl: 'https://hgcloud.to/e/bjz860d1bmau'
+  },
+  {
+    id: 'm-qiqi-1',
+    title: 'Qiqi Bu Lemraqi 1',
+    description: 'Qiqi bu lemraqi un petit rat passionné de cuisine, qui rêve de devenir un grand chef à Paris. Malgré les préjugés, il s\'allie avec un jeune commis maladroit pour prouver que le talent peut venir de n\'importe où.',
+    thumbnail: 'https://amazigh-tv.site/images/qiqi1.jpg',
+    category: 'Comédie',
+    year: '—',
+    rating: 4.5,
+    isDubbed: false,
+    videoUrl: 'https://hgcloud.to/e/x2f80v0jsmx7'
   }
 ];
 
-export const MOCK_SERIES: MediaItem[] = [
+export const MOCK_SERIES = [
   {
     id: 's-imuhuchen',
     title: 'IMUḤUCEN',
@@ -385,7 +407,7 @@ export const MOCK_SERIES: MediaItem[] = [
   }
 ];
 
-export const MOCK_BOOKS: BookItem[] = [
+export const MOCK_BOOKS = [
   {
     id: 'b-dict-kab-fr',
     title: 'Dictionnaire Kabyle Français',
@@ -403,7 +425,7 @@ export const MOCK_BOOKS: BookItem[] = [
     id: 'b-le-fils-du-pauvre',
     title: 'Le fils du pauvre ; Roman',
     author: 'Mouloud Feraoun',
-    description: 'Ungal (Roman) n Mouloud Feraoun: “Le fils du pauvre”. Tzemreḍ ad t-ɣreḍ srid deg BNKvu.',
+    description: 'Ungal (Roman) n Mouloud Feraoun: "Le fils du pauvre". Tzemreḍ ad t-ɣreḍ srid deg BNKvu.',
     thumbnail: 'https://archive.org/services/img/mouloud-feraoun-le-fils-du-pauvre',
     category: 'Tsekla • Ungal',
     year: '—',
@@ -416,7 +438,7 @@ export const MOCK_BOOKS: BookItem[] = [
     id: 'b-la-colline-oubliee',
     title: 'La Colline Oubliée',
     author: 'Mouloud Mammeri (1952)',
-    description: 'Ungal n Mouloud Mammeri (1952): “La Colline Oubliée”. Tzemreḍ ad t-ɣreḍ srid deg BNKvu.',
+    description: 'Ungal n Mouloud Mammeri (1952): "La Colline Oubliée". Tzemreḍ ad t-ɣreḍ srid deg BNKvu.',
     thumbnail: 'https://archive.org/services/img/la-colline-oubliee-mouloud-mammeri-1952',
     category: 'Tsekla • Ungal',
     year: '1952',
@@ -427,7 +449,7 @@ export const MOCK_BOOKS: BookItem[] = [
   }
 ];
 
-export const MOCK_ISEFRA: IsefraItem[] = [
+export const MOCK_ISEFRA = [
   {
     id: 'i1',
     title: 'Abrid n Tidet',
@@ -440,11 +462,10 @@ Tili nufa-d lberr deg imsar`,
   }
 ];
 
-export const searchCustomContent = (query: string): any[] => {
+export const searchCustomContent = (query: string) => {
   const q = query.toLowerCase().trim();
   if (!q) return [];
   
-  // If search is for "kabyle" (or any variations), return ALL Kabyle content
   if (q.includes('kab')) {
     const allMovies = KABYLE_CONTENT.map(item => ({
       ...item,
