@@ -1,5 +1,5 @@
 const isProd = !import.meta.env.DEV;
-const API_BASE = isProd ? "/api/worldcup/get" : "/get";
+const API_BASE = isProd ? "/api/worldcup" : "/get";
 
 export interface Team {
   id: string;
