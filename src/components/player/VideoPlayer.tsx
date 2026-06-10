@@ -146,13 +146,13 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
 
   // Apply CinePro subtitles when a CinePro source is selected
   useEffect(() => {
-    if (sourceIndex < cineproSources.length) {
-      const cineproIdx = sourceIndex;
+    if (sourceIndex >= 3) {
+      const cineproIdx = sourceIndex - 3;
       if (cineproIdx < cineproSubs.length && cineproSubs[cineproIdx]) {
         setAppliedExternalSub(cineproSubs[cineproIdx].url);
       }
     }
-  }, [sourceIndex, cineproSources.length, cineproSubs]);
+  }, [sourceIndex, cineproSubs]);
 
   // Auto-fetch Arabic subtitles on mount
   useEffect(() => {
@@ -276,13 +276,13 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
     ? `https://nhdapi.com/embed/movie/${tmdb_id}?${nhdapiParams.toString()}`
     : `https://nhdapi.com/embed/tv/${tmdb_id}/${season}/${episode}?${nhdapiParams.toString()}`;
 
-  // CinePro URLs — direct hls/mp4 sources (priority - put first)
+  // CinePro URLs — direct hls/mp4 sources
   const cineproUrls = cineproSources.map((s) => s.url);
 
   // For customUrl (Kabyle), only use customUrl
   const allSources = customUrl
     ? [customUrl]
-    : [...cineproUrls, cinemaOsUrl, ...sources.slice(0, 1), nhdapiUrl];
+    : [cinemaOsUrl, ...sources.slice(0, 1), nhdapiUrl, ...cineproUrls];
 
   useEffect(() => {
     const fetchInternal = async () => {
@@ -319,26 +319,28 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
     if (tmdb_id) tryResolve();
   }, [tmdb_id, type, season, episode]);
 
-  // Fetch CinePro Core sources
+  // Fetch CinePro Core sources and auto-select when ready
   useEffect(() => {
     if (!tmdb_id || customUrl) return;
     fetchCineProSources(type, tmdb_id, season, episode).then((data) => {
       if (data && data.sources.length > 0) {
         setCineproSources(data.sources);
         setCineproSubs(data.subtitles || []);
+        // Auto-select first CinePro source
+        setSourceIndex(3);
+        setLoading(true);
       }
     });
   }, [tmdb_id, type, season, episode, customUrl]);
 
   const allLabels = Array(50).fill(null);
-  // CinePro Core sources first
-  const cpCount = cineproSources.length;
+  allLabels[0] = "🎬 CinemaOS (بدون إعلانات)";
+  allLabels[1] = customUrl ? "Serveur Kabyle" : "BNKhub serveur";
+  allLabels[2] = "📥 nhdapi (تحميل مباشر)";
+  // CinePro Core sources
   cineproSources.forEach((s, i) => {
-    allLabels[i] = `${s.provider?.name || "CinePro"} (${s.quality})`;
+    allLabels[3 + i] = `${s.provider?.name || "CinePro"} (${s.quality})`;
   });
-  allLabels[cpCount] = "🎬 CinemaOS (بدون إعلانات)";
-  allLabels[cpCount + 1] = customUrl ? "Serveur Kabyle" : "BNKhub serveur";
-  allLabels[cpCount + 2] = "📥 nhdapi (تحميل مباشر)";
 
   const handleLoad = () => {
     setLoading(false);
@@ -356,16 +358,15 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
     
     const current = allSources[sourceIndex];
     setSourceIndex(-1);
-    setTimeout(() => setSourceIndex(Math.max(0, Math.min(allSources.indexOf(current), 2))), 10);
+    setTimeout(() => setSourceIndex(Math.max(0, allSources.indexOf(current))), 10);
   };
 
   const selectSource = (index: number) => {
-    const clampedIndex = Math.max(0, Math.min(index, 2));
-    if (clampedIndex === sourceIndex) return;
+    if (index === sourceIndex) return;
     setLoading(true);
-    setSourceIndex(clampedIndex);
+    setSourceIndex(index);
     if (onSourceChange) {
-      onSourceChange(clampedIndex, `S${clampedIndex + 1} BNKHUB`);
+      onSourceChange(index, `S${index + 1} BNKHUB`);
     }
   };
 
@@ -472,7 +473,7 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
 
         {/* Video Element for HLS / Direct — only render when active to prevent background audio */}
         {playerActive && (() => {
-          const cineproIdx = sourceIndex < cineproSources.length ? sourceIndex : -1;
+          const cineproIdx = sourceIndex >= 3 ? sourceIndex - 3 : -1;
           const cineproSrc = cineproIdx >= 0 && cineproIdx < cineproSources.length ? cineproSources[cineproIdx] : null;
           return allSources[sourceIndex]?.includes(".m3u8") || 
             allSources[sourceIndex]?.includes(".mp4") ||
@@ -508,7 +509,7 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
         {/* YouTube Iframe */}
         {playerActive && (() => {
           if (allSources[sourceIndex]?.includes("youtube.com") || allSources[sourceIndex]?.includes("youtu.be")) {
-            const cineproIdx = sourceIndex < cineproSources.length ? sourceIndex : -1;
+            const cineproIdx = sourceIndex >= 3 ? sourceIndex - 3 : -1;
             const cineproSrc = cineproIdx >= 0 && cineproIdx < cineproSources.length ? cineproSources[cineproIdx] : null;
             return !(cineproSrc && ["hls", "mp4", "dash", "http", "mkv", "webm"].includes(cineproSrc.type));
           }
@@ -534,7 +535,7 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
           const isM3u8 = allSources[sourceIndex]?.includes(".m3u8");
           const isMp4 = allSources[sourceIndex]?.includes(".mp4");
           const isYt = allSources[sourceIndex]?.includes("youtube.com") || allSources[sourceIndex]?.includes("youtu.be");
-          const cineproIdx = sourceIndex < cineproSources.length ? sourceIndex : -1;
+          const cineproIdx = sourceIndex >= 3 ? sourceIndex - 3 : -1;
           const cineproSrc = cineproIdx >= 0 && cineproIdx < cineproSources.length ? cineproSources[cineproIdx] : null;
           const isCineproVideo = cineproSrc && ["hls", "mp4", "dash", "http", "mkv", "webm"].includes(cineproSrc.type);
           return !isM3u8 && !isMp4 && !isYt && !isCineproVideo;
@@ -568,7 +569,7 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
         <div className="mt-5">
           <PlayerSourceSelector 
             sources={allSources.map((src, idx) => {
-              const cineproIdx = idx < cineproSources.length ? idx : -1;
+              const cineproIdx = idx >= 3 ? idx - 3 : -1;
               const cineproSrc = cineproIdx >= 0 && cineproIdx < cineproSources.length ? cineproSources[cineproIdx] : null;
               const isCineproVideo = cineproSrc && ["hls", "mp4", "dash", "http", "mkv", "webm"].includes(cineproSrc.type);
               const isDirect = src.includes(".m3u8") || src.includes(".mp4") || src.includes("youtube") || src.includes("cinemaos.tech") || !!isCineproVideo;
