@@ -35,7 +35,7 @@ import {
   TMDBMovie,
   TMDBSeries,
 } from "@/services/tmdb";
-
+import { CUSTOM_CONTENT } from "@/services/customContent";
 import { IMG } from "@/services/tmdb";
 import { Play, Star } from "lucide-react";
 
@@ -350,6 +350,35 @@ const Home = () => {
             {/* Specialized Content */}
             <DiscoverRow title={lang === "ar" ? "🇸🇦 أقوى الأفلام العربية" : "🇸🇦 Films Arabes"} originalLanguage="ar" type="movie" icon="🌟" />
             <DiscoverRow title={lang === "ar" ? "🇸🇦 المسلسلات العربية" : "🇸🇦 Séries Arabes"} originalLanguage="ar" type="tv" icon="📺" />
+
+            {/* Custom Content */}
+            {CUSTOM_CONTENT.length > 0 && (
+              <section className="relative py-8">
+                <div className={ROW_HEADER}>
+                  <h2 className="font-display text-2xl md:text-3xl">
+                    <span className="text-gradient-accent">{lang === "ar" ? "المحتوى المتنوع" : "Bibliothèque"}</span>
+                  </h2>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    {lang === "ar" ? "أفلام متنوعة" : "Films divers"}
+                  </p>
+                </div>
+                <div className={`${ROW_TRACK} pt-2`}>
+                  {CUSTOM_CONTENT.map((item) => (
+                    <div key={item.id} className="snap-start">
+                      <MovieCard
+                        id={item.id}
+                        title={item.title}
+                        posterPath={item.thumbnail}
+                        year={item.year || ""}
+                        rating={item.rating}
+                        type="movie"
+                        customUrl={item.videoUrl}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
 
             {/* Dynamic Genre Footer Rows */}
             <DiscoverRow title={lang === "ar" ? "😂 الكوميديا" : "😂 Comédie"} genres="35" type="movie" icon="🎭" />
