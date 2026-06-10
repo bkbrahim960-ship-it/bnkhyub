@@ -3,7 +3,7 @@ import { Layout } from "@/components/layout/Layout";
 import { useLanguage } from "@/context/LanguageContext";
 import { fetchChannels, Channel } from "@/services/channels";
 import { ChannelPlayer } from "@/components/channel/ChannelPlayer";
-import { Loader2, Tv, Search, Play, Trophy, Zap } from "lucide-react";
+import { Loader2, Tv, Search, Play, Trophy, Zap, Newspaper, Monitor } from "lucide-react";
 
 const Channels = () => {
   const { lang } = useLanguage();
@@ -66,9 +66,13 @@ const Channels = () => {
 
   useEffect(() => {
     if (activeGroup === "__sports__") {
-      doSearch("sport");
+      doSearch("sport,رياضة");
     } else if (activeGroup === "__bein__") {
       doSearch("bein");
+    } else if (activeGroup === "__news__") {
+      doSearch("news,اخبار,إخبارية,aljazeera,al arabiya,sky news");
+    } else if (activeGroup === "__mbc__") {
+      doSearch("mbc");
     } else if (activeGroup) {
       loadChannels(activeGroup, activeSource, page);
     } else {
@@ -80,9 +84,11 @@ const Channels = () => {
 
   const isSportsActive = activeGroup === "__sports__";
   const isBeinActive = activeGroup === "__bein__";
+  const isNewsActive = activeGroup === "__news__";
+  const isMbcActive = activeGroup === "__mbc__";
 
-  const handleSportsClick = () => {
-    setActiveGroup(isSportsActive ? "" : "__sports__");
+  const handleFeaturedClick = (id: string) => {
+    setActiveGroup(activeGroup === id ? "" : id);
     setActiveSource("");
     setPage(1);
     setActiveChannel(null);
@@ -102,24 +108,40 @@ const Channels = () => {
   };
 
   const handleBeinClick = () => {
-    if (isBeinActive) {
-      setActiveGroup("");
-      setActiveSource("");
-    } else {
-      setActiveGroup("__bein__");
-      setActiveSource("");
-    }
+    setActiveGroup(isBeinActive ? "" : "__bein__");
+    setActiveSource("");
     setPage(1);
     setActiveChannel(null);
+  };
+
+  const handleNewsClick = () => {
+    setActiveGroup(isNewsActive ? "" : "__news__");
+    setActiveSource("");
+    setPage(1);
+    setActiveChannel(null);
+  };
+
+  const handleMbcClick = () => {
+    setActiveGroup(isMbcActive ? "" : "__mbc__");
+    setActiveSource("");
+    setPage(1);
+    setActiveChannel(null);
+  };
+
+  const getSectionSearch = () => {
+    if (activeGroup === "__sports__") return "sport,رياضة";
+    if (activeGroup === "__news__") return "news,اخبار,إخبارية,aljazeera,al arabiya,sky news";
+    if (activeGroup === "__mbc__") return "mbc";
+    if (activeGroup === "__bein__") return "bein";
+    return null;
   };
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     setPage(1);
-    if (activeGroup === "__sports__") {
-      loadChannels("", "", 1, "sport");
-    } else if (activeGroup === "__bein__") {
-      loadChannels("", "", 1, "bein");
+    const sq = getSectionSearch();
+    if (sq) {
+      loadChannels("", "", 1, sq);
     } else if (activeGroup) {
       loadChannels(activeGroup, activeSource, 1);
     } else {
@@ -170,6 +192,28 @@ const Channels = () => {
                 >
                   <Trophy className="w-4 h-4" />
                   beIN Sport
+                </button>
+                <button
+                  onClick={handleNewsClick}
+                  className={`w-full text-right px-4 py-2.5 text-sm font-bold transition-colors hover:bg-white/[0.04] flex items-center gap-3 ${
+                    isNewsActive
+                      ? "bg-emerald-500/10 text-emerald-400 border-r-2 border-emerald-500"
+                      : "text-foreground/70"
+                  }`}
+                >
+                  <Newspaper className="w-4 h-4" />
+                  {lang === "ar" ? "أخبار" : "News"}
+                </button>
+                <button
+                  onClick={handleMbcClick}
+                  className={`w-full text-right px-4 py-2.5 text-sm font-bold transition-colors hover:bg-white/[0.04] flex items-center gap-3 ${
+                    isMbcActive
+                      ? "bg-emerald-500/10 text-emerald-400 border-r-2 border-emerald-500"
+                      : "text-foreground/70"
+                  }`}
+                >
+                  <Monitor className="w-4 h-4" />
+                  MBC
                 </button>
 
                 <div className="px-4 mb-1 mt-4">

@@ -93,8 +93,12 @@ export default async function handler(req, res) {
     }
 
     if (search) {
-      const q = search.toLowerCase();
-      filtered = filtered.filter((c) => c.name.toLowerCase().includes(q));
+      const terms = search.split(",").map((t) => t.trim().toLowerCase()).filter(Boolean);
+      filtered = filtered.filter((c) => {
+        const name = c.name.toLowerCase();
+        const group = c.group.toLowerCase();
+        return terms.some((t) => name.includes(t) || group.includes(t));
+      });
     }
 
     const total = filtered.length;
