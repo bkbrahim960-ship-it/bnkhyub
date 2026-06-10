@@ -20,7 +20,6 @@ import { useAuth } from "@/context/AuthContext";
 import { tmdbLang } from "@/services/i18n";
 import { SEO } from "@/components/SEO";
 import { upsertWatchEntry } from "@/services/watchHistory";
-import { KABYLE_CONTENT } from "@/services/customContent";
 import { SOURCE_LABELS } from "@/services/player";
 import { Play, Star, Clock, Calendar, Globe2, ArrowLeft, Youtube, Info } from "lucide-react";
 import { useAmbient } from "@/context/AmbientContext";
@@ -68,7 +67,6 @@ const Movie = () => {
     setLoading(true);
     setPlaying(false);
     
-    const custom = KABYLE_CONTENT.find(c => c.id === id);
     const videoUrl = params.get("video_url");
 
     if (videoUrl) {
@@ -82,21 +80,6 @@ const Movie = () => {
         release_date: "2024",
         genres: [{ id: 1, name: "Premium" }],
         video_url: videoUrl
-      } as any);
-      setLoading(false);
-      if (resumeRequested) setPlaying(true);
-      return;
-    }
-
-    if (custom) {
-      setMovie({
-        ...custom,
-        poster_path: custom.thumbnail,
-        backdrop_path: custom.thumbnail,
-        overview: custom.description,
-        vote_average: custom.rating,
-        release_date: custom.year,
-        genres: custom.category ? [{ id: 1, name: custom.category }] : []
       } as any);
       setLoading(false);
       if (resumeRequested) setPlaying(true);

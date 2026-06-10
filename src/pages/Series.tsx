@@ -21,7 +21,6 @@ import { useAuth } from "@/context/AuthContext";
 import { tmdbLang } from "@/services/i18n";
 import { SEO } from "@/components/SEO";
 import { upsertWatchEntry, getSeriesHistory, WatchHistoryEntry } from "@/services/watchHistory";
-import { KABYLE_CONTENT } from "@/services/customContent";
 import { SOURCE_LABELS } from "@/services/player";
 import { Play, Star, Calendar, ArrowLeft, Youtube, ChevronRight, Clock, Info, Check } from "lucide-react";
 import { useAmbient } from "@/context/AmbientContext";
@@ -78,25 +77,6 @@ const Series = () => {
     setLoading(true);
     setPlaying(false);
 
-    const customMovie = KABYLE_CONTENT.find(c => c.id === id);
-
-    if (customMovie && customMovie.episodes) {
-      const customSeriesFromMovie = {
-        ...customMovie,
-        name: customMovie.title,
-        seasons: [{ id: 1, name: "Saison 1", episode_count: customMovie.episodes.length, season_number: 1 }],
-      };
-      setSeries(customSeriesFromMovie as any);
-      setLoading(false);
-      
-      if (resumeRequested && resumeSeason && resumeEpisode) {
-        setSeason(resumeSeason);
-        setEpisode(resumeEpisode);
-        setPlaying(true);
-      }
-      return;
-    }
-
     getSeriesDetails(id, tmdbLang(lang))
       .then((s) => {
         setSeries(s);
@@ -151,25 +131,6 @@ const Series = () => {
   useEffect(() => {
     if (!series || !season) return;
     
-    const customMovie = KABYLE_CONTENT.find(c => c.id === String(series.id));
-
-    if (customMovie && customMovie.episodes) {
-      setSeasonData({
-        id: 1,
-        name: "Saison 1",
-        season_number: 1,
-        episodes: customMovie.episodes?.map((ep, idx) => ({
-          id: ep.id,
-          name: ep.title,
-          episode_number: idx + 1,
-          still_path: null,
-          overview: ""
-        })) || []
-      } as any);
-      setSeasonLoading(false);
-      return;
-    }
-
     setSeasonLoading(true);
     getSeasonDetails(series.id, season, tmdbLang(lang))
       .then(setSeasonData)
@@ -392,14 +353,7 @@ const Series = () => {
                 title={`${series.name} — S${season} E${episode}`}
                 initialSourceIndex={initialSourceIndex}
                 autoStart={false}
-                customUrl={(() => {
-                  const customMovie = KABYLE_CONTENT.find(c => c.id === String(series.id));
-                  if (customMovie && customMovie.episodes) {
-                    const ep = customMovie.episodes[episode - 1];
-                    return ep?.videoUrl;
-                  }
-                  return undefined;
-                })()}
+                customUrl={undefined}
                 onPlayStart={(_i, label) => saveHistory(label)}
                 onSourceChange={(_i, label) => saveHistory(label)}
                 onProgress={(seconds, duration) => {

@@ -35,7 +35,7 @@ import {
   TMDBMovie,
   TMDBSeries,
 } from "@/services/tmdb";
-import { KABYLE_CONTENT } from "@/services/customContent";
+
 import { IMG } from "@/services/tmdb";
 import { Play, Star } from "lucide-react";
 
@@ -176,50 +176,6 @@ const supabaseM3ULists = [
     type: "movie" as const 
   },
 ];
-
-/** Kabyle cinema section */
-const KabyleCinemaRow = () => {
-  const { lang } = useLanguage();
-  const allMovies = KABYLE_CONTENT;
-  
-  if (allMovies.length === 0) return null;
-
-  return (
-    <section className="relative py-8">
-      <div className={ROW_HEADER}>
-        <h2 className="font-display text-2xl md:text-3xl">
-          <span className="text-gradient-accent">Kabyle</span>
-        </h2>
-        <p className="text-sm text-muted-foreground mt-1">
-          {lang === "ar" ? "أفلام ومسلسلات بالأمازيغية القبائلية" : "Films et séries en langue Kabyle"}
-        </p>
-      </div>
-      
-      {/* Kabyle Movies */}
-      <div className="mb-8">
-        <h3 className={`${ROW_HEADER} text-lg font-display text-muted-foreground mb-0 py-0`}>
-          {lang === "ar" ? "🎬 الأفلام" : "🎬 Films"}
-        </h3>
-        <div className={`${ROW_TRACK} pt-2`}>
-          {allMovies.map((item) => (
-            <div key={item.id} className="snap-start">
-              <MovieCard
-                id={item.id}
-                title={item.title}
-                posterPath={item.thumbnail}
-                year={item.year || "Kabyle"}
-                rating={item.rating}
-                type="movie"
-                customUrl={item.videoUrl}
-              />
-            </div>
-          ))}
-        </div>
-      </div>
-
-    </section>
-  );
-};
 
 const Home = () => {
   const navigate = useNavigate();
@@ -395,8 +351,6 @@ const Home = () => {
             <DiscoverRow title={lang === "ar" ? "🇸🇦 أقوى الأفلام العربية" : "🇸🇦 Films Arabes"} originalLanguage="ar" type="movie" icon="🌟" />
             <DiscoverRow title={lang === "ar" ? "🇸🇦 المسلسلات العربية" : "🇸🇦 Séries Arabes"} originalLanguage="ar" type="tv" icon="📺" />
 
-            <KabyleCinemaRow />
-            
             {/* Dynamic Genre Footer Rows */}
             <DiscoverRow title={lang === "ar" ? "😂 الكوميديا" : "😂 Comédie"} genres="35" type="movie" icon="🎭" />
             <DiscoverRow title={lang === "ar" ? "📜 الوثائقيات" : "📜 Documentaires"} genres="99" type="movie" icon="🌍" />
