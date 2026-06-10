@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { Layout } from "@/components/layout/Layout";
 import { useLanguage } from "@/context/LanguageContext";
-import { Loader2, RefreshCw, Trophy, MapPin, Clock, Ban, Hourglass } from "lucide-react";
+import { Loader2, RefreshCw, Trophy, MapPin, Clock } from "lucide-react";
 import { fetchGames, fetchGroups, fetchStadiums, Game, Group, Stadium, getTeamFlag } from "@/services/worldcup";
+import { MatchDetails } from "@/components/match/MatchDetails";
 
 const STAGE_LABELS: Record<string, { en: string; ar: string }> = {
   group: { en: "Group Stage", ar: "دور المجموعات" },
@@ -15,7 +16,7 @@ const STAGE_LABELS: Record<string, { en: string; ar: string }> = {
 };
 
 const Matches = () => {
-  const { t } = useLanguage();
+  const { lang } = useLanguage();
   const [games, setGames] = useState<Game[]>([]);
   const [groups, setGroups] = useState<Group[]>([]);
   const [stadiums, setStadiums] = useState<Stadium[]>([]);
@@ -23,7 +24,7 @@ const Matches = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [activeFilter, setActiveFilter] = useState<string>("all");
-  const [message, setMessage] = useState<{ title: string; text: string; icon: string } | null>(null);
+  const [selectedGame, setSelectedGame] = useState<Game | null>(null);
 
   const loadData = async (silent = false) => {
     if (!silent) setLoading(true);
@@ -52,7 +53,7 @@ const Matches = () => {
 
   const getStadiumName = (id: string) => {
     const s = stadiumMap.get(id);
-    return s ? s.name_en : `${t === "ar" ? "الملعب" : "Stadium"} ${id}`;
+    return s ? s.name_en : `${lang === "ar" ? "الملعب" : "Stadium"} ${id}`;
   };
 
   const groupNames = groups.map((g) => g.name);
@@ -74,27 +75,6 @@ const Matches = () => {
 
   const sortedDates = Object.keys(groupedByDate).sort();
 
-  const handleGameClick = (game: Game) => {
-    if (game.finished === "TRUE") {
-      setMessage({
-        title: t === "ar" ? "انتهت المباراة" : "Match Ended",
-        text: t === "ar"
-          ? `المباراة بين ${game.home_team_name_en} و ${game.away_team_name_en} انتهت بنتيجة ${game.home_score} - ${game.away_score}`
-          : `Match between ${game.home_team_name_en} and ${game.away_team_name_en} ended ${game.home_score} - ${game.away_score}`,
-        icon: "ended",
-      });
-    } else {
-      const dateStr = game.local_date || "";
-      setMessage({
-        title: t === "ar" ? "المباراة لم تبدأ بعد" : "Match Not Started",
-        text: t === "ar"
-          ? `ستقام المباراة بين ${game.home_team_name_en} و ${game.away_team_name_en} في ${dateStr}`
-          : `Match between ${game.home_team_name_en} and ${game.away_team_name_en} will start on ${dateStr}`,
-        icon: "upcoming",
-      });
-    }
-  };
-
   return (
     <Layout>
       <section className="pt-28 pb-12">
@@ -103,10 +83,10 @@ const Matches = () => {
             <div>
               <h1 className="font-display text-4xl md:text-5xl font-bold text-gradient-accent flex items-center gap-4">
                 <Trophy className="w-10 h-10 md:w-12 md:h-12 text-accent" />
-                {t === "ar" ? "كأس العالم 2026" : "World Cup 2026"}
+                {lang === "ar" ? "كأس العالم 2026" : "World Cup 2026"}
               </h1>
               <p className="text-muted-foreground mt-2">
-                {t === "ar" ? "المكسيك - الولايات المتحدة - كندا" : "Mexico - USA - Canada"}
+                {lang === "ar" ? "المكسيك - الولايات المتحدة - كندا" : "Mexico - USA - Canada"}
               </p>
             </div>
             <button
@@ -115,7 +95,7 @@ const Matches = () => {
               className="flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-bold bg-surface-card border border-border hover:border-accent-subtle transition-all disabled:opacity-50"
             >
               <RefreshCw className={`w-4 h-4 ${refreshing ? "animate-spin" : ""}`} />
-              {t === "ar" ? "تحديث" : "Refresh"}
+              {lang === "ar" ? "تحديث" : "Refresh"}
             </button>
           </div>
 
@@ -128,7 +108,7 @@ const Matches = () => {
                   : "bg-surface-card border border-border hover:border-accent-subtle"
               }`}
             >
-              {t === "ar" ? "الكل" : "All"}
+              {lang === "ar" ? "الكل" : "All"}
             </button>
             {groupNames.map((g) => (
               <button
@@ -140,7 +120,7 @@ const Matches = () => {
                     : "bg-surface-card border border-border hover:border-accent-subtle"
                 }`}
               >
-                {t === "ar" ? `المجموعة ${g}` : `Group ${g}`}
+                {lang === "ar" ? `المجموعة ${g}` : `Group ${g}`}
               </button>
             ))}
             {Object.keys(STAGE_LABELS).filter((k) => k !== "group").map((stage) => (
@@ -153,7 +133,7 @@ const Matches = () => {
                     : "bg-surface-card border border-border hover:border-accent-subtle"
                 }`}
               >
-                {t === "ar" ? STAGE_LABELS[stage].ar : STAGE_LABELS[stage].en}
+                {lang === "ar" ? STAGE_LABELS[stage].ar : STAGE_LABELS[stage].en}
               </button>
             ))}
           </div>
@@ -162,7 +142,7 @@ const Matches = () => {
             <div className="flex flex-col items-center justify-center py-20 gap-4">
               <Loader2 className="w-10 h-10 text-accent animate-spin" />
               <p className="text-muted-foreground animate-pulse">
-                {t === "ar" ? "جاري تحميل المباريات..." : "Loading matches..."}
+                {lang === "ar" ? "جاري تحميل المباريات..." : "Loading matches..."}
               </p>
             </div>
           ) : error ? (
@@ -170,7 +150,7 @@ const Matches = () => {
               <Trophy className="w-12 h-12 text-muted-foreground/30" />
               <div>
                 <p className="text-lg font-medium text-muted-foreground">
-                  {t === "ar" ? "فشل تحميل المباريات" : "Failed to load matches"}
+                  {lang === "ar" ? "فشل تحميل المباريات" : "Failed to load matches"}
                 </p>
                 <p className="text-sm text-muted-foreground/60 mt-1">{error}</p>
               </div>
@@ -178,14 +158,14 @@ const Matches = () => {
                 onClick={() => loadData()}
                 className="px-6 py-2 rounded-full bg-accent text-accent-foreground font-bold text-sm"
               >
-                {t === "ar" ? "إعادة المحاولة" : "Retry"}
+                {lang === "ar" ? "إعادة المحاولة" : "Retry"}
               </button>
             </div>
           ) : filteredGames.length === 0 ? (
             <div className="bg-surface-card border border-border rounded-2xl p-12 text-center flex flex-col items-center gap-4">
               <Trophy className="w-12 h-12 text-muted-foreground/30" />
               <p className="text-lg font-medium text-muted-foreground">
-                {t === "ar" ? "لا توجد مباريات" : "No matches found"}
+                {lang === "ar" ? "لا توجد مباريات" : "No matches found"}
               </p>
             </div>
           ) : (
@@ -206,7 +186,7 @@ const Matches = () => {
                       return (
                         <button
                           key={game.id}
-                          onClick={() => handleGameClick(game)}
+                          onClick={() => setSelectedGame(game)}
                           className="group relative bg-surface-card border border-border rounded-2xl p-5 hover:border-accent-subtle transition-all duration-300 hover:-translate-y-1 text-right"
                         >
                           <div className="flex items-center gap-4 mb-4">
@@ -272,24 +252,13 @@ const Matches = () => {
         </div>
       </section>
 
-      {message && (
-        <div className="fixed inset-0 z-[100] bg-black/70 flex items-center justify-center p-4" onClick={() => setMessage(null)}>
-          <div className="bg-surface-card border border-border rounded-2xl p-8 max-w-md w-full text-center flex flex-col items-center gap-4 animate-scale-in" onClick={(e) => e.stopPropagation()}>
-            {message.icon === "ended" ? (
-              <Ban className="w-16 h-16 text-destructive" />
-            ) : (
-              <Hourglass className="w-16 h-16 text-amber-500" />
-            )}
-            <h2 className="text-xl font-bold">{message.title}</h2>
-            <p className="text-muted-foreground">{message.text}</p>
-            <button
-              onClick={() => setMessage(null)}
-              className="px-8 py-2.5 rounded-full bg-accent text-accent-foreground font-bold text-sm mt-2"
-            >
-              {t === "ar" ? "حسناً" : "OK"}
-            </button>
-          </div>
-        </div>
+      {selectedGame && (
+        <MatchDetails
+          game={selectedGame}
+          stadiumMap={stadiumMap}
+          lang={lang}
+          onClose={() => setSelectedGame(null)}
+        />
       )}
     </Layout>
   );

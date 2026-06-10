@@ -23,7 +23,6 @@ export const Header = () => {
     { to: "/coming-soon", label: lang === "ar" ? "قريباً" : "Bientôt" },
     { to: "/live", label: lang === "ar" ? "مباريات اليوم" : "Live" },
     { to: "/matches", label: lang === "ar" ? "كأس العالم 2026" : "World Cup 2026" },
-    { to: "/channels", label: lang === "ar" ? "القنوات" : "Channels" },
     { to: "/search", label: t("nav_search") },
     { to: "/profile", label: t("nav_profile") },
   ];

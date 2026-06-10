@@ -11,7 +11,6 @@ import { SettingsProvider } from "@/context/SettingsContext";
 import Home from "./pages/Home";
 import Movie from "./pages/Movie";
 import Series from "./pages/Series";
-import Channels from "./pages/Channels";
 import Search from "./pages/Search";
 import Catalog from "./pages/Catalog";
 import Auth from "./pages/Auth";
@@ -130,7 +129,6 @@ const AppContent = () => (
                         <Route path="/series" element={<Catalog mode="series" />} />
                         <Route path="/movie/:id" element={<Movie />} />
                         <Route path="/series/:id" element={<Series />} />
-                        <Route path="/channels" element={<Channels />} />
                         <Route path="/search" element={<Search />} />
                         <Route path="/auth" element={<Auth />} />
                         <Route path="/auth-desktop" element={<DesktopAuth />} />
