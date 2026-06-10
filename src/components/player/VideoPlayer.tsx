@@ -5,7 +5,7 @@
  * comme potentiellement indisponible, mais il NE bascule plus automatiquement.
  */
 import React, { useCallback, useEffect, useRef, useState, forwardRef, useImperativeHandle } from "react";
-import { getMovieSources, getTVSources, SOURCE_LABELS, getInternalBackendSources } from "@/services/player";
+import { getMovieSources, getTVSources, SOURCE_LABELS, getInternalBackendSources, fetchCineProSources, CineProSource } from "@/services/player";
 import { AdsNoticeModal, hasSeenAdsNotice } from "./AdsNoticeModal";
 import { ResumeModal } from "./ResumeModal";
 import { useLanguage } from "@/context/LanguageContext";
@@ -102,6 +102,10 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
   // Internal Backend Sources
   const [internalSources, setInternalSources] = useState<any[]>([]);
 
+  // CinePro Core sources
+  const [cineproSources, setCineproSources] = useState<CineProSource[]>([]);
+  const [cineproSubs, setCineproSubs] = useState<{ url: string; format: string; label: string }[]>([]);
+
 
   const enterFullscreen = useCallback(() => {
     if (!containerRef.current) return;
@@ -166,6 +170,16 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
       console.error("Progress save error:", err);
     }
   };
+
+  // Apply CinePro subtitles when a CinePro source is selected
+  useEffect(() => {
+    if (sourceIndex >= 3) {
+      const cineproIdx = sourceIndex - 3;
+      if (cineproIdx < cineproSubs.length && cineproSubs[cineproIdx]) {
+        setAppliedExternalSub(cineproSubs[cineproIdx].url);
+      }
+    }
+  }, [sourceIndex, cineproSubs]);
 
   // Auto-fetch Arabic subtitles on mount
   useEffect(() => {
@@ -290,8 +304,13 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
     ? `https://nhdapi.com/embed/movie/${tmdb_id}?${nhdapiParams.toString()}`
     : `https://nhdapi.com/embed/tv/${tmdb_id}/${season}/${episode}?${nhdapiParams.toString()}`;
 
+  // CinePro URLs — direct hls/mp4 sources
+  const cineproUrls = cineproSources.map((s) => s.url);
+
   // For customUrl (Kabyle), only use customUrl
-  const allSources = customUrl ? [customUrl] : [cinemaOsUrl, ...sources.slice(0,1), nhdapiUrl];
+  const allSources = customUrl
+    ? [customUrl]
+    : [cinemaOsUrl, ...sources.slice(0, 1), nhdapiUrl, ...cineproUrls];
 
   useEffect(() => {
     const fetchInternal = async () => {
@@ -328,10 +347,25 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
     if (tmdb_id) tryResolve();
   }, [tmdb_id, type, season, episode]);
 
+  // Fetch CinePro Core sources
+  useEffect(() => {
+    if (!tmdb_id || customUrl) return;
+    fetchCineProSources(type, tmdb_id, season, episode).then((data) => {
+      if (data && data.sources.length > 0) {
+        setCineproSources(data.sources);
+        setCineproSubs(data.subtitles || []);
+      }
+    });
+  }, [tmdb_id, type, season, episode, customUrl]);
+
   const allLabels = Array(50).fill(null);
   allLabels[0] = "🎬 CinemaOS (بدون إعلانات)";
   allLabels[1] = customUrl ? "Serveur Kabyle" : "BNKhub serveur";
   allLabels[2] = "📥 nhdapi (تحميل مباشر)";
+  // CinePro Core sources
+  cineproSources.forEach((s, i) => {
+    allLabels[3 + i] = `${s.provider?.name || "CinePro"} (${s.quality})`;
+  });
 
   const handleLoad = () => {
     setLoading(false);
@@ -511,9 +545,27 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
           </div>
         )}
 
+        {/* Determine source type for rendering */}
+        {(() => {
+          const cineproIdx = sourceIndex >= 3 ? sourceIndex - 3 : -1;
+          const cineproSrc = cineproIdx >= 0 && cineproIdx < cineproSources.length ? cineproSources[cineproIdx] : null;
+          const isVideoExt = allSources[sourceIndex]?.includes(".m3u8") || allSources[sourceIndex]?.includes(".mp4");
+          const isVideoType = cineproSrc && ["hls", "mp4", "dash", "http", "mkv", "webm"].includes(cineproSrc.type);
+          const isYoutube = allSources[sourceIndex]?.includes("youtube.com") || allSources[sourceIndex]?.includes("youtu.be");
+          const shouldRenderVideo = isVideoExt || isVideoType;
+          const shouldRenderYoutube = isYoutube && !isVideoType;
+          const shouldRenderIframe = !shouldRenderVideo && !shouldRenderYoutube;
+          return null;
+        })()}
+
         {/* Video Element for HLS / Direct — only render when active to prevent background audio */}
-        {playerActive && (allSources[sourceIndex]?.includes(".m3u8") || 
-          allSources[sourceIndex]?.includes(".mp4")) && (
+        {playerActive && (() => {
+          const cineproIdx = sourceIndex >= 3 ? sourceIndex - 3 : -1;
+          const cineproSrc = cineproIdx >= 0 && cineproIdx < cineproSources.length ? cineproSources[cineproIdx] : null;
+          return allSources[sourceIndex]?.includes(".m3u8") || 
+            allSources[sourceIndex]?.includes(".mp4") ||
+            (cineproSrc && ["hls", "mp4", "dash", "http", "mkv", "webm"].includes(cineproSrc.type));
+        })() && (
           <video
             ref={videoRef}
             className="absolute inset-0 w-full h-full object-contain bg-black"
@@ -543,7 +595,14 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
         )}
 
         {/* YouTube Iframe */}
-        {playerActive && (allSources[sourceIndex]?.includes("youtube.com") || allSources[sourceIndex]?.includes("youtu.be")) && (
+        {playerActive && (() => {
+          if (allSources[sourceIndex]?.includes("youtube.com") || allSources[sourceIndex]?.includes("youtu.be")) {
+            const cineproIdx = sourceIndex >= 3 ? sourceIndex - 3 : -1;
+            const cineproSrc = cineproIdx >= 0 && cineproIdx < cineproSources.length ? cineproSources[cineproIdx] : null;
+            return !(cineproSrc && ["hls", "mp4", "dash", "http", "mkv", "webm"].includes(cineproSrc.type));
+          }
+          return false;
+        })() && (
           <iframe
             key={`yt-${sourceIndex}`}
             src={`https://www.youtube.com/embed/${
@@ -560,7 +619,15 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
         )}
 
         {/* Standard Iframe */}
-        {playerActive && !allSources[sourceIndex]?.includes(".m3u8") && !allSources[sourceIndex]?.includes(".mp4") && !allSources[sourceIndex]?.includes("youtube.com") && !allSources[sourceIndex]?.includes("youtu.be") && (
+        {playerActive && (() => {
+          const isM3u8 = allSources[sourceIndex]?.includes(".m3u8");
+          const isMp4 = allSources[sourceIndex]?.includes(".mp4");
+          const isYt = allSources[sourceIndex]?.includes("youtube.com") || allSources[sourceIndex]?.includes("youtu.be");
+          const cineproIdx = sourceIndex >= 3 ? sourceIndex - 3 : -1;
+          const cineproSrc = cineproIdx >= 0 && cineproIdx < cineproSources.length ? cineproSources[cineproIdx] : null;
+          const isCineproVideo = cineproSrc && ["hls", "mp4", "dash", "http", "mkv", "webm"].includes(cineproSrc.type);
+          return !isM3u8 && !isMp4 && !isYt && !isCineproVideo;
+        })() && (
           <iframe
             key={`${sourceIndex}-${appliedExternalSub}`}
             src={allSources[sourceIndex]}
@@ -590,11 +657,14 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
         <div className="mt-5">
           <PlayerSourceSelector 
             sources={allSources.map((src, idx) => {
-              const isDirect = src.includes(".m3u8") || src.includes(".mp4") || src.includes("youtube") || src.includes("cinemaos.tech");
+              const cineproIdx = idx >= 3 ? idx - 3 : -1;
+              const cineproSrc = cineproIdx >= 0 && cineproIdx < cineproSources.length ? cineproSources[cineproIdx] : null;
+              const isCineproVideo = cineproSrc && ["hls", "mp4", "dash", "http", "mkv", "webm"].includes(cineproSrc.type);
+              const isDirect = src.includes(".m3u8") || src.includes(".mp4") || src.includes("youtube") || src.includes("cinemaos.tech") || !!isCineproVideo;
               return {
                 id: idx,
                 name: `S${idx + 1} BNKHUB`,
-                quality: isDirect ? "1080p" : "Auto",
+                quality: isDirect ? cineproSrc?.quality || "1080p" : "Auto",
                 speed: isDirect ? "50" : "30",
                 uptime: "99",
                 hasAds: !isDirect,
@@ -683,7 +753,27 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
                       </>
                     )}
 
-                    {externalSubs.length === 0 && wyzieSubs.length === 0 && (
+                    {/* CinePro Subtitles */}
+                    {cineproSubs.length > 0 && (
+                      <>
+                        <p className="text-[10px] font-black text-white/20 uppercase tracking-[0.3em] px-2 pt-4">CinePro Subs</p>
+                        {cineproSubs.map((sub, idx) => (
+                          <button
+                            key={`cinepro-${idx}`}
+                            onClick={() => {
+                              setAppliedExternalSub(sub.url);
+                              setShowSettings(false);
+                            }}
+                            className={`w-full flex items-center justify-between px-5 py-4 rounded-2xl text-[11px] font-bold transition-all border ${appliedExternalSub === sub.url ? 'bg-accent/20 border-accent/40 text-accent' : 'bg-white/5 text-white/50 hover:bg-white/10 hover:text-white border-transparent'}`}
+                          >
+                            <span className="truncate max-w-[220px]">{sub.label}</span>
+                            {appliedExternalSub === sub.url && <Check className="w-3 h-3 text-accent" />}
+                          </button>
+                        ))}
+                      </>
+                    )}
+
+                    {externalSubs.length === 0 && wyzieSubs.length === 0 && cineproSubs.length === 0 && (
                       <div className="text-center py-12 bg-white/5 rounded-3xl border border-dashed border-white/10">
                         <Loader2 className="w-6 h-6 text-accent/20 animate-spin mx-auto mb-3" />
                         <p className="text-[10px] font-black text-white/20 uppercase tracking-widest">Searching or none found</p>

@@ -7,6 +7,42 @@ import { KABYLE_CONTENT } from './customContent';
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:4000/api/stream/sources";
 
+// CinePro Core API — replace with your Render URL
+const CINEPRO_API = "https://cinepro-core-ij12.onrender.com";
+
+export interface CineProSource {
+  url: string;
+  type: string;
+  quality: string;
+  provider: { id: string; name: string };
+  audioTracks: { language: string; label: string }[];
+}
+
+export interface CineProResponse {
+  responseId: string;
+  sources: CineProSource[];
+  subtitles: { url: string; format: string; label: string }[];
+}
+
+export const fetchCineProSources = async (
+  type: "movie" | "tv",
+  tmdbId: string | number,
+  season?: number,
+  episode?: number
+): Promise<CineProResponse | null> => {
+  try {
+    const path =
+      type === "movie"
+        ? `/v1/movies/${tmdbId}`
+        : `/v1/tv/${tmdbId}/seasons/${season}/episodes/${episode}`;
+    const res = await fetch(`${CINEPRO_API}${path}`);
+    if (!res.ok) return null;
+    return res.json();
+  } catch {
+    return null;
+  }
+};
+
 export const getInternalBackendSources = async (type: 'movie' | 'tv', id: string, query?: string, s?: number, e?: number) => {
   try {
     const res = await axios.post(BACKEND_URL, { type, id: query || id, season: s, episode: e });
