@@ -3,7 +3,7 @@ import { Layout } from "@/components/layout/Layout";
 import { useLanguage } from "@/context/LanguageContext";
 import { fetchChannels, Channel } from "@/services/channels";
 import { ChannelPlayer } from "@/components/channel/ChannelPlayer";
-import { Loader2, Tv, Search, Play, Smartphone, Monitor, Link, Trophy } from "lucide-react";
+import { Loader2, Tv, Search, Play, Smartphone, Monitor, Link, Trophy, Zap } from "lucide-react";
 
 const Channels = () => {
   const { lang } = useLanguage();
@@ -52,17 +52,23 @@ const Channels = () => {
     }
   }, [search]);
 
+  const doSearch = useCallback(async (q: string) => {
+    setLoadingChannels(true);
+    try {
+      const data = await fetchChannels({ page, search: q });
+      setChannels(data.channels);
+      setTotal(data.total);
+      setTotalPages(data.totalPages);
+    } catch {} finally {
+      setLoadingChannels(false);
+    }
+  }, [page]);
+
   useEffect(() => {
-    if (activeGroup === "__bein__") {
-      setLoadingChannels(true);
-      fetchChannels({ page, search: "bein" })
-        .then((data) => {
-          setChannels(data.channels);
-          setTotal(data.total);
-          setTotalPages(data.totalPages);
-        })
-        .catch(() => {})
-        .finally(() => setLoadingChannels(false));
+    if (activeGroup === "__sports__") {
+      doSearch("sport");
+    } else if (activeGroup === "__bein__") {
+      doSearch("bein");
     } else if (activeGroup) {
       loadChannels(activeGroup, activeSource, page);
     } else {
@@ -70,9 +76,18 @@ const Channels = () => {
       setTotal(0);
       setTotalPages(1);
     }
-  }, [activeGroup, activeSource, page, loadChannels]);
+  }, [activeGroup, activeSource, page, loadChannels, doSearch]);
 
+  const isSportsActive = activeGroup === "__sports__";
   const isBeinActive = activeGroup === "__bein__";
+
+  const handleSportsClick = () => {
+    setActiveGroup(isSportsActive ? "" : "__sports__");
+    setActiveSource("");
+    setPage(1);
+    setActiveChannel(null);
+  };
+
 
   const handleGroupClick = (group: string, source: string) => {
     if (activeGroup === group && activeSource === source) {
@@ -101,7 +116,9 @@ const Channels = () => {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     setPage(1);
-    if (activeGroup === "__bein__") {
+    if (activeGroup === "__sports__") {
+      loadChannels("", "", 1, "sport");
+    } else if (activeGroup === "__bein__") {
       loadChannels("", "", 1, "bein");
     } else if (activeGroup) {
       loadChannels(activeGroup, activeSource, 1);
@@ -132,6 +149,17 @@ const Channels = () => {
                     {lang === "ar" ? "مميز" : "Featured"}
                   </p>
                 </div>
+                <button
+                  onClick={handleSportsClick}
+                  className={`w-full text-right px-4 py-2.5 text-sm font-bold transition-colors hover:bg-white/[0.04] flex items-center gap-3 ${
+                    isSportsActive
+                      ? "bg-emerald-500/10 text-emerald-400 border-r-2 border-emerald-500"
+                      : "text-foreground/70"
+                  }`}
+                >
+                  <Zap className="w-4 h-4" />
+                  {lang === "ar" ? "رياضة" : "Sports"}
+                </button>
                 <button
                   onClick={handleBeinClick}
                   className={`w-full text-right px-4 py-2.5 text-sm font-bold transition-colors hover:bg-white/[0.04] flex items-center gap-3 ${

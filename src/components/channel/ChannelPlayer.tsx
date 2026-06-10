@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { X, Maximize, Minimize, Volume2, VolumeX } from "lucide-react";
+import { X, Maximize, Minimize, Volume2, VolumeX, Loader2, Wifi, WifiOff } from "lucide-react";
 import Hls from "hls.js";
 
 interface ChannelPlayerProps {
@@ -14,15 +14,20 @@ interface ChannelPlayerProps {
 export const ChannelPlayer = ({ name, logo, url, group, onClose, standalone }: ChannelPlayerProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const [playing, setPlaying] = useState(false);
+  const [state, setState] = useState<"loading" | "playing" | "error">("loading");
+  const [errorMsg, setErrorMsg] = useState("");
   const [muted, setMuted] = useState(false);
   const [fullscreen, setFullscreen] = useState(false);
   const [showUI, setShowUI] = useState(true);
   const hideUITimer = useRef<ReturnType<typeof setTimeout>>();
+  const retryCount = useRef(0);
 
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
+
+    setState("loading");
+    setErrorMsg("");
 
     const hlsConfig = {
       lowLatencyMode: true,
@@ -34,6 +39,17 @@ export const ChannelPlayer = ({ name, logo, url, group, onClose, standalone }: C
     };
 
     let hls: Hls | null = null;
+    let destroyed = false;
+
+    const onPlay = () => {
+      if (!destroyed) setState("playing");
+    };
+    const onError = () => {
+      if (!destroyed) {
+        setState("error");
+        setErrorMsg("تعذر الاتصال بالخادم");
+      }
+    };
 
     if (url.endsWith(".m3u8")) {
       if (Hls.isSupported()) {
@@ -41,27 +57,36 @@ export const ChannelPlayer = ({ name, logo, url, group, onClose, standalone }: C
         hls.loadSource(url);
         hls.attachMedia(video);
         hls.on(Hls.Events.MANIFEST_PARSED, () => {
-          video.play().then(() => setPlaying(true)).catch(() => {});
+          video.play().then(onPlay).catch(onError);
         });
         hls.on(Hls.Events.ERROR, (_e, data) => {
-          if (data.fatal && data.type === Hls.ErrorTypes.NETWORK_ERROR) {
-            hls?.startLoad();
+          if (data.fatal) {
+            if (data.type === Hls.ErrorTypes.NETWORK_ERROR && retryCount.current < 2) {
+              retryCount.current++;
+              setTimeout(() => hls?.startLoad(), 2000);
+            } else {
+              onError();
+            }
           }
         });
       } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
-        video.src = url;
         video.addEventListener("loadedmetadata", () => {
-          video.play().then(() => setPlaying(true)).catch(() => {});
+          video.play().then(onPlay).catch(onError);
         });
+        video.src = url;
+      } else {
+        setState("error");
+        setErrorMsg("المتصفح لا يدعم تشغيل HLS");
       }
     } else {
-      video.src = url;
       video.addEventListener("loadedmetadata", () => {
-        video.play().then(() => setPlaying(true)).catch(() => {});
+        video.play().then(onPlay).catch(onError);
       });
+      video.src = url;
     }
 
     return () => {
+      destroyed = true;
       if (hls) hls.destroy();
       video.pause();
       video.removeAttribute("src");
@@ -74,7 +99,7 @@ export const ChannelPlayer = ({ name, logo, url, group, onClose, standalone }: C
     setShowUI(true);
     clearTimeout(hideUITimer.current);
     hideUITimer.current = setTimeout(() => {
-      if (playing) setShowUI(false);
+      if (state === "playing") setShowUI(false);
     }, 3000);
   };
 
@@ -95,6 +120,102 @@ export const ChannelPlayer = ({ name, logo, url, group, onClose, standalone }: C
     return () => document.removeEventListener("fullscreenchange", handler);
   }, []);
 
+  const loadingOverlay = (
+    <div className="absolute inset-0 flex flex-col items-center justify-center gap-5 bg-black/60 backdrop-blur-sm">
+      <div className="relative">
+        <div className="w-20 h-20 rounded-full border-4 border-white/10 border-t-emerald-500 animate-spin" />
+        <div className="absolute inset-0 flex items-center justify-center">
+          <Wifi className="w-8 h-8 text-emerald-400 animate-pulse" />
+        </div>
+      </div>
+      <div className="text-center">
+        <p className="text-white/90 text-base font-medium tracking-wide">
+          جاري التحميل...
+        </p>
+        <p className="text-white/50 text-sm mt-1.5 flex items-center gap-2">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+          جاري التحقق من الاتصال
+        </p>
+      </div>
+    </div>
+  );
+
+  const errorOverlay = (
+    <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-black/70 backdrop-blur-sm">
+      <div className="w-20 h-20 rounded-full bg-red-500/10 flex items-center justify-center">
+        <WifiOff className="w-10 h-10 text-red-400" />
+      </div>
+      <div className="text-center">
+        <p className="text-red-400 text-base font-medium">تعذر الاتصال</p>
+        <p className="text-white/50 text-sm mt-1">{errorMsg}</p>
+      </div>
+      <button
+        onClick={() => window.location.reload()}
+        className="px-6 py-2 rounded-full bg-white/10 hover:bg-white/20 text-white text-sm font-medium transition-all"
+      >
+        إعادة المحاولة
+      </button>
+    </div>
+  );
+
+  const topBar = (
+    <div
+      className={`absolute top-0 inset-x-0 p-4 flex items-start justify-between transition-opacity duration-300 ${
+        showUI ? "opacity-100" : "opacity-0 pointer-events-none"
+      }`}
+      onMouseEnter={() => setShowUI(true)}
+      onMouseLeave={() => state === "playing" && setShowUI(false)}
+    >
+      <div className="flex items-center gap-3" onClick={(e) => e.stopPropagation()}>
+        {logo && (
+          <img
+            src={logo}
+            alt=""
+            className="w-10 h-10 rounded-lg object-contain bg-black/40 backdrop-blur-xl"
+            onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
+          />
+        )}
+        <div>
+          <h2 className="text-lg font-bold text-white drop-shadow-lg">{name}</h2>
+          {group && <p className="text-xs text-white/70 drop-shadow-lg">{group}</p>}
+        </div>
+      </div>
+      <div className="flex items-center gap-2">
+        {state === "playing" && (
+          <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-red-600/80 text-white text-[10px] font-bold">
+            <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+            LIVE
+          </span>
+        )}
+        <button
+          onClick={() => setMuted((m) => !m)}
+          className="p-2 rounded-full bg-black/40 backdrop-blur-xl hover:bg-white/20 transition-all"
+        >
+          {muted ? <VolumeX className="w-4 h-4 text-white" /> : <Volume2 className="w-4 h-4 text-white" />}
+        </button>
+        <button
+          onClick={toggleFullscreen}
+          className="p-2 rounded-full bg-black/40 backdrop-blur-xl hover:bg-white/20 transition-all"
+        >
+          {fullscreen ? <Minimize className="w-4 h-4 text-white" /> : <Maximize className="w-4 h-4 text-white" />}
+        </button>
+        <button
+          onClick={(e) => { e.stopPropagation(); onClose(); }}
+          className="p-2 rounded-full bg-black/40 backdrop-blur-xl hover:bg-white/20 transition-all"
+        >
+          <X className="w-4 h-4 text-white" />
+        </button>
+      </div>
+    </div>
+  );
+
+  const gradientLayer = (
+    <div className={`absolute inset-0 pointer-events-none transition-opacity duration-300 ${showUI ? "opacity-100" : "opacity-0"}`}>
+      <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/60 to-transparent" />
+      <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/60 to-transparent" />
+    </div>
+  );
+
   if (standalone) {
     return (
       <div ref={containerRef} className="relative w-full h-full bg-black">
@@ -105,57 +226,10 @@ export const ChannelPlayer = ({ name, logo, url, group, onClose, standalone }: C
           playsInline
           muted={muted}
         />
-
-        <div className={`absolute inset-0 transition-opacity duration-300 ${showUI ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
-          <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/60 to-transparent" />
-          <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/60 to-transparent" />
-        </div>
-
-        <div className={`absolute top-0 inset-x-0 p-4 flex items-start justify-between transition-opacity duration-300 ${showUI ? "opacity-100" : "opacity-0 pointer-events-none"}`}
-          onMouseEnter={() => setShowUI(true)}
-          onMouseLeave={() => playing && setShowUI(false)}
-        >
-          <div className="flex items-center gap-3" onClick={(e) => e.stopPropagation()}>
-            {logo && (
-              <img
-                src={logo}
-                alt=""
-                className="w-10 h-10 rounded-lg object-contain bg-black/40 backdrop-blur-xl"
-                onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
-              />
-            )}
-            <div>
-              <h2 className="text-lg font-bold text-white drop-shadow-lg">{name}</h2>
-              {group && <p className="text-xs text-white/70 drop-shadow-lg">{group}</p>}
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            {playing && (
-              <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-red-600/80 text-white text-[10px] font-bold">
-                <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
-                LIVE
-              </span>
-            )}
-            <button
-              onClick={() => setMuted((m) => !m)}
-              className="p-2 rounded-full bg-black/40 backdrop-blur-xl hover:bg-white/20 transition-all"
-            >
-              {muted ? <VolumeX className="w-4 h-4 text-white" /> : <Volume2 className="w-4 h-4 text-white" />}
-            </button>
-            <button
-              onClick={toggleFullscreen}
-              className="p-2 rounded-full bg-black/40 backdrop-blur-xl hover:bg-white/20 transition-all"
-            >
-              {fullscreen ? <Minimize className="w-4 h-4 text-white" /> : <Maximize className="w-4 h-4 text-white" />}
-            </button>
-            <button
-              onClick={(e) => { e.stopPropagation(); onClose(); }}
-              className="p-2 rounded-full bg-black/40 backdrop-blur-xl hover:bg-white/20 transition-all"
-            >
-              <X className="w-4 h-4 text-white" />
-            </button>
-          </div>
-        </div>
+        {state === "loading" && loadingOverlay}
+        {state === "error" && errorOverlay}
+        {gradientLayer}
+        {topBar}
       </div>
     );
   }
@@ -166,7 +240,7 @@ export const ChannelPlayer = ({ name, logo, url, group, onClose, standalone }: C
       className="fixed inset-0 z-[100] bg-black"
       onClick={onClose}
       onMouseMove={handleMouseMove}
-      onMouseLeave={() => playing && setShowUI(false)}
+      onMouseLeave={() => state === "playing" && setShowUI(false)}
     >
       <video
         ref={videoRef}
@@ -176,62 +250,14 @@ export const ChannelPlayer = ({ name, logo, url, group, onClose, standalone }: C
         muted={muted}
         onClick={(e) => {
           e.stopPropagation();
-          if (!playing) return;
           if (videoRef.current?.paused) videoRef.current.play();
           else videoRef.current?.pause();
         }}
       />
-
-      <div className={`absolute inset-0 transition-opacity duration-300 ${showUI ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
-        <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-black/70 to-transparent" />
-        <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/70 to-transparent" />
-      </div>
-
-      <div className={`absolute top-0 inset-x-0 p-6 flex items-start justify-between transition-opacity duration-300 ${showUI ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
-        <div className="flex items-center gap-4" onClick={(e) => e.stopPropagation()}>
-          {logo && (
-            <img
-              src={logo}
-              alt={name}
-              className="w-12 h-12 rounded-xl object-contain bg-black/40 backdrop-blur-xl"
-              onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
-            />
-          )}
-          <div>
-            <h2 className="text-xl font-bold text-white drop-shadow-lg">{name}</h2>
-            {group && <p className="text-sm text-white/70 drop-shadow-lg">{group}</p>}
-          </div>
-        </div>
-        <button
-          onClick={(e) => { e.stopPropagation(); onClose(); }}
-          className="p-3 rounded-full bg-black/40 backdrop-blur-xl hover:bg-white/20 transition-all"
-        >
-          <X className="w-6 h-6 text-white" />
-        </button>
-      </div>
-
-      <div className={`absolute bottom-0 inset-x-0 p-6 flex items-center justify-between transition-opacity duration-300 ${showUI ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
-        <div className="flex items-center gap-3" onClick={(e) => e.stopPropagation()}>
-          <button
-            onClick={() => setMuted((m) => !m)}
-            className="p-3 rounded-full bg-black/40 backdrop-blur-xl hover:bg-white/20 transition-all"
-          >
-            {muted ? <VolumeX className="w-5 h-5 text-white" /> : <Volume2 className="w-5 h-5 text-white" />}
-          </button>
-          {playing && (
-            <span className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-red-600/80 text-white text-xs font-bold">
-              <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
-              LIVE
-            </span>
-          )}
-        </div>
-        <button
-          onClick={toggleFullscreen}
-          className="p-3 rounded-full bg-black/40 backdrop-blur-xl hover:bg-white/20 transition-all"
-        >
-          {fullscreen ? <Minimize className="w-5 h-5 text-white" /> : <Maximize className="w-5 h-5 text-white" />}
-        </button>
-      </div>
+      {state === "loading" && loadingOverlay}
+      {state === "error" && errorOverlay}
+      {gradientLayer}
+      {topBar}
     </div>
   );
 };
