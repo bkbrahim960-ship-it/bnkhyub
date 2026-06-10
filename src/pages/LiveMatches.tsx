@@ -1,41 +1,45 @@
 import { useEffect, useState } from "react";
 import { Layout } from "@/components/layout/Layout";
 import { useLanguage } from "@/context/LanguageContext";
-import { Loader2, RefreshCw, Clock, Tv, Mic, Trophy, Play, AlertCircle, Ban, Hourglass } from "lucide-react";
-import { fetchMatches, KoraliveMatch, matchDate, matchTime, isMatchLive, isMatchEnded, isMatchUpcoming } from "@/services/koralive";
+import { Loader2, RefreshCw, Clock, Tv, Trophy, Play, AlertCircle, Ban, Hourglass } from "lucide-react";
+import { fetchScriptFootMatches, ScriptFootMatch, matchDate, matchTime, isLive, isEnded, isUpcoming } from "@/services/scriptfoot";
 import { MatchPlayer } from "@/components/player/MatchPlayer";
 
 const STATUS_MAP: Record<string, { label: string; className: string }> = {
   live: { label: "مباشر", className: "bg-red-600 text-white animate-pulse" },
-  halftime: { label: "استراحة", className: "bg-amber-600 text-white" },
-  ended: { label: "انتهت", className: "bg-gray-600 text-white" },
+  scheduled: { label: "مجدولة", className: "bg-blue-600 text-white" },
   not_started: { label: "لم تبدأ", className: "bg-blue-600 text-white" },
   starting_soon: { label: "تبدأ قريباً", className: "bg-emerald-600 text-white" },
-  soon: { label: "لم تبدأ بعد", className: "bg-blue-600/60 text-white" },
-  et: { label: "وقت إضافي", className: "bg-red-700 text-white" },
+  ended: { label: "انتهت", className: "bg-gray-600 text-white" },
+  finished: { label: "انتهت", className: "bg-gray-600 text-white" },
 };
 
 const LiveMatches = () => {
   const { t } = useLanguage();
-  const [matches, setMatches] = useState<KoraliveMatch[]>([]);
+  const [matches, setMatches] = useState<ScriptFootMatch[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [playing, setPlaying] = useState<KoraliveMatch | null>(null);
+  const [playing, setPlaying] = useState<ScriptFootMatch | null>(null);
   const [message, setMessage] = useState<{ title: string; text: string; icon: string } | null>(null);
 
-  const handlePlayClick = (match: KoraliveMatch) => {
-    const key = match.status.initial || match.status.class || "";
-    if (isMatchEnded(key)) {
+  const handlePlayClick = (match: ScriptFootMatch) => {
+    if (isEnded(match.status)) {
       setMessage({
         title: "انتهت المباراة",
-        text: `المباراة بين ${match.homeTeam} و ${match.awayTeam} قد انتهت${match.score ? ` بنتيجة ${match.score}` : ""}.`,
+        text: `المباراة قد انتهت${match.score ? ` بنتيجة ${match.score}` : ""}.`,
         icon: "ended",
       });
-    } else if (isMatchUpcoming(key)) {
+    } else if (isUpcoming(match.status)) {
       setMessage({
         title: "المباراة لم تبدأ بعد",
-        text: `المباراة بين ${match.homeTeam} و ${match.awayTeam} ستبدأ في الساعة ${matchTime(match)}${matchDate(match) ? ` بتاريخ ${matchDate(match)}` : ""}.`,
+        text: `المباراة ستبدأ في الساعة ${matchTime(match)}${matchDate(match) ? ` بتاريخ ${matchDate(match)}` : ""}.`,
+        icon: "upcoming",
+      });
+    } else if (match.streams.length === 0) {
+      setMessage({
+        title: "لا توجد روابط بث",
+        text: "روابط البث غير متاحة حالياً، حاول مرة أخرى لاحقاً.",
         icon: "upcoming",
       });
     } else {
@@ -48,7 +52,7 @@ const LiveMatches = () => {
     else setRefreshing(true);
     setError(null);
     try {
-      const data = await fetchMatches();
+      const data = await fetchScriptFootMatches();
       setMatches(data);
     } catch (err: any) {
       setError(err.message || "فشل تحميل المباريات");
@@ -62,24 +66,16 @@ const LiveMatches = () => {
     loadMatches();
   }, []);
 
-  const getStatusBadge = (match: KoraliveMatch) => {
-    const key = match.status.initial || match.status.class || "";
-    const config = STATUS_MAP[key];
-    if (!config) {
-      if (match.status.text) {
-        return (
-          <span className="px-3 py-1 rounded-full text-xs font-bold bg-gray-600 text-white">
-            {match.status.text}
-          </span>
-        );
-      }
-      return null;
+  const getStatusBadge = (match: ScriptFootMatch) => {
+    const config = STATUS_MAP[match.status];
+    if (config) {
+      return (
+        <span className={`px-3 py-1 rounded-full text-xs font-bold ${config.className}`}>
+          {config.label}
+        </span>
+      );
     }
-    return (
-      <span className={`px-3 py-1 rounded-full text-xs font-bold ${config.className}`}>
-        {config.label}
-      </span>
-    );
+    return null;
   };
 
   const grouped = matches.reduce(
@@ -89,7 +85,7 @@ const LiveMatches = () => {
       acc[date].push(m);
       return acc;
     },
-    {} as Record<string, KoraliveMatch[]>,
+    {} as Record<string, ScriptFootMatch[]>,
   );
 
   const sortedDates = Object.keys(grouped).sort();
@@ -172,16 +168,16 @@ const LiveMatches = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                     {grouped[date].map((match) => (
                       <div
-                        key={match.id || `${match.homeTeam}-${match.awayTeam}`}
+                        key={match.id}
                         className="group relative bg-surface-card border border-border rounded-2xl p-5 hover:border-accent-subtle transition-all duration-300 hover:-translate-y-1"
                       >
                         <div className="flex items-center gap-4 mb-4">
                           <div className="flex-1 flex flex-col items-center gap-2">
                             <div className="w-14 h-14 flex items-center justify-center">
-                              {match.homeLogo ? (
+                              {match.thumbnail ? (
                                 <img
-                                  src={match.homeLogo}
-                                  alt={match.homeTeam || ""}
+                                  src={match.thumbnail}
+                                  alt={match.home_team || ""}
                                   className="w-full h-full object-contain filter drop-shadow-lg group-hover:scale-110 transition-transform duration-500"
                                 />
                               ) : (
@@ -191,7 +187,7 @@ const LiveMatches = () => {
                               )}
                             </div>
                             <span className="text-sm font-bold text-center leading-tight line-clamp-2">
-                              {match.homeTeam}
+                              {match.home_team || match.title}
                             </span>
                           </div>
 
@@ -200,7 +196,7 @@ const LiveMatches = () => {
                               <span className="text-2xl md:text-3xl font-black font-mono tracking-wider">
                                 {match.score}
                               </span>
-                            ) : match.kickoff ? (
+                            ) : match.match_time ? (
                               <>
                                 <span className="text-lg md:text-xl font-bold font-mono">
                                   {matchTime(match)}
@@ -215,10 +211,10 @@ const LiveMatches = () => {
 
                           <div className="flex-1 flex flex-col items-center gap-2">
                             <div className="w-14 h-14 flex items-center justify-center">
-                              {match.awayLogo ? (
+                              {match.thumbnail ? (
                                 <img
-                                  src={match.awayLogo}
-                                  alt={match.awayTeam || ""}
+                                  src={match.thumbnail}
+                                  alt={match.away_team || ""}
                                   className="w-full h-full object-contain filter drop-shadow-lg group-hover:scale-110 transition-transform duration-500"
                                 />
                               ) : (
@@ -228,12 +224,12 @@ const LiveMatches = () => {
                               )}
                             </div>
                             <span className="text-sm font-bold text-center leading-tight line-clamp-2">
-                              {match.awayTeam}
+                              {match.away_team || ""}
                             </span>
                           </div>
                         </div>
 
-                        {(match.channel || match.league || match.commentator || match.venue) && (
+                        {(match.channels.length > 0 || match.league) && (
                           <div className="border-t border-border pt-3 mt-2 space-y-1.5">
                             {match.league && (
                               <div className="flex items-center gap-2 text-xs text-muted-foreground">
@@ -241,16 +237,10 @@ const LiveMatches = () => {
                                 <span className="line-clamp-1">{match.league}</span>
                               </div>
                             )}
-                            {match.channel && (
+                            {match.channels.length > 0 && (
                               <div className="flex items-center gap-2 text-xs text-muted-foreground">
                                 <Tv className="w-3.5 h-3.5 flex-shrink-0" />
-                                <span className="line-clamp-1">{match.channel}</span>
-                              </div>
-                            )}
-                            {match.commentator && (
-                              <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                                <Mic className="w-3.5 h-3.5 flex-shrink-0" />
-                                <span className="line-clamp-1">{match.commentator}</span>
+                                <span className="line-clamp-1">{match.channels.join(" • ")}</span>
                               </div>
                             )}
                           </div>
@@ -295,13 +285,13 @@ const LiveMatches = () => {
         </div>
       )}
 
-      {playing && playing.detailUrl && (
+      {playing && (
         <MatchPlayer
-          homeTeam={playing.homeTeam || ""}
-          awayTeam={playing.awayTeam || ""}
-          homeLogo={playing.homeLogo}
-          awayLogo={playing.awayLogo}
-          detailUrl={playing.detailUrl}
+          homeTeam={playing.home_team || playing.title}
+          awayTeam={playing.away_team || ""}
+          homeLogo={null}
+          awayLogo={null}
+          streams={playing.streams}
           onClose={() => setPlaying(null)}
         />
       )}
