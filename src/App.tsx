@@ -25,6 +25,7 @@ import ComingSoon from "./pages/ComingSoon";
 import Channels from "./pages/Channels";
 import Matches from "./pages/Matches";
 import LiveMatches from "./pages/LiveMatches";
+import AlgerianSeriesPage from "./pages/AlgerianSeriesPage";
 import NotFound from "./pages/NotFound.tsx";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
@@ -146,6 +147,7 @@ const AppContent = () => (
                         <Route path="/coming-soon" element={<ComingSoon />} />
                         <Route path="/channels" element={<Channels />} />
                         <Route path="/matches" element={<Matches />} />
+                        <Route path="/algerian/:id" element={<AlgerianSeriesPage />} />
                         <Route path="/live" element={<LiveMatches />} />
                         <Route path="*" element={<NotFound />} />
                       </Routes>
