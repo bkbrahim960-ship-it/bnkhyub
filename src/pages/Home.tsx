@@ -36,7 +36,6 @@ import {
   TMDBSeries,
 } from "@/services/tmdb";
 import { CUSTOM_CONTENT } from "@/services/customContent";
-import { ALGERIAN_SERIES } from "@/services/algerianSeries";
 import { IMG } from "@/services/tmdb";
 import { Play, Star } from "lucide-react";
 
@@ -354,30 +353,6 @@ const Home = () => {
             {/* Specialized Content */}
             <DiscoverRow title={lang === "ar" ? "🇸🇦 أقوى الأفلام العربية" : "🇸🇦 Films Arabes"} originalLanguage="ar" type="movie" icon="🌟" />
             <DiscoverRow title={lang === "ar" ? "🇸🇦 المسلسلات العربية" : "🇸🇦 Séries Arabes"} originalLanguage="ar" type="tv" icon="📺" />
-
-            {/* Algerian Series */}
-            {ALGERIAN_SERIES.length > 0 && (
-              <section className="relative py-8">
-                <div className={ROW_HEADER}>
-                  <h2 className="font-display text-2xl md:text-3xl">
-                    <span className="text-gradient-accent">{lang === "ar" ? "🇩🇿 مسلسلات جزائرية" : "🇩🇿 Séries Algériennes"}</span>
-                  </h2>
-                </div>
-                <div className={`${ROW_TRACK} pt-2`}>
-                  {ALGERIAN_SERIES.map((s) => (
-                    <Link key={s.id} to={`/algerian/${s.id}`} className="snap-start block">
-                      <div className="w-40 md:w-48">
-                        <div className="aspect-[2/3] rounded-xl bg-surface-elevated/50 border border-border overflow-hidden flex items-center justify-center hover:border-accent/50 transition-all mb-2">
-                          <span className="text-5xl">📺</span>
-                        </div>
-                        <h3 className="text-sm font-medium truncate">{s.title}</h3>
-                        <p className="text-xs text-muted-foreground">{s.year} • {s.category} • {s.episodes.length} {lang === "ar" ? "حلقة" : "ép"}</p>
-                      </div>
-                    </Link>
-                  ))}
-                </div>
-              </section>
-            )}
 
             {/* Custom Content */}
             {CUSTOM_CONTENT.length > 0 && (
