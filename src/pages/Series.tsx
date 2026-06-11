@@ -352,7 +352,7 @@ const Series = () => {
                 episode={episode}
                 title={`${series.name} — S${season} E${episode}`}
                 initialSourceIndex={initialSourceIndex}
-                autoStart={false}
+                autoStart={true}
                 customUrl={undefined}
                 onPlayStart={(_i, label) => saveHistory(label)}
                 onSourceChange={(_i, label) => saveHistory(label)}

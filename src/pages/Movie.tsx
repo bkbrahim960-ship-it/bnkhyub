@@ -333,7 +333,7 @@ const Movie = () => {
               title={movie.title}
               initialSourceIndex={initialSourceIndex}
               customUrl={(movie as any).video_url || (movie as any).videoUrl}
-              autoStart={false}
+              autoStart={true}
               onPlayStart={(_i, label) => saveHistory(label)}
               onSourceChange={(_i, label) => saveHistory(label)}
               onProgress={(seconds, duration) => {

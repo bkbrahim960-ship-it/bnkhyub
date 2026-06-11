@@ -5,7 +5,7 @@
  * comme potentiellement indisponible, mais il NE bascule plus automatiquement.
  */
 import React, { useCallback, useEffect, useRef, useState, forwardRef, useImperativeHandle } from "react";
-import { getMovieSources, getTVSources, SOURCE_LABELS, getInternalBackendSources } from "@/services/player";
+import { getMovieSources, getTVSources, SOURCE_LABELS } from "@/services/player";
 import { ResumeModal } from "./ResumeModal";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
@@ -92,9 +92,6 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
   const [subsceneResults, setSubsceneResults] = useState<any[]>([]);
   const [isSearchingSubs, setIsSearchingSubs] = useState(false);
   const [appliedExternalSub, setAppliedExternalSub] = useState<string | null>(null);
-
-  // Internal Backend Sources
-  const [internalSources, setInternalSources] = useState<any[]>([]);
 
   const startPlayback = useCallback(() => {
     setPlayerActive(true);
@@ -262,41 +259,6 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
   const allSources = customUrl
     ? [customUrl]
     : [cinemaOsUrl, ...sources.slice(0, 1), nhdapiUrl];
-
-  useEffect(() => {
-    const fetchInternal = async () => {
-      console.log("Fetching internal sources for:", tmdb_id);
-      const results = await getInternalBackendSources(type, String(tmdb_id), title, season, episode);
-      console.log("Internal sources found:", results);
-      if (results && results.length > 0) {
-        setInternalSources(results);
-      } else {
-        setInternalSources([]);
-      }
-    };
-    fetchInternal();
-  }, [type, tmdb_id, season, episode]);
-
-  // BNKhub Private Engine (safe, non-blocking)
-  useEffect(() => {
-    const tryResolve = async () => {
-      try {
-        const { resolveProductionStream } = await import("@/services/resolver");
-        const result = await resolveProductionStream(String(tmdb_id), type, season, episode);
-        if (result.success && result.url) {
-          // Append as an additional internal source - does NOT touch existing sources
-          setInternalSources(prev => [
-            ...prev, 
-            { url: result.url, provider: "BNKhub Private Engine", type: result.type || "iframe" }
-          ]);
-          console.log("💎 BNKhub Private Engine: Source added");
-        }
-      } catch {
-        // Silent fail - player works exactly as before
-      }
-    };
-    if (tmdb_id) tryResolve();
-  }, [tmdb_id, type, season, episode]);
 
   const allLabels = Array(50).fill(null);
   allLabels[0] = "🎬 CinemaOS (بدون إعلانات)";
