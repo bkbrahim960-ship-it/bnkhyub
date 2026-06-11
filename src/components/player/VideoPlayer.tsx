@@ -227,7 +227,7 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
   }, []);
 
   // CinemaOS URL builder (Arabic language & subtitles, theme matching site accent, no ads)
-  const cinemaOsParams = "language=ar&theme=c124a0&subtitle=ar&sub=ar&default_sub=ar&cc_lang_pref=ar";
+  const cinemaOsParams = "language=ar&theme=c124a0&subtitle=ar&sub=ar&default_sub=ar&cc_lang_pref=ar&noads=1";
   const cinemaOsUrl = type === "movie"
     ? `https://cinemaos.tech/player/${tmdb_id}?${cinemaOsParams}`
     : `https://cinemaos.tech/player/${tmdb_id}/${season}/${episode}?${cinemaOsParams}`;
