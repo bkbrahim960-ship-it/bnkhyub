@@ -16,9 +16,10 @@ interface ContentRowProps {
   type?: "movie" | "tv";
   genres?: string;
   icon?: string;
+  originCountry?: string;
 }
 
-export const DiscoverRow = ({ title, originalLanguage, type = "movie", genres, icon }: ContentRowProps) => {
+export const DiscoverRow = ({ title, originalLanguage, type = "movie", genres, icon, originCountry }: ContentRowProps) => {
   const { lang } = useLanguage();
   const scrollRef = useRef<HTMLDivElement>(null);
   const [items, setItems] = useState<(TMDBMovie | TMDBSeries)[]>([]);
@@ -33,6 +34,7 @@ export const DiscoverRow = ({ title, originalLanguage, type = "movie", genres, i
       sort_by: "popularity.desc",
     };
     if (genres) params.with_genres = genres;
+    if (originCountry) params.with_origin_country = originCountry;
 
     const fetcher = type === "tv" ? discoverSeries : discoverMovies;
     fetcher(tmdbLang(lang), params)
@@ -47,7 +49,7 @@ export const DiscoverRow = ({ title, originalLanguage, type = "movie", genres, i
       });
 
     return () => { mounted = false };
-  }, [lang, originalLanguage, type, genres]);
+  }, [lang, originalLanguage, type, genres, originCountry]);
 
   if (!loading && items.length === 0) return null;
 
