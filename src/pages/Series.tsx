@@ -28,7 +28,6 @@ import { RemotePairingButton } from "@/components/movie/RemotePairingButton";
 import { NextEpisodeOverlay } from "@/components/player/NextEpisodeOverlay";
 import { MovieLogo } from "@/components/ui/MovieLogo";
 import { useIsDesktopOrTV } from "@/hooks/useIsDesktopOrTV";
-import { ALGERIAN_SERIES, AlgerianSeries } from "@/services/algerianSeries";
 
 const sourceIdToIndex = (srcId?: string | null): number => {
   if (!srcId) return 0;
@@ -57,7 +56,6 @@ const Series = () => {
   const [showNextEpisode, setShowNextEpisode] = useState(false);
   const [showEpisodeModal, setShowEpisodeModal] = useState(false);
   const [seriesHistory, setSeriesHistory] = useState<WatchHistoryEntry[]>([]);
-  const [algerianSeries, setAlgerianSeries] = useState<AlgerianSeries | null>(null);
   const navigate = useNavigate();
   const playerRef = useRef<HTMLDivElement>(null);
   const videoPlayerRef = useRef<VideoPlayerRef>(null);
@@ -88,18 +86,6 @@ const Series = () => {
           setSeason(firstReal?.season_number ?? 1);
           setEpisode(1);
         }
-        // Check if this matches an Algerian series by name
-        const normalize = (str: string) => str.replace(/[^\w\s]/gi, "").toLowerCase().trim();
-        const seriesName = normalize(s.name);
-        const match = ALGERIAN_SERIES.find(as => {
-          if (normalize(as.title) === seriesName) return true;
-          if (seriesName.includes(normalize(as.title))) return true;
-          if (normalize(as.title).includes(seriesName)) return true;
-          if (as.tmdbNames?.some(n => normalize(n) === seriesName || seriesName.includes(normalize(n)))) return true;
-          return false;
-        });
-        setAlgerianSeries(match || null);
-
         // Fetch OMDb data
         if (s.external_ids?.imdb_id) {
           getOMDbDetails(s.external_ids.imdb_id, s.name, s.first_air_date?.slice(0, 4)).then(setOmdbData);
@@ -159,8 +145,6 @@ const Series = () => {
   const trailer = series.videos?.results.find(
     (v) => v.type === "Trailer" && v.site === "YouTube"
   ) || series.videos?.results.find((v) => v.site === "YouTube");
-
-  const algerianEpUrl = algerianSeries?.episodes.find(e => e.id === episode)?.videoUrl;
 
   const saveHistory = (sourceLabel: string, progress?: number, duration?: number) => {
     if (!user) return;
@@ -352,7 +336,7 @@ const Series = () => {
                 title={`${series.name} — S${season} E${episode}`}
                 initialSourceIndex={initialSourceIndex}
                 autoStart={true}
-                customUrl={algerianEpUrl}
+                customUrl={undefined}
                 onPlayStart={(_i, label) => saveHistory(label)}
                 onSourceChange={(_i, label) => saveHistory(label)}
                 onProgress={(seconds, duration) => {
