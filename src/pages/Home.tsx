@@ -298,9 +298,6 @@ const Home = () => {
 
       <div className="relative z-30">
         <div className="min-w-0">
-        {/* القسم الثاني: أفلام ومسلسلات جزائرية */}
-        <DiscoverRow title={lang === "ar" ? "🇩🇿 أفلام جزائرية" : "🇩🇿 Films Algériens"} originalLanguage="ar" type="movie" originCountry="DZ" icon="🎬" />
-        <DiscoverRow title={lang === "ar" ? "🇩🇿 مسلسلات جزائرية" : "🇩🇿 Séries Algériennes"} originalLanguage="ar" type="tv" originCountry="DZ" icon="📺" />
         <ContinueWatchingRow />
         
         <ForYouRow />
