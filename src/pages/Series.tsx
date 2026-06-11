@@ -91,7 +91,13 @@ const Series = () => {
         // Check if this matches an Algerian series by name
         const normalize = (str: string) => str.replace(/[^\w\s]/gi, "").toLowerCase().trim();
         const seriesName = normalize(s.name);
-        const match = ALGERIAN_SERIES.find(as => normalize(as.title) === seriesName || seriesName.includes(normalize(as.title)) || normalize(as.title).includes(seriesName));
+        const match = ALGERIAN_SERIES.find(as => {
+          if (normalize(as.title) === seriesName) return true;
+          if (seriesName.includes(normalize(as.title))) return true;
+          if (normalize(as.title).includes(seriesName)) return true;
+          if (as.tmdbNames?.some(n => normalize(n) === seriesName || seriesName.includes(normalize(n)))) return true;
+          return false;
+        });
         setAlgerianSeries(match || null);
 
         // Fetch OMDb data
