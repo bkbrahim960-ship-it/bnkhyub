@@ -258,12 +258,13 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
   // For customUrl (Kabyle), only use customUrl
   const allSources = customUrl
     ? [customUrl]
-    : [cinemaOsUrl, ...sources.slice(1, 2), nhdapiUrl];
+    : [cinemaOsUrl, ...sources.slice(0, 2), nhdapiUrl];
 
   const allLabels = Array(50).fill(null);
   allLabels[0] = "🎬 CinemaOS (بدون إعلانات)";
-  allLabels[1] = customUrl ? "Serveur Kabyle" : "vidapi (vidapi)";
-  allLabels[2] = "📥 nhdapi (تحميل مباشر)";
+  allLabels[1] = customUrl ? "Serveur Kabyle" : "vaplayer";
+  allLabels[2] = "vidapi";
+  allLabels[3] = "📥 nhdapi (تحميل مباشر)";
 
   const handleLoad = () => {
     setLoading(false);
