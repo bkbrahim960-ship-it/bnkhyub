@@ -28,7 +28,6 @@ import { RemotePairingButton } from "@/components/movie/RemotePairingButton";
 import { NextEpisodeOverlay } from "@/components/player/NextEpisodeOverlay";
 import { MovieLogo } from "@/components/ui/MovieLogo";
 import { useIsDesktopOrTV } from "@/hooks/useIsDesktopOrTV";
-import { isDesktopOrTVScreen } from "@/utils/screen";
 
 const sourceIdToIndex = (srcId?: string | null): number => {
   if (!srcId) return 0;
@@ -61,9 +60,6 @@ const Series = () => {
   const playerRef = useRef<HTMLDivElement>(null);
   const videoPlayerRef = useRef<VideoPlayerRef>(null);
   const isDesktopOrTV = useIsDesktopOrTV();
-  const [autoPlayMode, setAutoPlayMode] = useState(false);
-  const autoPlayTriggered = useRef(false);
-
   const resumeRequested = params.get("resume") === "1";
   const playRequested = params.get("play") === "1";
   const resumeSeason = Number(params.get("s")) || null;
@@ -72,8 +68,6 @@ const Series = () => {
 
   useEffect(() => {
     if (!id) return;
-    autoPlayTriggered.current = false;
-    setAutoPlayMode(false);
     setLoading(true);
     setPlaying(false);
 
@@ -87,7 +81,6 @@ const Series = () => {
         if (resumeRequested && resumeSeason && resumeEpisode) {
           setSeason(resumeSeason);
           setEpisode(resumeEpisode);
-          setPlaying(true);
         } else {
           const firstReal = s.seasons?.find((se) => se.season_number > 0);
           setSeason(firstReal?.season_number ?? 1);
@@ -118,15 +111,6 @@ const Series = () => {
       getSeriesHistory(user.id, series.id).then(setSeriesHistory).catch((err) => console.error("Series history fetch error:", err));
     }
   }, [user, series]);
-
-  useEffect(() => {
-    if (!series || loading || autoPlayTriggered.current) return;
-    if ((playRequested || resumeRequested) && isDesktopOrTV) {
-      autoPlayTriggered.current = true;
-      setAutoPlayMode(true);
-      setPlaying(true);
-    }
-  }, [series, loading, playRequested, resumeRequested, isDesktopOrTV]);
 
   useEffect(() => {
     if (!series || !season) return;
@@ -179,10 +163,9 @@ const Series = () => {
     }).catch((err) => console.error("Series history save error:", err));
   };
 
-  const playEpisodeDirectly = (epNum: number, withAutoMode = false) => {
+  const playEpisodeDirectly = (epNum: number) => {
     setSelectedEpisode(epNum);
     setEpisode(epNum);
-    if (withAutoMode || isDesktopOrTVScreen()) setAutoPlayMode(true);
     setPlaying(true);
     setTimeout(() => {
       playerRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -198,7 +181,7 @@ const Series = () => {
     setShowLoginPrompt(false);
     setShowEpisodeModal(false);
     if (selectedEpisode) {
-      playEpisodeDirectly(selectedEpisode, true);
+      playEpisodeDirectly(selectedEpisode);
     }
   };
 
@@ -303,7 +286,7 @@ const Series = () => {
           data-tv-nav="primary"
           tabIndex={0}
           onClick={() =>
-            isDesktopOrTV ? playEpisodeDirectly(1, true) : handleEpisodeClick(1)
+            isDesktopOrTV ? playEpisodeDirectly(1) : handleEpisodeClick(1)
           }
           className="inline-flex items-center justify-center gap-2 bg-accent text-accent-foreground px-6 sm:px-8 lg:px-12 py-3 sm:py-4 lg:py-5 rounded-2xl font-bold shadow-glow hover:scale-105 active:scale-95 transition-all text-xs sm:text-sm md:text-base lg:text-lg mb-6 w-full sm:w-auto focus:outline-none focus-visible:ring-4 focus-visible:ring-accent"
         >

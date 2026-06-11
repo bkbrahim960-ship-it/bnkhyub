@@ -27,9 +27,6 @@ import { useAmbient } from "@/context/AmbientContext";
 import { RemotePairingButton } from "@/components/movie/RemotePairingButton";
 import { MovieLogo } from "@/components/ui/MovieLogo";
 import { useAuthPath } from "@/hooks/useAuthPath";
-import { useIsDesktopOrTV } from "@/hooks/useIsDesktopOrTV";
-import { isDesktopOrTVScreen } from "@/utils/screen";
-
 const sourceIdToIndex = (srcId?: string | null): number => {
   if (!srcId) return 0;
   const i = SOURCE_LABELS.findIndex((l) => l.startsWith(srcId));
@@ -53,18 +50,12 @@ const Movie = () => {
   const videoPlayerRef = useRef<VideoPlayerRef>(null);
   const navigate = useNavigate();
   const authPath = useAuthPath();
-  const isDesktopOrTV = useIsDesktopOrTV();
-  const [autoPlayMode, setAutoPlayMode] = useState(false);
-  const autoPlayTriggered = useRef(false);
-
   const resumeRequested = params.get("resume") === "1";
   const playRequested = params.get("play") === "1";
   const initialSourceIndex = useMemo(() => sourceIdToIndex(params.get("src")), [params]);
 
   useEffect(() => {
     if (!id) return;
-    autoPlayTriggered.current = false;
-    setAutoPlayMode(false);
     setLoading(true);
     setPlaying(false);
     
@@ -83,7 +74,6 @@ const Movie = () => {
         video_url: videoUrl
       } as any);
       setLoading(false);
-      if (resumeRequested) setPlaying(true);
       return;
     }
 
@@ -99,7 +89,6 @@ const Movie = () => {
         genres: custom.category ? [{ id: 1, name: custom.category }] : []
       } as any);
       setLoading(false);
-      if (resumeRequested) setPlaying(true);
       return;
     }
 
@@ -109,7 +98,6 @@ const Movie = () => {
         if (m.backdrop_path) {
           setAmbientImage(IMG.backdrop(m.backdrop_path, "w780"));
         }
-        if (resumeRequested) setPlaying(true);
         // Fetch OMDb data
         if (m.imdb_id) {
           getOMDbDetails(m.imdb_id).then(setOmdbData);
@@ -118,15 +106,6 @@ const Movie = () => {
       .finally(() => setLoading(false));
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, lang, resumeRequested, setAmbientImage]);
-
-  useEffect(() => {
-    if (!movie || loading || autoPlayTriggered.current) return;
-    if ((playRequested || resumeRequested) && isDesktopOrTV) {
-      autoPlayTriggered.current = true;
-      setAutoPlayMode(true);
-      setPlaying(true);
-    }
-  }, [movie, loading, playRequested, resumeRequested, isDesktopOrTV]);
 
   useEffect(() => {
     if (!id) return;
@@ -182,9 +161,8 @@ const Movie = () => {
     }).catch((err) => console.error("Watch history save error:", err));
   };
 
-  const confirmWatch = (withAutoMode = false) => {
+  const confirmWatch = () => {
     setShowLoginPrompt(false);
-    if (withAutoMode || isDesktopOrTVScreen()) setAutoPlayMode(true);
     setPlaying(true);
     setTimeout(() => {
       playerContainerRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -192,7 +170,7 @@ const Movie = () => {
   };
 
   const startWatching = () => {
-    confirmWatch(true);
+    confirmWatch();
   };
 
   const director = movie.credits?.crew.find(c => c.job === 'Director')?.name;
