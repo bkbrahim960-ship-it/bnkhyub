@@ -2,7 +2,7 @@ import { useSearchParams, useNavigate } from "react-router-dom";
 import { useRemoteControl } from "@/hooks/useRemoteControl";
 import { 
   ChevronUp, ChevronDown, ChevronLeft, ChevronRight, 
-  ArrowLeft, Search, Home, PlayCircle,
+  ArrowLeft, Search, Home, PlayCircle, Film, Tv, List, Trophy, User,
   Volume2, VolumeX, RotateCcw, RotateCw, Play, Pause, 
   MousePointer2, Zap, Maximize, Power, Tv2
 } from "lucide-react";
@@ -10,6 +10,17 @@ import { Layout } from "@/components/layout/Layout";
 import { useState, useEffect } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import { TV_MAIN_NAV, getTVNavLabel } from "@/config/tvNavigation";
+
+const NAV_ICONS: Record<string, any> = {
+  home: Home,
+  film: Film,
+  tv: Tv,
+  list: List,
+  play: PlayCircle,
+  trophy: Trophy,
+  search: Search,
+  user: User,
+};
 
 const Remote = () => {
   const [searchParams] = useSearchParams();
@@ -75,14 +86,18 @@ const Remote = () => {
             {lang === "ar" ? "التنقل الرئيسي" : "Navigation principale"}
           </p>
         </div>
-        <div className="grid grid-cols-3 gap-2 mb-10 w-full px-4">
-          {TV_MAIN_NAV.map((item) => (
-            <QuickNavButton
-              key={item.path}
-              label={getTVNavLabel(item, lang)}
-              onTrigger={() => handleNav(item.path, item.labelEn)}
-            />
-          ))}
+        <div className="grid grid-cols-4 gap-2 mb-10 w-full px-4">
+          {TV_MAIN_NAV.map((item) => {
+            const Icon = NAV_ICONS[item.icon];
+            return (
+              <QuickNavButton
+                key={item.path}
+                icon={Icon ? <Icon className="w-5 h-5" /> : null}
+                label={getTVNavLabel(item, lang)}
+                onTrigger={() => handleNav(item.path, item.labelEn)}
+              />
+            );
+          })}
         </div>
 
         {/* Touchpad */}
@@ -176,12 +191,13 @@ const Remote = () => {
   );
 };
 
-const QuickNavButton = ({ label, onTrigger }: any) => (
+const QuickNavButton = ({ icon, label, onTrigger }: any) => (
   <button
     onPointerDown={(e) => { e.preventDefault(); onTrigger(); }}
-    className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-[11px] font-black uppercase tracking-widest text-white/60 hover:text-accent hover:border-accent/40 hover:bg-accent/10 active:scale-95 transition-all shadow-sm"
+    className="flex flex-col items-center gap-1.5 px-3 py-3 rounded-xl bg-white/5 border border-white/10 text-white/60 hover:text-accent hover:border-accent/40 hover:bg-accent/10 active:scale-95 transition-all shadow-sm"
   >
-    {label}
+    {icon && <div className="text-white/70">{icon}</div>}
+    <span className="text-[10px] font-black uppercase tracking-wider leading-tight">{label}</span>
   </button>
 );
 
