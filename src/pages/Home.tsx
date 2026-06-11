@@ -316,14 +316,8 @@ const Home = () => {
           </>
         ) : (
           <>
-            <MovieRow title={t("section_latest")} items={nowPlaying} loading={loading} />
-            <MovieRow title={t("section_trending")} items={trending} loading={loading} />
-            
-            {/* Netflix Style Genre Sections */}
             <DiscoverRow title={lang === "ar" ? "🔥 أفلام الأكشن والمغامرة" : "🔥 Action & Aventure"} genres="28,12" type="movie" icon="💥" />
             <DiscoverRow title={lang === "ar" ? "💡 أفلام الخيال العلمي" : "💡 Science-Fiction"} genres="878" type="movie" icon="🚀" />
-            
-            <MovieRow title={t("section_popular")} items={popular} loading={loading} />
             <div className="md:hidden">
               <AdBanner />
             </div>
