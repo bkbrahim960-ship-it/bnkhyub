@@ -144,6 +144,14 @@
     font-family: "Outfit", system-ui, -apple-system, sans-serif;
     font-feature-settings: "ss01", "cv11";
     overflow-x: hidden;
+    overscroll-behavior-y: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .main-scroll {
+    will-change: transform;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
   }
 
   img {
@@ -224,6 +232,14 @@
 
   .scrollbar-hide::-webkit-scrollbar { display: none; }
   .scrollbar-hide { scrollbar-width: none; }
+
+  .overscroll-x-contain { overscroll-behavior-x: contain; }
+
+  .smooth-scroll-x {
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+    will-change: transform;
+  }
 
   /* Safe Area Utilities */
   .pt-safe {
