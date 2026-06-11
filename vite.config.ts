@@ -10,18 +10,7 @@ export default defineConfig(({ mode }) => ({
     hmr: {
       overlay: false,
     },
-    proxy: {
-      "/api/koralive": {
-        target: "https://www.koralive-hd.com",
-        changeOrigin: true,
-        secure: true,
-        rewrite: (p) => p.replace(/^\/api\/koralive/, "/matches-today/"),
-      },
-      "/get": {
-        target: "http://localhost:3050",
-        changeOrigin: true,
-      },
-    },
+    proxy: {},
   },
   plugins: [react()],
   resolve: {

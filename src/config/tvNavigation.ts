@@ -14,8 +14,6 @@ export const TV_MAIN_NAV: TVNavItem[] = [
   { path: "/movies", labelFr: "Films", labelAr: "أفلام", labelEn: "Movies", icon: "film" },
   { path: "/series", labelFr: "Séries", labelAr: "مسلسلات", labelEn: "Series", icon: "tv" },
   { path: "/my-list", labelFr: "Ma Liste", labelAr: "قائمتي", labelEn: "My List", icon: "list" },
-  { path: "/live", labelFr: "Matchs", labelAr: "مباريات اليوم", labelEn: "Live Matches", icon: "play" },
-  { path: "/matches", labelFr: "Coupe du Monde", labelAr: "كأس العالم", labelEn: "World Cup", icon: "trophy" },
   { path: "/search", labelFr: "Recherche", labelAr: "البحث", labelEn: "Search", icon: "search" },
   { path: "/profile", labelFr: "Profil", labelAr: "الملف الشخصي", labelEn: "Profile", icon: "user" },
 ];

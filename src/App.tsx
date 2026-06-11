@@ -23,8 +23,7 @@ import Remote from "./pages/Remote";
 import Person from "./pages/Person";
 import ComingSoon from "./pages/ComingSoon";
 import Channels from "./pages/Channels";
-import Matches from "./pages/Matches";
-import LiveMatches from "./pages/LiveMatches";
+import WatchParty from "./pages/WatchParty";
 import AlgerianSeriesPage from "./pages/AlgerianSeriesPage";
 import NotFound from "./pages/NotFound.tsx";
 import Privacy from "./pages/Privacy";
@@ -146,9 +145,8 @@ const AppContent = () => (
                         <Route path="/person/:id" element={<Person />} />
                         <Route path="/coming-soon" element={<ComingSoon />} />
                         <Route path="/channels" element={<Channels />} />
-                        <Route path="/matches" element={<Matches />} />
+                        <Route path="/watch-party" element={<WatchParty />} />
                         <Route path="/algerian/:id" element={<AlgerianSeriesPage />} />
-                        <Route path="/live" element={<LiveMatches />} />
                         <Route path="*" element={<NotFound />} />
                       </Routes>
                     </BrowserRouter>
