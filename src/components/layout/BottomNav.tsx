@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
-import { NavLink } from "react-router-dom";
-import { Baby } from "lucide-react";
+import { NavLink, useNavigate } from "react-router-dom";
+import { Baby, Search } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { useSettings } from "@/context/SettingsContext";
 import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
@@ -11,8 +11,10 @@ export const BottomNav = () => {
   const { user } = useAuth();
   const { kidsMode, toggleKidsMode } = useSettings();
   const [isVisible, setIsVisible] = useState(true);
+  const [searchHover, setSearchHover] = useState(false);
   const lastScrollY = useRef(0);
   const immersiveHidden = useImmersiveMode();
+  const navigate = useNavigate();
 
   useEffect(() => {
     let ticking = false;
@@ -58,6 +60,23 @@ export const BottomNav = () => {
           {user && (
             <span className="absolute top-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-black/80 shadow-glow-sm animate-pulse" />
           )}
+        </NavLink>
+
+        {/* Search Button */}
+        <NavLink
+          to="/search"
+          onMouseEnter={() => setSearchHover(true)}
+          onMouseLeave={() => setSearchHover(false)}
+          className={({ isActive }) =>
+            `relative p-2 sm:p-3 rounded-full transition-all duration-500 transform-gpu border ${
+              isActive
+                ? "text-accent bg-accent/20 border-accent/40 shadow-[0_0_20px_rgba(124,58,237,0.4)]"
+                : "text-white/60 hover:text-white hover:bg-white/5 border-transparent"
+            } ${searchHover ? "scale-125" : "hover:scale-110"} active:scale-95`
+          }
+          aria-label="Search"
+        >
+          <Search className={`w-5 h-5 sm:w-6 sm:h-6 transition-all duration-500 ${searchHover ? "rotate-12 scale-110" : ""}`} />
         </NavLink>
 
         {/* Language Switcher */}
