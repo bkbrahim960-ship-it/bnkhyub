@@ -448,7 +448,7 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
           return !isM3u8 && !isMp4 && !isYt;
         })() && (
           <iframe
-            key={`${sourceIndex}-${appliedExternalSub}`}
+            key={sourceIndex}
             src={allSources[sourceIndex]}
             title="BNKHUB"
             allow="fullscreen; picture-in-picture; encrypted-media; clipboard-write; gyroscope; accelerometer; web-share; display-capture; screen-wake-lock"
