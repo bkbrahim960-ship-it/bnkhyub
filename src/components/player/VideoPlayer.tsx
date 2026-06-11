@@ -5,7 +5,7 @@
  * comme potentiellement indisponible, mais il NE bascule plus automatiquement.
  */
 import React, { useCallback, useEffect, useRef, useState, forwardRef, useImperativeHandle } from "react";
-import { getMovieSources, getTVSources, SOURCE_LABELS } from "@/services/player";
+import { SOURCE_LABELS } from "@/services/player";
 import { ResumeModal } from "./ResumeModal";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
@@ -226,44 +226,17 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
     };
   }, []);
 
-  const defaultSources = type === "movie" 
-    ? getMovieSources(imdb_id, tmdb_id, hasResumed ? historyProgress : 0) 
-    : getTVSources(imdb_id, tmdb_id, season!, episode!, hasResumed ? historyProgress : 0);
-
-  const sources = customUrl ? [customUrl] : defaultSources;
-
   // CinemaOS URL builder (Arabic language & subtitles, theme matching site accent, no ads)
   const cinemaOsParams = "language=ar&theme=c124a0&subtitle=ar&sub=ar&default_sub=ar&cc_lang_pref=ar";
   const cinemaOsUrl = type === "movie"
     ? `https://cinemaos.tech/player/${tmdb_id}?${cinemaOsParams}`
     : `https://cinemaos.tech/player/${tmdb_id}/${season}/${episode}?${cinemaOsParams}`;
 
-  // nhdapi.com URL builder (Custom theme, Arabic options, download enabled)
-  const nhdapiParams = new URLSearchParams({
-    autonext: "true",
-    download: "true", // Enable download control
-    primarycolor: "C124A0", // Match site accent color
-    secondarycolor: "9F2BBF", // Lighter shade of accent
-    iconcolor: "FFFFFF",
-    glasscolor: "000000",
-    glassopacity: "65",
-    glassblur: "20",
-    fontcolor: "FFFFFF",
-    subtitle: "ar", // Arabic subtitles default
-  });
-  const nhdapiUrl = type === "movie"
-    ? `https://nhdapi.com/embed/movie/${tmdb_id}?${nhdapiParams.toString()}`
-    : `https://nhdapi.com/embed/tv/${tmdb_id}/${season}/${episode}?${nhdapiParams.toString()}`;
-
   // For customUrl (Kabyle), only use customUrl
-  const allSources = customUrl
-    ? [customUrl]
-    : [cinemaOsUrl, ...sources.slice(0, 1), nhdapiUrl];
+  const allSources = customUrl ? [customUrl] : [cinemaOsUrl];
 
-  const allLabels = Array(50).fill(null);
+  const allLabels: string[] = [];
   allLabels[0] = "🎬 CinemaOS (بدون إعلانات)";
-  allLabels[1] = customUrl ? "Serveur Kabyle" : "vaplayer";
-  allLabels[2] = "📥 nhdapi (تحميل مباشر)";
 
   const handleLoad = () => {
     setLoading(false);
