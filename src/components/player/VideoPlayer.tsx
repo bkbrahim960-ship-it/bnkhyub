@@ -27,7 +27,7 @@ export interface VideoPlayerRef {
 }
 
 const LABELS = [
-  "🎬 CinemaOS",
+  "🎬 CinemaOS (بدون إعلانات)",
   "vaplayer",
   "📥 nhdapi (تحميل مباشر)",
 ];
