@@ -44,8 +44,8 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
     : `https://cinemaos.tech/player/${tmdb_id}/${season}/${episode}?language=ar&theme=c124a0&subtitle=ar&sub=ar&noads=1`;
 
   const vaplayerUrl = type === "movie"
-    ? `https://vidapi.ru/embed/movie/${imdb_id || tmdb_id}?color=%23C124A0&lang=ar&sub=ar&noads=1`
-    : `https://vidapi.ru/embed/tv/${imdb_id || tmdb_id}/${season}/${episode}?color=%23C124A0&lang=ar&sub=ar&noads=1`;
+    ? `https://vaplayer.ru/embed/movie/${imdb_id || tmdb_id}?color=%23C124A0&lang=ar&sub=ar&autoplay=1`
+    : `https://vaplayer.ru/embed/tv/${imdb_id || tmdb_id}/${season}/${episode}?color=%23C124A0&lang=ar&sub=ar&autoplay=1`;
 
   const nhdapiUrl = type === "movie"
     ? `https://nhdapi.com/embed/movie/${tmdb_id}?autonext=true&download=true&primarycolor=C124A0&subtitle=ar`
