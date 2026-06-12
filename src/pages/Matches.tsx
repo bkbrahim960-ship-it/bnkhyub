@@ -1,13 +1,9 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { useLanguage } from "@/context/LanguageContext";
-import { Loader2, Tv, Play, ExternalLink, AlertCircle } from "lucide-react";
+import { Loader2, Tv, Play, AlertCircle, ArrowLeft } from "lucide-react";
 
 const API_BASE = "https://api.sportsrc.org";
-
-interface Sport {
-  id: string;
-  name: string;
-}
 
 interface TeamInfo {
   name: string | null;
@@ -48,13 +44,10 @@ interface MatchDetail {
 
 export default function Matches() {
   const { lang } = useLanguage();
-  const [sports, setSports] = useState<Sport[]>([]);
-  const [selectedSport, setSelectedSport] = useState("");
   const [matches, setMatches] = useState<Match[]>([]);
   const [selectedMatch, setSelectedMatch] = useState<MatchDetail | null>(null);
   const [selectedSource, setSelectedSource] = useState<Source | null>(null);
   const [loading, setLoading] = useState(true);
-  const [loadingMatches, setLoadingMatches] = useState(false);
   const [loadingDetail, setLoadingDetail] = useState(false);
   const [error, setError] = useState("");
 
@@ -63,27 +56,7 @@ export default function Matches() {
       setLoading(true);
       setError("");
       try {
-        const res = await fetch(`${API_BASE}/?data=sports`);
-        const json = await res.json();
-        const list: Sport[] = json?.data ?? [];
-        setSports(list);
-        if (list.length > 0) setSelectedSport(list[0].id);
-      } catch {
-        setError("فشل تحميل الرياضات");
-      }
-      setLoading(false);
-    })();
-  }, []);
-
-  useEffect(() => {
-    if (!selectedSport) return;
-    (async () => {
-      setLoadingMatches(true);
-      setSelectedMatch(null);
-      setSelectedSource(null);
-      setError("");
-      try {
-        const res = await fetch(`${API_BASE}/?data=matches&category=${selectedSport}`);
+        const res = await fetch(`${API_BASE}/?data=matches&category=football`);
         const json = await res.json();
         const list: Match[] = json?.data ?? [];
         setMatches(list);
@@ -91,17 +64,16 @@ export default function Matches() {
         setError("فشل تحميل المباريات");
         setMatches([]);
       }
-      setLoadingMatches(false);
+      setLoading(false);
     })();
-  }, [selectedSport]);
+  }, []);
 
   const openMatch = async (matchId: string) => {
-    if (!selectedSport) return;
     setLoadingDetail(true);
     setSelectedMatch(null);
     setSelectedSource(null);
     try {
-      const res = await fetch(`${API_BASE}/?data=detail&category=${selectedSport}&id=${matchId}`);
+      const res = await fetch(`${API_BASE}/?data=detail&category=football&id=${matchId}`);
       const json = await res.json();
       const detail: MatchDetail | null = json?.data ?? null;
       setSelectedMatch(detail);
@@ -110,29 +82,6 @@ export default function Matches() {
       }
     } catch {}
     setLoadingDetail(false);
-  };
-
-  const getSportLabel = (s: Sport) => {
-    const labels: Record<string, string> = {
-      football: lang === "ar" ? "كرة القدم" : lang === "fr" ? "Football" : "Football",
-      basketball: lang === "ar" ? "كرة السلة" : lang === "fr" ? "Basketball" : "Basketball",
-      tennis: lang === "ar" ? "تنس" : lang === "fr" ? "Tennis" : "Tennis",
-      fight: lang === "ar" ? "قتال (UFC)" : lang === "fr" ? "Combat (UFC)" : "Fight (UFC)",
-      "american-football": lang === "ar" ? "كرة القدم الأمريكية" : "American Football",
-      volleyball: lang === "ar" ? "كرة الطائرة" : lang === "fr" ? "Volleyball" : "Volleyball",
-      handball: lang === "ar" ? "كرة اليد" : lang === "fr" ? "Handball" : "Handball",
-      cricket: "Cricket",
-      rugby: "Rugby",
-      hockey: "Hockey",
-      baseball: "Baseball",
-      golf: "Golf",
-      "motor-sports": lang === "ar" ? "رياضات المحركات" : "Motor Sports",
-      billiards: lang === "ar" ? "بلياردو" : "Billiards",
-      darts: "Darts",
-      afl: "AFL",
-      other: lang === "ar" ? "أخرى" : lang === "fr" ? "Autres" : "Other",
-    };
-    return labels[s.id] || s.name || s.id;
   };
 
   const formatMatchDate = (ts: number) => {
@@ -164,12 +113,18 @@ export default function Matches() {
 
   return (
     <div className="min-h-screen pt-24 pb-16 px-4 max-w-6xl mx-auto" dir={dir}>
+      <div className="mb-2">
+        <Link to="/" className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-accent transition-colors">
+          <ArrowLeft className="w-3.5 h-3.5" />
+          {lang === "ar" ? "الرئيسية" : lang === "fr" ? "Accueil" : "Home"}
+        </Link>
+      </div>
       <div className="mb-8 text-center">
         <h1 className="text-3xl font-display font-bold text-gradient-accent mb-2">
-          {lang === "ar" ? "مباريات مباشر" : lang === "fr" ? "Matchs en Direct" : "Live Matches"}
+          {lang === "ar" ? "مباريات كرة القدم المباشرة" : lang === "fr" ? "Matchs de Football en Direct" : "Live Football Matches"}
         </h1>
         <p className="text-muted-foreground text-sm">
-          {lang === "ar" ? "تابع المباريات لحظة بلحظة" : lang === "fr" ? "Suivez les matchs en temps réel" : "Follow matches in real time"}
+          {lang === "ar" ? "تابع مباريات كرة القدم لحظة بلحظة" : lang === "fr" ? "Suivez les matchs de football en temps réel" : "Follow football matches in real time"}
         </p>
       </div>
 
@@ -186,31 +141,7 @@ export default function Matches() {
         </div>
       )}
 
-      {!loading && sports.length > 0 && (
-        <div className="flex flex-wrap justify-center gap-2 mb-8">
-          {sports.map((s) => (
-            <button
-              key={s.id}
-              onClick={() => setSelectedSport(s.id)}
-              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
-                s.id === selectedSport
-                  ? "bg-accent text-accent-foreground shadow-glow-sm"
-                  : "bg-surface-elevated/50 border border-border text-muted-foreground hover:border-accent/50 hover:text-foreground"
-              }`}
-            >
-              {getSportLabel(s)}
-            </button>
-          ))}
-        </div>
-      )}
-
-      {loadingMatches && (
-        <div className="flex justify-center py-12">
-          <Loader2 className="w-6 h-6 text-accent animate-spin" />
-        </div>
-      )}
-
-      {!loadingMatches && matches.length === 0 && selectedSport && (
+      {!loading && matches.length === 0 && (
         <div className="text-center py-12 text-muted-foreground text-sm">
           {lang === "ar" ? "لا توجد مباريات حالياً" : lang === "fr" ? "Aucun match pour le moment" : "No matches available"}
         </div>
@@ -218,7 +149,7 @@ export default function Matches() {
 
       <div className="flex flex-col lg:flex-row gap-6">
         <div className={`flex-1 space-y-2 ${selectedMatch ? "lg:max-w-2xl" : ""}`}>
-          {!loadingMatches && matches.slice(0, 50).map((m, i) => (
+          {!loading && matches.slice(0, 50).map((m, i) => (
             <button
               key={m.id || i}
               onClick={() => openMatch(m.id)}
