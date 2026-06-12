@@ -1,9 +1,17 @@
 import { useEffect, useRef, useState, forwardRef, useImperativeHandle } from "react";
-import { Play, Loader2, Download } from "lucide-react";
+import { Play, Loader2, Download, Film, Monitor, X } from "lucide-react";
 
 import { ResumeModal } from "./ResumeModal";
 import { useAuth } from "@/context/AuthContext";
 import { getRecentHistory } from "@/services/watchHistory";
+
+interface DownloadLink {
+  url: string;
+  quality: string;
+  size: string;
+  type: string;
+  active: boolean;
+}
 
 interface Props {
   imdb_id: string;
@@ -36,6 +44,9 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
   const [resumeModalOpen, setResumeModalOpen] = useState(false);
   const [historyProgress, setHistoryProgress] = useState(0);
   const [hasResumed, setHasResumed] = useState(false);
+  const [downloadModal, setDownloadModal] = useState(false);
+  const [downloads, setDownloads] = useState<DownloadLink[]>([]);
+  const [downloading, setDownloading] = useState(false);
   const startedRef = useRef(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const { user } = useAuth();
@@ -166,7 +177,19 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
             </button>
           ))}
           <button
-            onClick={() => window.open(downloadUrl, "_blank")}
+            onClick={async () => {
+              setDownloadModal(true);
+              setDownloading(true);
+              setDownloads([]);
+              try {
+                const res = await fetch(downloadUrl);
+                const data = await res.json();
+                setDownloads(data.downloads || []);
+              } catch {
+                setDownloads([]);
+              }
+              setDownloading(false);
+            }}
             className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-surface-elevated/50 border border-border text-muted-foreground hover:border-accent/50 hover:text-accent transition-all"
             title="تحميل"
           >
@@ -174,6 +197,55 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
             تحميل
           </button>
         </div>
+      )}
+
+      {downloadModal && (
+        <>
+          <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm" onClick={() => setDownloadModal(false)} />
+          <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-full max-w-lg mx-4">
+            <div className="bg-surface border border-border rounded-2xl shadow-2xl overflow-hidden">
+              <div className="flex items-center justify-between p-4 border-b border-border">
+                <h3 className="text-sm font-bold">روابط التحميل</h3>
+                <button onClick={() => setDownloadModal(false)} className="p-1 rounded-lg hover:bg-white/5 transition-colors">
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+              <div className="p-4 space-y-2 max-h-80 overflow-y-auto">
+                {downloading && (
+                  <div className="flex items-center justify-center gap-2 py-8 text-muted-foreground text-sm">
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    جارٍ البحث عن روابط التحميل…
+                  </div>
+                )}
+                {!downloading && downloads.length === 0 && (
+                  <div className="text-center py-8 text-muted-foreground text-sm">
+                    لا توجد روابط تحميل متاحة
+                  </div>
+                )}
+                {!downloading && downloads.map((dl, i) => (
+                  <a
+                    key={i}
+                    href={dl.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-3 p-3 rounded-xl bg-surface-elevated/50 border border-border hover:border-accent/50 transition-all group"
+                  >
+                    <div className="w-9 h-9 rounded-lg bg-accent/10 flex items-center justify-center shrink-0">
+                      <Monitor className="w-4 h-4 text-accent" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="text-xs font-bold truncate">{dl.quality || dl.type || "مصدر"}</div>
+                      <div className="text-[11px] text-muted-foreground">
+                        {dl.size} · {dl.type}
+                      </div>
+                    </div>
+                    <Download className="w-4 h-4 text-muted-foreground group-hover:text-accent transition-colors shrink-0" />
+                  </a>
+                ))}
+              </div>
+            </div>
+          </div>
+        </>
       )}
     </div>
   );
