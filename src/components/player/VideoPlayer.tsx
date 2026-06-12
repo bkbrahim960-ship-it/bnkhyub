@@ -51,6 +51,10 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
     ? `https://nhdapi.com/embed/movie/${tmdb_id}?autonext=true&download=true&primarycolor=C124A0&subtitle=ar`
     : `https://nhdapi.com/embed/tv/${tmdb_id}/${season}/${episode}?autonext=true&download=true&primarycolor=C124A0&subtitle=ar`;
 
+  const nhdapiDlUrl = type === "movie"
+    ? `https://nhdapi.com/dl/movie/${tmdb_id}`
+    : `https://nhdapi.com/dl/tv/${tmdb_id}/${season}/${episode}`;
+
   const sources = customUrl ? [customUrl] : [cinemaOsUrl, vaplayerUrl, nhdapiUrl];
   const src = sources[sourceIndex];
 
@@ -161,7 +165,7 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
             </button>
           ))}
           <button
-            onClick={() => window.open(nhdapiUrl, "_blank")}
+            onClick={() => window.open(nhdapiDlUrl, "_blank")}
             className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-surface-elevated/50 border border-border text-muted-foreground hover:border-accent/50 hover:text-accent transition-all"
             title="تحميل"
           >
