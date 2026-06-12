@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, forwardRef, useImperativeHandle } from "react";
-import { Play, Loader2 } from "lucide-react";
+import { Play, Loader2, Download } from "lucide-react";
 import { ResumeModal } from "./ResumeModal";
 import { useAuth } from "@/context/AuthContext";
 import { getRecentHistory } from "@/services/watchHistory";
@@ -158,20 +158,16 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
               }`}
             >
               {`S${idx + 1}`}
-              {idx === 2 && (
-                <a
-                  href={nhdapiUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={(e) => e.stopPropagation()}
-                  className="ml-2 text-accent hover:text-accent-light"
-                  title="تحميل"
-                >
-                  ⬇
-                </a>
-              )}
             </button>
           ))}
+          <button
+            onClick={() => window.open(nhdapiUrl, "_blank")}
+            className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-surface-elevated/50 border border-border text-muted-foreground hover:border-accent/50 hover:text-accent transition-all"
+            title="تحميل"
+          >
+            <Download className="w-3.5 h-3.5" />
+            تحميل
+          </button>
         </div>
       )}
     </div>
