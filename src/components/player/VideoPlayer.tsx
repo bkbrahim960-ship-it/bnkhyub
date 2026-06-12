@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, forwardRef, useImperativeHandle } from "react";
-import { Play, Loader2, Download, Film, Monitor, X } from "lucide-react";
+import { Play, Loader2, Download, Monitor, X } from "lucide-react";
 
 import { ResumeModal } from "./ResumeModal";
 import { useAuth } from "@/context/AuthContext";
@@ -47,6 +47,7 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
   const [downloadModal, setDownloadModal] = useState(false);
   const [downloads, setDownloads] = useState<DownloadLink[]>([]);
   const [downloading, setDownloading] = useState(false);
+  const [downloadError, setDownloadError] = useState("");
   const startedRef = useRef(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const { user } = useAuth();
@@ -181,12 +182,22 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
               setDownloadModal(true);
               setDownloading(true);
               setDownloads([]);
+              setDownloadError("");
               try {
                 const res = await fetch(downloadUrl);
-                const data = await res.json();
+                if (!res.ok) {
+                  setDownloadError("فشل الاتصال بالخادم");
+                  setDownloading(false);
+                  return;
+                }
+                const text = await res.text();
+                const data = JSON.parse(text);
                 setDownloads(data.downloads || []);
-              } catch {
-                setDownloads([]);
+                if (!data.downloads || data.downloads.length === 0) {
+                  setDownloadError("");
+                }
+              } catch (e) {
+                setDownloadError("تعذر جلب روابط التحميل");
               }
               setDownloading(false);
             }}
@@ -217,9 +228,14 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
                     جارٍ البحث عن روابط التحميل…
                   </div>
                 )}
-                {!downloading && downloads.length === 0 && (
-                  <div className="text-center py-8 text-muted-foreground text-sm">
-                    لا توجد روابط تحميل متاحة
+                {!downloading && downloadError && (
+                  <div className="text-center py-4 text-muted-foreground text-sm">
+                    {downloadError}
+                  </div>
+                )}
+                {!downloading && !downloadError && downloads.length === 0 && (
+                  <div className="text-center py-4 text-muted-foreground text-sm">
+                    لا توجد روابط تحميل متاحة لهذا المحتوى
                   </div>
                 )}
                 {!downloading && downloads.map((dl, i) => (
@@ -242,6 +258,17 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
                     <Download className="w-4 h-4 text-muted-foreground group-hover:text-accent transition-colors shrink-0" />
                   </a>
                 ))}
+                {!downloading && (
+                  <a
+                    href={downloadUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-1.5 p-2 rounded-xl text-[11px] text-muted-foreground hover:text-accent transition-colors border border-dashed border-border hover:border-accent/50"
+                  >
+                    <Download className="w-3 h-3" />
+                    فتح صفحة التحميل مباشرة
+                  </a>
+                )}
               </div>
             </div>
           </div>
