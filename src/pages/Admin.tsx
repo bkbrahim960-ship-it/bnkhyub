@@ -4,8 +4,7 @@ import { Layout } from "@/components/layout/Layout";
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { parseM3U } from "@/services/m3uParser";
-import { Trash2, Plus, Server, AlertTriangle, BarChart, Users, TrendingUp, Monitor, Star } from "lucide-react";
+import { Trash2, Plus, Server, AlertTriangle, BarChart, Users, TrendingUp, Star } from "lucide-react";
 import { BarChart as ReBarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { AdminAIAssistant } from "@/components/admin/AdminAIAssistant";
 
@@ -28,14 +27,6 @@ const Admin = () => {
   const [newName, setNewName] = useState("");
   const [newUrlPattern, setNewUrlPattern] = useState("");
   const [newType, setNewType] = useState<"movie" | "tv" | "both">("both");
-  
-  const [channels, setChannels] = useState<any[]>([]);
-  const [newChannelName, setNewChannelName] = useState("");
-  const [newChannelUrl, setNewChannelUrl] = useState("");
-  const [newChannelCategory, setNewChannelCategory] = useState("Général");
-  const [newChannelLogo, setNewChannelLogo] = useState("");
-  const [m3uContent, setM3uContent] = useState("");
-  const [importing, setImporting] = useState(false);
 
   // Vérifier l'admin
   useEffect(() => {
@@ -69,7 +60,6 @@ const Admin = () => {
   useEffect(() => {
     if (user?.email === "bkbrahim960@gmail.com") {
       fetchServers();
-      fetchChannels();
       fetchStats();
     }
   }, [user]);
@@ -91,13 +81,6 @@ const Admin = () => {
     } catch (err) {
       console.error("Error fetching stats:", err);
     }
-  };
-
-  const fetchChannels = async () => {
-    try {
-      const { data, error } = await supabase.from("live_channels").select("*").order("name");
-      if (!error) setChannels(data || []);
-    } catch (err) {}
   };
 
   const addServer = async (e: React.FormEvent) => {
@@ -127,61 +110,6 @@ const Admin = () => {
       fetchServers();
     } catch (err: any) {
       toast.error("Erreur: " + err.message);
-    }
-  };
-
-  const addChannel = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      const { error } = await supabase.from("live_channels").insert([{
-        name: newChannelName,
-        url: newChannelUrl,
-        category: newChannelCategory,
-        logo_url: newChannelLogo || null
-      }]);
-      if (error) throw error;
-      toast.success("Chaîne ajoutée !");
-      setNewChannelName("");
-      setNewChannelUrl("");
-      setNewChannelLogo("");
-      fetchChannels();
-    } catch (err: any) {
-      toast.error(err.message);
-    }
-  };
-
-  const deleteChannel = async (id: string) => {
-    try {
-      await supabase.from("live_channels").delete().eq("id", id);
-      toast.success("Chaîne supprimée");
-      fetchChannels();
-    } catch (err) {}
-  };
-
-  const importM3U = async () => {
-    if (!m3uContent.trim()) return;
-    setImporting(true);
-    try {
-      const parsedChannels = parseM3U(m3uContent);
-      if (parsedChannels.length === 0) throw new Error("Aucune chaîne trouvée dans le texte.");
-
-      const { error } = await supabase.from("live_channels").insert(
-        parsedChannels.map(c => ({
-          name: c.name,
-          url: c.url,
-          logo_url: c.logo,
-          category: c.category
-        }))
-      );
-
-      if (error) throw error;
-      toast.success(`${parsedChannels.length} chaînes importées !`);
-      setM3uContent("");
-      fetchChannels();
-    } catch (err: any) {
-      toast.error(err.message);
-    } finally {
-      setImporting(false);
     }
   };
 
@@ -473,116 +401,7 @@ CREATE POLICY "Tout le monde peut lire les visites" ON site_visits FOR SELECT US
           )}
         </div>
 
-        {/* Section Chaînes TV */}
-        <div className="mt-16">
-          <h2 className="text-2xl font-display font-bold text-gradient-accent mb-6 flex items-center gap-2">
-            <Monitor className="w-6 h-6 text-accent" /> Gestion des Chaînes TV
-          </h2>
 
-          <div className="bg-surface-card border border-border rounded-xl p-6 shadow-card-luxe mb-8">
-            <h3 className="text-lg font-semibold mb-4">Ajouter une chaîne en direct</h3>
-            <form onSubmit={addChannel} className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs uppercase tracking-widest text-muted-foreground mb-1.5">Nom de la Chaîne</label>
-                <input
-                  required
-                  placeholder="Ex: Al Jazeera"
-                  value={newChannelName}
-                  onChange={(e) => setNewChannelName(e.target.value)}
-                  className="w-full px-3 py-2.5 rounded-lg bg-surface-primary border border-border focus:border-accent outline-none"
-                />
-              </div>
-              <div>
-                <label className="block text-xs uppercase tracking-widest text-muted-foreground mb-1.5">Catégorie</label>
-                <select
-                  value={newChannelCategory}
-                  onChange={(e) => setNewChannelCategory(e.target.value)}
-                  className="w-full px-3 py-2.5 rounded-lg bg-surface-primary border border-border focus:border-accent outline-none"
-                >
-                  <option value="Général">Général</option>
-                  <option value="Infos">Infos</option>
-                  <option value="Sports">Sports</option>
-                  <option value="Films">Films</option>
-                  <option value="Kids">Kids</option>
-                  <option value="Documentaires">Documentaires</option>
-                </select>
-              </div>
-              <div className="md:col-span-2">
-                <label className="block text-xs uppercase tracking-widest text-muted-foreground mb-1.5">URL du Flux (Iframe ou M3U8)</label>
-                <input
-                  required
-                  placeholder="https://..."
-                  value={newChannelUrl}
-                  onChange={(e) => setNewChannelUrl(e.target.value)}
-                  className="w-full px-3 py-2.5 rounded-lg bg-surface-primary border border-border focus:border-accent outline-none font-mono text-sm"
-                />
-              </div>
-              <div className="md:col-span-2">
-                <label className="block text-xs uppercase tracking-widest text-muted-foreground mb-1.5">URL du Logo (Optionnel)</label>
-                <input
-                  placeholder="https://logo-url.png"
-                  value={newChannelLogo}
-                  onChange={(e) => setNewChannelLogo(e.target.value)}
-                  className="w-full px-3 py-2.5 rounded-lg bg-surface-primary border border-border focus:border-accent outline-none"
-                />
-              </div>
-              <div className="md:col-span-2 flex justify-end mt-2">
-                <button
-                  type="submit"
-                  className="inline-flex items-center gap-2 bg-gradient-accent text-accent-foreground font-semibold px-6 py-2.5 rounded-lg shadow-accent hover:scale-[1.02] transition"
-                >
-                  <Plus className="w-5 h-5" /> Ajouter la Chaîne
-                </button>
-              </div>
-            </form>
-          </div>
-
-          <div className="bg-surface-card border border-border rounded-xl p-6 shadow-card-luxe">
-            <h3 className="text-lg font-semibold mb-4">Chaînes existantes ({channels.length})</h3>
-            <div className="flex flex-col gap-3">
-              {channels.map((channel) => (
-                <div key={channel.id} className="flex items-center justify-between p-4 rounded-lg bg-surface-primary border border-border">
-                  <div className="flex items-center gap-3">
-                    {channel.logo_url && <img src={channel.logo_url} alt="" className="w-8 h-8 object-contain" />}
-                    <div>
-                      <div className="font-semibold">{channel.name} <span className="text-xs uppercase px-2 py-0.5 ml-2 bg-accent/20 text-accent rounded-full">{channel.category}</span></div>
-                      <div className="text-xs font-mono text-muted-foreground mt-1 truncate max-w-md">{channel.url}</div>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => deleteChannel(channel.id)}
-                    className="p-2 text-red-400 hover:text-red-300 hover:bg-red-400/10 rounded-lg transition"
-                  >
-                    <Trash2 className="w-5 h-5" />
-                  </button>
-                </div>
-              ))}
-              {channels.length === 0 && <div className="text-center py-8 text-muted-foreground">Aucune chaîne enregistrée.</div>}
-            </div>
-          </div>
-
-          {/* Import M3U Section */}
-          <div className="bg-surface-card border border-border rounded-xl p-6 shadow-card-luxe mb-8">
-            <h3 className="text-lg font-semibold mb-2">Importation en masse (M3U)</h3>
-            <p className="text-xs text-muted-foreground mb-4">Collez votre contenu de fichier .m3u ici pour importer toutes les قنوات d'un coup.</p>
-            <textarea
-              value={m3uContent}
-              onChange={(e) => setM3uContent(e.target.value)}
-              placeholder="#EXTM3U..."
-              className="w-full h-40 px-3 py-2.5 rounded-lg bg-surface-primary border border-border focus:border-accent outline-none font-mono text-[10px] mb-4"
-            />
-            <div className="flex justify-end">
-              <button
-                onClick={importM3U}
-                disabled={importing || !m3uContent.trim()}
-                className="inline-flex items-center gap-2 bg-surface-elevated text-foreground border border-border px-6 py-2 rounded-lg hover:border-accent transition disabled:opacity-50"
-              >
-                {importing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
-                Lancer l'importation
-              </button>
-            </div>
-          </div>
-        </div>
       </div>
       <AdminAIAssistant />
     </Layout>

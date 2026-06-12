@@ -21,7 +21,7 @@ export const Header = () => {
     { to: "/series", label: t("nav_series") },
     { to: "/my-list", label: lang === "ar" ? "قائمتي" : "Ma Liste" },
     { to: "/coming-soon", label: lang === "ar" ? "قريباً" : "Bientôt" },
-    { to: "/channels", label: lang === "ar" ? "القنوات" : "Channels" },
+    { to: "/matches", label: lang === "ar" ? "مباريات" : "Matches" },
     { to: "/profile", label: t("nav_profile") },
   ];
 

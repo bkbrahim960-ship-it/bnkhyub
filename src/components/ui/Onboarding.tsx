@@ -13,8 +13,8 @@ const SLIDES = [
     icon: <Film className="w-16 h-16 text-accent mx-auto mb-6" />,
     title: "مكتبة ضخمة ومتجددة",
     titleFr: "Une bibliothèque immense",
-    desc: "آلاف الأفلام والمسلسلات المترجمة والمدبلجة، بالإضافة إلى قنوات البث المباشر.",
-    descFr: "Des milliers de films et séries avec sous-titres, plus des chaînes TV en direct.",
+    desc: "آلاف الأفلام والمسلسلات المترجمة والمدبلجة، بالإضافة إلى مباريات مباشر.",
+    descFr: "Des milliers de films et séries avec sous-titres, plus des matchs en direct.",
   },
   {
     icon: <Tv className="w-16 h-16 text-accent mx-auto mb-6" />,

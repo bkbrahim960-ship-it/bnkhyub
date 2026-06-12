@@ -85,7 +85,7 @@ export const Sidebar = () => {
     { to: "/series", label: t("nav_series"), icon: Tv2 },
     { to: "/my-list", label: lang === "ar" ? "قائمتي" : "Ma Liste", icon: List },
     { to: "/coming-soon", label: lang === "ar" ? "قريباً" : "Bientôt", icon: CalendarClock },
-    { to: "/channels", label: lang === "ar" ? "القنوات" : "Channels", icon: Tv },
+    { to: "/matches", label: lang === "ar" ? "مباريات" : "Matches", icon: Tv },
     { to: "/search", label: t("nav_search"), icon: Search },
   ];
 
