@@ -287,7 +287,6 @@ export default function Matches() {
                       src={selectedSource.embedUrl}
                       className="w-full h-full border-0"
                       allowFullScreen
-                      sandbox="allow-scripts allow-same-origin"
                       title="Stream"
                     />
                   </div>
