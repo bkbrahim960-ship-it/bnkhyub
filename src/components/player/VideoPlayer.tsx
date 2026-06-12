@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, forwardRef, useImperativeHandle } from "react";
 import { Play, Loader2, Download } from "lucide-react";
-import { VylaPlayer } from "./VylaPlayer";
+
 import { ResumeModal } from "./ResumeModal";
 import { useAuth } from "@/context/AuthContext";
 import { getRecentHistory } from "@/services/watchHistory";
@@ -52,14 +52,12 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
     ? `https://nhdapi.com/embed/movie/${tmdb_id}?autonext=true&download=true&primarycolor=C124A0&subtitle=ar`
     : `https://nhdapi.com/embed/tv/${tmdb_id}/${season}/${episode}?autonext=true&download=true&primarycolor=C124A0&subtitle=ar`;
 
-  const nhdapiDlUrl = type === "movie"
-    ? `https://nhdapi.com/dl/movie/${tmdb_id}`
-    : `https://nhdapi.com/dl/tv/${tmdb_id}/${season}/${episode}`;
+  const downloadUrl = type === "movie"
+    ? `https://missourimonster-vyla.hf.space/api/downloads/movie/${tmdb_id}`
+    : `https://missourimonster-vyla.hf.space/api/downloads/tv/${tmdb_id}/${season}/${episode}`;
 
-  const isVyla = sourceIndex === 3;
-  const iframeSources = [cinemaOsUrl, vaplayerUrl, nhdapiUrl];
-  const sources = customUrl ? [customUrl] : [...iframeSources, "vyla"];
-  const src = isVyla ? "" : sources[sourceIndex];
+  const sources = customUrl ? [customUrl] : [cinemaOsUrl, vaplayerUrl, nhdapiUrl];
+  const src = sources[sourceIndex];
 
   useImperativeHandle(ref, () => ({
     setSubtitle: () => {},
@@ -130,7 +128,7 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
           </div>
         )}
 
-        {playerActive && !isVyla && (
+        {playerActive && (
           <iframe
             ref={iframeRef}
             src={src}
@@ -145,18 +143,7 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
           />
         )}
 
-        {playerActive && isVyla && (
-          <VylaPlayer
-            tmdb_id={tmdb_id}
-            type={type}
-            season={season}
-            episode={episode}
-            onReady={() => setLoading(false)}
-            onError={() => setLoading(false)}
-          />
-        )}
-
-        {playerActive && loading && !isVyla && (
+        {playerActive && loading && (
           <div className="absolute inset-0 flex items-center justify-center bg-black/60 z-20 pointer-events-none">
             <Loader2 className="w-10 h-10 text-accent animate-spin" />
           </div>
@@ -165,7 +152,7 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
 
       {!customUrl && (
         <div className="flex flex-wrap items-center gap-2 mt-4">
-          {[0, 1, 2, 3].map((idx) => (
+          {sources.map((_, idx) => (
             <button
               key={idx}
               onClick={() => switchSource(idx)}
@@ -179,7 +166,7 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
             </button>
           ))}
           <button
-            onClick={() => window.open(nhdapiDlUrl, "_blank")}
+            onClick={() => window.open(downloadUrl, "_blank")}
             className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-surface-elevated/50 border border-border text-muted-foreground hover:border-accent/50 hover:text-accent transition-all"
             title="تحميل"
           >
