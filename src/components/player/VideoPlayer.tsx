@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, forwardRef, useImperativeHandle } from "react";
 import { Play, Loader2, Download } from "lucide-react";
+import { VylaPlayer } from "./VylaPlayer";
 import { ResumeModal } from "./ResumeModal";
 import { useAuth } from "@/context/AuthContext";
 import { getRecentHistory } from "@/services/watchHistory";
@@ -55,8 +56,10 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
     ? `https://nhdapi.com/dl/movie/${tmdb_id}`
     : `https://nhdapi.com/dl/tv/${tmdb_id}/${season}/${episode}`;
 
-  const sources = customUrl ? [customUrl] : [cinemaOsUrl, vaplayerUrl, nhdapiUrl];
-  const src = sources[sourceIndex];
+  const isVyla = sourceIndex === 3;
+  const iframeSources = [cinemaOsUrl, vaplayerUrl, nhdapiUrl];
+  const sources = customUrl ? [customUrl] : [...iframeSources, "vyla"];
+  const src = isVyla ? "" : sources[sourceIndex];
 
   useImperativeHandle(ref, () => ({
     setSubtitle: () => {},
@@ -127,7 +130,7 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
           </div>
         )}
 
-        {playerActive && (
+        {playerActive && !isVyla && (
           <iframe
             ref={iframeRef}
             src={src}
@@ -142,7 +145,18 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
           />
         )}
 
-        {playerActive && loading && (
+        {playerActive && isVyla && (
+          <VylaPlayer
+            tmdb_id={tmdb_id}
+            type={type}
+            season={season}
+            episode={episode}
+            onReady={() => setLoading(false)}
+            onError={() => setLoading(false)}
+          />
+        )}
+
+        {playerActive && loading && !isVyla && (
           <div className="absolute inset-0 flex items-center justify-center bg-black/60 z-20 pointer-events-none">
             <Loader2 className="w-10 h-10 text-accent animate-spin" />
           </div>
@@ -151,7 +165,7 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
 
       {!customUrl && (
         <div className="flex flex-wrap items-center gap-2 mt-4">
-          {sources.map((_, idx) => (
+          {[0, 1, 2, 3].map((idx) => (
             <button
               key={idx}
               onClick={() => switchSource(idx)}
