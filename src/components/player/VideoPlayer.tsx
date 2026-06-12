@@ -26,11 +26,7 @@ export interface VideoPlayerRef {
   startPlayback: () => void;
 }
 
-const LABELS = [
-  "🎬 CinemaOS (بدون إعلانات)",
-  "vaplayer",
-  "📥 nhdapi (تحميل مباشر)",
-];
+const LABELS = ["S1", "S2", "S3"];
 
 export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
   imdb_id, tmdb_id, type, season, episode, title, initialSourceIndex = 0,

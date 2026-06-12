@@ -197,7 +197,7 @@ const Movie = () => {
       <section className="relative min-h-[45vh] md:min-h-[90vh] lg:min-h-[95vh] flex items-end pb-24 md:pb-16 lg:pb-24 overflow-hidden">
         <VideoBackdrop 
           backdropPath={backdrop} 
-          videoKey={trailer?.key} 
+          videoKey={playing ? undefined : trailer?.key} 
           title={movie.title} 
         />
       </section>
