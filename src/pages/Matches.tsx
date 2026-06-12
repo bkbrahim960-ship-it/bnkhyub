@@ -5,30 +5,45 @@ import { Loader2, Tv, Play, ExternalLink, AlertCircle } from "lucide-react";
 const API_BASE = "https://api.sportsrc.org";
 
 interface Sport {
-  key: string;
+  id: string;
   name: string;
+}
+
+interface TeamInfo {
+  name: string | null;
+  badge: string;
 }
 
 interface Match {
   id: string;
-  title?: string;
-  home_team?: string;
-  away_team?: string;
-  date?: string;
-  time?: string;
-  league?: string;
-  status?: string;
+  title: string;
+  category: string;
+  date: number;
+  poster?: string;
+  teams: {
+    home: TeamInfo;
+    away: TeamInfo;
+  };
+}
+
+interface Source {
+  streamNo: number;
+  language: string;
+  hd: boolean;
+  embedUrl: string;
 }
 
 interface MatchDetail {
   id: string;
-  title?: string;
-  embed?: string;
-  url?: string;
-  home_team?: string;
-  away_team?: string;
-  league?: string;
-  status?: string;
+  title: string;
+  category: string;
+  date: number;
+  poster?: string;
+  teams: {
+    home: TeamInfo;
+    away: TeamInfo;
+  };
+  sources: Source[];
 }
 
 export default function Matches() {
@@ -37,6 +52,7 @@ export default function Matches() {
   const [selectedSport, setSelectedSport] = useState("");
   const [matches, setMatches] = useState<Match[]>([]);
   const [selectedMatch, setSelectedMatch] = useState<MatchDetail | null>(null);
+  const [selectedSource, setSelectedSource] = useState<Source | null>(null);
   const [loading, setLoading] = useState(true);
   const [loadingMatches, setLoadingMatches] = useState(false);
   const [loadingDetail, setLoadingDetail] = useState(false);
@@ -48,10 +64,10 @@ export default function Matches() {
       setError("");
       try {
         const res = await fetch(`${API_BASE}/?data=sports`);
-        const data = await res.json();
-        const list = Array.isArray(data) ? data : data.sports || data.categories || [];
+        const json = await res.json();
+        const list: Sport[] = json?.data ?? [];
         setSports(list);
-        if (list.length > 0) setSelectedSport(list[0].key);
+        if (list.length > 0) setSelectedSport(list[0].id);
       } catch {
         setError("فشل تحميل الرياضات");
       }
@@ -64,11 +80,12 @@ export default function Matches() {
     (async () => {
       setLoadingMatches(true);
       setSelectedMatch(null);
+      setSelectedSource(null);
       setError("");
       try {
         const res = await fetch(`${API_BASE}/?data=matches&category=${selectedSport}`);
-        const data = await res.json();
-        const list = Array.isArray(data) ? data : data.matches || data.games || [];
+        const json = await res.json();
+        const list: Match[] = json?.data ?? [];
         setMatches(list);
       } catch {
         setError("فشل تحميل المباريات");
@@ -79,12 +96,18 @@ export default function Matches() {
   }, [selectedSport]);
 
   const openMatch = async (matchId: string) => {
+    if (!selectedSport) return;
     setLoadingDetail(true);
     setSelectedMatch(null);
+    setSelectedSource(null);
     try {
       const res = await fetch(`${API_BASE}/?data=detail&category=${selectedSport}&id=${matchId}`);
-      const data = await res.json();
-      setSelectedMatch(data.detail || data);
+      const json = await res.json();
+      const detail: MatchDetail | null = json?.data ?? null;
+      setSelectedMatch(detail);
+      if (detail && detail.sources && detail.sources.length > 0) {
+        setSelectedSource(detail.sources[0]);
+      }
     } catch {}
     setLoadingDetail(false);
   };
@@ -94,31 +117,53 @@ export default function Matches() {
       football: lang === "ar" ? "كرة القدم" : lang === "fr" ? "Football" : "Football",
       basketball: lang === "ar" ? "كرة السلة" : lang === "fr" ? "Basketball" : "Basketball",
       tennis: lang === "ar" ? "تنس" : lang === "fr" ? "Tennis" : "Tennis",
-      ufc: "UFC",
-      boxing: lang === "ar" ? "ملاكمة" : lang === "fr" ? "Boxe" : "Boxing",
+      fight: lang === "ar" ? "قتال (UFC)" : lang === "fr" ? "Combat (UFC)" : "Fight (UFC)",
+      "american-football": lang === "ar" ? "كرة القدم الأمريكية" : "American Football",
       volleyball: lang === "ar" ? "كرة الطائرة" : lang === "fr" ? "Volleyball" : "Volleyball",
       handball: lang === "ar" ? "كرة اليد" : lang === "fr" ? "Handball" : "Handball",
       cricket: "Cricket",
       rugby: "Rugby",
       hockey: "Hockey",
       baseball: "Baseball",
-      "american football": lang === "ar" ? "كرة القدم الأمريكية" : "American Football",
+      golf: "Golf",
+      "motor-sports": lang === "ar" ? "رياضات المحركات" : "Motor Sports",
+      billiards: lang === "ar" ? "بلياردو" : "Billiards",
+      darts: "Darts",
+      afl: "AFL",
+      other: lang === "ar" ? "أخرى" : lang === "fr" ? "Autres" : "Other",
     };
-    return labels[s.key] || s.name || s.key;
+    return labels[s.id] || s.name || s.id;
   };
 
-  const formatMatchDate = (m: Match) => {
-    return m.date || m.time || "";
+  const formatMatchDate = (ts: number) => {
+    if (!ts) return "";
+    const d = new Date(ts);
+    const now = new Date();
+    const isToday = d.toDateString() === now.toDateString();
+    const timeStr = d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    if (isToday) return timeStr;
+    return d.toLocaleDateString([], { month: "short", day: "numeric" }) + " " + timeStr;
   };
 
   const getMatchTitle = (m: Match) => {
-    return m.title || `${m.home_team || "?"} vs ${m.away_team || "?"}`;
+    if (m.title) return m.title;
+    const home = m.teams?.home?.name || "?";
+    const away = m.teams?.away?.name || "?";
+    return `${home} vs ${away}`;
+  };
+
+  const isLive = (ts: number) => {
+    if (!ts) return false;
+    const matchTime = new Date(ts).getTime();
+    const now = Date.now();
+    const matchEnd = matchTime + 2 * 60 * 60 * 1000;
+    return now >= matchTime && now <= matchEnd;
   };
 
   const dir = lang === "ar" ? "rtl" : "ltr";
 
   return (
-    <div className="min-h-screen pt-24 pb-16 px-4 max-w-6xl mxauto" dir={dir}>
+    <div className="min-h-screen pt-24 pb-16 px-4 max-w-6xl mx-auto" dir={dir}>
       <div className="mb-8 text-center">
         <h1 className="text-3xl font-display font-bold text-gradient-accent mb-2">
           {lang === "ar" ? "مباريات مباشر" : lang === "fr" ? "Matchs en Direct" : "Live Matches"}
@@ -145,10 +190,10 @@ export default function Matches() {
         <div className="flex flex-wrap justify-center gap-2 mb-8">
           {sports.map((s) => (
             <button
-              key={s.key}
-              onClick={() => setSelectedSport(s.key)}
+              key={s.id}
+              onClick={() => setSelectedSport(s.id)}
               className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
-                s.key === selectedSport
+                s.id === selectedSport
                   ? "bg-accent text-accent-foreground shadow-glow-sm"
                   : "bg-surface-elevated/50 border border-border text-muted-foreground hover:border-accent/50 hover:text-foreground"
               }`}
@@ -171,34 +216,41 @@ export default function Matches() {
         </div>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className={`${selectedMatch ? "lg:col-span-2" : "lg:col-span-3"} space-y-3`}>
-          {!loadingMatches && matches.slice(0, 30).map((m, i) => (
+      <div className="flex flex-col lg:flex-row gap-6">
+        <div className={`flex-1 space-y-2 ${selectedMatch ? "lg:max-w-2xl" : ""}`}>
+          {!loadingMatches && matches.slice(0, 50).map((m, i) => (
             <button
               key={m.id || i}
               onClick={() => openMatch(m.id)}
-              className="w-full text-right flex items-center justify-between p-4 rounded-xl bg-surface-elevated/30 border border-border hover:border-accent/50 transition-all group"
+              className="w-full text-right flex items-center gap-3 p-3 rounded-xl bg-surface-elevated/30 border border-border hover:border-accent/50 transition-all group"
             >
-              <div className="flex-1 min-w-0">
+              {m.poster && (
+                <img
+                  src={m.poster}
+                  alt=""
+                  className="w-14 h-14 rounded-lg object-cover shrink-0"
+                  onError={(e) => { (e.target as HTMLImageElement).style.display = "none" }}
+                />
+              )}
+              <div className="flex-1 min-w-0 text-right">
                 <div className="text-sm font-bold truncate">{getMatchTitle(m)}</div>
-                <div className="text-[11px] text-muted-foreground mt-1 flex items-center gap-2">
-                  {formatMatchDate(m) && <span>{formatMatchDate(m)}</span>}
-                  {m.league && <span className="text-accent">{m.league}</span>}
-                  {m.status && <span className="px-1.5 py-0.5 rounded text-[10px] bg-green-500/20 text-green-400">LIVE</span>}
+                <div className="text-[11px] text-muted-foreground mt-0.5 flex items-center gap-2 justify-end">
+                  {m.date && <span>{formatMatchDate(m.date)}</span>}
+                  {isLive(m.date) && <span className="px-1.5 py-0.5 rounded text-[10px] bg-green-500/20 text-green-400 font-bold">LIVE</span>}
                 </div>
               </div>
-              <Play className="w-4 h-4 text-muted-foreground group-hover:text-accent shrink-0 ml-3" />
+              <Play className="w-4 h-4 text-muted-foreground group-hover:text-accent shrink-0" />
             </button>
           ))}
         </div>
 
         {selectedMatch && (
-          <div className="lg:col-span-1 space-y-4">
+          <div className="lg:w-96 space-y-3">
             <div className="bg-surface-card border border-border rounded-2xl p-4 shadow-card-luxe">
               <div className="flex items-center gap-2 mb-3">
                 <Tv className="w-4 h-4 text-accent" />
                 <span className="text-xs font-bold">
-                  {lang === "ar" ? "البث المباشر" : lang === "fr" ? "Direct" : "Live Stream"}
+                  {lang === "ar" ? "روابط البث" : lang === "fr" ? "Liens de diffusion" : "Stream Links"}
                 </span>
               </div>
 
@@ -208,34 +260,45 @@ export default function Matches() {
                 </div>
               )}
 
-              {!loadingDetail && selectedMatch.embed && (
-                <div className="rounded-xl overflow-hidden bg-black aspect-video mb-3">
-                  <iframe
-                    src={selectedMatch.embed}
-                    className="w-full h-full border-0"
-                    allowFullScreen
-                    sandbox="allow-scripts allow-same-origin"
-                    title={selectedMatch.title || "Match"}
-                  />
+              {!loadingDetail && selectedMatch.sources && selectedMatch.sources.length > 0 && (
+                <div className="space-y-1.5">
+                  {selectedMatch.sources.slice(0, 10).map((src) => (
+                    <button
+                      key={src.streamNo}
+                      onClick={() => setSelectedSource(src)}
+                      className={`w-full text-right flex items-center justify-between px-3 py-2 rounded-lg text-xs transition-all border ${
+                        selectedSource?.streamNo === src.streamNo
+                          ? "bg-accent/20 border-accent text-foreground"
+                          : "bg-surface-elevated/30 border-border text-muted-foreground hover:border-accent/50"
+                      }`}
+                    >
+                      <span className="text-[10px] text-muted-foreground shrink-0 mr-2">#{src.streamNo}</span>
+                      <span className="truncate flex-1">{src.language || "Stream"}</span>
+                      {src.hd && <span className="text-[10px] text-accent font-bold ml-2">HD</span>}
+                    </button>
+                  ))}
                 </div>
               )}
 
-              {!loadingDetail && selectedMatch.url && (
-                <a
-                  href={selectedMatch.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-xl bg-accent text-accent-foreground text-xs font-bold hover:opacity-90 transition"
-                >
-                  <ExternalLink className="w-3.5 h-3.5" />
-                  {lang === "ar" ? "فتح البث" : lang === "fr" ? "Ovoir le stream" : "Open Stream"}
-                </a>
+              {!loadingDetail && selectedSource && (
+                <div className="mt-3">
+                  <div className="rounded-xl overflow-hidden bg-black aspect-video mb-2">
+                    <iframe
+                      src={selectedSource.embedUrl}
+                      className="w-full h-full border-0"
+                      allowFullScreen
+                      sandbox="allow-scripts allow-same-origin"
+                      title="Stream"
+                    />
+                  </div>
+                </div>
               )}
 
-              <div className="text-xs text-muted-foreground mt-2">
-                {selectedMatch.title || `${selectedMatch.home_team || ""} vs ${selectedMatch.away_team || ""}`}
-                {selectedMatch.league && <span className="block text-accent text-[11px] mt-0.5">{selectedMatch.league}</span>}
-              </div>
+              {!loadingDetail && (!selectedMatch.sources || selectedMatch.sources.length === 0) && (
+                <div className="text-center py-6 text-xs text-muted-foreground">
+                  {lang === "ar" ? "لا توجد روابط بث متاحة" : lang === "fr" ? "Aucun lien disponible" : "No streams available"}
+                </div>
+              )}
             </div>
           </div>
         )}
