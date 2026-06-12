@@ -23,6 +23,7 @@ import Remote from "./pages/Remote";
 import Person from "./pages/Person";
 import ComingSoon from "./pages/ComingSoon";
 import Matches from "./pages/Matches";
+import MatchPlayer from "./pages/MatchPlayer";
 import WatchParty from "./pages/WatchParty";
 import AlgerianSeriesPage from "./pages/AlgerianSeriesPage";
 import NotFound from "./pages/NotFound.tsx";
@@ -145,6 +146,7 @@ const AppContent = () => (
                         <Route path="/person/:id" element={<Person />} />
                         <Route path="/coming-soon" element={<ComingSoon />} />
                         <Route path="/matches" element={<Matches />} />
+                        <Route path="/matches/:id" element={<MatchPlayer />} />
                         <Route path="/watch-party" element={<WatchParty />} />
                         <Route path="/algerian/:id" element={<AlgerianSeriesPage />} />
                         <Route path="*" element={<NotFound />} />
