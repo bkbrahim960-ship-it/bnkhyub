@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState, useRef } from "react";
 import { useParams, Link, useSearchParams, useNavigate } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { VideoPlayer, VideoPlayerRef } from "@/components/player/VideoPlayer";
-import { SubtitleFinder } from "@/components/player/SubtitleFinder";
 import { MovieRow } from "@/components/movie/MovieRow";
 import { FavoriteButton } from "@/components/movie/FavoriteButton";
 import { ShareButtons } from "@/components/movie/ShareButtons";
@@ -320,13 +319,6 @@ const Movie = () => {
               }}
             />
             
-            <SubtitleFinder 
-              imdbId={imdb || ""} 
-              tmdbId={movie.id} 
-              title={movie.title} 
-              type="movie"
-              onSubtitleSelect={(url) => videoPlayerRef.current?.setSubtitle(url)}
-            />
           </section>
         )}
       </div>

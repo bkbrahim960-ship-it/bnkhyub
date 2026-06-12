@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState, useRef } from "react";
 import { useParams, Link, useSearchParams, useNavigate } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { VideoPlayer, VideoPlayerRef } from "@/components/player/VideoPlayer";
-import { SubtitleFinder } from "@/components/player/SubtitleFinder";
+
 import { IMG, getSeriesDetails, getSeasonDetails, getSeriesRecommendations, TMDBSeries, TMDBSeason } from "@/services/tmdb";
 import { getOMDbDetails, OMDbResult } from "@/services/omdb";
 import { RatingsDisplay } from "@/components/ui/RatingsDisplay";
@@ -350,15 +350,6 @@ const Series = () => {
                 }}
               />
               
-              <SubtitleFinder 
-                imdbId={imdb || ""} 
-                tmdbId={series.id} 
-                title={series.name} 
-                type="tv"
-                season={season}
-                episode={episode}
-                onSubtitleSelect={(url) => videoPlayerRef.current?.setSubtitle(url)}
-              />
               {/* Next Episode Button */}
               {seasonData && episode < (seasonData.episodes?.length || 0) && (
                 <div className="mt-4 flex justify-end">
