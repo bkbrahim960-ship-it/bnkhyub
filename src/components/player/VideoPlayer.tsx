@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, forwardRef, useImperativeHandle, useCallback } from "react";
-import { Play, Loader2, Download, Monitor, X } from "lucide-react";
+import { Play, Loader2, Download, Monitor, X, Maximize, Minimize } from "lucide-react";
 
 import { ResumeModal } from "./ResumeModal";
 import { NativePlayer } from "./NativePlayer";
@@ -54,8 +54,26 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
   const [downloadError, setDownloadError] = useState("");
   const startedRef = useRef(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
+  const iframeContainerRef = useRef<HTMLDivElement>(null);
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const { user } = useAuth();
   const { lang } = useLanguage();
+
+  useEffect(() => {
+    const handler = () => setIsFullscreen(!!document.fullscreenElement);
+    document.addEventListener("fullscreenchange", handler);
+    return () => document.removeEventListener("fullscreenchange", handler);
+  }, []);
+
+  const toggleContainerFullscreen = useCallback(() => {
+    const el = iframeContainerRef.current;
+    if (!el) return;
+    if (document.fullscreenElement) {
+      document.exitFullscreen().catch(() => {});
+    } else {
+      el.requestFullscreen().catch(() => {});
+    }
+  }, []);
 
   const cinemaOsUrl = type === "movie"
     ? `https://cinemaos.tech/player/${tmdb_id}?language=ar&theme=c124a0&subtitle=ar&sub=ar&noads=1`
@@ -175,15 +193,29 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
       )}
 
       {playerActive && !isNativeSource && (
-        <div className="relative w-full aspect-video rounded-2xl bg-black overflow-hidden border border-white/10 shadow-2xl">
+        <div
+          ref={iframeContainerRef}
+          className="relative w-full aspect-video rounded-2xl bg-black overflow-hidden border border-white/10 shadow-2xl group"
+        >
+          <style>{`
+            video::-webkit-media-controls { display: none !important; }
+            video::-webkit-media-controls-enclosure { display: none !important; }
+            video::-webkit-media-controls-panel { display: none !important; }
+            video::-webkit-media-controls-overlay-play-button { display: none !important; }
+            video::-webkit-media-controls-start-playback-button { display: none !important; }
+            iframe::-webkit-media-controls { display: none !important; }
+            *::-webkit-media-controls { display: none !important; }
+            video:fullscreen { display: none !important; }
+          `}</style>
           <iframe
             ref={iframeRef}
             src={embedSources[sourceIndex]}
             title="BNKHUB"
-            allow="encrypted-media; gyroscope"
+            allow="autoplay; fullscreen; picture-in-picture"
+            allowFullScreen
             frameBorder="0"
             scrolling="no"
-            sandbox="allow-scripts allow-same-origin"
+            sandbox="allow-scripts allow-same-origin allow-fullscreen"
             onLoad={() => setLoading(false)}
             className="absolute inset-0 w-full h-full border-0"
           />
@@ -192,6 +224,14 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
               <Loader2 className="w-10 h-10 text-accent animate-spin" />
             </div>
           )}
+
+          <button
+            onClick={toggleContainerFullscreen}
+            className="absolute top-3 right-3 z-50 w-10 h-10 rounded-full bg-black/70 backdrop-blur-md border border-white/20 flex items-center justify-center text-white/90 hover:bg-accent hover:text-accent-foreground transition-all shadow-lg"
+            title={isFullscreen ? "خروج من ملء الشاشة" : "ملء الشاشة"}
+          >
+            {isFullscreen ? <Minimize className="w-4 h-4" /> : <Maximize className="w-4 h-4" />}
+          </button>
         </div>
       )}
 
