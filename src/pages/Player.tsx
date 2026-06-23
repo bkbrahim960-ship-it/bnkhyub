@@ -7,6 +7,7 @@ import { tmdbLang } from "@/services/i18n";
 import { SEO } from "@/components/SEO";
 import { ArrowLeft, ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
 import { SOURCE_LABELS } from "@/services/player";
+import { CUSTOM_CONTENT } from "@/services/customContent";
 import { useAuth } from "@/context/AuthContext";
 import { upsertWatchEntry } from "@/services/watchHistory";
 
@@ -26,15 +27,30 @@ export default function Player() {
   const isMovie = type === "movie";
   const season = params.get("s") ? Number(params.get("s")) : undefined;
   const episode = params.get("e") ? Number(params.get("e")) : undefined;
+  const customEntry = useMemo(() => {
+    if (!id) return undefined;
+    if (id.startsWith("m-") || id.startsWith("s-")) {
+      const allCustom = [...CUSTOM_CONTENT, ...([] as any[])];
+      return CUSTOM_CONTENT.find((c) => c.id === id);
+    }
+    return undefined;
+  }, [id]);
+  const customUrl = customEntry?.videoUrl;
   const initialSourceIndex = useMemo(() => {
+    if (customUrl) return 0;
     const src = params.get("src");
     if (!src) return 0;
     const i = SOURCE_LABELS.findIndex((l) => l.startsWith(src));
     return i >= 0 ? i : 0;
-  }, [params]);
+  }, [params, customUrl]);
 
   useEffect(() => {
     if (!id) return;
+    if (customEntry) {
+      setMeta({ title: customEntry.title, imdb_id: "", poster: customEntry.thumbnail, backdrop: customEntry.thumbnail });
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     const fetcher = isMovie ? getMovieDetails : getSeriesDetails;
     fetcher(id, tmdbLang(lang))
@@ -50,7 +66,7 @@ export default function Player() {
         setMeta({ title: "", imdb_id: "" });
       })
       .finally(() => setLoading(false));
-  }, [id, isMovie, lang]);
+  }, [id, isMovie, lang, customEntry]);
 
   useEffect(() => {
     if (!id || isMovie || !season) return;
@@ -166,11 +182,12 @@ export default function Player() {
             <VideoPlayer
               ref={videoPlayerRef}
               imdb_id={meta?.imdb_id || ""}
-              tmdb_id={Number(id)}
+              tmdb_id={customUrl ? id : Number(id)}
               type={isMovie ? "movie" : "tv"}
               season={season}
               episode={episode}
               title={meta?.title}
+              customUrl={customUrl}
               initialSourceIndex={initialSourceIndex}
               autoStart={true}
               fullscreen={true}
