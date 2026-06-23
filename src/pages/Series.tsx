@@ -379,7 +379,7 @@ const Series = () => {
                 </div>
                 
                 {/* Active Indicator */}
-                {episode === ep.episode_number && playing ? (
+                {episode === ep.episode_number ? (
                   <div className="absolute top-2 right-2 px-2 py-1 rounded bg-accent text-accent-foreground text-[8px] font-bold animate-pulse z-10">
                     LECTURE
                   </div>
