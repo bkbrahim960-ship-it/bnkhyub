@@ -128,7 +128,7 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
       />
 
       {!playerActive && (
-        <div className="relative w-full aspect-video rounded-2xl bg-black overflow-hidden border border-white/10 shadow-2xl flex items-center justify-center bg-gradient-to-b from-black/30 via-black/60 to-black">
+        <div className="relative w-full aspect-video bg-black overflow-hidden flex items-center justify-center bg-gradient-to-b from-black/30 via-black/60 to-black">
           <button
             onClick={activatePlayer}
             className="w-28 h-28 rounded-full bg-gradient-to-br from-accent to-accent-dark flex items-center justify-center shadow-[0_0_60px_hsl(var(--accent)/0.5)] hover:scale-105 active:scale-95 transition-all"
@@ -139,7 +139,7 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
       )}
 
       {playerActive && (
-        <div className="relative w-full aspect-video rounded-2xl bg-black overflow-hidden border border-white/10 shadow-2xl">
+        <div className="relative w-full aspect-video bg-black overflow-hidden">
           <iframe
             ref={iframeRef}
             src={sources[sourceIndex]}
