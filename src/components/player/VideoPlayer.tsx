@@ -152,11 +152,10 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
             ref={iframeRef}
             src={sources[sourceIndex]}
             title="BNKHUB"
-            allow="autoplay; fullscreen; picture-in-picture"
-            allowFullScreen
+            allow="autoplay; picture-in-picture"
             frameBorder="0"
             scrolling="no"
-            sandbox="allow-scripts allow-same-origin allow-fullscreen"
+            sandbox="allow-scripts allow-same-origin"
             onLoad={() => setLoading(false)}
             className="absolute inset-0 w-full h-full border-0"
           />
