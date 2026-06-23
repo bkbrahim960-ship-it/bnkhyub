@@ -27,6 +27,7 @@ interface Props {
   onProgress?: (seconds: number, duration?: number) => void;
   onCompleted?: () => void;
   autoStart?: boolean;
+  fullscreen?: boolean;
 }
 
 export interface VideoPlayerRef {
@@ -36,7 +37,7 @@ export interface VideoPlayerRef {
 
 export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
   imdb_id, tmdb_id, type, season, episode, title, initialSourceIndex = 0,
-  onSourceChange, onPlayStart, customUrl, onProgress, autoStart = false,
+  onSourceChange, onPlayStart, customUrl, onProgress, autoStart = false, fullscreen = false,
 }, ref) => {
   const [sourceIndex, setSourceIndex] = useState(initialSourceIndex);
   const [loading, setLoading] = useState(true);
@@ -117,8 +118,19 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
     if (onSourceChange) onSourceChange(idx, `S${idx + 1}`);
   };
 
+  const outerClass = fullscreen ? "w-full h-full relative" : "w-full max-w-5xl mx-auto";
+  const inactivePlayerClass = fullscreen
+    ? "absolute inset-0 bg-black flex items-center justify-center bg-gradient-to-b from-black/30 via-black/60 to-black"
+    : "relative w-full aspect-video bg-black overflow-hidden flex items-center justify-center bg-gradient-to-b from-black/30 via-black/60 to-black";
+  const activePlayerClass = fullscreen
+    ? "absolute inset-0 bg-black"
+    : "relative w-full aspect-video bg-black overflow-hidden";
+  const sourceBarClass = fullscreen
+    ? "absolute bottom-0 left-0 right-0 z-30 p-3 pb-4 bg-gradient-to-t from-black/90 via-black/40 to-transparent"
+    : "flex flex-wrap items-center gap-2 mt-4";
+
   return (
-    <div className="w-full max-w-5xl mx-auto">
+    <div className={outerClass}>
       <ResumeModal
         open={resumeModalOpen}
         progressSeconds={historyProgress}
@@ -128,7 +140,7 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
       />
 
       {!playerActive && (
-        <div className="relative w-full aspect-video bg-black overflow-hidden flex items-center justify-center bg-gradient-to-b from-black/30 via-black/60 to-black">
+        <div className={inactivePlayerClass}>
           <button
             onClick={activatePlayer}
             className="w-28 h-28 rounded-full bg-gradient-to-br from-accent to-accent-dark flex items-center justify-center shadow-[0_0_60px_hsl(var(--accent)/0.5)] hover:scale-105 active:scale-95 transition-all"
@@ -139,7 +151,7 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
       )}
 
       {playerActive && (
-        <div className="relative w-full aspect-video bg-black overflow-hidden">
+        <div className={activePlayerClass}>
           <iframe
             ref={iframeRef}
             src={sources[sourceIndex]}
@@ -164,50 +176,52 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
       )}
 
       {!customUrl && (
-        <div className="flex flex-wrap items-center gap-2 mt-4">
-          {sources.map((_, idx) => (
+        <div className={sourceBarClass}>
+          <div className={fullscreen ? "flex flex-wrap items-center gap-2" : "flex flex-wrap items-center gap-2"}>
+            {sources.map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => switchSource(idx)}
+                className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+                  idx === sourceIndex
+                    ? "bg-accent text-accent-foreground shadow-glow"
+                    : "bg-white/10 backdrop-blur-md border border-white/20 text-white/80 hover:bg-white/20 hover:text-white"
+                }`}
+              >
+                {`S${idx + 1}`}
+              </button>
+            ))}
             <button
-              key={idx}
-              onClick={() => switchSource(idx)}
-              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
-                idx === sourceIndex
-                  ? "bg-accent text-accent-foreground"
-                  : "bg-surface-elevated/50 border border-border text-muted-foreground hover:border-accent/50 hover:text-foreground"
-              }`}
+              onClick={async () => {
+                setDownloadModal(true);
+                setDownloading(true);
+                setDownloads([]);
+                setDownloadError("");
+                try {
+                  const res = await fetch(downloadUrl);
+                  if (!res.ok) {
+                    setDownloadError("فشل الاتصال بالخادم");
+                    setDownloading(false);
+                    return;
+                  }
+                  const text = await res.text();
+                  const data = JSON.parse(text);
+                  setDownloads(data.downloads || []);
+                  if (!data.downloads || data.downloads.length === 0) {
+                    setDownloadError("");
+                  }
+                } catch (e) {
+                  setDownloadError("تعذر جلب روابط التحميل");
+                }
+                setDownloading(false);
+              }}
+              className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-white/10 backdrop-blur-md border border-white/20 text-white/80 hover:bg-white/20 hover:text-white transition-all"
+              title="تحميل"
             >
-              {`S${idx + 1}`}
+              <Download className="w-3.5 h-3.5" />
+              تحميل
             </button>
-          ))}
-          <button
-            onClick={async () => {
-              setDownloadModal(true);
-              setDownloading(true);
-              setDownloads([]);
-              setDownloadError("");
-              try {
-                const res = await fetch(downloadUrl);
-                if (!res.ok) {
-                  setDownloadError("فشل الاتصال بالخادم");
-                  setDownloading(false);
-                  return;
-                }
-                const text = await res.text();
-                const data = JSON.parse(text);
-                setDownloads(data.downloads || []);
-                if (!data.downloads || data.downloads.length === 0) {
-                  setDownloadError("");
-                }
-              } catch (e) {
-                setDownloadError("تعذر جلب روابط التحميل");
-              }
-              setDownloading(false);
-            }}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-surface-elevated/50 border border-border text-muted-foreground hover:border-accent/50 hover:text-accent transition-all"
-            title="تحميل"
-          >
-            <Download className="w-3.5 h-3.5" />
-            تحميل
-          </button>
+          </div>
         </div>
       )}
 

@@ -91,8 +91,7 @@ export default function Player() {
         <div className="absolute bottom-3 right-3 z-40 pointer-events-none opacity-25">
           <img src="/logo.png" alt="BNKhub" className="h-8 sm:h-10 w-auto" />
         </div>
-        <div className="flex-1 flex items-center justify-center p-0 overflow-hidden">
-          <div className="w-full h-full">
+        <div className="flex-1 relative overflow-hidden">
             <VideoPlayer
               ref={videoPlayerRef}
               imdb_id={meta?.imdb_id || ""}
@@ -103,6 +102,7 @@ export default function Player() {
               title={meta?.title}
               initialSourceIndex={initialSourceIndex}
               autoStart={true}
+              fullscreen={true}
               onPlayStart={(_i, label) => saveHistory(label)}
               onSourceChange={(_i, label) => saveHistory(label)}
               onProgress={(seconds, duration) => {
@@ -110,7 +110,6 @@ export default function Player() {
                 saveHistory(label, seconds, duration);
               }}
             />
-          </div>
         </div>
       </div>
     </>
