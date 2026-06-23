@@ -72,6 +72,16 @@ export default function Player() {
     return () => { if (hideTimerRef.current) clearTimeout(hideTimerRef.current); };
   }, [loading]);
 
+  useEffect(() => {
+    const onActivity = () => restartHideTimer();
+    document.addEventListener("mousemove", onActivity);
+    document.addEventListener("touchstart", onActivity);
+    return () => {
+      document.removeEventListener("mousemove", onActivity);
+      document.removeEventListener("touchstart", onActivity);
+    };
+  }, []);
+
   const goToEpisode_ = (s: number, e: number) => {
     navigate(`/player/tv/${id}?s=${s}&e=${e}&src=S${initialSourceIndex + 1}`);
   };
@@ -153,6 +163,7 @@ export default function Player() {
         </div>
 
         <div className="flex-1 relative overflow-hidden">
+            <div className={`absolute inset-0 z-10 transition-none ${showControls ? "pointer-events-none" : "pointer-events-auto cursor-default"}`} onClick={restartHideTimer} />
             <VideoPlayer
               ref={videoPlayerRef}
               imdb_id={meta?.imdb_id || ""}
