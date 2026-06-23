@@ -10,7 +10,7 @@ export default function Landing() {
         <div className="text-center">
           <h1 className="text-5xl font-bold mb-4">BNKhub</h1>
           <p className="text-xl text-muted-foreground mb-8">اكتشف كل أفلامك المفضلة</p>
-          <Link to="/home">
+          <Link to="/">
             <Button size="lg">ابدأ الآن</Button>
           </Link>
         </div>
