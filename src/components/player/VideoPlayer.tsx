@@ -60,15 +60,15 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
     ? `https://vaplayer.ru/embed/movie/${imdb_id || tmdb_id}?color=%23C124A0&primaryColor=%23C124A0&theme=dark&lang=ar&sub=ar&subtitle=ar&autoplay=1`
     : `https://vaplayer.ru/embed/tv/${imdb_id || tmdb_id}/${season}/${episode}?color=%23C124A0&primaryColor=%23C124A0&theme=dark&lang=ar&sub=ar&subtitle=ar&autoplay=1`;
 
-  const nhdapiUrl = type === "movie"
-    ? `https://nhdapi.com/embed/movie/${tmdb_id}?autonext=true&download=true&primarycolor=C124A0&subtitle=ar`
-    : `https://nhdapi.com/embed/tv/${tmdb_id}/${season}/${episode}?autonext=true&download=true&primarycolor=C124A0&subtitle=ar`;
+  const filmuUrl = type === "movie"
+    ? `https://embed.filmu.in/movie/${tmdb_id}`
+    : `https://embed.filmu.in/tv/${tmdb_id}/${season}/${episode}`;
 
   const downloadUrl = type === "movie"
     ? `https://missourimonster-vyla.hf.space/api/downloads/movie/${tmdb_id}`
     : `https://missourimonster-vyla.hf.space/api/downloads/tv/${tmdb_id}/${season}/${episode}`;
 
-  const sources = customUrl ? [customUrl] : [cinemaOsUrl, vaplayerUrl, nhdapiUrl];
+  const sources = customUrl ? [customUrl] : [cinemaOsUrl, vaplayerUrl, filmuUrl];
 
   useImperativeHandle(ref, () => ({
     setSubtitle: () => {},
