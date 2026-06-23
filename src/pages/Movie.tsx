@@ -1,7 +1,6 @@
-import { useEffect, useMemo, useState, useRef } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useParams, Link, useSearchParams, useNavigate } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
-import { VideoPlayer, VideoPlayerRef } from "@/components/player/VideoPlayer";
 import { MovieRow } from "@/components/movie/MovieRow";
 import { FavoriteButton } from "@/components/movie/FavoriteButton";
 import { ShareButtons } from "@/components/movie/ShareButtons";
@@ -15,10 +14,8 @@ import { IMG, getMovieDetails, getMovieRecommendations, TMDBMovie } from "@/serv
 import { getOMDbDetails, OMDbResult } from "@/services/omdb";
 import { RatingsDisplay } from "@/components/ui/RatingsDisplay";
 import { useLanguage } from "@/context/LanguageContext";
-import { useAuth } from "@/context/AuthContext";
 import { tmdbLang } from "@/services/i18n";
 import { SEO } from "@/components/SEO";
-import { upsertWatchEntry } from "@/services/watchHistory";
 import { CUSTOM_CONTENT } from "@/services/customContent";
 import { SOURCE_LABELS } from "@/services/player";
 import { Play, Star, Clock, Calendar, Globe2, ArrowLeft, Youtube, Info } from "lucide-react";
@@ -36,17 +33,13 @@ const Movie = () => {
   const { id } = useParams();
   const [params] = useSearchParams();
   const { lang, t } = useLanguage();
-  const { user } = useAuth();
   const { setAmbientColor, setAmbientImage } = useAmbient();
   const [movie, setMovie] = useState<TMDBMovie | null>(null);
   const [omdbData, setOmdbData] = useState<OMDbResult | null>(null);
   const [loading, setLoading] = useState(true);
-  const [playing, setPlaying] = useState(false);
   const [recommendations, setRecommendations] = useState<TMDBMovie[]>([]);
   const [showTrailer, setShowTrailer] = useState(false);
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
-  const playerContainerRef = useRef<HTMLDivElement>(null);
-  const videoPlayerRef = useRef<VideoPlayerRef>(null);
   const navigate = useNavigate();
   const authPath = useAuthPath();
   const resumeRequested = params.get("resume") === "1";
@@ -56,7 +49,6 @@ const Movie = () => {
   useEffect(() => {
     if (!id) return;
     setLoading(true);
-    setPlaying(false);
     
     const videoUrl = params.get("video_url");
 
@@ -145,31 +137,8 @@ const Movie = () => {
     (v) => v.type === "Trailer" && v.site === "YouTube"
   ) || movie.videos?.results.find((v) => v.site === "YouTube");
 
-  const saveHistory = (sourceLabel: string, progress?: number, duration?: number) => {
-    if (!user) return;
-    const sid = sourceLabel.split(" ")[0];
-    upsertWatchEntry(user.id, {
-      tmdb_id: movie.id,
-      media_type: "movie",
-      title: movie.title,
-      poster_path: movie.poster_path,
-      backdrop_path: movie.backdrop_path,
-      source_id: sid,
-      progress_seconds: progress,
-      duration_seconds: duration,
-    }).catch((err) => console.error("Watch history save error:", err));
-  };
-
-  const confirmWatch = () => {
-    setShowLoginPrompt(false);
-    setPlaying(true);
-    setTimeout(() => {
-      playerContainerRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
-    }, 100);
-  };
-
-  const startWatching = () => {
-    confirmWatch();
+  const goToPlayer = () => {
+    navigate(`/player/movie/${id}${window.location.search}`);
   };
 
   const director = movie.credits?.crew.find(c => c.job === 'Director')?.name;
@@ -197,7 +166,7 @@ const Movie = () => {
       <section className="relative min-h-[45vh] md:min-h-[90vh] lg:min-h-[95vh] flex items-end pb-24 md:pb-16 lg:pb-24 overflow-hidden">
         <VideoBackdrop 
           backdropPath={backdrop} 
-          videoKey={playing ? undefined : trailer?.key} 
+          videoKey={trailer?.key} 
           title={movie.title} 
         />
       </section>
@@ -257,17 +226,15 @@ const Movie = () => {
         </p>
 
         {/* Primary Action Button (Watch) */}
-        {!playing && (
-          <button
-            type="button"
-            data-tv-nav="primary"
-            tabIndex={0}
-            onClick={startWatching}
-            className="inline-flex items-center justify-center gap-2 bg-accent text-accent-foreground px-6 sm:px-8 lg:px-12 py-3 sm:py-4 lg:py-5 rounded-2xl font-bold shadow-glow hover:scale-105 active:scale-95 transition-all text-xs sm:text-sm md:text-base lg:text-lg mb-6 w-full sm:w-auto focus:outline-none focus-visible:ring-4 focus-visible:ring-accent"
-          >
-            <Play className="w-4 sm:w-5 lg:w-6 h-4 sm:h-5 lg:h-6 fill-current" /> {t("hero_watch")}
-          </button>
-        )}
+        <button
+          type="button"
+          data-tv-nav="primary"
+          tabIndex={0}
+          onClick={goToPlayer}
+          className="inline-flex items-center justify-center gap-2 bg-accent text-accent-foreground px-6 sm:px-8 lg:px-12 py-3 sm:py-4 lg:py-5 rounded-2xl font-bold shadow-glow hover:scale-105 active:scale-95 transition-all text-xs sm:text-sm md:text-base lg:text-lg mb-6 w-full sm:w-auto focus:outline-none focus-visible:ring-4 focus-visible:ring-accent"
+        >
+          <Play className="w-4 sm:w-5 lg:w-6 h-4 sm:h-5 lg:h-6 fill-current" /> {t("hero_watch")}
+        </button>
 
         {/* Secondary Icon Buttons (Modern & Clean) */}
         <div className="flex items-center gap-2 sm:gap-3 lg:gap-4">
@@ -297,31 +264,6 @@ const Movie = () => {
 
 
       <TrailerModal isOpen={showTrailer} onClose={() => setShowTrailer(false)} videoKey={trailer?.key} title={movie.title} />
-
-      {/* Video Player Section */}
-      <div ref={playerContainerRef} className="scroll-mt-24">
-        {playing && (
-          <section className="container py-4 animate-scale-in">
-            <VideoPlayer
-              ref={videoPlayerRef}
-              imdb_id={imdb || ""}
-              tmdb_id={movie.id}
-              type="movie"
-              title={movie.title}
-              initialSourceIndex={initialSourceIndex}
-              customUrl={(movie as any).video_url || (movie as any).videoUrl}
-              autoStart={true}
-              onPlayStart={(_i, label) => saveHistory(label)}
-              onSourceChange={(_i, label) => saveHistory(label)}
-              onProgress={(seconds, duration) => {
-                const label = SOURCE_LABELS[initialSourceIndex] || "S1";
-                saveHistory(label, seconds, duration);
-              }}
-            />
-            
-          </section>
-        )}
-      </div>
 
       {/* Recommendations */}
       {recommendations.length > 0 && (

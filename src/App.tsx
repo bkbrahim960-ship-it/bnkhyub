@@ -26,6 +26,7 @@ import Matches from "./pages/Matches";
 import MatchPlayer from "./pages/MatchPlayer";
 import WatchParty from "./pages/WatchParty";
 import AlgerianSeriesPage from "./pages/AlgerianSeriesPage";
+import Player from "./pages/Player";
 import NotFound from "./pages/NotFound.tsx";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
@@ -149,6 +150,7 @@ const AppContent = () => (
                         <Route path="/matches/:id" element={<MatchPlayer />} />
                         <Route path="/watch-party" element={<WatchParty />} />
                         <Route path="/algerian/:id" element={<AlgerianSeriesPage />} />
+                        <Route path="/player/:type/:id" element={<Player />} />
                         <Route path="*" element={<NotFound />} />
                       </Routes>
                     </BrowserRouter>

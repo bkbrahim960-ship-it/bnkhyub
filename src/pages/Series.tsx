@@ -1,7 +1,6 @@
-import { useEffect, useMemo, useState, useRef } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useParams, Link, useSearchParams, useNavigate } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
-import { VideoPlayer, VideoPlayerRef } from "@/components/player/VideoPlayer";
 
 import { IMG, getSeriesDetails, getSeasonDetails, getSeriesRecommendations, TMDBSeries, TMDBSeason } from "@/services/tmdb";
 import { getOMDbDetails, OMDbResult } from "@/services/omdb";
@@ -20,12 +19,11 @@ import { useLanguage } from "@/context/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
 import { tmdbLang } from "@/services/i18n";
 import { SEO } from "@/components/SEO";
-import { upsertWatchEntry, getSeriesHistory, WatchHistoryEntry } from "@/services/watchHistory";
+import { getSeriesHistory, WatchHistoryEntry } from "@/services/watchHistory";
 import { SOURCE_LABELS } from "@/services/player";
 import { Play, Star, Calendar, ArrowLeft, Youtube, ChevronRight, Clock, Info, Check } from "lucide-react";
 import { useAmbient } from "@/context/AmbientContext";
 import { RemotePairingButton } from "@/components/movie/RemotePairingButton";
-import { NextEpisodeOverlay } from "@/components/player/NextEpisodeOverlay";
 import { MovieLogo } from "@/components/ui/MovieLogo";
 import { useIsDesktopOrTV } from "@/hooks/useIsDesktopOrTV";
 
@@ -46,19 +44,15 @@ const Series = () => {
   const [loading, setLoading] = useState(true);
   const [season, setSeason] = useState(1);
   const [episode, setEpisode] = useState(1);
-  const [playing, setPlaying] = useState(false);
   const [seasonData, setSeasonData] = useState<TMDBSeason | null>(null);
   const [seasonLoading, setSeasonLoading] = useState(false);
   const [recommendations, setRecommendations] = useState<any[]>([]);
   const [showTrailer, setShowTrailer] = useState(false);
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
   const [selectedEpisode, setSelectedEpisode] = useState<number>(0);
-  const [showNextEpisode, setShowNextEpisode] = useState(false);
   const [showEpisodeModal, setShowEpisodeModal] = useState(false);
   const [seriesHistory, setSeriesHistory] = useState<WatchHistoryEntry[]>([]);
   const navigate = useNavigate();
-  const playerRef = useRef<HTMLDivElement>(null);
-  const videoPlayerRef = useRef<VideoPlayerRef>(null);
   const isDesktopOrTV = useIsDesktopOrTV();
   const resumeRequested = params.get("resume") === "1";
   const playRequested = params.get("play") === "1";
@@ -69,7 +63,6 @@ const Series = () => {
   useEffect(() => {
     if (!id) return;
     setLoading(true);
-    setPlaying(false);
 
     getSeriesDetails(id, tmdbLang(lang))
       .then((s) => {
@@ -146,30 +139,8 @@ const Series = () => {
     (v) => v.type === "Trailer" && v.site === "YouTube"
   ) || series.videos?.results.find((v) => v.site === "YouTube");
 
-  const saveHistory = (sourceLabel: string, progress?: number, duration?: number) => {
-    if (!user) return;
-    const sid = sourceLabel.split(" ")[0];
-    upsertWatchEntry(user.id, {
-      tmdb_id: series.id,
-      media_type: "tv",
-      title: series.name,
-      poster_path: series.poster_path,
-      backdrop_path: series.backdrop_path,
-      season_number: season,
-      episode_number: episode,
-      source_id: sid,
-      progress_seconds: progress,
-      duration_seconds: duration,
-    }).catch((err) => console.error("Series history save error:", err));
-  };
-
-  const playEpisodeDirectly = (epNum: number) => {
-    setSelectedEpisode(epNum);
-    setEpisode(epNum);
-    setPlaying(true);
-    setTimeout(() => {
-      playerRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
-    }, 100);
+  const goToEpisode = (epNum: number) => {
+    navigate(`/player/tv/${id}?s=${season}&e=${epNum}${window.location.search}`);
   };
 
   const handleEpisodeClick = (epNum: number) => {
@@ -181,7 +152,7 @@ const Series = () => {
     setShowLoginPrompt(false);
     setShowEpisodeModal(false);
     if (selectedEpisode) {
-      playEpisodeDirectly(selectedEpisode);
+      goToEpisode(selectedEpisode);
     }
   };
 
@@ -221,7 +192,7 @@ const Series = () => {
       <section className="relative min-h-[45vh] md:min-h-[85vh] lg:min-h-[90vh] flex items-end pb-24 md:pb-14 lg:pb-20 overflow-hidden">
         <VideoBackdrop 
           backdropPath={backdrop} 
-          videoKey={playing ? undefined : trailer?.key} 
+          videoKey={trailer?.key} 
           title={series.name} 
         />
       </section>
@@ -286,7 +257,7 @@ const Series = () => {
           data-tv-nav="primary"
           tabIndex={0}
           onClick={() =>
-            isDesktopOrTV ? playEpisodeDirectly(1) : handleEpisodeClick(1)
+            isDesktopOrTV ? goToEpisode(episode) : handleEpisodeClick(episode)
           }
           className="inline-flex items-center justify-center gap-2 bg-accent text-accent-foreground px-6 sm:px-8 lg:px-12 py-3 sm:py-4 lg:py-5 rounded-2xl font-bold shadow-glow hover:scale-105 active:scale-95 transition-all text-xs sm:text-sm md:text-base lg:text-lg mb-6 w-full sm:w-auto focus:outline-none focus-visible:ring-4 focus-visible:ring-accent"
         >
@@ -321,71 +292,6 @@ const Series = () => {
 
 
       <div className="container py-4">
-        {/* Player Section */}
-        <div ref={playerRef} className="scroll-mt-24">
-          {playing && (
-            <div className="mb-16 animate-scale-in">
-              <VideoPlayer
-                ref={videoPlayerRef}
-                key={`${season}-${episode}`}
-                imdb_id={imdb}
-                tmdb_id={series.id}
-                type="tv"
-                season={season}
-                episode={episode}
-                title={`${series.name} — S${season} E${episode}`}
-                initialSourceIndex={initialSourceIndex}
-                autoStart={true}
-                customUrl={undefined}
-                onPlayStart={(_i, label) => saveHistory(label)}
-                onSourceChange={(_i, label) => saveHistory(label)}
-                onProgress={(seconds, duration) => {
-                  const label = SOURCE_LABELS[initialSourceIndex] || "S1";
-                  saveHistory(label, seconds, duration);
-                }}
-                onCompleted={() => {
-                  if (seasonData && episode < (seasonData.episodes?.length || 0)) {
-                    setShowNextEpisode(true);
-                  }
-                }}
-              />
-              
-              {/* Next Episode Button */}
-              {seasonData && episode < (seasonData.episodes?.length || 0) && (
-                <div className="mt-4 flex justify-end">
-                  <button
-                    onClick={() => setShowNextEpisode(true)}
-                    className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-accent/10 border border-accent/20 text-accent hover:bg-accent hover:text-accent-foreground font-bold text-sm transition-all"
-                  >
-                    <Play className="w-4 h-4 fill-current" />
-                    {lang === 'ar' ? 'الحلقة التالية' : 'Épisode suivant'}
-                  </button>
-                </div>
-              )}
-              {/* Subtitles Finder below player for TV */}
-              <div className="mt-8">
-
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Auto-play Next Episode Overlay */}
-        {showNextEpisode && seasonData && episode < (seasonData.episodes?.length || 0) && (
-          <NextEpisodeOverlay
-            nextEpisodeTitle={seasonData.episodes[episode]?.name || `Épisode ${episode + 1}`}
-            nextEpisodeNumber={episode + 1}
-            seasonNumber={season}
-            seriesName={series.name}
-            stillPath={seasonData.episodes[episode]?.still_path ? IMG.backdrop(seasonData.episodes[episode].still_path, "w780") : backdrop}
-            onPlay={() => {
-              setShowNextEpisode(false);
-              handleEpisodeClick(episode + 1);
-            }}
-            onCancel={() => setShowNextEpisode(false)}
-          />
-        )}
-
         {/* Episodes & Seasons Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-12">
           <div>
@@ -398,7 +304,7 @@ const Series = () => {
             {seasons.map((s) => (
               <button
                 key={s.id}
-                onClick={() => { setSeason(s.season_number); setEpisode(1); setPlaying(false); }}
+                onClick={() => { setSeason(s.season_number); setEpisode(1); }}
                 className={`shrink-0 px-6 py-2.5 rounded-xl text-sm font-bold transition-all border ${
                   season === s.season_number 
                     ? "bg-accent text-accent-foreground border-accent shadow-glow" 
@@ -423,7 +329,7 @@ const Series = () => {
                 key={ep.id}
                 onClick={() => handleEpisodeClick(ep.episode_number)}
                 className={`group relative flex flex-col text-left rounded-2xl overflow-hidden transition-all duration-500 border ${
-                  episode === ep.episode_number && playing
+                  episode === ep.episode_number
                     ? "bg-accent/10 border-accent shadow-glow scale-[1.03] z-10"
                     : "bg-surface-card border-white/5 hover:border-accent/40 hover:-translate-y-2"
                 }`}
