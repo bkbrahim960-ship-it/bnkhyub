@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams, Link, useSearchParams, useNavigate } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { MovieRow } from "@/components/movie/MovieRow";
@@ -40,11 +40,11 @@ const Movie = () => {
   const [recommendations, setRecommendations] = useState<TMDBMovie[]>([]);
   const [showTrailer, setShowTrailer] = useState(false);
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
+  const [sourceIndex, setSourceIndex] = useState(sourceIdToIndex(params.get("src")));
   const navigate = useNavigate();
   const authPath = useAuthPath();
   const resumeRequested = params.get("resume") === "1";
   const playRequested = params.get("play") === "1";
-  const initialSourceIndex = useMemo(() => sourceIdToIndex(params.get("src")), [params]);
 
   useEffect(() => {
     if (!id) return;
@@ -138,7 +138,9 @@ const Movie = () => {
   ) || movie.videos?.results.find((v) => v.site === "YouTube");
 
   const goToPlayer = () => {
-    navigate(`/player/movie/${id}${window.location.search}`);
+    const sp = new URLSearchParams(window.location.search);
+    sp.set("src", `S${sourceIndex + 1}`);
+    navigate(`/player/movie/${id}?${sp.toString()}`);
   };
 
   const director = movie.credits?.crew.find(c => c.job === 'Director')?.name;
@@ -224,6 +226,23 @@ const Movie = () => {
         <p className="text-white/60 text-xs sm:text-sm md:text-base lg:text-lg max-w-3xl leading-relaxed mb-6 lg:mb-8 line-clamp-3">
           {overview}
         </p>
+
+        {/* Source Selector */}
+        <div className="flex flex-wrap items-center gap-2 mb-6">
+          {["S1", "S2", "S3"].map((label, i) => (
+            <button
+              key={label}
+              onClick={() => setSourceIndex(i)}
+              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+                sourceIndex === i
+                  ? "bg-accent text-accent-foreground"
+                  : "bg-surface-elevated/50 border border-border text-muted-foreground hover:border-accent/50 hover:text-foreground"
+              }`}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
 
         {/* Primary Action Button (Watch) */}
         <button

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams, Link, useSearchParams, useNavigate } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 
@@ -54,11 +54,11 @@ const Series = () => {
   const [seriesHistory, setSeriesHistory] = useState<WatchHistoryEntry[]>([]);
   const navigate = useNavigate();
   const isDesktopOrTV = useIsDesktopOrTV();
+  const [sourceIndex, setSourceIndex] = useState(sourceIdToIndex(params.get("src")));
   const resumeRequested = params.get("resume") === "1";
   const playRequested = params.get("play") === "1";
   const resumeSeason = Number(params.get("s")) || null;
   const resumeEpisode = Number(params.get("e")) || null;
-  const initialSourceIndex = useMemo(() => sourceIdToIndex(params.get("src")), [params]);
 
   useEffect(() => {
     if (!id) return;
@@ -140,7 +140,11 @@ const Series = () => {
   ) || series.videos?.results.find((v) => v.site === "YouTube");
 
   const goToEpisode = (epNum: number) => {
-    navigate(`/player/tv/${id}?s=${season}&e=${epNum}${window.location.search}`);
+    const sp = new URLSearchParams(window.location.search);
+    sp.set("s", String(season));
+    sp.set("e", String(epNum));
+    sp.set("src", `S${sourceIndex + 1}`);
+    navigate(`/player/tv/${id}?${sp.toString()}`);
   };
 
   const handleEpisodeClick = (epNum: number) => {
@@ -250,6 +254,23 @@ const Series = () => {
         <p className="text-white/60 text-xs sm:text-sm md:text-base lg:text-lg max-w-3xl leading-relaxed mb-6 lg:mb-8 line-clamp-3">
           {series.overview}
         </p>
+
+        {/* Source Selector */}
+        <div className="flex flex-wrap items-center gap-2 mb-6">
+          {["S1", "S2", "S3"].map((label, i) => (
+            <button
+              key={label}
+              onClick={() => setSourceIndex(i)}
+              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+                sourceIndex === i
+                  ? "bg-accent text-accent-foreground"
+                  : "bg-surface-elevated/50 border border-border text-muted-foreground hover:border-accent/50 hover:text-foreground"
+              }`}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
 
         {/* Primary Action Button (Watch) */}
         <button
