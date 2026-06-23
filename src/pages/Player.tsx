@@ -129,7 +129,7 @@ export default function Player() {
   return (
     <>
       <SEO title={meta?.title || "Player"} />
-      <div className="fixed inset-0 bg-black z-50 flex flex-col" onClick={restartHideTimer}>
+      <div className="fixed inset-0 bg-black z-50 flex flex-col">
         <div className={`absolute top-0 left-0 right-0 z-40 flex items-center gap-3 p-3 bg-gradient-to-b from-black/80 to-transparent transition-opacity duration-500 ${showControls ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
           <button
             onClick={() => navigate(isMovie ? `/movie/${id}` : `/series/${id}`)}
@@ -163,7 +163,6 @@ export default function Player() {
         </div>
 
         <div className="flex-1 relative overflow-hidden">
-            <div className={`absolute inset-0 z-10 transition-none ${showControls ? "pointer-events-none" : "pointer-events-auto cursor-default"}`} onClick={restartHideTimer} />
             <VideoPlayer
               ref={videoPlayerRef}
               imdb_id={meta?.imdb_id || ""}
