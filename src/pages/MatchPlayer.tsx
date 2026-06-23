@@ -49,6 +49,7 @@ export default function MatchPlayer() {
         const res = await fetch(`${API_BASE}/?data=detail&category=football&id=${id}`);
         const json = await res.json();
         const d: MatchDetail | null = json?.data ?? null;
+        if (d) d.sources = sortSources(d.sources || []);
         setDetail(d);
         if (d && d.sources && d.sources.length > 0) {
           setSelectedSource(d.sources[0]);
@@ -59,6 +60,17 @@ export default function MatchPlayer() {
       setLoading(false);
     })();
   }, [id]);
+
+  const sortSources = (sources: Source[]): Source[] => {
+    const priority = (lang: string): number => {
+      const l = lang.toLowerCase();
+      if (/bein/i.test(l) || /عربي/i.test(l) || /arab/i.test(l)) return 0;
+      if (/english/i.test(l) || /eng/i.test(l)) return 1;
+      if (/spanish/i.test(l) || /esp/i.test(l) || /espa/i.test(l)) return 2;
+      return 3;
+    };
+    return [...sources].sort((a, b) => priority(a.language) - priority(b.language));
+  };
 
   const formatDate = (ts: number) => {
     if (!ts) return "";
@@ -190,6 +202,7 @@ export default function MatchPlayer() {
                     className="w-full h-full border-0"
                     allowFullScreen
                     title="Stream"
+                    sandbox="allow-scripts allow-same-origin"
                   />
                 </div>
               ) : (
