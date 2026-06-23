@@ -17,9 +17,11 @@ export default function Player() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const videoPlayerRef = useRef<VideoPlayerRef>(null);
+  const hideTimerRef = useRef<ReturnType<typeof setTimeout>>();
   const [meta, setMeta] = useState<{ title: string; imdb_id: string; poster?: string; backdrop?: string } | null>(null);
   const [loading, setLoading] = useState(true);
   const [seasonData, setSeasonData] = useState<TMDBSeason | null>(null);
+  const [showControls, setShowControls] = useState(true);
 
   const isMovie = type === "movie";
   const season = params.get("s") ? Number(params.get("s")) : undefined;
@@ -56,6 +58,19 @@ export default function Player() {
       .then(setSeasonData)
       .catch(() => setSeasonData(null));
   }, [id, isMovie, season, lang]);
+
+  const restartHideTimer = () => {
+    setShowControls(true);
+    if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
+    hideTimerRef.current = setTimeout(() => setShowControls(false), 2000);
+  };
+
+  useEffect(() => {
+    if (!loading) {
+      hideTimerRef.current = setTimeout(() => setShowControls(false), 2000);
+    }
+    return () => { if (hideTimerRef.current) clearTimeout(hideTimerRef.current); };
+  }, [loading]);
 
   const goToEpisode_ = (s: number, e: number) => {
     navigate(`/player/tv/${id}?s=${s}&e=${e}&src=S${initialSourceIndex + 1}`);
@@ -104,8 +119,8 @@ export default function Player() {
   return (
     <>
       <SEO title={meta?.title || "Player"} />
-      <div className="fixed inset-0 bg-black z-50 flex flex-col">
-        <div className="absolute top-0 left-0 right-0 z-40 flex items-center gap-3 p-3 bg-gradient-to-b from-black/80 to-transparent">
+      <div className="fixed inset-0 bg-black z-50 flex flex-col" onClick={restartHideTimer}>
+        <div className={`absolute top-0 left-0 right-0 z-40 flex items-center gap-3 p-3 bg-gradient-to-b from-black/80 to-transparent transition-opacity duration-500 ${showControls ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
           <button
             onClick={() => navigate(-1)}
             className="w-9 h-9 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center hover:bg-white/20 transition-colors shrink-0"
