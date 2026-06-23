@@ -1,6 +1,6 @@
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -18,7 +18,7 @@ import DesktopAuth from "./pages/DesktopAuth";
 import Profile from "./pages/Profile";
 import Admin from "./pages/Admin";
 import MyList from "./pages/MyList";
-import Landing from "./pages/Landing";
+
 import Remote from "./pages/Remote";
 import Person from "./pages/Person";
 import ComingSoon from "./pages/ComingSoon";
@@ -138,7 +138,7 @@ const AppContent = () => (
                         <Route path="/profile" element={<Profile />} />
                         <Route path="/my-list" element={<MyList />} />
                         <Route path="/admin" element={<Admin />} />
-                        <Route path="/landing" element={<Landing />} />
+                        <Route path="/landing" element={<Navigate to="/" replace />} />
                         <Route path="/privacy" element={<Privacy />} />
                         <Route path="/terms" element={<Terms />} />
                         <Route path="/faq" element={<Faq />} />

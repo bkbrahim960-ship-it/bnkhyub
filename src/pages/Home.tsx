@@ -184,14 +184,8 @@ const Home = () => {
   const tl = tmdbLang(lang);
 
   useEffect(() => {
-    const hasSeen = localStorage.getItem("hasSeenLanding");
-    if (hasSeen) return;
-    if (window.matchMedia("(min-width: 768px)").matches) {
-      localStorage.setItem("hasSeenLanding", "true");
-    } else {
-      navigate("/landing");
-    }
-  }, [navigate]);
+    localStorage.setItem("hasSeenLanding", "true");
+  }, []);
 
   const [hero, setHero] = useState<any[]>([]);
   const [popular, setPopular] = useState<TMDBMovie[]>([]);
