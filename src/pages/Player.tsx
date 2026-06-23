@@ -88,6 +88,9 @@ export default function Player() {
           )}
         </div>
 
+        <div className="absolute bottom-3 right-3 z-40 pointer-events-none opacity-25">
+          <img src="/logo.png" alt="BNKhub" className="h-8 sm:h-10 w-auto" />
+        </div>
         <div className="flex-1 flex items-center justify-center p-0">
           <div className="w-full max-w-6xl mx-auto px-2 sm:px-4">
             <VideoPlayer

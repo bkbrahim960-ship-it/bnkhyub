@@ -153,10 +153,13 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
             className="absolute inset-0 w-full h-full border-0"
           />
           {loading && (
-            <div className="absolute inset-0 flex items-center justify-center bg-black/60 z-20 pointer-events-none">
+            <div className="absolute inset-0 flex items-center justify-center bg-black/60 z-30 pointer-events-none">
               <Loader2 className="w-10 h-10 text-accent animate-spin" />
             </div>
           )}
+          <div className="absolute bottom-3 left-3 z-20 pointer-events-none opacity-30">
+            <img src="/logo.png" alt="BNKhub" className="h-6 sm:h-8 w-auto" />
+          </div>
         </div>
       )}
 
