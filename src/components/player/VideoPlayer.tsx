@@ -2,9 +2,7 @@ import { useEffect, useRef, useState, forwardRef, useImperativeHandle, useCallba
 import { Play, Loader2, Download, Monitor, X, Maximize, Minimize } from "lucide-react";
 
 import { ResumeModal } from "./ResumeModal";
-import { NativePlayer } from "./NativePlayer";
 import { useAuth } from "@/context/AuthContext";
-import { useLanguage } from "@/context/LanguageContext";
 import { getRecentHistory } from "@/services/watchHistory";
 
 interface DownloadLink {
@@ -43,8 +41,6 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
   const [sourceIndex, setSourceIndex] = useState(initialSourceIndex);
   const [loading, setLoading] = useState(true);
   const [playerActive, setPlayerActive] = useState(false);
-  const [useNative, setUseNative] = useState(false);
-  const [nativeSrc, setNativeSrc] = useState("");
   const [resumeModalOpen, setResumeModalOpen] = useState(false);
   const [historyProgress, setHistoryProgress] = useState(0);
   const [hasResumed, setHasResumed] = useState(false);
@@ -57,7 +53,6 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
   const iframeContainerRef = useRef<HTMLDivElement>(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const { user } = useAuth();
-  const { lang } = useLanguage();
 
   useEffect(() => {
     const handler = () => setIsFullscreen(!!document.fullscreenElement);
@@ -91,9 +86,7 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
     ? `https://missourimonster-vyla.hf.space/api/downloads/movie/${tmdb_id}`
     : `https://missourimonster-vyla.hf.space/api/downloads/tv/${tmdb_id}/${season}/${episode}`;
 
-  const embedSources = customUrl ? [customUrl] : [cinemaOsUrl, vaplayerUrl, nhdapiUrl];
-  const isNativeSource = sourceIndex === embedSources.length;
-  const totalSources = embedSources.length + 1;
+  const sources = customUrl ? [customUrl] : [cinemaOsUrl, vaplayerUrl, nhdapiUrl];
 
   useImperativeHandle(ref, () => ({
     setSubtitle: () => {},
@@ -107,10 +100,10 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
   useEffect(() => {
     if (!playerActive) return;
     if (onPlayStart && !startedRef.current) {
-      onPlayStart(sourceIndex, isNativeSource ? "Native" : `S${sourceIndex + 1}`);
+      onPlayStart(sourceIndex, `S${sourceIndex + 1}`);
       startedRef.current = true;
     }
-  }, [playerActive, sourceIndex, isNativeSource, onPlayStart]);
+  }, [playerActive, sourceIndex, onPlayStart]);
 
   useEffect(() => {
     if (!user || hasResumed) return;
@@ -130,29 +123,6 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
     })();
   }, [user, tmdb_id, type, season, episode, hasResumed]);
 
-  const fetchNativeSource = useCallback(async () => {
-    setLoading(true);
-    setUseNative(false);
-    setNativeSrc("");
-    try {
-      const res = await fetch(downloadUrl);
-      if (!res.ok) throw new Error("فشل الاتصال");
-      const text = await res.text();
-      const data = JSON.parse(text);
-      const links: DownloadLink[] = data?.downloads ?? [];
-      if (links.length > 0) {
-        setNativeSrc(links[0].url);
-        setUseNative(true);
-      }
-    } catch {}
-    setLoading(false);
-  }, [downloadUrl]);
-
-  useEffect(() => {
-    if (!playerActive || !isNativeSource) return;
-    fetchNativeSource();
-  }, [playerActive, isNativeSource, fetchNativeSource]);
-
   const activatePlayer = () => {
     setPlayerActive(true);
     setLoading(true);
@@ -161,10 +131,8 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
   const switchSource = (idx: number) => {
     if (idx === sourceIndex) return;
     setSourceIndex(idx);
-    setUseNative(false);
-    setNativeSrc("");
     setLoading(true);
-    if (onSourceChange) onSourceChange(idx, isNativeSource ? "Native" : `S${idx + 1}`);
+    if (onSourceChange) onSourceChange(idx, `S${idx + 1}`);
   };
 
   return (
@@ -188,11 +156,7 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
         </div>
       )}
 
-      {playerActive && isNativeSource && useNative && nativeSrc && (
-        <NativePlayer src={nativeSrc} title={title} subtitle="Native" />
-      )}
-
-      {playerActive && !isNativeSource && (
+      {playerActive && (
         <div
           ref={iframeContainerRef}
           className="relative w-full aspect-video rounded-2xl bg-black overflow-hidden border border-white/10 shadow-2xl group"
@@ -235,15 +199,9 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
         </div>
       )}
 
-      {playerActive && isNativeSource && !useNative && !loading && (
-        <div className="relative w-full aspect-video rounded-2xl bg-black overflow-hidden border border-white/10 shadow-2xl flex items-center justify-center text-muted-foreground text-sm">
-          {lang === "ar" ? "لا توجد روابط فيديو متاحة" : lang === "fr" ? "Aucune vidéo disponible" : "No video available"}
-        </div>
-      )}
-
       {!customUrl && (
         <div className="flex flex-wrap items-center gap-2 mt-4">
-          {Array.from({ length: totalSources }, (_, idx) => (
+          {sources.map((_, idx) => (
             <button
               key={idx}
               onClick={() => switchSource(idx)}
@@ -253,7 +211,7 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
                   : "bg-surface-elevated/50 border border-border text-muted-foreground hover:border-accent/50 hover:text-foreground"
               }`}
             >
-              {idx < embedSources.length ? `S${idx + 1}` : "Native"}
+              {`S${idx + 1}`}
             </button>
           ))}
           <button

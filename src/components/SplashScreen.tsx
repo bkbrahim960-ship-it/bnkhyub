@@ -65,7 +65,7 @@ export const SplashScreen = ({ onFinish }: { onFinish: () => void }) => {
              </p>
              <div className="h-px w-12 bg-accent/30 mx-auto my-4" />
              <p className="text-accent/80 font-display text-sm md:text-lg tracking-wider">
-               Site conçu et programmé par <span className="font-bold text-white tracking-widest">BRAHIM BEN KEDDACHE</span>
+               Site conçu et programmé par <span className="font-bold text-white tracking-widest">BRAHIM BNK</span>
              </p>
           </div>
         </div>
