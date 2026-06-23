@@ -72,10 +72,14 @@ export const BottomNav = () => {
           }
           aria-label="Live Matches"
         >
-          <svg className="w-5 h-5 sm:w-6 sm:h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <circle cx="12" cy="12" r="10" />
-            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-            <line x1="2" y1="12" x2="22" y2="12" />
+          <svg className="w-5 h-5 sm:w-6 sm:h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="12" r="9.5" />
+            <polygon points="12,4.5 15.8,7.2 14.2,11.8 9.8,11.8 8.2,7.2" fill="currentColor" fillOpacity="0.12" />
+            <line x1="12" y1="13" x2="12" y2="21" />
+            <line x1="12" y1="13" x2="5.5" y2="16.5" />
+            <line x1="12" y1="13" x2="18.5" y2="16.5" />
+            <line x1="5.5" y1="7.5" x2="3" y2="12" />
+            <line x1="18.5" y1="7.5" x2="21" y2="12" />
           </svg>
         </NavLink>
 
