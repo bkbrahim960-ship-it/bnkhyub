@@ -165,9 +165,6 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
               <Loader2 className="w-10 h-10 text-accent animate-spin" />
             </div>
           )}
-          <div className="absolute bottom-3 left-3 z-20 pointer-events-none opacity-30">
-            <img src="/logo.png" alt="BNKhub" className="h-6 sm:h-8 w-auto" />
-          </div>
         </div>
       )}
 

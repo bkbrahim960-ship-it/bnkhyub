@@ -122,7 +122,7 @@ export default function Player() {
       <div className="fixed inset-0 bg-black z-50 flex flex-col" onClick={restartHideTimer}>
         <div className={`absolute top-0 left-0 right-0 z-40 flex items-center gap-3 p-3 bg-gradient-to-b from-black/80 to-transparent transition-opacity duration-500 ${showControls ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
           <button
-            onClick={() => navigate(-1)}
+            onClick={() => navigate(isMovie ? `/movie/${id}` : `/series/${id}`)}
             className="w-9 h-9 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center hover:bg-white/20 transition-colors shrink-0"
           >
             <ArrowLeft className="w-5 h-5 text-white" />
