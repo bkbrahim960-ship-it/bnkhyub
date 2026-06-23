@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState, forwardRef, useImperativeHandle, useCallback } from "react";
-import { Play, Loader2, Download, Monitor, X, Maximize, Minimize } from "lucide-react";
+import { Play, Loader2, Download, Monitor, X } from "lucide-react";
 
 import { ResumeModal } from "./ResumeModal";
+import { NativePlayer } from "./NativePlayer";
 import { useAuth } from "@/context/AuthContext";
+import { useLanguage } from "@/context/LanguageContext";
 import { getRecentHistory } from "@/services/watchHistory";
 
 interface DownloadLink {
@@ -41,6 +43,8 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
   const [sourceIndex, setSourceIndex] = useState(initialSourceIndex);
   const [loading, setLoading] = useState(true);
   const [playerActive, setPlayerActive] = useState(false);
+  const [useNative, setUseNative] = useState(false);
+  const [nativeSrc, setNativeSrc] = useState("");
   const [resumeModalOpen, setResumeModalOpen] = useState(false);
   const [historyProgress, setHistoryProgress] = useState(0);
   const [hasResumed, setHasResumed] = useState(false);
@@ -48,11 +52,10 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
   const [downloads, setDownloads] = useState<DownloadLink[]>([]);
   const [downloading, setDownloading] = useState(false);
   const [downloadError, setDownloadError] = useState("");
-  const [isFullscreen, setIsFullscreen] = useState(false);
   const startedRef = useRef(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
   const { user } = useAuth();
+  const { lang } = useLanguage();
 
   const cinemaOsUrl = type === "movie"
     ? `https://cinemaos.tech/player/${tmdb_id}?language=ar&theme=c124a0&subtitle=ar&sub=ar&noads=1`
@@ -70,41 +73,14 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
     ? `https://missourimonster-vyla.hf.space/api/downloads/movie/${tmdb_id}`
     : `https://missourimonster-vyla.hf.space/api/downloads/tv/${tmdb_id}/${season}/${episode}`;
 
-  const sources = customUrl ? [customUrl] : [cinemaOsUrl, vaplayerUrl, nhdapiUrl];
-  const src = sources[sourceIndex];
+  const embedSources = customUrl ? [customUrl] : [cinemaOsUrl, vaplayerUrl, nhdapiUrl];
+  const isNativeSource = sourceIndex === embedSources.length;
+  const totalSources = embedSources.length + 1;
 
   useImperativeHandle(ref, () => ({
     setSubtitle: () => {},
     startPlayback: () => setPlayerActive(true),
   }));
-
-  useEffect(() => {
-    const handler = () => setIsFullscreen(!!document.fullscreenElement);
-    document.addEventListener("fullscreenchange", handler);
-    return () => document.removeEventListener("fullscreenchange", handler);
-  }, []);
-
-  const toggleFullscreen = useCallback(() => {
-    const el = containerRef.current?.parentElement;
-    if (!el) return;
-    if (document.fullscreenElement) {
-      document.exitFullscreen();
-    } else {
-      el.requestFullscreen();
-    }
-  }, []);
-
-  const activatePlayer = () => {
-    setPlayerActive(true);
-    setLoading(true);
-  };
-
-  const switchSource = (idx: number) => {
-    if (idx === sourceIndex) return;
-    setSourceIndex(idx);
-    setLoading(true);
-    if (onSourceChange) onSourceChange(idx, "");
-  };
 
   useEffect(() => {
     if (autoStart) setPlayerActive(true);
@@ -113,10 +89,10 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
   useEffect(() => {
     if (!playerActive) return;
     if (onPlayStart && !startedRef.current) {
-      onPlayStart(sourceIndex, "");
+      onPlayStart(sourceIndex, isNativeSource ? "Native" : `S${sourceIndex + 1}`);
       startedRef.current = true;
     }
-  }, [playerActive, sourceIndex, onPlayStart]);
+  }, [playerActive, sourceIndex, isNativeSource, onPlayStart]);
 
   useEffect(() => {
     if (!user || hasResumed) return;
@@ -136,6 +112,43 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
     })();
   }, [user, tmdb_id, type, season, episode, hasResumed]);
 
+  const fetchNativeSource = useCallback(async () => {
+    setLoading(true);
+    setUseNative(false);
+    setNativeSrc("");
+    try {
+      const res = await fetch(downloadUrl);
+      if (!res.ok) throw new Error("فشل الاتصال");
+      const text = await res.text();
+      const data = JSON.parse(text);
+      const links: DownloadLink[] = data?.downloads ?? [];
+      if (links.length > 0) {
+        setNativeSrc(links[0].url);
+        setUseNative(true);
+      }
+    } catch {}
+    setLoading(false);
+  }, [downloadUrl]);
+
+  useEffect(() => {
+    if (!playerActive || !isNativeSource) return;
+    fetchNativeSource();
+  }, [playerActive, isNativeSource, fetchNativeSource]);
+
+  const activatePlayer = () => {
+    setPlayerActive(true);
+    setLoading(true);
+  };
+
+  const switchSource = (idx: number) => {
+    if (idx === sourceIndex) return;
+    setSourceIndex(idx);
+    setUseNative(false);
+    setNativeSrc("");
+    setLoading(true);
+    if (onSourceChange) onSourceChange(idx, isNativeSource ? "Native" : `S${idx + 1}`);
+  };
+
   return (
     <div className="w-full max-w-5xl mx-auto">
       <ResumeModal
@@ -146,27 +159,26 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
         onRestart={() => { setHasResumed(true); setResumeModalOpen(false); }}
       />
 
-      <style>{`
-        video::-webkit-media-controls { display: none !important; }
-        video::-webkit-media-controls-enclosure { display: none !important; }
-        video::-webkit-media-controls-panel { display: none !important; }
-      `}</style>
-      <div ref={containerRef} className="relative w-full aspect-video rounded-2xl bg-black overflow-hidden border border-white/10 shadow-2xl group">
-        {!playerActive && (
-          <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-b from-black/30 via-black/60 to-black z-30">
-            <button
-              onClick={activatePlayer}
-              className="w-28 h-28 rounded-full bg-gradient-to-br from-accent to-accent-dark flex items-center justify-center shadow-[0_0_60px_hsl(var(--accent)/0.5)] hover:scale-105 active:scale-95 transition-all"
-            >
-              <Play className="w-12 h-12 fill-current ml-1.5" />
-            </button>
-          </div>
-        )}
+      {!playerActive && (
+        <div className="relative w-full aspect-video rounded-2xl bg-black overflow-hidden border border-white/10 shadow-2xl flex items-center justify-center bg-gradient-to-b from-black/30 via-black/60 to-black">
+          <button
+            onClick={activatePlayer}
+            className="w-28 h-28 rounded-full bg-gradient-to-br from-accent to-accent-dark flex items-center justify-center shadow-[0_0_60px_hsl(var(--accent)/0.5)] hover:scale-105 active:scale-95 transition-all"
+          >
+            <Play className="w-12 h-12 fill-current ml-1.5" />
+          </button>
+        </div>
+      )}
 
-        {playerActive && (
+      {playerActive && isNativeSource && useNative && nativeSrc && (
+        <NativePlayer src={nativeSrc} title={title} subtitle="Native" />
+      )}
+
+      {playerActive && !isNativeSource && (
+        <div className="relative w-full aspect-video rounded-2xl bg-black overflow-hidden border border-white/10 shadow-2xl">
           <iframe
             ref={iframeRef}
-            src={src}
+            src={embedSources[sourceIndex]}
             title="BNKHUB"
             allow="encrypted-media; gyroscope"
             frameBorder="0"
@@ -175,28 +187,23 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
             onLoad={() => setLoading(false)}
             className="absolute inset-0 w-full h-full border-0"
           />
-        )}
+          {loading && (
+            <div className="absolute inset-0 flex items-center justify-center bg-black/60 z-20 pointer-events-none">
+              <Loader2 className="w-10 h-10 text-accent animate-spin" />
+            </div>
+          )}
+        </div>
+      )}
 
-        {playerActive && loading && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black/60 z-20 pointer-events-none">
-            <Loader2 className="w-10 h-10 text-accent animate-spin" />
-          </div>
-        )}
-
-        {playerActive && (
-          <button
-            onClick={toggleFullscreen}
-            className="absolute top-3 right-3 z-40 w-9 h-9 rounded-full bg-black/60 backdrop-blur-md border border-white/10 flex items-center justify-center text-white/70 hover:text-white hover:bg-accent/30 transition-all opacity-0 group-hover:opacity-100"
-            title={isFullscreen ? "خروج من ملء الشاشة" : "ملء الشاشة"}
-          >
-            {isFullscreen ? <Minimize className="w-4 h-4" /> : <Maximize className="w-4 h-4" />}
-          </button>
-        )}
-      </div>
+      {playerActive && isNativeSource && !useNative && !loading && (
+        <div className="relative w-full aspect-video rounded-2xl bg-black overflow-hidden border border-white/10 shadow-2xl flex items-center justify-center text-muted-foreground text-sm">
+          {lang === "ar" ? "لا توجد روابط فيديو متاحة" : lang === "fr" ? "Aucune vidéo disponible" : "No video available"}
+        </div>
+      )}
 
       {!customUrl && (
         <div className="flex flex-wrap items-center gap-2 mt-4">
-          {sources.map((_, idx) => (
+          {Array.from({ length: totalSources }, (_, idx) => (
             <button
               key={idx}
               onClick={() => switchSource(idx)}
@@ -206,7 +213,7 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
                   : "bg-surface-elevated/50 border border-border text-muted-foreground hover:border-accent/50 hover:text-foreground"
               }`}
             >
-              {`S${idx + 1}`}
+              {idx < embedSources.length ? `S${idx + 1}` : "Native"}
             </button>
           ))}
           <button
