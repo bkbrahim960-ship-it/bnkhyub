@@ -69,7 +69,7 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
     ? `https://missourimonster-vyla.hf.space/api/downloads/movie/${tmdb_id}`
     : `https://missourimonster-vyla.hf.space/api/downloads/tv/${tmdb_id}/${season}/${episode}`;
 
-  const sources = customUrl ? [customUrl] : [cinemaOsUrl, vaplayerUrl, filmuUrl];
+  const sources = customUrl ? [customUrl] : [cinemaOsUrl, filmuUrl, vaplayerUrl];
 
   useImperativeHandle(ref, () => ({
     setSubtitle: () => {},

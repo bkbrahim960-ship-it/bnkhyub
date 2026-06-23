@@ -49,35 +49,37 @@ const Movie = () => {
   useEffect(() => {
     if (!id) return;
     setLoading(true);
-    
+
     const videoUrl = params.get("video_url");
-
-    if (videoUrl) {
-      setMovie({
-        id: id as any,
-        title: movie?.title || "HLS Stream",
-        overview: "Brahim Direct HLS Stream Content.",
-        poster_path: movie?.poster_path || null,
-        backdrop_path: movie?.backdrop_path || null,
-        vote_average: 10,
-        release_date: "2024",
-        genres: [{ id: 1, name: "Premium" }],
-        video_url: videoUrl
-      } as any);
-      setLoading(false);
-      return;
-    }
-
     const custom = CUSTOM_CONTENT.find(c => c.id === id);
+
     if (custom) {
       setMovie({
         ...custom,
+        title: custom.title,
         poster_path: custom.thumbnail,
         backdrop_path: custom.thumbnail,
         overview: custom.description,
         vote_average: custom.rating,
         release_date: custom.year,
-        genres: custom.category ? [{ id: 1, name: custom.category }] : []
+        genres: custom.category ? [{ id: 1, name: custom.category }] : [],
+        video_url: videoUrl || custom.videoUrl,
+      } as any);
+      setLoading(false);
+      return;
+    }
+
+    if (videoUrl) {
+      setMovie({
+        id: id as any,
+        title: "HLS Stream",
+        overview: "Brahim Direct HLS Stream Content.",
+        poster_path: null,
+        backdrop_path: null,
+        vote_average: 10,
+        release_date: "2024",
+        genres: [{ id: 1, name: "Premium" }],
+        video_url: videoUrl
       } as any);
       setLoading(false);
       return;
@@ -141,6 +143,11 @@ const Movie = () => {
     const sp = new URLSearchParams(window.location.search);
     sp.set("src", `S${sourceIndex + 1}`);
     navigate(`/player/movie/${id}?${sp.toString()}`);
+  };
+
+  const confirmWatch = () => {
+    setShowLoginPrompt(false);
+    goToPlayer();
   };
 
   const director = movie.credits?.crew.find(c => c.job === 'Director')?.name;

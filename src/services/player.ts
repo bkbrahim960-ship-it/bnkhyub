@@ -169,8 +169,8 @@ export const getMovieSources = (imdb_id: string, tmdb_id: number | string, resum
 
   return [
     `https://vaplayer.ru/embed/movie/${imdb_id || tmdb_id}?${themeParams}${resumeParam}`, // S1: Primary (themed)
-    getVidsrcEmbedUrl('movie', imdb_id, tmdb_id), // S2
-    `https://vidzen.fun/movie/${id}?${themeParams}`, // S3: VidZen
+    `https://vidzen.fun/movie/${id}?${themeParams}`, // S2: VidZen
+    getVidsrcEmbedUrl('movie', imdb_id, tmdb_id), // S3: vidsrc-embed
   ];
 };
 
@@ -187,13 +187,13 @@ export const getTVSources = (
 
   return [
     `https://vaplayer.ru/embed/tv/${imdb_id || tmdb_id}/${season}/${episode}?${themeParams}${resumeParam}`, // S1: Primary (themed)
-    getVidsrcEmbedUrl('tv', imdb_id, tmdb_id, season, episode), // S2
-    `https://vidzen.fun/tv/${id}?${themeParams}`, // S3: VidZen
+    `https://vidzen.fun/tv/${id}?${themeParams}`, // S2: VidZen
+    getVidsrcEmbedUrl('tv', imdb_id, tmdb_id, season, episode), // S3: vidsrc-embed
   ];
 };
 
 export const SOURCE_LABELS = [
   "S1 · BNKhub serveur",
-  "S2 · vidsrc-embed (Arabic)",
-  "S3 · VidZen (Global)",
+  "S2 · VidZen (Global)",
+  "S3 · vidsrc-embed (Arabic)",
 ];

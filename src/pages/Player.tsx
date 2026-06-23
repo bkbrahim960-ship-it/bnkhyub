@@ -178,7 +178,8 @@ export default function Player() {
           <img src="/logo.png" alt="BNKhub" className="h-5 sm:h-7 w-auto opacity-25 ms-2" />
         </div>
 
-        <div className="flex-1 relative overflow-hidden">
+        <div className="flex-1 relative bg-black flex items-center justify-center overflow-hidden">
+          <div className="relative w-full max-w-7xl aspect-video max-h-full">
             <VideoPlayer
               ref={videoPlayerRef}
               imdb_id={meta?.imdb_id || ""}
@@ -198,6 +199,7 @@ export default function Player() {
                 saveHistory(label, seconds, duration);
               }}
             />
+          </div>
         </div>
       </div>
     </>
