@@ -21,7 +21,7 @@ const LayoutContent = ({ children }: { children: ReactNode }) => {
       <Sidebar />
       <div
         className="flex flex-col min-h-screen bg-surface-primary transition-all duration-300 ease-out"
-        style={{ paddingLeft: isDesktop ? "60px" : "0px" }}
+        style={{ paddingLeft: isDesktop ? "68px" : "0px" }}
       >
         <Header />
         <main className={`flex-1 pb-24 ${mainPadding}`}>{children}</main>
