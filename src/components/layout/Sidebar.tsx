@@ -1,4 +1,8 @@
-import { Link, NavLink } from "react-router-dom";
+/**
+ * BNKhub — Sidebar professionnel pour desktop/TV uniquement.
+ */
+import { useEffect } from "react";
+import { Link, NavLink, useLocation } from "react-router-dom";
 import {
   Home,
   Clapperboard,
@@ -15,13 +19,67 @@ import {
 import { useLanguage } from "@/context/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
 import { useSettings } from "@/context/SettingsContext";
+import { useSidebar } from "@/context/SidebarContext";
 
 export const Sidebar = () => {
   const { lang, t } = useLanguage();
   const { user } = useAuth();
   const { kidsMode, toggleKidsMode } = useSettings();
+  const location = useLocation();
+  const { isCollapsed, setIsCollapsed, isHovered, setIsHovered } = useSidebar();
 
-  const mainLinks = [
+  useEffect(() => {
+    if (isCollapsed) {
+      setIsHovered(true);
+      const timer = setTimeout(() => setIsHovered(false), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [location.pathname, isCollapsed, setIsHovered]);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Only handle sidebar navigation if not typing in input
+      if (['INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName || '')) {
+        return;
+      }
+
+      // Right arrow: expand sidebar when collapsed
+      if (e.key === "ArrowRight" && isCollapsed && !isHovered) {
+        e.preventDefault();
+        setIsHovered(true);
+        return;
+      }
+
+      // Left arrow: collapse sidebar when expanded
+      if (e.key === "ArrowLeft" && !isCollapsed) {
+        e.preventDefault();
+        setIsCollapsed(true);
+        return;
+      }
+
+      // Escape: collapse sidebar smoothly
+      if (e.key === "Escape" && !isCollapsed) {
+        e.preventDefault();
+        setIsCollapsed(true);
+        setIsHovered(false);
+        return;
+      }
+
+      // Home: collapse sidebar and go to home
+      if (e.key === "Home") {
+        e.preventDefault();
+        setIsCollapsed(true);
+        setIsHovered(false);
+        window.location.href = "/";
+        return;
+      }
+    };
+    
+    window.addEventListener("keydown", handleKeyDown, { capture: true });
+    return () => window.removeEventListener("keydown", handleKeyDown, { capture: true });
+  }, [isCollapsed, isHovered, setIsCollapsed, setIsHovered]);
+
+  const navLinks = [
     { to: "/", label: t("nav_home"), icon: Home },
     { to: "/movies", label: t("nav_movies"), icon: Clapperboard },
     { to: "/series", label: t("nav_series"), icon: Tv2 },
@@ -32,109 +90,150 @@ export const Sidebar = () => {
   ];
 
   if (user?.email === "bkbrahim960@gmail.com") {
-    mainLinks.push({ to: "/admin", label: t("nav_admin"), icon: Settings });
+    navLinks.push({ to: "/admin", label: t("nav_admin"), icon: Settings });
   }
 
-  const bottomLinks: { to?: string; label: string; icon: any; onClick?: () => void }[] = [
-    {
-      label: kidsMode
-        ? lang === "ar" ? "إيقاف وضع الأطفال" : "Désactiver Enfants"
-        : lang === "ar" ? "وضع الأطفال" : "Mode Enfants",
-      icon: Baby,
-      onClick: toggleKidsMode,
-    },
-  ];
+  const isExpanded = !isCollapsed || isHovered;
 
-  if (!user) {
-    bottomLinks.push({ to: "/auth-desktop", label: t("auth_signin"), icon: LogIn });
-  }
+  const navItemClass = (isActive: boolean) => {
+    const base =
+      "relative flex items-center gap-3 rounded-xl font-medium transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/60";
+    const size = isExpanded ? "px-4 py-3 text-base" : "justify-center p-3 mx-auto w-14 h-14";
 
-  bottomLinks.push({ to: "/profile", label: t("nav_profile"), icon: User });
+    if (isActive) {
+      return kidsMode
+        ? `${base} ${size} bg-sky-500/15 text-sky-300 shadow-[inset_0_0_0_1px_rgba(56,189,248,0.25)]`
+        : `${base} ${size} bg-accent/15 text-accent shadow-[inset_0_0_0_1px_rgba(var(--accent-rgb),0.3)]`;
+    }
+    return `${base} ${size} text-foreground/55 hover:text-foreground hover:bg-white/[0.06]`;
+  };
 
-  const activeBg = kidsMode ? "bg-sky-500/20" : "bg-accent/20";
+  const iconClass = (isActive: boolean) =>
+    `w-[24px] h-[24px] shrink-0 ${
+      isActive
+        ? kidsMode
+          ? "text-sky-300"
+          : "text-accent"
+        : "text-foreground/45 group-hover:text-foreground/80"
+    }`;
 
   return (
     <aside
-      className="hidden md:flex fixed left-0 inset-y-0 z-[40] flex-col items-center py-3 w-[76px]"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      className={`hidden md:flex fixed left-0 top-0 bottom-0 z-[40] flex-col border-r transition-all duration-300 ease-out ${
+        kidsMode
+          ? "bg-[#0c1520]/30 border-sky-500/10"
+          : "bg-[#08080c]/30 border-white/[0.06]"
+      } backdrop-blur-3xl ${isExpanded ? "w-[240px] lg:w-[260px]" : "w-[72px]"}`}
       role="navigation"
       aria-label="Main navigation"
     >
       {/* Logo */}
-      <Link to="/" className="flex items-center justify-center w-16 h-16 mb-1 group">
-        <img
-          src="/logo.png"
-          alt="BNKhub"
-          className="w-12 h-12 object-contain transition-transform duration-300 group-hover:scale-110"
-        />
-      </Link>
+      <div className={`shrink-0 flex items-center border-b border-white/[0.06] ${isExpanded ? "px-5 h-[72px]" : "justify-center h-[72px]"}`}>
+        <Link to="/" className="flex items-center group overflow-hidden">
+          <img
+            src="/logo.png"
+            alt="BNKhub"
+            className={`object-contain transition-all duration-300 group-hover:scale-105 drop-shadow-[0_0_20px_rgba(var(--accent-rgb),0.35)] ${
+              isExpanded ? "h-16 lg:h-20 w-auto" : "h-10 w-10"
+            }`}
+          />
+        </Link>
+      </div>
 
       {/* Navigation */}
-      <nav className="flex-1 flex flex-col items-center justify-between w-full px-2 py-1">
-        <div className="flex flex-col items-center gap-1.5">
-          {mainLinks.map((l) => (
+      <div className="flex-1 flex flex-col overflow-y-auto overflow-x-hidden py-4 px-3 gap-1">
+        {isExpanded && (
+          <p className="px-3 pb-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-foreground/25">
+            {lang === "ar" ? "التصفح" : "Navigation"}
+          </p>
+        )}
+
+        <nav className="flex flex-col gap-0.5">
+          {navLinks.map((l) => (
             <NavLink
               key={l.to}
               to={l.to}
               end={l.to === "/"}
               data-tv-nav="main"
               tabIndex={0}
-              title={l.label}
-              className={({ isActive }) =>
-                `relative flex items-center justify-center w-14 h-14 rounded-2xl transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/60 ${
-                  isActive
-                    ? `${activeBg} ${kidsMode ? "text-sky-300" : "text-accent"}`
-                    : "text-foreground/40 hover:text-foreground"
-                }`
-              }
+              title={!isExpanded ? l.label : undefined}
+              className={({ isActive }) => `group ${navItemClass(isActive)}`}
             >
               {({ isActive }) => (
                 <>
-                  <l.icon className="w-9 h-9 shrink-0" />
-                  {isActive && (
-                    <span className={`absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-7 rounded-r-full ${kidsMode ? "bg-sky-400" : "bg-accent"}`} />
+                  <l.icon className={iconClass(isActive)} />
+                  {isExpanded && <span className="truncate">{l.label}</span>}
+                  {isActive && !isExpanded && (
+                    <span className={`absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r-full ${kidsMode ? "bg-sky-400" : "bg-accent"}`} />
                   )}
                 </>
               )}
             </NavLink>
           ))}
-        </div>
+        </nav>
+      </div>
 
-        <div className="flex flex-col items-center gap-1.5">
-          {bottomLinks.map((l) =>
-            l.onClick ? (
-              <button
-                key={l.label}
-                type="button"
-                onClick={l.onClick}
-                title={l.label}
-                className="flex items-center justify-center w-14 h-14 rounded-2xl transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/60 text-foreground/40 hover:text-foreground"
-              >
-                <l.icon className="w-9 h-9 shrink-0" />
-              </button>
-            ) : (
-              <NavLink
-                key={l.to}
-                to={l.to!}
-                end
-                data-tv-nav="main"
-                tabIndex={0}
-                title={l.label}
-                className={({ isActive }) =>
-                  `relative flex items-center justify-center w-14 h-14 rounded-2xl transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/60 ${
-                    isActive
-                      ? `${activeBg} ${kidsMode ? "text-sky-300" : "text-accent"}`
-                      : "text-foreground/40 hover:text-foreground"
-                  }`
-                }
-              >
-                {({ isActive }) => (
-                  <l.icon className="w-9 h-9 shrink-0" />
-                )}
-              </NavLink>
-            )
+      {/* Bottom section */}
+      <div className="shrink-0 px-3 pb-4 pt-2 border-t border-white/[0.06] flex flex-col gap-0.5">
+        {isExpanded && (
+          <p className="px-3 pb-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-foreground/25">
+            {lang === "ar" ? "الحساب" : "Compte"}
+          </p>
+        )}
+
+        <button
+          type="button"
+          onClick={toggleKidsMode}
+          title={!isExpanded ? (kidsMode ? "Kids" : "Kids Mode") : undefined}
+          className={`group ${navItemClass(kidsMode)}`}
+        >
+          <Baby className={iconClass(kidsMode)} />
+          {isExpanded && (
+            <span className="truncate">
+              {kidsMode
+                ? lang === "ar"
+                  ? "إيقاف وضع الأطفال"
+                  : "Désactiver Enfants"
+                : lang === "ar"
+                  ? "وضع الأطفال"
+                  : "Mode Enfants"}
+            </span>
           )}
-        </div>
-      </nav>
+        </button>
+
+        {!user && (
+          <NavLink
+            to="/auth-desktop"
+            title={!isExpanded ? t("auth_signin") : undefined}
+            className={({ isActive }) => `group ${navItemClass(isActive)}`}
+          >
+            {({ isActive }) => (
+              <>
+                <LogIn className={iconClass(isActive)} />
+                {isExpanded && <span className="truncate">{t("auth_signin")}</span>}
+              </>
+            )}
+          </NavLink>
+        )}
+
+        <NavLink
+          to="/profile"
+          end
+          data-tv-nav="main"
+          tabIndex={0}
+          title={!isExpanded ? t("nav_profile") : undefined}
+          className={({ isActive }) => `group ${navItemClass(isActive)}`}
+        >
+          {({ isActive }) => (
+            <>
+              <User className={iconClass(isActive)} />
+              {isExpanded && <span className="truncate">{t("nav_profile")}</span>}
+            </>
+          )}
+        </NavLink>
+      </div>
     </aside>
   );
 };
