@@ -176,6 +176,23 @@ const Movie = () => {
   const director = movie?.credits?.crew?.find(c => c.job === 'Director')?.name;
   const cast = movie?.credits?.cast?.slice(0, 10) || [];
 
+  const movieSchema = {
+    "@context": "https://schema.org",
+    "@type": "Movie",
+    "name": movie.title,
+    "image": poster,
+    "description": movie.overview,
+    "dateCreated": movie.release_date,
+    "director": director ? {
+      "@type": "Person",
+      "name": director
+    } : undefined,
+    "actor": cast.map((actor: any) => ({
+      "@type": "Person",
+      "name": actor.name
+    }))
+  };
+
   return (
     <Layout>
       <ErrorBoundary>
@@ -185,6 +202,7 @@ const Movie = () => {
         image={poster}
         type="video.movie"
         keywords={`${movie.title}, regarder ${movie.title}, film gratuit, BNKhub`}
+        schema={movieSchema}
       />
       
       {showLoginPrompt && (

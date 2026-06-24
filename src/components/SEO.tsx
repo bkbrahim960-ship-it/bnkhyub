@@ -7,6 +7,7 @@ interface SEOProps {
   image?: string;
   url?: string;
   type?: string;
+  schema?: Record<string, any>;
 }
 
 export const SEO = ({
@@ -14,8 +15,9 @@ export const SEO = ({
   description,
   keywords,
   image = '/icon.png',
-  url = 'https://bnk-huub.vercel.app',
-  type = 'website'
+  url,
+  type = 'website',
+  schema
 }: SEOProps) => {
   const defaultTitle = 'BNKhub — Le Cinéma du Monde, Sans Limites';
   const defaultDescription = 'La première plateforme BNKhub pour regarder les derniers films et séries en 4K gratuitement et sans publicités intrusives. Conçue et développée par Brahim Ben Keddache.';
@@ -24,6 +26,7 @@ export const SEO = ({
   const siteTitle = title ? `${title} | BNK HUB` : defaultTitle;
   const siteDescription = description || defaultDescription;
   const siteKeywords = keywords ? `${keywords}, ${defaultKeywords}` : defaultKeywords;
+  const currentUrl = url || (typeof window !== 'undefined' ? window.location.href : 'https://bnk-huub.vercel.app');
 
   return (
     <Helmet>
@@ -39,7 +42,7 @@ export const SEO = ({
 
       {/* Open Graph / Facebook */}
       <meta property="og:type" content={type} />
-      <meta property="og:url" content={url} />
+      <meta property="og:url" content={currentUrl} />
       <meta property="og:title" content={siteTitle} />
       <meta property="og:description" content={siteDescription} />
       <meta property="og:image" content={image} />
@@ -47,7 +50,7 @@ export const SEO = ({
 
       {/* Twitter */}
       <meta property="twitter:card" content="summary_large_image" />
-      <meta property="twitter:url" content={url} />
+      <meta property="twitter:url" content={currentUrl} />
       <meta property="twitter:title" content={siteTitle} />
       <meta property="twitter:description" content={siteDescription} />
       <meta property="twitter:image" content={image} />
@@ -62,7 +65,14 @@ export const SEO = ({
       <meta name="apple-touch-fullscreen" content="yes" />
 
       {/* Canonical URL for SEO */}
-      <link rel="canonical" href={url} />
+      <link rel="canonical" href={currentUrl} />
+
+      {/* Structured Data (JSON-LD) */}
+      {schema && (
+        <script type="application/ld+json">
+          {JSON.stringify(schema)}
+        </script>
+      )}
     </Helmet>
   );
 };

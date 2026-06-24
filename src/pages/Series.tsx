@@ -171,6 +171,22 @@ const Series = () => {
   const cast = (series as any).credits?.cast.slice(0, 10) || [];
   const creator = (series as any).created_by?.[0]?.name || (series as any).credits?.crew.find((c: any) => c.job === 'Executive Producer')?.name;
 
+  const seriesSchema = {
+    "@context": "https://schema.org",
+    "@type": "TVSeries",
+    "name": series.name,
+    "image": poster,
+    "description": series.overview,
+    "creator": creator ? {
+      "@type": "Person",
+      "name": creator
+    } : undefined,
+    "actor": cast.map((actor: any) => ({
+      "@type": "Person",
+      "name": actor.name
+    }))
+  };
+
   return (
     <Layout>
       <SEO 
@@ -179,6 +195,7 @@ const Series = () => {
         image={poster}
         type="video.tv_show"
         keywords={`${series.name}, regarder ${series.name}, serie gratuite, BNKhub`}
+        schema={seriesSchema}
       />
 
       {/* Login prompt removed - users can watch without registration */}
