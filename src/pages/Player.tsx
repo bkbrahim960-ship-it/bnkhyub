@@ -99,24 +99,8 @@ export default function Player() {
   }, []);
 
   useEffect(() => {
-    const overlay = document.getElementById("rotate-overlay");
-    if (!overlay) return;
-    const check = () => {
-      if (window.innerHeight > window.innerWidth) {
-        overlay.classList.remove("hidden");
-      } else {
-        overlay.classList.add("hidden");
-      }
-    };
-    check();
     try { (screen.orientation as any)?.lock?.("landscape")?.catch(() => {}); } catch {}
-    window.addEventListener("resize", check);
-    window.addEventListener("orientationchange", check);
-    return () => {
-      window.removeEventListener("resize", check);
-      window.removeEventListener("orientationchange", check);
-      try { (screen.orientation as any)?.unlock?.(); } catch {}
-    };
+    return () => { try { (screen.orientation as any)?.unlock?.(); } catch {} };
   }, []);
 
   const goToEpisode_ = (s: number, e: number) => {
@@ -221,12 +205,6 @@ export default function Player() {
             />
         </div>
 
-        {/* Rotate device overlay */}
-        <div id="rotate-overlay" className="fixed inset-0 z-50 bg-black flex flex-col items-center justify-center gap-6 hidden">
-          <div className="text-6xl animate-rotate-phone">📱</div>
-          <p className="text-white text-lg font-bold text-center px-8">يرجى تدوير الهاتف</p>
-          <p className="text-white/60 text-sm text-center px-8">للحصول على تجربة مشاهدة كاملة</p>
-        </div>
       </div>
     </>
   );
