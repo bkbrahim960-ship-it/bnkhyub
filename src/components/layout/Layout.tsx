@@ -10,7 +10,7 @@ import { SidebarProvider, useSidebar } from "@/context/SidebarContext";
 
 const Footer = () => (
   <footer className="w-full py-6 text-center text-white/50 text-xs sm:text-sm mt-auto border-t border-white/5">
-    تم تصميم وتطوير التطبيق من قبل{" "}
+    Conçu et développé par{" "}
     <a 
       href="https://instagram.com/brahim____bnk" 
       target="_blank" 
