@@ -260,6 +260,19 @@ const Movie = () => {
 
         {/* Source Selector */}
         <div className="flex flex-wrap items-center gap-2 mb-6">
+          {["S1", "S2", "S3"].map((label, i) => (
+            <button
+              key={label}
+              onClick={() => setSourceIndex(i)}
+              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+                sourceIndex === i
+                  ? "bg-accent text-accent-foreground"
+                  : "bg-surface-elevated/50 border border-border text-muted-foreground hover:border-accent/50 hover:text-foreground"
+              }`}
+            >
+              {label}
+            </button>
+          ))}
           {imdb && (
             <button
               onClick={fetchDownloads}
