@@ -6,7 +6,6 @@ import { Header } from "./Header";
 import { BottomNav } from "./BottomNav";
 import { Sidebar } from "./Sidebar";
 import { InstallModal } from "@/components/pwa/InstallModal";
-import { MusicPlayer } from "@/components/music/MusicPlayer";
 import { SidebarProvider, useSidebar } from "@/context/SidebarContext";
 
 const LayoutContent = ({ children }: { children: ReactNode }) => {
@@ -38,7 +37,7 @@ const LayoutContent = ({ children }: { children: ReactNode }) => {
         <BottomNav />
       </div>
 
-      <MusicPlayer />
+
       <InstallModal />
     </>
   );

@@ -514,12 +514,6 @@ html {
   animation-play-state: paused;
 }
 
-/* Music equalizer bars */
-@keyframes musicBar {
-  0%, 100% { transform: scaleY(0.3); }
-  50% { transform: scaleY(1); }
-}
-
 /* Rotate device prompt */
 @keyframes rotate-phone {
   0% { transform: rotate(0deg); }

@@ -27,14 +27,11 @@ import MatchPlayer from "./pages/MatchPlayer";
 import WatchParty from "./pages/WatchParty";
 import AlgerianSeriesPage from "./pages/AlgerianSeriesPage";
 import Player from "./pages/Player";
-import MusicPage from "./pages/Music";
 import NotFound from "./pages/NotFound.tsx";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 import Faq from "./pages/Faq";
 
-import { MusicProvider } from "@/context/MusicContext";
-import { MUSIC_TRACKS } from "@/services/musicData";
 import { AmbientProvider, AmbientBackground } from "@/context/AmbientContext";
 import { useTVNavigation } from "@/hooks/useTVNavigation";
 import { HelmetProvider } from "react-helmet-async";
@@ -126,7 +123,6 @@ const AppContent = () => (
                     <Sonner />
                     <SEO />
                     <BrowserRouter>
-                      <MusicProvider tracks={MUSIC_TRACKS}>
                       <SiteVisitTracker />
                       <TVNavigationActivator />
                       <VirtualCursor />
@@ -155,10 +151,8 @@ const AppContent = () => (
                         <Route path="/watch-party" element={<WatchParty />} />
                         <Route path="/algerian/:id" element={<AlgerianSeriesPage />} />
                         <Route path="/player/:type/:id" element={<Player />} />
-                        <Route path="/music" element={<MusicPage />} />
                         <Route path="*" element={<NotFound />} />
                       </Routes>
-                      </MusicProvider>
                     </BrowserRouter>
                     <Analytics />
                   </TooltipProvider>

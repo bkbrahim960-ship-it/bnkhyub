@@ -15,7 +15,6 @@ import {
   Baby,
   LogIn,
   Tv,
-  Music,
 } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
@@ -87,7 +86,6 @@ export const Sidebar = () => {
     { to: "/my-list", label: lang === "ar" ? "قائمتي" : "Ma Liste", icon: List },
     { to: "/coming-soon", label: lang === "ar" ? "قريباً" : "Bientôt", icon: CalendarClock },
     { to: "/matches", label: lang === "ar" ? "مباريات" : "Matches", icon: Tv },
-    { to: "/music", label: lang === "ar" ? "الموسيقى" : "Musique", icon: Music },
     { to: "/search", label: t("nav_search"), icon: Search },
   ];
 
