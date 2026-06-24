@@ -1,16 +1,11 @@
-/**
- * BNKhub — Layout commun (Header + Sidebar (desktop) + BottomNav (mobile) + <main>).
- */
 import { ReactNode, useEffect, useState } from "react";
 import { Header } from "./Header";
 import { BottomNav } from "./BottomNav";
 import { Sidebar } from "./Sidebar";
 import { InstallModal } from "@/components/pwa/InstallModal";
-import { SidebarProvider, useSidebar } from "@/context/SidebarContext";
 
 const LayoutContent = ({ children }: { children: ReactNode }) => {
   const mainPadding = "md:pb-8";
-  const { isCollapsed, isHovered } = useSidebar();
   const [isDesktop, setIsDesktop] = useState(false);
 
   useEffect(() => {
@@ -21,15 +16,12 @@ const LayoutContent = ({ children }: { children: ReactNode }) => {
     return () => mq.removeEventListener("change", handler);
   }, []);
 
-  const isExpanded = !isCollapsed || isHovered;
-  const sidebarWidth = isExpanded ? 240 : 72;
-
   return (
     <>
       <Sidebar />
       <div
         className="flex flex-col min-h-screen bg-surface-primary transition-all duration-300 ease-out"
-        style={{ paddingLeft: isDesktop ? `${sidebarWidth}px` : "0px" }}
+        style={{ paddingLeft: isDesktop ? "60px" : "0px" }}
       >
         <Header />
         <main className={`flex-1 pb-24 ${mainPadding}`}>{children}</main>
@@ -41,9 +33,5 @@ const LayoutContent = ({ children }: { children: ReactNode }) => {
 };
 
 export const Layout = ({ children }: { children: ReactNode }) => {
-  return (
-    <SidebarProvider>
-      <LayoutContent>{children}</LayoutContent>
-    </SidebarProvider>
-  );
+  return <LayoutContent>{children}</LayoutContent>;
 };
