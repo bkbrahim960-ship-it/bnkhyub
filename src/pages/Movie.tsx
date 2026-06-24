@@ -52,12 +52,13 @@ const Movie = () => {
   const playRequested = params.get("play") === "1";
 
   const fetchDownloads = async () => {
+    if (!movie) return;
     setDownloadModal(true);
     setDownloading(true);
     setDownloads([]);
     setDownloadError("");
     try {
-      const res = await fetch(`https://missourimonster-vyla.hf.space/api/downloads/movie/${(movie as any).id}`);
+      const res = await fetch(`https://missourimonster-vyla.hf.space/api/downloads/movie/${movie.id}`);
       if (!res.ok) { setDownloadError("فشل الاتصال بالخادم"); setDownloading(false); return; }
       const data = JSON.parse(await res.text());
       setDownloads(data.downloads || []);
@@ -66,7 +67,7 @@ const Movie = () => {
     setDownloading(false);
   };
 
-  const downloadUrl = `https://missourimonster-vyla.hf.space/api/downloads/movie/${(movie as any).id}`;
+  const downloadUrl = movie ? `https://missourimonster-vyla.hf.space/api/downloads/movie/${movie.id}` : "";
 
   useEffect(() => {
     if (!id) return;
@@ -172,8 +173,8 @@ const Movie = () => {
     goToPlayer();
   };
 
-  const director = movie.credits?.crew.find(c => c.job === 'Director')?.name;
-  const cast = movie.credits?.cast.slice(0, 10) || [];
+  const director = movie?.credits?.crew?.find(c => c.job === 'Director')?.name;
+  const cast = movie?.credits?.cast?.slice(0, 10) || [];
 
   return (
     <Layout>
@@ -208,14 +209,14 @@ const Movie = () => {
         {/* Poster + Logo row */}
         <div className="flex items-end gap-4 md:gap-8 mb-6">
           {/* Poster - always left aligned */}
-          <div className="animate-fade-in shrink-0">
+          <div className="shrink-0">
             <div className="relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl shadow-accent/20 w-28 sm:w-36 md:w-48 lg:w-64">
                <img src={poster} alt={movie.title} className="w-full" />
             </div>
           </div>
 
           {/* Logo beside poster */}
-          <div className="animate-fade-slide-up flex-1 min-w-0 pb-2">
+          <div className="flex-1 min-w-0 pb-2">
             {/* Genres */}
             <div className="flex flex-wrap gap-1.5 sm:gap-2 lg:gap-3 mb-2 sm:mb-4 lg:mb-6">
               {(movie.genres || []).slice(0, 3).map((g: any) => (
@@ -259,19 +260,6 @@ const Movie = () => {
 
         {/* Source Selector */}
         <div className="flex flex-wrap items-center gap-2 mb-6">
-          {["S1", "S2", "S3"].map((label, i) => (
-            <button
-              key={label}
-              onClick={() => setSourceIndex(i)}
-              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
-                sourceIndex === i
-                  ? "bg-accent text-accent-foreground"
-                  : "bg-surface-elevated/50 border border-border text-muted-foreground hover:border-accent/50 hover:text-foreground"
-              }`}
-            >
-              {label}
-            </button>
-          ))}
           {imdb && (
             <button
               onClick={fetchDownloads}

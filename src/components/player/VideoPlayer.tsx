@@ -164,7 +164,8 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
             ref={iframeRef}
             src={sources[sourceIndex]}
             title="BNKHUB"
-            allow="autoplay; picture-in-picture"
+            allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
+            allowFullScreen
             frameBorder="0"
             scrolling="no"
             sandbox={effectiveCustomUrl ? "allow-scripts allow-same-origin allow-popups allow-forms allow-popups-to-escape-sandbox" : "allow-scripts allow-same-origin"}
@@ -179,23 +180,7 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
         </div>
       )}
 
-      {!customUrl && (
-        <div className={`flex flex-wrap items-center gap-2 ${fullscreen ? "absolute bottom-4 left-1/2 -translate-x-1/2 z-40" : "mt-4"}`}>
-          {sources.map((_, idx) => (
-            <button
-              key={idx}
-              onClick={() => { switchSource(idx); }}
-              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
-                idx === sourceIndex
-                  ? "bg-accent text-accent-foreground"
-                  : "bg-black/60 backdrop-blur border border-white/20 text-white/70 hover:border-accent/50 hover:text-foreground"
-              }`}
-            >
-              {`S${idx + 1}`}
-            </button>
-          ))}
-        </div>
-      )}
+
       {!customUrl && !fullscreen && (
         <div className="mt-4">
           <button
