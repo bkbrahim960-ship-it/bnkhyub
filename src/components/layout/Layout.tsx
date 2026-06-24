@@ -8,6 +8,20 @@ import { Sidebar } from "./Sidebar";
 import { InstallModal } from "@/components/pwa/InstallModal";
 import { SidebarProvider, useSidebar } from "@/context/SidebarContext";
 
+const Footer = () => (
+  <footer className="w-full py-6 text-center text-white/50 text-xs sm:text-sm mt-auto border-t border-white/5">
+    تم تصميم وتطوير التطبيق من قبل{" "}
+    <a 
+      href="https://instagram.com/brahim____bnk" 
+      target="_blank" 
+      rel="noopener noreferrer" 
+      className="text-accent font-bold hover:underline"
+    >
+      brahim____bnk
+    </a>
+  </footer>
+);
+
 const LayoutContent = ({ children }: { children: ReactNode }) => {
   const mainPadding = "md:pb-8";
   const { isCollapsed, isHovered } = useSidebar();
@@ -26,14 +40,20 @@ const LayoutContent = ({ children }: { children: ReactNode }) => {
         }}
       >
         <Header />
-        <main className={`flex-1 pb-24 ${mainPadding}`}>{children}</main>
+        <main className={`flex-1 flex flex-col pb-24 ${mainPadding}`}>
+          {children}
+          <Footer />
+        </main>
         <BottomNav />
       </div>
       
       {/* Mobile Layout - no sidebar */}
       <div className="md:hidden flex flex-col min-h-screen bg-surface-primary">
         <Header />
-        <main className={`flex-1 pb-24 ${mainPadding}`}>{children}</main>
+        <main className={`flex-1 flex flex-col pb-24 ${mainPadding}`}>
+          {children}
+          <Footer />
+        </main>
         <BottomNav />
       </div>
 
