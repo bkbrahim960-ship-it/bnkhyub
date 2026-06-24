@@ -18,7 +18,7 @@ import { tmdbLang } from "@/services/i18n";
 import { SEO } from "@/components/SEO";
 import { CUSTOM_CONTENT } from "@/services/customContent";
 import { SOURCE_LABELS } from "@/services/player";
-import { Play, Star, Clock, Calendar, Globe2, ArrowLeft, Youtube, Info, Download } from "lucide-react";
+import { Play, Star, Clock, Calendar, Globe2, ArrowLeft, Youtube, Info, Download, Monitor, X, Loader2 } from "lucide-react";
 import { useAmbient } from "@/context/AmbientContext";
 import { RemotePairingButton } from "@/components/movie/RemotePairingButton";
 import { MovieLogo } from "@/components/ui/MovieLogo";
@@ -41,10 +41,31 @@ const Movie = () => {
   const [showTrailer, setShowTrailer] = useState(false);
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
   const [sourceIndex, setSourceIndex] = useState(sourceIdToIndex(params.get("src")));
+  const [downloadModal, setDownloadModal] = useState(false);
+  const [downloads, setDownloads] = useState<any[]>([]);
+  const [downloading, setDownloading] = useState(false);
+  const [downloadError, setDownloadError] = useState("");
   const navigate = useNavigate();
   const authPath = useAuthPath();
   const resumeRequested = params.get("resume") === "1";
   const playRequested = params.get("play") === "1";
+
+  const fetchDownloads = async () => {
+    setDownloadModal(true);
+    setDownloading(true);
+    setDownloads([]);
+    setDownloadError("");
+    try {
+      const res = await fetch(`https://missourimonster-vyla.hf.space/api/downloads/movie/${(movie as any).id}`);
+      if (!res.ok) { setDownloadError("فشل الاتصال بالخادم"); setDownloading(false); return; }
+      const data = JSON.parse(await res.text());
+      setDownloads(data.downloads || []);
+      if (!data.downloads || data.downloads.length === 0) setDownloadError("");
+    } catch { setDownloadError("تعذر جلب روابط التحميل"); }
+    setDownloading(false);
+  };
+
+  const downloadUrl = `https://missourimonster-vyla.hf.space/api/downloads/movie/${(movie as any).id}`;
 
   useEffect(() => {
     if (!id) return;
@@ -250,16 +271,14 @@ const Movie = () => {
             </button>
           ))}
           {imdb && (
-            <a
-              href={`https://missourimonster-vyla.hf.space/api/downloads/movie/${(movie as any).id}`}
-              target="_blank"
-              rel="noopener noreferrer"
+            <button
+              onClick={fetchDownloads}
               className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-surface-elevated/50 border border-border text-muted-foreground hover:border-accent/50 hover:text-accent transition-all"
               title="تحميل"
             >
               <Download className="w-3.5 h-3.5" />
               تحميل
-            </a>
+            </button>
           )}
         </div>
 
@@ -345,6 +364,58 @@ const Movie = () => {
           </div>
         )}
       </section>
+
+      {downloadModal && (
+        <>
+          <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm" onClick={() => setDownloadModal(false)} />
+          <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-full max-w-lg mx-4">
+            <div className="bg-surface border border-border rounded-2xl shadow-2xl overflow-hidden">
+              <div className="flex items-center justify-between p-4 border-b border-border">
+                <h3 className="text-sm font-bold">روابط التحميل</h3>
+                <button onClick={() => setDownloadModal(false)} className="p-1 rounded-lg hover:bg-white/5 transition-colors">
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+              <div className="p-4 space-y-2 max-h-80 overflow-y-auto">
+                {downloading && (
+                  <div className="flex items-center justify-center gap-2 py-8 text-muted-foreground text-sm">
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    جارٍ البحث عن روابط التحميل…
+                  </div>
+                )}
+                {!downloading && downloadError && (
+                  <div className="text-center py-4 text-muted-foreground text-sm">{downloadError}</div>
+                )}
+                {!downloading && !downloadError && downloads.length === 0 && (
+                  <div className="text-center py-4 text-muted-foreground text-sm">لا توجد روابط تحميل متاحة لهذا المحتوى</div>
+                )}
+                {!downloading && downloads.map((dl: any, i: number) => (
+                  <a key={i} href={dl.url} target="_blank" rel="noopener noreferrer"
+                    className="flex items-center gap-3 p-3 rounded-xl bg-surface-elevated/50 border border-border hover:border-accent/50 transition-all group"
+                  >
+                    <div className="w-9 h-9 rounded-lg bg-accent/10 flex items-center justify-center shrink-0">
+                      <Monitor className="w-4 h-4 text-accent" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="text-xs font-bold truncate">{dl.quality || dl.type || "مصدر"}</div>
+                      <div className="text-[11px] text-muted-foreground">{dl.size} · {dl.type}</div>
+                    </div>
+                    <Download className="w-4 h-4 text-muted-foreground group-hover:text-accent transition-colors shrink-0" />
+                  </a>
+                ))}
+                {!downloading && (
+                  <a href={downloadUrl} target="_blank" rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-1.5 p-2 rounded-xl text-[11px] text-muted-foreground hover:text-accent transition-colors border border-dashed border-border hover:border-accent/50"
+                  >
+                    <Download className="w-3 h-3" />
+                    فتح صفحة التحميل مباشرة
+                  </a>
+                )}
+              </div>
+            </div>
+          </div>
+        </>
+      )}
     </Layout>
   );
 };
