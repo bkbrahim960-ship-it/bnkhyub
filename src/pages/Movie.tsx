@@ -18,7 +18,7 @@ import { tmdbLang } from "@/services/i18n";
 import { SEO } from "@/components/SEO";
 import { CUSTOM_CONTENT } from "@/services/customContent";
 import { SOURCE_LABELS } from "@/services/player";
-import { Play, Star, Clock, Calendar, Globe2, ArrowLeft, Youtube, Info } from "lucide-react";
+import { Play, Star, Clock, Calendar, Globe2, ArrowLeft, Youtube, Info, Download } from "lucide-react";
 import { useAmbient } from "@/context/AmbientContext";
 import { RemotePairingButton } from "@/components/movie/RemotePairingButton";
 import { MovieLogo } from "@/components/ui/MovieLogo";
@@ -249,6 +249,18 @@ const Movie = () => {
               {label}
             </button>
           ))}
+          {imdb && (
+            <a
+              href={`https://missourimonster-vyla.hf.space/api/downloads/movie/${(movie as any).id}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-surface-elevated/50 border border-border text-muted-foreground hover:border-accent/50 hover:text-accent transition-all"
+              title="تحميل"
+            >
+              <Download className="w-3.5 h-3.5" />
+              تحميل
+            </a>
+          )}
         </div>
 
         {/* Primary Action Button (Watch) */}

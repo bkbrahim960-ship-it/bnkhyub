@@ -184,8 +184,8 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
           ))}
         </div>
       )}
-      {!customUrl && (
-        <div className={fullscreen ? "fixed bottom-6 right-6 z-50" : "mt-4"}>
+      {!customUrl && !fullscreen && (
+        <div className="mt-4">
           <button
             onClick={async () => {
               setDownloadModal(true);
@@ -210,11 +210,7 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
               }
               setDownloading(false);
             }}
-            className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
-              fullscreen
-                ? "bg-black/50 backdrop-blur-md border border-white/10 text-white hover:bg-accent/30 hover:text-accent"
-                : "bg-surface-elevated/50 border border-border text-muted-foreground hover:border-accent/50 hover:text-accent"
-            }`}
+            className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-surface-elevated/50 border border-border text-muted-foreground hover:border-accent/50 hover:text-accent transition-all"
             title="تحميل"
           >
             <Download className="w-3.5 h-3.5" />

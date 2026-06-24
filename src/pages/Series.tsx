@@ -21,7 +21,7 @@ import { tmdbLang } from "@/services/i18n";
 import { SEO } from "@/components/SEO";
 import { getSeriesHistory, WatchHistoryEntry } from "@/services/watchHistory";
 import { SOURCE_LABELS } from "@/services/player";
-import { Play, Star, Calendar, ArrowLeft, Youtube, ChevronRight, Clock, Info, Check } from "lucide-react";
+import { Play, Star, Calendar, ArrowLeft, Youtube, ChevronRight, Clock, Info, Check, Download } from "lucide-react";
 import { useAmbient } from "@/context/AmbientContext";
 import { RemotePairingButton } from "@/components/movie/RemotePairingButton";
 import { MovieLogo } from "@/components/ui/MovieLogo";
@@ -270,6 +270,18 @@ const Series = () => {
               {label}
             </button>
           ))}
+          {series && (
+            <a
+              href={`https://missourimonster-vyla.hf.space/api/downloads/tv/${series.id}/${season}/${episode}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-surface-elevated/50 border border-border text-muted-foreground hover:border-accent/50 hover:text-accent transition-all"
+              title="تحميل"
+            >
+              <Download className="w-3.5 h-3.5" />
+              تحميل
+            </a>
+          )}
         </div>
 
         {/* Primary Action Button (Watch) */}
