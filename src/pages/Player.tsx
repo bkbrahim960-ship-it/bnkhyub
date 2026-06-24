@@ -7,7 +7,7 @@ import { tmdbLang } from "@/services/i18n";
 import { SEO } from "@/components/SEO";
 import { ArrowLeft, ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
 import { SOURCE_LABELS } from "@/services/player";
-import { CUSTOM_CONTENT } from "@/services/customContent";
+import { CUSTOM_CONTENT, MOCK_SERIES } from "@/services/customContent";
 import { useAuth } from "@/context/AuthContext";
 import { upsertWatchEntry } from "@/services/watchHistory";
 
@@ -30,12 +30,18 @@ export default function Player() {
   const customEntry = useMemo(() => {
     if (!id) return undefined;
     if (id.startsWith("m-") || id.startsWith("s-")) {
-      const allCustom = [...CUSTOM_CONTENT, ...([] as any[])];
-      return CUSTOM_CONTENT.find((c) => c.id === id);
+      return CUSTOM_CONTENT.find((c) => c.id === id) || MOCK_SERIES.find((c) => c.id === id);
     }
     return undefined;
   }, [id]);
-  const customUrl = customEntry?.videoUrl;
+  const customUrl = useMemo(() => {
+    if (!customEntry) return undefined;
+    if (!isMovie && episode && (customEntry as any).episodes) {
+      const ep = (customEntry as any).episodes.find((e: any) => e.id === episode);
+      return ep?.videoUrl || customEntry.videoUrl;
+    }
+    return customEntry.videoUrl;
+  }, [customEntry, isMovie, episode]);
   const initialSourceIndex = useMemo(() => {
     if (customUrl) return 0;
     const src = params.get("src");

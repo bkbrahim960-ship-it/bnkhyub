@@ -69,7 +69,13 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
     ? `https://missourimonster-vyla.hf.space/api/downloads/movie/${tmdb_id}`
     : `https://missourimonster-vyla.hf.space/api/downloads/tv/${tmdb_id}/${season}/${episode}`;
 
-  const sources = customUrl ? [customUrl] : [cinemaOsUrl, filmuUrl, vaplayerUrl];
+  const normalizeUrl = (url: string) => {
+    if (url.includes("youtube.com/watch")) return url.replace("watch?v=", "embed/").split("&")[0];
+    if (url.includes("youtu.be/")) return url.replace("youtu.be/", "youtube.com/embed/").split("?")[0];
+    return url;
+  };
+  const effectiveCustomUrl = customUrl ? normalizeUrl(customUrl) : undefined;
+  const sources = effectiveCustomUrl ? [effectiveCustomUrl] : [cinemaOsUrl, filmuUrl, vaplayerUrl];
 
   useImperativeHandle(ref, () => ({
     setSubtitle: () => {},
@@ -105,6 +111,12 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
       } catch {}
     })();
   }, [user, tmdb_id, type, season, episode, hasResumed]);
+
+  useEffect(() => {
+    if (!playerActive) return;
+    const t = setTimeout(() => setLoading(false), 4000);
+    return () => clearTimeout(t);
+  }, [playerActive]);
 
   const activatePlayer = () => {
     setPlayerActive(true);
@@ -155,7 +167,7 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
             allow="autoplay; picture-in-picture"
             frameBorder="0"
             scrolling="no"
-            sandbox="allow-scripts allow-same-origin"
+            sandbox={effectiveCustomUrl ? "allow-scripts allow-same-origin allow-popups allow-forms allow-popups-to-escape-sandbox" : "allow-scripts allow-same-origin"}
             onLoad={() => setLoading(false)}
             className="absolute inset-0 w-full h-full border-0"
           />
@@ -167,16 +179,16 @@ export const VideoPlayer = forwardRef<VideoPlayerRef, Props>(({
         </div>
       )}
 
-      {!customUrl && !fullscreen && (
-        <div className="flex flex-wrap items-center gap-2 mt-4">
+      {!customUrl && (
+        <div className={`flex flex-wrap items-center gap-2 ${fullscreen ? "absolute bottom-4 left-1/2 -translate-x-1/2 z-40" : "mt-4"}`}>
           {sources.map((_, idx) => (
             <button
               key={idx}
-              onClick={() => switchSource(idx)}
+              onClick={() => { switchSource(idx); }}
               className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
                 idx === sourceIndex
                   ? "bg-accent text-accent-foreground"
-                  : "bg-surface-elevated/50 border border-border text-muted-foreground hover:border-accent/50 hover:text-foreground"
+                  : "bg-black/60 backdrop-blur border border-white/20 text-white/70 hover:border-accent/50 hover:text-foreground"
               }`}
             >
               {`S${idx + 1}`}

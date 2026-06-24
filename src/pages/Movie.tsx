@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, Link, useSearchParams, useNavigate } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { MovieRow } from "@/components/movie/MovieRow";
 import { FavoriteButton } from "@/components/movie/FavoriteButton";
 import { ShareButtons } from "@/components/movie/ShareButtons";
@@ -176,6 +177,7 @@ const Movie = () => {
 
   return (
     <Layout>
+      <ErrorBoundary>
       <SEO 
         title={`Regarder ${movie.title} en 4K`}
         description={movie.overview || `Regardez ${movie.title} en haute qualité gratuitement sur BNKhub.`}
@@ -216,7 +218,7 @@ const Movie = () => {
           <div className="animate-fade-slide-up flex-1 min-w-0 pb-2">
             {/* Genres */}
             <div className="flex flex-wrap gap-1.5 sm:gap-2 lg:gap-3 mb-2 sm:mb-4 lg:mb-6">
-              {movie.genres?.slice(0, 3).map(g => (
+              {(movie.genres || []).slice(0, 3).map((g: any) => (
                 <span key={g.id} className="px-2 sm:px-3 lg:px-4 py-0.5 sm:py-1 lg:py-1.5 rounded-full bg-accent/10 border border-accent/20 text-[7px] sm:text-[9px] lg:text-xs font-bold uppercase tracking-widest text-accent">
                   {g.name}
                 </span>
@@ -341,7 +343,7 @@ const Movie = () => {
               Distribution
             </h2>
             <div className="grid grid-cols-4 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-6 gap-4 sm:gap-6">
-              {cast.map(person => (
+              {(cast || []).map((person: any) => (
                 <Link key={person.id} to={`/person/${person.id}`} className="group">
                   <div className="aspect-[2/3] rounded-2xl overflow-hidden mb-3 bg-surface-card border border-border group-hover:border-accent/40 transition-all">
                     {person.profile_path ? (
@@ -352,7 +354,7 @@ const Movie = () => {
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center bg-accent/5">
-                        <span className="text-accent/40 text-2xl font-black">{person.name[0]}</span>
+                        <span className="text-accent/40 text-2xl font-black">{person.name?.[0] || "?"}</span>
                       </div>
                     )}
                   </div>
@@ -364,6 +366,7 @@ const Movie = () => {
           </div>
         )}
       </section>
+      </ErrorBoundary>
 
       {downloadModal && (
         <>
